@@ -66,6 +66,8 @@ function BattleModule:Close()
         UI:SetVisible(self.BattleViewIDList, false)
         self.BattleViewIDList = nil
     end
+    --重置刻度尺
+    self:AdjustPitchCursor(0)
 
     --注销输入事件
     System:UnregisterEvent(Events.ON_TOUCH_SCREEN_PRESSED)
