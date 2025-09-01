@@ -15,8 +15,8 @@ function Battle:OnCreate(Context)
         UI:SetVisible({self.CriticalHitReward.ID}, true)
     end
 
-    --战斗场景
-    self.BattleStage = Context.BattleStage
+    --战斗情境
+    self.Situation = Context.Situation
 
 
     --加载角色
@@ -35,6 +35,9 @@ function Battle:OnDestroy()
     self.Config = nil
     self.CurrentTurn = nil
     self.NextTurn = nil
+
+    self.Situation = nil
+    self.BattleSceneConfig = nil
 end
 
 --- 设置轮回这状态
@@ -67,9 +70,9 @@ end
 
 --- 获取指定战斗阶段资源配置
 function Battle:GetResource()
-    if self.BattleStage then
+    if self.Situation then
         local SceneResource = self.Config and self.Config.Resource
-        local TargetResource = SceneResource and SceneResource[self.BattleStage]
+        local TargetResource = SceneResource and SceneResource[self.Situation]
         return TargetResource
     end
 end
@@ -80,34 +83,42 @@ function Battle:LoadCharacter(Context)
     --己方
     --这里根据具体场景获取相应出生点
     local SceneResource = self:GetResource()
-    local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
-    Element:SetVisibility(SceneResource.BirthPoint.Local, false)
+    local SceneCount = #SceneResource
+    Log:PrintLog("------------->", SceneCount)
+    local BattleSceneIndex = math.random(1, SceneCount)
+    self.BattleSceneConfig = SceneResource[BattleSceneIndex]
+    if self.BattleSceneConfig then
+        local LocalPosition = Element:GetPosition(self.BattleSceneConfig.BirthPoint.Local)
+        Element:SetVisibility(self.BattleSceneConfig.BirthPoint.Local, false)
 
-    self.CurrentTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
-        Location = LocalPosition,
-        Rotation = Engine.Rotator(0, 0, -90),
-        Scale = Engine.Vector(1, 1, 1),
-        Controlled = true,
-        BattleStage = Context.BattleStage,
-        CharacterConfigID = Context.Character.Index,
-        WeaponConfigID = Context.Weapon.Index
-    })
+        self.CurrentTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
+            Location = LocalPosition,
+            Rotation = Engine.Rotator(0, 0, -90),
+            Scale = Engine.Vector(1, 1, 1),
+            Controlled = true,
+            Situation = Context.Situation,
+            CharacterConfigID = Context.Character.Index,
+            WeaponConfigID = Context.Weapon.Index
+        })
 
-    --对方
-    local EnemyPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
-    Element:SetVisibility(SceneResource.BirthPoint.Enemy, false)
-    self.NextTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
-        Location = EnemyPosition,
-        Rotation = Engine.Rotator(0, 0, 90),
-        Scale = Engine.Vector(1, 1, 1),
-        Controlled = false,
-        BattleStage = Context.BattleStage,
-        CharacterConfigID = Context.Character.Index,
-        WeaponConfigID = Context.Weapon.Index
-    })
+        --对方
+        local EnemyPosition = Element:GetPosition(self.BattleSceneConfig.BirthPoint.Enemy)
+        Element:SetVisibility(self.BattleSceneConfig.BirthPoint.Enemy, false)
+        self.NextTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
+            Location = EnemyPosition,
+            Rotation = Engine.Rotator(0, 0, 90),
+            Scale = Engine.Vector(1, 1, 1),
+            Controlled = false,
+            Situation = Context.Situation,
+            CharacterConfigID = Context.Character.Index,
+            WeaponConfigID = Context.Weapon.Index
+        })
 
-    --首次应用状态
-    ApplyTurnState(self)
+        --首次应用状态
+        ApplyTurnState(self)
+    else
+        Log:PrintError("没有指定场景的配置信息")
+    end
 end
 
 --- 切换回合
@@ -183,8 +194,7 @@ end
 --- 观察玩家(敌人)
 ---@param Position 位置
 function Battle:LookPlayer(Position)
-    local SceneResource = self:GetResource()
-    local CameraConfig = SceneResource and SceneResource.Camera
+    local CameraConfig = self.BattleSceneConfig and self.BattleSceneConfig.Camera
     if CameraConfig then
         -- Log:PrintLog("TXPerform(LookPlayer)")
         local NeetSwitch = false
@@ -210,8 +220,7 @@ function Battle:LookStart()
             Position = (curPosition + nextPosition)/2
         end
     end
-    local SceneResource = self:GetResource()
-    local CameraConfig = SceneResource and SceneResource.Camera
+    local CameraConfig = self.BattleSceneConfig and self.BattleSceneConfig.Camera
     if CameraConfig then
         -- Log:PrintLog("TXPerform(LookPlayer)")
         local NeetSwitch = false
@@ -235,8 +244,7 @@ end
 --- 观察投掷物
 ---@param Position 位置
 function Battle:LookProjectile(Position)
-    local SceneResource = self:GetResource()
-    local CameraConfig = SceneResource and SceneResource.Camera
+    local CameraConfig = self.BattleSceneConfig and self.BattleSceneConfig.Camera
     if CameraConfig then
         -- Log:PrintLog("TXPerform(LookProjectile)")
         local NeetSwitch = false

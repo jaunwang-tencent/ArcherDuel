@@ -29,7 +29,7 @@ function Weapon:OnCreate(Context)
     --在此创建武器
     --1、获取武器配置【只读】
     self.Config = UGCS.Target.ArcherDuel.Config.WeaponConfig[Context.WeaponConfigID]
-    self.BattleStage = Context.BattleStage
+    self.Situation = Context.Situation
 
     --2、创建武器外观
     self:LoadAppearance()
@@ -54,7 +54,7 @@ function Weapon:OnDestroy()
     self.Attributes = nil
     self.OwnerPlayer = nil
     self.CurrentScene = nil
-    self.BattleStage = nil
+    self.Situation = nil
 
     --TODO：在此销毁武器外观
     self.UID = nil
@@ -356,9 +356,9 @@ end
 
 --- 获取指定战斗阶段资源配置
 function Weapon:GetResource()
-    if self.BattleStage then
+    if self.Situation then
         local WeaponResource = self.Config and self.Config.Resource
-        local TargetResource = WeaponResource and WeaponResource[self.BattleStage]
+        local TargetResource = WeaponResource and WeaponResource[self.Situation]
         return TargetResource
     end
 end

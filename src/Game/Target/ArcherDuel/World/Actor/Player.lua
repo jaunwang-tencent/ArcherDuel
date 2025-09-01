@@ -72,7 +72,7 @@ function Player:OnCreate(Context)
     local WeaponConfig = UGCS.Target.ArcherDuel.Config.WeaponConfig[Context.WeaponConfigID]
     self.Weapon = UGCS.RTTI.CreateInstanceByTypeName(WeaponConfig.TypeName, {
         WeaponConfigID = Context.WeaponConfigID,
-        BattleStage = Context.BattleStage,
+        Situation = Context.Situation,
         OwnerPlayer = self
     })
 

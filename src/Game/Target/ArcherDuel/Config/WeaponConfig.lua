@@ -9,7 +9,27 @@ local WeaponConfig = {
         Resource = {
             --海岛
             [1] = {
-
+                --海岛
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 916,
+                    -- 弓上方弓弦连接点立方体实例id
+                    Up = 917,
+                    -- 弓下方弓弦连接点立方体实例id
+                    Down = 856,
+                    --弓弦【默认：272】
+                    Spring = 272,
+                    --左手拿弓
+                    BindBone = WeaponLeftHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 918,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                }
             },
             --雪地
             [2] = {
@@ -94,7 +114,20 @@ local WeaponConfig = {
         Resource = {
             --海岛
             [1] = {
-
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 1034,
+                    --右手持斧
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 斧刃立方体实例id
+                    Root = 1035,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                },
             },
             --雪地
             [2] = {
@@ -173,7 +206,20 @@ local WeaponConfig = {
         Resource = {
             --海岛
             [1] = {
-
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 892,
+                    --右手持矛
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 891,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                },
             },
             --雪地
             [2] = {
