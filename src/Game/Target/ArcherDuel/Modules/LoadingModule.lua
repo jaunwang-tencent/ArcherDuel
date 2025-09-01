@@ -1,13 +1,10 @@
 --加载模块
 local LoadingModule = {}
-local SceneConfigTable = UGCS.Target.ArcherDuel.Config.SceneConfig
 
 --- 打开
 ---@param Context 上下文【透传数据】
 function LoadingModule:Open(Context)
-    local SceneConfig = SceneConfigTable[Context.Scene.Index]
-
-    local UISetting = SceneConfig.UISetting
+    local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
     self.LoadingView = UISetting and UISetting.LoadingView
     if self.LoadingView then
         UI:SetVisible({self.LoadingView.ID}, true)

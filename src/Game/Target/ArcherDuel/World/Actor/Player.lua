@@ -48,18 +48,15 @@ function Player:OnCreate(Context)
     end
 
     --抬头血量显示
-    local SceneConfig = self.OwnerScene and self.OwnerScene.Config
-    if SceneConfig then
-        local UISetting = SceneConfig.UISetting
-        local BattleView = UISetting and UISetting.BattleView
-        if BattleView then
-            local PlayerView = self.Attributes.Controlled and BattleView.LocalPlayer or BattleView.EnemyPlayer
-            if PlayerView then
-                self.UI_HP = PlayerView.HPValue
-                local HUD_HPList = {self.UI_HP}
-                UI:SetProgressMaxValue(HUD_HPList, self.Attributes.Health)
-                UI:SetProgressCurrentValue(HUD_HPList, self.Attributes.Health)
-            end
+    local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
+    local BattleView = UISetting and UISetting.BattleView
+    if BattleView then
+        local PlayerView = self.Attributes.Controlled and BattleView.LocalPlayer or BattleView.EnemyPlayer
+        if PlayerView then
+            self.UI_HP = PlayerView.HPValue
+            local HUD_HPList = {self.UI_HP}
+            UI:SetProgressMaxValue(HUD_HPList, self.Attributes.Health)
+            UI:SetProgressCurrentValue(HUD_HPList, self.Attributes.Health)
         end
     end
 

@@ -12,6 +12,9 @@ function SystemFSM:OnCreate(Context)
     Context = {
         --场景
         Scene = {
+            --战斗情境
+            Situation = 4,    --1-海岛，2-雪地，3-城市，4-天空遗迹，5-沙漠，6-太空，7-室外，8-室内
+            --战斗场景
             Index = 1
         },
         --武器
@@ -22,8 +25,6 @@ function SystemFSM:OnCreate(Context)
         Character = {
             Index = 1
         },
-        --战斗场景
-        Situation = 4,    --1-海岛，2-雪地，3-城市，4-天空遗迹，5-沙漠，6-太空，7-室外，8-室内
     }
 
     -- 获取对手信息

@@ -9,7 +9,7 @@ local WeaponConfigTable = UGCS.Target.ArcherDuel.Config.WeaponConfig
 ---@param Context 上下文【透传数据】
 function BattleModule:Open(Context)
     self.CharacterConfig = CharacterConfigTable[Context.Character.Index]
-    self.SceneConfig = SceneConfigTable[Context.Scene.Index]
+    self.SceneConfig = SceneConfigTable
     self.WeaponConfig = WeaponConfigTable[Context.Weapon.Index]
     --持有房间状态机
     self.RoomFSM = Context.RoomFSM
@@ -32,7 +32,7 @@ function BattleModule:Open(Context)
     --从场景中萃取【固定的】
     self.SceneGravity = self.BattleScene:GetGravity()
     --获取刻度尺
-    local UISetting = self.SceneConfig.UISetting
+    local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
     local BattleView = UISetting and UISetting.BattleView
     if BattleView then
         --显示主控界面
@@ -221,7 +221,7 @@ end
 function BattleModule:AdjustPitchCursor(PitchDegree)
     if self.PitchCursorPoint and self.PitchRulerSize then
         local AimSetting = self.CharacterConfig.AimSetting
-        local UISetting = self.SceneConfig.UISetting
+        local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
         local BattleView = UISetting and UISetting.BattleView
         local AimPitch = BattleView and BattleView.AimPitch
         if AimPitch then

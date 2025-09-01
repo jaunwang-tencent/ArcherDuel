@@ -10,6 +10,7 @@ UGCS.Target.ArcherDuel.Config.CharacterConfig = require "Game.Target.ArcherDuel.
 UGCS.Target.ArcherDuel.Config.SceneConfig = require "Game.Target.ArcherDuel.Config.SceneConfig"
 UGCS.Target.ArcherDuel.Config.WeaponConfig = require "Game.Target.ArcherDuel.Config.WeaponConfig"
 UGCS.Target.ArcherDuel.Config.EquipmentConfig = require "Game.Target.ArcherDuel.Config.EquipmentConfig"
+UGCS.Target.ArcherDuel.Config.GameConfig = require "Game.Target.ArcherDuel.Config.GameConfig"
 
 --目标游戏应用
 UGCS.Target.ArcherDuel.App = require "Game.Target.ArcherDuel.ArcherDuelApp"
