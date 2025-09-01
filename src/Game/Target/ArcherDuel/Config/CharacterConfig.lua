@@ -76,9 +76,9 @@ local CharacterConfig = {
             --AI命中偏移【单位：米】
             AIHitZOffset = 0.1,
             --最小俯仰角【单位：角度】
-            MinPitchDegree = -50,
+            MinPitchDegree = -80,
             --最大俯仰角【单位：角度】
-            MaxPitchDegree = 50,
+            MaxPitchDegree = 80,
             --显示轨迹长度【水平方向距离，单位：米】
             ShowTrackLength = 5,
             --显示轨迹时间步伐【单位：秒】
