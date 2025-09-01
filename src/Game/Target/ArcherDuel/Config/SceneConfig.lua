@@ -17,7 +17,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [2] = {
@@ -33,7 +34,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [3] = {
@@ -49,7 +51,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [4] = {
@@ -65,7 +68,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [5] = {
@@ -81,7 +85,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             }
         },
@@ -110,7 +115,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 495,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [2] = {
@@ -126,7 +132,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 495,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             }
         },
@@ -155,7 +162,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 1786,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [2] = {
@@ -171,7 +179,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 1786,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [3] = {
@@ -187,7 +196,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 1786,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             }
 
@@ -217,7 +227,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [2] = {
@@ -233,7 +244,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [3] = {
@@ -249,7 +261,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [4] = {
@@ -265,7 +278,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [5] = {
@@ -281,7 +295,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             }
         },
@@ -310,7 +325,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2051,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [2] = {
@@ -326,7 +342,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2051,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [3] = {
@@ -342,7 +359,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2051,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [4] = {
@@ -358,7 +376,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 2051,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
 
@@ -388,7 +407,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [2] = {
@@ -404,7 +424,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [3] = {
@@ -420,7 +441,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [4] = {
@@ -436,7 +458,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [5] = {
@@ -452,7 +475,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
         },
@@ -481,7 +505,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 475,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             }
         },
@@ -510,7 +535,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [2] = {
@@ -526,7 +552,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [3] = {
@@ -542,7 +569,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [4] = {
@@ -558,7 +586,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [5] = {
@@ -574,7 +603,8 @@ local SceneConfig = {
                     --投掷物追踪相机元件标识【用于观察投掷物使用】
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
-                    Offset = Engine.Vector(-1000, 125, 250),
+                    Offset = Engine.Vector(-1200, 150, 250),
+                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
         },

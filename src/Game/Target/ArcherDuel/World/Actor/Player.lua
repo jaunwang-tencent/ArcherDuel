@@ -18,6 +18,7 @@ function Player:OnCreate(Context)
     local Controlled = Context and Context.Controlled or false
     --在此创建假人【这个非常耗】
     self.UID = FakeCharacter:CreateCharacter(self.Transform.Location, self.Transform.Rotation, self.Transform.Scale, not Controlled)
+    self:SetPlayerRotation(self.Transform.Rotation)
     if Controlled then
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
@@ -383,14 +384,17 @@ function Player:PerformHitStart(Impulse, BodyType)
             FakeCharacter:SetPosition(self.UID, Position2)
             --刷新位置
             self:SetLocation(Position2)
-
-            --被击中了，看我
-            -- self.OwnerScene:LookPlayer(Position2)
         end
 
         --表演倒地
         self:PerformFallback()
     end)
+end
+
+function Player:SetPlayerRotation(Rotation)
+    local rot = Rotation - Engine.Rotator(0, 0, 90)
+    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzz SetPlayerRotation", Rotation)
+    FakeCharacter:SetRotation(self.UID, rot)
 end
 
 --- 倒地表演
@@ -402,7 +406,7 @@ function Player:PerformFallback()
     if FacePosition and ChestPosition then
         local BodyForword = ChestPosition - FacePosition
         BodyForword.Z = 0
-        if self:IsControlled() then
+        if math.abs(self.Transform.Rotation.Z) > 90 then
             BodyForword = -BodyForword
         end
         Log:PrintLog("TXPerform(BodyRotation, BodyForword)", BodyForword)
@@ -413,18 +417,14 @@ function Player:PerformFallback()
             Log:PrintLog("TXPerform(BodyRotation, 2)", BodyRotation)
             BodyRotation.Z = BodyRotation.Z + 180
         end
-        local UnwindDegrees = function(A)
-            while A > 180 do
-                A = A - 360
-            end
-            while A < -180 do
-                A = A + 360
-            end
-            return A
+
+        if BodyRotation.Z - self.Transform.Rotation.Z > 180 then
+            BodyRotation.Z = BodyRotation.Z -360
+        elseif BodyRotation.Z - self.Transform.Rotation.Z < -180 then
+            BodyRotation.Z = BodyRotation.Z +360
         end
-        BodyRotation.Z = UnwindDegrees(BodyRotation.Z)
         Log:PrintLog("TXPerform(BodyRotation, 3)", BodyRotation)
-        FakeCharacter:SetRotation(self.UID, BodyRotation)
+        self:SetPlayerRotation(BodyRotation)
         TargetRotation = BodyRotation
     end
 
@@ -488,10 +488,11 @@ function Player:PerformStandup(TargetRotation)
             --瞬時旋转
             self:PerformHitOver()
         else
+            -- Log:PrintLog("zzzzzzzzzzzzzzzzzz TXPerform(BodyRotation, TargetRotation)", TargetRotation)
             UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
                 local BlendRotation = Rotation * Progress + TargetRotation * (1 - Progress)
-                --Log:PrintLog("TXPerform(BodyRotation, FaceToTargetBlendWeight)", Progress, BlendRotation)
-                FakeCharacter:SetRotation(self.UID, BlendRotation)
+                -- Log:PrintLog("zzzzzzzzzzzzzzzzzz TXPerform(BodyRotation, FaceToTargetBlendWeight)", Progress, BlendRotation)
+                self:SetPlayerRotation(BlendRotation)
             end, function()
                 self:PerformHitOver()
             end)
@@ -504,7 +505,7 @@ function Player:PerformHitOver()
     --原始朝向
     local Rotation = self:GetRotation()
     Log:PrintLog("TXPerform(BodyRotation, Last)", Rotation)
-    FakeCharacter:SetRotation(self.UID, Rotation)
+    self:SetPlayerRotation(Rotation)
 
     Log:PrintLog("TXPerform(Animation = Idle)", self.UID)
     FakeCharacter:PlayAnim(self.UID, self.Animations.Idle)

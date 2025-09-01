@@ -53,7 +53,8 @@ local function SetTurnState(self, ActorID, State)
                 Actor:SyncLocation()
                 self:LookStart()
             else
-                self:LookPlayer(Actor:SyncLocation())
+                Actor:SyncLocation()
+                self:LookPlayer(Actor.Transform)
             end
         end
     end
@@ -85,23 +86,25 @@ function Battle:LoadCharacter(Context)
     if SceneResource then
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
         Element:SetVisibility(SceneResource.BirthPoint.Local, false)
+        local Rotation = Element:GetRotation(SceneResource.BirthPoint.Local)
 
         self.CurrentTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = LocalPosition,
-            Rotation = Engine.Rotator(0, 0, -90),
+            Rotation = Rotation,
             Scale = Engine.Vector(1, 1, 1),
             Controlled = true,
             Situation = Context.Scene.Situation,
             CharacterConfigID = Context.Character.Index,
             WeaponConfigID = Context.Weapon.Index
         })
+        self.cameraOffestTurn = math.abs(Rotation.Z) > 90
 
         --对方
         local EnemyPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
         Element:SetVisibility(SceneResource.BirthPoint.Enemy, false)
         self.NextTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = EnemyPosition,
-            Rotation = Engine.Rotator(0, 0, 90),
+            Rotation = Element:GetRotation(SceneResource.BirthPoint.Enemy),
             Scale = Engine.Vector(1, 1, 1),
             Controlled = false,
             Situation = Context.Scene.Situation,
@@ -187,8 +190,8 @@ local function LookTarget(CameraSceneId, Position, Offset, NeetSwitch)
 end
 
 --- 观察玩家(敌人)
----@param Position 位置
-function Battle:LookPlayer(Position)
+---@param Tranfrom 位置
+function Battle:LookPlayer(Tranfrom)
     local SceneResource = self:GetResource()
     local CameraConfig = SceneResource and SceneResource.Camera
     if CameraConfig then
@@ -198,20 +201,35 @@ function Battle:LookPlayer(Position)
             NeetSwitch = true
             self.CurrentRunningCamera = CameraConfig.CharacterCameraSceneId
         end
-        LookTarget(self.CurrentRunningCamera, Position, CameraConfig.Offset, NeetSwitch)
+
+        --开启影视相机
+        if NeetSwitch then
+            Camera:MovieCameraStart(self.CurrentRunningCamera)
+        end
+
+        local forward = UMath:GetNormalize(UMath:RotatorToForward(Tranfrom.Rotation))
+        local up = Engine.Vector(0, 0, 1)
+        local right = UMath:GetNormalize(Engine.Vector(up.Y*forward.Z-up.Z*forward.Y, up.Z*forward.X-up.X*forward.Z, up.X*forward.Y-up.Y*forward.X))
+        local offest = CameraConfig.EnemyOffset
+
+        --设置影视相机位置与朝向
+        local CharacterCameraPosition = Tranfrom.Location + forward * offest.X + right * offest.Y + up * offest.Z
+        Element:SetPosition(self.CurrentRunningCamera, CharacterCameraPosition, Element.COORDINATE.World)
+        Element:SetForward(self.CurrentRunningCamera, Tranfrom.Location-CharacterCameraPosition)
     end
 end
 
 --- 起始视角
 function Battle:LookStart()
     -- 获取两个角色的位置
-    local curPosition
+    local curPosition, curRotation
     local Position = nil
     if self.CurrentTurn and self.NextTurn then
         local CurrentPlayer = self:GetActor(self.CurrentTurn)
         local NextPlayer = self:GetActor(self.NextTurn)
         if CurrentPlayer and NextPlayer then
             curPosition = FakeCharacter:GetPosition(CurrentPlayer.UID)
+            curRotation = CurrentPlayer.Transform.Rotation
             local nextPosition = FakeCharacter:GetPosition(NextPlayer.UID)
             Position = (curPosition + nextPosition)/2
         end
@@ -225,14 +243,19 @@ function Battle:LookStart()
             NeetSwitch = true
             self.CurrentRunningCamera = CameraConfig.CharacterCameraSceneId
         end
-        LookTarget(self.CurrentRunningCamera, Position, CameraConfig.Offset, NeetSwitch)
 
         --开启影视相机
         if NeetSwitch then
             Camera:MovieCameraStart(self.CurrentRunningCamera)
         end
+
+        local forward = UMath:GetNormalize(UMath:RotatorToForward(curRotation))
+        local up = Engine.Vector(0, 0, 1)
+        local right = UMath:GetNormalize(Engine.Vector(up.Y*forward.Z-up.Z*forward.Y, up.Z*forward.X-up.X*forward.Z, up.X*forward.Y-up.Y*forward.X))
+        local offest = CameraConfig.Offset
+
         --设置影视相机位置与朝向
-        local CharacterCameraPosition = curPosition + CameraConfig.Offset
+        local CharacterCameraPosition = curPosition + forward * offest.X + right * offest.Y + up * offest.Z
         Element:SetPosition(self.CurrentRunningCamera, CharacterCameraPosition, Element.COORDINATE.World)
         Element:SetForward(self.CurrentRunningCamera, Position-CharacterCameraPosition)
     end
@@ -250,7 +273,12 @@ function Battle:LookProjectile(Position)
             NeetSwitch = true
             self.CurrentRunningCamera = CameraConfig.ProjectileCameraSceneId
         end
-        LookTarget(self.CurrentRunningCamera, Position, CameraConfig.Offset, NeetSwitch)
+
+        local offest = Engine.Rotator()
+        offest.X = self.cameraOffestTurn and -CameraConfig.Offset.X or CameraConfig.Offset.X
+        offest.Y = self.cameraOffestTurn and -CameraConfig.Offset.Y or CameraConfig.Offset.Y
+        offest.Z = CameraConfig.Offset.Z
+        LookTarget(self.CurrentRunningCamera, Position, offest, NeetSwitch)
     end
 end
 
