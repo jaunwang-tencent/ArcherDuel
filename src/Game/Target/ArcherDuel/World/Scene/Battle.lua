@@ -8,8 +8,16 @@ function Battle:OnCreate(Context)
 
     --获取场景配置【只读】
     self.Config = UGCS.Target.ArcherDuel.Config.SceneConfig[Context.Scene.Index]
+    local UISetting = self.Config and self.Config.UISetting
+    local BattleView = UISetting and UISetting.BattleView
+    self.CriticalHitReward = BattleView and BattleView.CriticalHitReward
+    if self.CriticalHitReward then
+        UI:SetVisible({self.CriticalHitReward.ID}, true)
+    end
+
     --战斗场景
     self.BattleStage = Context.BattleStage
+
 
     --加载角色
     self:LoadCharacter(Context)
@@ -18,6 +26,11 @@ end
 --- 销毁
 function Battle:OnDestroy()
     Battle.super.OnDestroy(self)
+
+    if self.CriticalHitReward then
+        UI:SetVisible({self.CriticalHitReward.ID}, true)
+        self.CriticalHitReward = nil
+    end
 
     self.Config = nil
     self.CurrentTurn = nil
@@ -239,15 +252,8 @@ end
 --- 爆头提示
 function Battle:HeadShot()
     --爆头提示
-    local UISetting = self.Config and self.Config.UISetting
-    local BattleView = UISetting and UISetting.BattleView
-    local CriticalHitReward = BattleView and BattleView.CriticalHitReward
-    if CriticalHitReward then
-        UI:SetVisible({CriticalHitReward.HeadShotUI, CriticalHitReward.ID}, true)
-        --0.8秒后消失
-        UGCS.Framework.Executor.Delay(0.8, function()
-            UI:SetVisible({CriticalHitReward.HeadShotUI, CriticalHitReward.ID}, false)
-        end)
+    if self.CriticalHitReward then
+        UI:EffectStartPlay(self.CriticalHitReward.HeadShotUI)
     end
 end
 

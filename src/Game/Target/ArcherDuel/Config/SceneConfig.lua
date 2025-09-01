@@ -71,10 +71,10 @@ local SceneConfig = {
                 CriticalHitReward = {
                     --根节点页面ID
                     ID = 105662,
-                    --爆头提示
-                    HeadShotUI = 105660,
-                    --奖励宝箱
+                    --奖励宝箱【常驻】
                     RewardBox= 105661,
+                    --爆头提示【动效播放】
+                    HeadShotUI = 105660,
                 },
                 --本地玩家
                 LocalPlayer = {
