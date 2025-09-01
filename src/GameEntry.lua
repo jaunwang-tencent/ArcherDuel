@@ -16,6 +16,8 @@ _GAME.Sign = {
     GameOver = "Game Over",
     --再来一局
     BattleAgain = "Battle Again",
+    --爆头信号
+    HeadShot = "Head Shot"
 }
 
 --游戏内事件

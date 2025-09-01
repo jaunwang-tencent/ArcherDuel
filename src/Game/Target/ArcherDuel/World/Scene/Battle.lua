@@ -229,7 +229,6 @@ function Battle:LookStart()
         local CharacterCameraPosition = curPosition + CameraConfig.Offset
         Element:SetPosition(self.CurrentRunningCamera, CharacterCameraPosition, Element.COORDINATE.World)
         Element:SetForward(self.CurrentRunningCamera, Position-CharacterCameraPosition)
-
     end
 end
 
@@ -253,7 +252,8 @@ end
 function Battle:HeadShot()
     --爆头提示
     if self.CriticalHitReward then
-        UI:EffectStartPlay(self.CriticalHitReward.HeadShotUI)
+        UI:SetVisible({self.CriticalHitReward.HeadShotUI}, true)
+        System:FireSignEvent(_GAME.Sign.HeadShot)
     end
 end
 

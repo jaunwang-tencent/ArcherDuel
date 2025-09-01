@@ -339,7 +339,7 @@ function Player:GetEquipData(ForceUpdate)
         local Cloth_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Lv")
 
         self.EquipData = {
-            damage = 1500, -- 基础伤害
+            damage = 150, -- 基础伤害
             head_damageRate = 0.2, -- 头部伤害倍率
             body_damageRate = 0.1, -- 身体伤害倍率
             hp = 200, -- 血量加成
