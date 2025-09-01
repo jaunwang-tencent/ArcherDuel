@@ -66,10 +66,6 @@ local CharacterConfig = {
                 S = 0.01,
                 --样条分段量【数值越小越平滑，性能越差，反之亦然】
                 Segment = 100,
-                --样条曲率【单位：1】
-                Curvature = 0.4,
-                --中点振幅【单位：米】
-                Amplitude = 5,
             },
             --瞄准优化【非样条曲线方案才生效】
             Optimization = true,

@@ -143,7 +143,8 @@ function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
         if Displacement then
             local Distance = UMath:GetVectorLength(Displacement)
             local HitSpline = AimSetting.HitSpline
-            if HitSpline then
+            local SplineSetting = self.CurrentScene.Config.SplineSetting
+            if HitSpline and SplineSetting then
                 --重新计算命中区域
                 local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(HitSpline, Displacement)
                 --经过小孔（相机）投射到纸片（屏幕空间）上的高度
@@ -166,7 +167,7 @@ function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
                 local K = XYDistance / HitSpline.L
 
                 --计算振幅
-                local Amplitude = K * HitSpline.Amplitude
+                local Amplitude = K * SplineSetting.Amplitude
                 --中点【这一步很重要】
                 local MiddlePoint = (StartPoint + EndPoint) * 0.5
                 --首尾朝向
@@ -181,10 +182,8 @@ function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
                 --法线朝向偏移一定振幅
                 MiddlePoint = MiddlePoint + Normal * Amplitude * 100
 
-                --MiddlePoint.Z = MiddlePoint.Z + Amplitude * 100
-
                 --曲率
-                local Curvature = K * HitSpline.Curvature
+                local Curvature = K * SplineSetting.Curvature
 
                 --样条采样
                 Log:PrintLog(string.format("GenerateCurve(PitchDegree=%f, CenterOffset = %f, Curvature = %f, Amplitude = %f)", PitchDegree, CenterOffset, Curvature, Amplitude))
