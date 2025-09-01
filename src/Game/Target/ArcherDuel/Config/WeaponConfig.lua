@@ -219,6 +219,21 @@ local WeaponConfig = {
             --待机动作
             Idle = "BowIdle",
         },
+        --音效设置
+        SoundSetting = {
+            --拉弓音效
+            PullString = "1006",
+            --发射音效
+            Fire = "1001",
+            --飞行音效
+            Fly = "1002",
+            --打在地面
+            HitGround = "1002",
+            --打在水面
+            HitWater = "1004",
+            --打在石头
+            HitStone = "1005",
+        },
         --属性参数
         Attributes = {
             --线速率【单位：米每秒】
@@ -418,6 +433,19 @@ local WeaponConfig = {
             --待机动作
             Idle = "AxeIdle",
         },
+        --音效设置
+        SoundSetting = {
+            --发射音效
+            Fire = "1001",
+            --飞行音效
+            Fly = "1002",
+            --打在地面
+            HitGround = "1002",
+            --打在水面
+            HitWater = "1004",
+            --打在石头
+            HitStone = "1005",
+        },
         --属性参数
         Attributes = {
             --线速率【单位：米每秒】
@@ -606,6 +634,19 @@ local WeaponConfig = {
             Fire = "SpearAttack",
             --待机动作
             Idle = "SpearIdle",
+        },
+        --音效设置
+        SoundSetting = {
+            --发射音效
+            Fire = "1001",
+            --飞行音效
+            Fly = "1002",
+            --打在地面
+            HitGround = "1002",
+            --打在水面
+            HitWater = "1004",
+            --打在石头
+            HitStone = "1005",
         },
         --属性参数
         Attributes = {

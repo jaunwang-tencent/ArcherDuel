@@ -372,7 +372,19 @@ function Player:PerformHitStart(Impulse, BodyType)
     local OffsetPosition = Position1 - SocketPosition1
 
     --施加冲量
-    FakeCharacter:AddImpulse(self.UID, Impulse, BodyType)
+    local ImpulseSetting = UGCS.Target.ArcherDuel.Config.GameConfig.ImpulseSetting
+    local ImpulseList = ImpulseSetting and ImpulseSetting[BodyType]
+    if ImpulseList then
+        for _, Impulse in pairs(ImpulseList) do
+            local ImpulseValue = Impulse.ImpulseValue
+            local ForwardAngle = Impulse.ForwardAngle
+            if ImpulseValue and ForwardAngle then
+                --local For
+            end
+        end
+    else
+        FakeCharacter:AddImpulse(self.UID, Impulse, BodyType)
+    end
 
     --躺地一段时间
     UGCS.Framework.Executor.Delay(self.Config.Perform.LandingKeepTime, function()
