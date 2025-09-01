@@ -100,11 +100,25 @@ local WeaponConfig = {
         --属性参数
         Attributes = {
             --线速率【单位：米每秒】
-            Velocity = 30,
+            Velocity = 25,
             --武器质量【单位：千克】（反推，非真实）
             Mass = 15000,
-            --伤害值
-            Damage = 100
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 50,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
         },
     },
     [2] = {
@@ -192,11 +206,25 @@ local WeaponConfig = {
         --属性参数
         Attributes = {
             --线速率【单位：米每秒】
-            Velocity = 30,
+            Velocity = 25,
             --武器质量【单位：千克】（反推，非真实）
             Mass = 15000,
-            --伤害值
-            Damage = 100
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 50,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
         },
     },
     [3] = {
@@ -282,11 +310,25 @@ local WeaponConfig = {
         --属性参数
         Attributes = {
             --线速率【单位：米每秒】
-            Velocity = 30,
+            Velocity = 25,
             --武器质量【单位：千克】（反推，非真实）
             Mass = 15000,
-            --伤害值
-            Damage = 100
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 50,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
         },
     },
 }
