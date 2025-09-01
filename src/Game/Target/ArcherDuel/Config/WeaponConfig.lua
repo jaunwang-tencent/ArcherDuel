@@ -33,11 +33,49 @@ local WeaponConfig = {
             },
             --雪地
             [2] = {
-
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 609,
+                    -- 弓上方弓弦连接点立方体实例id
+                    Up = 610,
+                    -- 弓下方弓弦连接点立方体实例id
+                    Down = 549,
+                    --弓弦【默认：272】
+                    Spring = 272,
+                    --左手拿弓
+                    BindBone = WeaponLeftHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 611,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                }
             },
             --城市
             [3] = {
-
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root =1899,
+                    -- 弓上方弓弦连接点立方体实例id
+                    Up = 1900,
+                    -- 弓下方弓弦连接点立方体实例id
+                    Down = 1839,
+                    --弓弦【默认：272】
+                    Spring = 272,
+                    --左手拿弓
+                    BindBone = WeaponLeftHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 1901,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                }
             },
             --天空遗迹
             [4] = {
@@ -66,18 +104,102 @@ local WeaponConfig = {
             },
             --沙漠
             [5] = {
-
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 2019,
+                    -- 弓上方弓弦连接点立方体实例id
+                    Up = 2020,
+                    -- 弓下方弓弦连接点立方体实例id
+                    Down = 1959,
+                    --弓弦【链式特效类型（火焰链）225】【专用：272】
+                    Spring = 272,
+                    --左手拿弓
+                    BindBone = WeaponLeftHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 2021,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                    Particle = 269,
+                    ParticleOffset = Engine.Vector(-500, 0, 0),
+                }
             },
             --太空
             [6] = {
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 874,
+                    -- 弓上方弓弦连接点立方体实例id
+                    Up = 875,
+                    -- 弓下方弓弦连接点立方体实例id
+                    Down = 814,
+                    --弓弦【链式特效类型（火焰链）225】【专用：272】
+                    Spring = 272,
+                    --左手拿弓
+                    BindBone = WeaponLeftHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 876,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                    Particle = 269,
+                    ParticleOffset = Engine.Vector(-500, 0, 0),
+                }
             },
             --室外
             [7] = {
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 586,
+                    -- 弓上方弓弦连接点立方体实例id
+                    Up = 587,
+                    -- 弓下方弓弦连接点立方体实例id
+                    Down = 526,
+                    --弓弦【链式特效类型（火焰链）225】【专用：272】
+                    Spring = 272,
+                    --左手拿弓
+                    BindBone = WeaponLeftHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 588,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                    Particle = 269,
+                    ParticleOffset = Engine.Vector(-500, 0, 0),
+                }
 
             },
             --室内
             [8] = {
-
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 1931,
+                    -- 弓上方弓弦连接点立方体实例id
+                    Up =1932,
+                    -- 弓下方弓弦连接点立方体实例id
+                    Down = 1871,
+                    --弓弦【链式特效类型（火焰链）225】【专用：272】
+                    Spring = 272,
+                    --左手拿弓
+                    BindBone = WeaponLeftHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 1933,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                    Particle = 269,
+                    ParticleOffset = Engine.Vector(-500, 0, 0),
+                }
             },
         },
         --所持武器对应的动作
@@ -145,10 +267,38 @@ local WeaponConfig = {
             },
             --雪地
             [2] = {
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 516,
+                    --右手持斧
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 斧刃立方体实例id
+                    Root = 532,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                },
 
             },
             --城市
             [3] = {
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 1806,
+                    --右手持斧
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 斧刃立方体实例id
+                    Root = 1822,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                },
 
             },
             --天空遗迹
@@ -172,17 +322,82 @@ local WeaponConfig = {
             },
             --沙漠
             [5] = {
+                --手持物
+                HeldItem = {
+                    Root = 1926,
+                    --右手持斧
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    Root = 1942,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                    --旋转速度，只有斧子才有
+                    RotationalSpeed = -8,
+                    Particle = 271,
+                    ParticleOffset = Engine.Vector(500, 0, 300),
+                }
 
             },
             --太空
             [6] = {
+                --手持物
+                HeldItem = {
+                    Root = 781,
+                    --右手持斧
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    Root = 797,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                    --旋转速度，只有斧子才有
+                    RotationalSpeed = -8,
+                    Particle = 271,
+                    ParticleOffset = Engine.Vector(500, 0, 300),
+                }
+
             },
             --室外
             [7] = {
+                --手持物
+                HeldItem = {
+                    Root = 493,
+                    --右手持斧
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    Root = 509,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                    --旋转速度，只有斧子才有
+                    RotationalSpeed = -8,
+                    Particle = 271,
+                    ParticleOffset = Engine.Vector(500, 0, 300),
+                }
 
             },
             --室内
             [8] = {
+                --手持物
+                HeldItem = {
+                    Root = 1838,
+                    --右手持斧
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    Root = 1854,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                    --旋转速度，只有斧子才有
+                    RotationalSpeed = -8,
+                    Particle = 271,
+                    ParticleOffset = Engine.Vector(500, 0, 300),
+                }
 
             },
         },
@@ -206,7 +421,7 @@ local WeaponConfig = {
         --属性参数
         Attributes = {
             --线速率【单位：米每秒】
-            Velocity = 50,
+            Velocity = 25,
             --武器质量【单位：千克】（反推，非真实）
             Mass = 15000,
             -- 生命值
@@ -251,10 +466,38 @@ local WeaponConfig = {
             },
             --雪地
             [2] = {
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 517,
+                    --右手持矛
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 531,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                },
 
             },
             --城市
             [3] = {
+                --手持物
+                HeldItem = {
+                    -- 手持点立方体实例id
+                    Root = 1932,
+                    --右手持矛
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    -- 投射物尖端立方体实例id
+                    Root = 1931,
+                    --偏移量
+                    Offset = Engine.Vector(0, 50, 80),
+                },
 
             },
             --天空遗迹
@@ -276,17 +519,74 @@ local WeaponConfig = {
             },
             --沙漠
             [5] = {
+                --手持物
+                HeldItem = {
+                    Root = 1927,
+                    --右手持矛
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    Root = 1941,
+                    --偏移量【与人之间的偏移，枪口】
+                    Offset = Engine.Vector(0, 50, 80),
+                    Particle = 270,
+                    ParticleOffset = Engine.Vector(-1500,0,0),
+                }
 
             },
             --太空
             [6] = {
+                --手持物
+                HeldItem = {
+                    Root = 782,
+                    --右手持矛
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    Root = 796,
+                    --偏移量【与人之间的偏移，枪口】
+                    Offset = Engine.Vector(0, 50, 80),
+                    Particle = 270,
+                    ParticleOffset = Engine.Vector(-1500,0,0),
+                }
             },
             --室外
             [7] = {
+                --手持物
+                HeldItem = {
+                    Root = 494,
+                    --右手持矛
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    Root = 508,
+                    --偏移量【与人之间的偏移，枪口】
+                    Offset = Engine.Vector(0, 50, 80),
+                    Particle = 270,
+                    ParticleOffset = Engine.Vector(-1500,0,0),
+                }
 
             },
             --室内
             [8] = {
+                --手持物
+                HeldItem = {
+                    Root = 1839,
+                    --右手持矛
+                    BindBone = WeaponRightHand,
+                },
+                --投射物
+                Projectile = {
+                    Root = 1853,
+                    --偏移量【与人之间的偏移，枪口】
+                    Offset = Engine.Vector(0, 50, 80),
+                    Particle = 270,
+                    ParticleOffset = Engine.Vector(-1500,0,0),
+                }
+
 
             },
         },
