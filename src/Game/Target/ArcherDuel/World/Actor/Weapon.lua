@@ -176,8 +176,8 @@ function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
                 Forward = UMath:GetNormalize(Forward)
                 --计算法线
                 local Normal = Engine.Vector(-Forward.Z, 0, Forward.X)
-                --不同号则调整方向
-                if Displacement.Z * Normal.Z < 0 then
+                --法线始终朝上
+                if Normal.Z < 0 then
                     Normal = -Normal
                 end
                 --法线朝向偏移一定振幅
