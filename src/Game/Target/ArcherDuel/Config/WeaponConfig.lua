@@ -263,6 +263,9 @@ local WeaponConfig = {
                     Root = 1035,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    RotationalSpeed = -8,
+                    Particle = 271,
+                    ParticleOffset = Engine.Vector(500, 0, 300),
                 },
             },
             --雪地
@@ -280,6 +283,9 @@ local WeaponConfig = {
                     Root = 532,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    RotationalSpeed = -8,
+                    Particle = 271,
+                    ParticleOffset = Engine.Vector(500, 0, 300),
                 },
 
             },
@@ -298,6 +304,9 @@ local WeaponConfig = {
                     Root = 1822,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    RotationalSpeed = -8,
+                    Particle = 271,
+                    ParticleOffset = Engine.Vector(500, 0, 300),
                 },
 
             },

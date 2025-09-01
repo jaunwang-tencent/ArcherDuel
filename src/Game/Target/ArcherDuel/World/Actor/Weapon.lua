@@ -399,7 +399,9 @@ function Weapon:GetSpawnerOffset()
     local WeaponResource = self:GetResource()
     local ProjectileData = WeaponResource and WeaponResource.Projectile
     local SpawnerOffset = Engine.Vector(ProjectileData.Offset.X, ProjectileData.Offset.Y, ProjectileData.Offset.Z)
-    if not self.OwnerPlayer:IsControlled() then
+    --获取位移
+    local Displacement = self.CurrentScene:GetDisplacement()
+    if Displacement.Y > 0 then
         SpawnerOffset.Y = -SpawnerOffset.Y
     end
     return SpawnerOffset
