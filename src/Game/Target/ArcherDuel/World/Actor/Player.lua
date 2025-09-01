@@ -430,29 +430,38 @@ function Player:PerformFallback()
         FakeCharacter:SetRotation(self.UID, BodyRotation)
         TargetRotation = BodyRotation
     end
-    --倒下时，以命中身体部位决定到底姿态
-    if FaceRotation.X > 0 then
-        --面朝上
-        Log:PrintLog("TXPerform(Animation = HitBackLoop)", self.UID)
-        FakeCharacter:PlayAnim(self.UID, self.Animations.HitBackLoop)
-    else
-        --面朝下
-        Log:PrintLog("TXPerform(Animation = HitFrontLoop)", self.UID)
-        FakeCharacter:PlayAnim(self.UID, self.Animations.HitFrontLoop)
-    end
 
-    --播放起身动作
-    Log:PrintLog("TXPerform(UpdateHitState, HitToIdle)")
-    --关闭物理
-    if self.Config.Perform.PhysicsBlendWeightTime <= 0 then
-        self:PerformStandup(TargetRotation)
-    else
-        UGCS.Framework.Updator.Alloc(self.Config.Perform.PhysicsBlendWeightTime, nil, function(Process)
-            --Log:PrintLog("TXPerform(PhysicsBlendWeight)", 1 - Process)
-            FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1 - Process)
-        end, function()
+    --只有在活着的时候才表演动作，避免诈尸现象
+    --根据健康值判定下一状态【要么站起，要么死亡】
+    local Health = self:GetHealth()
+    if Health > 0 then
+        --倒下时，以命中身体部位决定到底姿态
+        if FaceRotation.X > 0 then
+            --面朝上
+            Log:PrintLog("TXPerform(Animation = HitBackLoop)", self.UID)
+            FakeCharacter:PlayAnim(self.UID, self.Animations.HitBackLoop)
+        else
+            --面朝下
+            Log:PrintLog("TXPerform(Animation = HitFrontLoop)", self.UID)
+            FakeCharacter:PlayAnim(self.UID, self.Animations.HitFrontLoop)
+        end
+
+        --播放起身动作
+        Log:PrintLog("TXPerform(UpdateHitState, HitToIdle)")
+        --关闭物理
+        if self.Config.Perform.PhysicsBlendWeightTime <= 0 then
             self:PerformStandup(TargetRotation)
-        end)
+        else
+            UGCS.Framework.Updator.Alloc(self.Config.Perform.PhysicsBlendWeightTime, nil, function(Process)
+                --Log:PrintLog("TXPerform(PhysicsBlendWeight)", 1 - Process)
+                FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1 - Process)
+            end, function()
+                self:PerformStandup(TargetRotation)
+            end)
+        end
+    else
+        --死亡，回合结束
+        self:Death()
     end
 end
 
@@ -462,42 +471,35 @@ function Player:PerformStandup(TargetRotation)
     --站起来后关闭物理模拟
     --FakeCharacter:EnableSimulatePhysics(self.UID, false)
 
-    --根据健康值判定下一状态【要么站起，要么死亡】
-    local Health = self:GetHealth()
-    if Health > 0 then
-        --站起时以面向朝向来决定站起
-        local FaceRotation = FakeCharacter:GetSocketRotation(self.UID, self.Config.BodySetting.FaceBone)
-        if FaceRotation.X > 0 then
-            --面朝上
-            Log:PrintLog("TXPerform(Animation = HitBackToIdle)", self.UID)
-            FakeCharacter:PlayAnim(self.UID, self.Animations.HitBackToIdle)
-        else
-            --面朝下
-            Log:PrintLog("TXPerform(Animation = HitFrontToIdle)", self.UID)
-            FakeCharacter:PlayAnim(self.UID, self.Animations.HitFrontToIdle)
-        end
-
-        UGCS.Framework.Executor.Delay(self.Config.Perform.HitToIdleTime, function()
-            --原始朝向
-            local Rotation = self:GetRotation()
-            --受击倒地后站起来再将旋转调整回来
-            if self.Config.Perform.FaceToTargetTime <= 0 then
-                --瞬時旋转
-                self:PerformHitOver()
-            else
-                UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
-                    local BlendRotation = Rotation * Progress + TargetRotation * (1 - Progress)
-                    --Log:PrintLog("TXPerform(BodyRotation, FaceToTargetBlendWeight)", Progress, BlendRotation)
-                    FakeCharacter:SetRotation(self.UID, BlendRotation)
-                end, function()
-                    self:PerformHitOver()
-                end)
-            end
-        end)
+    --站起时以面向朝向来决定站起
+    local FaceRotation = FakeCharacter:GetSocketRotation(self.UID, self.Config.BodySetting.FaceBone)
+    if FaceRotation.X > 0 then
+        --面朝上
+        Log:PrintLog("TXPerform(Animation = HitBackToIdle)", self.UID)
+        FakeCharacter:PlayAnim(self.UID, self.Animations.HitBackToIdle)
     else
-        --死亡，回合结束
-        self:Death()
+        --面朝下
+        Log:PrintLog("TXPerform(Animation = HitFrontToIdle)", self.UID)
+        FakeCharacter:PlayAnim(self.UID, self.Animations.HitFrontToIdle)
     end
+
+    UGCS.Framework.Executor.Delay(self.Config.Perform.HitToIdleTime, function()
+        --原始朝向
+        local Rotation = self:GetRotation()
+        --受击倒地后站起来再将旋转调整回来
+        if self.Config.Perform.FaceToTargetTime <= 0 then
+            --瞬時旋转
+            self:PerformHitOver()
+        else
+            UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
+                local BlendRotation = Rotation * Progress + TargetRotation * (1 - Progress)
+                --Log:PrintLog("TXPerform(BodyRotation, FaceToTargetBlendWeight)", Progress, BlendRotation)
+                FakeCharacter:SetRotation(self.UID, BlendRotation)
+            end, function()
+                self:PerformHitOver()
+            end)
+        end
+    end)
 end
 
 --- 受击表演结束
