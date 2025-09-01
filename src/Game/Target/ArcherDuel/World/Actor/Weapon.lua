@@ -291,7 +291,9 @@ function Weapon:Update(DeltaTime)
             SpawnerPosition = self:GetSpawnerPosition()
         end
         --校正武器朝向
-        self:AdjustForward(Velocity)
+        if UMath:GetVectorLength(Velocity) ~= 0 then
+            self:AdjustForward(Velocity)
+        end
         --挪到发射器位置
         local CurrentPosition = SpawnerPosition + RelativePosition
         --刷新相机【相机跟随投掷物】
