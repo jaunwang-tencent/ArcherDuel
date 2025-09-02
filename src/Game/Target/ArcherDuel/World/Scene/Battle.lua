@@ -20,11 +20,31 @@ function Battle:OnCreate(Context)
 
     --加载角色
     self:LoadCharacter(Context)
+
+    --备份所有障碍物的位置
+    local SceneResource = self:GetResource()
+    local Obstacle = SceneResource and SceneResource.Obstacle
+    if Obstacle then
+        self.ObstacleTransformList = {}
+        for SceneID, _ in pairs(Obstacle) do
+            self.ObstacleTransformList[SceneID] = {
+                Position = Element:GetPosition(SceneID),
+                Rotation = Element:GetRotation(SceneID)
+            }
+        end
+    end
 end
 
 --- 销毁
 function Battle:OnDestroy()
     Battle.super.OnDestroy(self)
+    if self.ObstacleTransformList then
+        for SceneID, Tranfrom in pairs(self.ObstacleTransformList) do
+            Element:SetPosition(SceneID, Tranfrom.Position, Element.COORDINATE.World)
+            Element:SetRotation(SceneID, Tranfrom.Rotation, Element.COORDINATE.World)
+        end
+        self.ObstacleTransformList = nil
+    end
 
     if self.CriticalHitReward then
         UI:SetVisible({self.CriticalHitReward.ID}, true)

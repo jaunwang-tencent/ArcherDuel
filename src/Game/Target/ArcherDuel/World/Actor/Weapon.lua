@@ -500,7 +500,10 @@ function Weapon:HitTarget(ElementID, Result)
         if Obstacle and Obstacle[ElementID] then
             --绑定到障碍物元件
             Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
-            Element:AddForce(ElementID, Result.HitImpulse)
+            --施加力
+            local ImpulseForward = UMath:GetNormalize(Result.HitImpulse)
+            local HitImpulse = ImpulseForward * 5000
+            Element:AddForce(ElementID, HitImpulse)
         end
         --切换回合
         if self.CurrentScene then
