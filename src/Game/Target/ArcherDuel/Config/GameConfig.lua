@@ -69,6 +69,19 @@ local GameConfig = {
         --地面摩擦系数【单位：1】
         FrictionFactor = 0.1,
     },
+    --冲量设置
+    ImpulseSetting = {
+        --[[
+        [Character.SOCKET_NAME.Head] = {
+            [1] = {
+                --冲量大小
+                ImpulseValue = 240000,
+                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
+                ForwardDegree = 20
+            },
+        }
+        --]]
+    }
 }
 
 return GameConfig

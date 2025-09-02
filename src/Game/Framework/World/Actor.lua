@@ -50,6 +50,10 @@ function Actor:GetRotation()
     return self.Transform.Rotation
 end
 
+function Actor:GetForward()
+    return UMath:GetNormalize(UMath:RotatorToForward(self.Transform.Rotation))
+end
+
 function Actor:SetScale(Scale)
     self.Transform.Scale = Scale
 end
