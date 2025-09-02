@@ -1,9 +1,9 @@
 
    -- 装备配置
-local EquipmentConfig = {
+   local EquipmentConfig = {
     [1] = {
         --角色1
-        TypeName = "Hat",
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -26,12 +26,11 @@ local EquipmentConfig = {
             Grade = 1,
             -- 成长值
             Growth = 6,
-
         },
     },
     [2] = {
         --角色2
-        TypeName = "Hat",
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -58,7 +57,7 @@ local EquipmentConfig = {
     },
     [3] = {
         --角色3
-        TypeName = "Hat",
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -85,34 +84,7 @@ local EquipmentConfig = {
     },
     [4] = {
         --角色4
-        TypeName = "Hat",
-        --属性参数
-        Attributes = {
-            -- 生命极
-            Heal = 0,
-            -- 攻击力
-            Attack = 22,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 1,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 0,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 2,
-            -- 成长值
-            Growth = 3 , -- 提高基础值 (22+ 3 * 5= 37> 42 , 差值为5)
-        },
-    },
-    [5] = {
-        --角色5
-        TypeName = "Hat",
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -137,9 +109,9 @@ local EquipmentConfig = {
             Growth = 6,
         },
     },
-    [6] = {
-        --角色6
-        TypeName = "Hat",
+    [5] = {
+        --角色5
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -164,63 +136,9 @@ local EquipmentConfig = {
             Growth = 6,
         },
     },
-    [7] = {
-        --角色7
-        TypeName = "Hat",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 14,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 1,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 0,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 3,
-            -- 成长值
-            Growth =  6,
-        },
-    },
-    [8] = {
-        --角色8
-        TypeName = "Hat",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 24,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 1,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 0,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 3,
-            -- 成长值
-            Growth = 3, -- 提高基础值 (24+ 3 * 5= 39> 44 , 差值为5)
-        },
-    },
-    [9] = {
-        --角色9
-        TypeName = "Hat",
+    [6] = {
+        --角色6
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -245,9 +163,9 @@ local EquipmentConfig = {
             Growth = 6,  -- 保持不变
         },
     },
-    [10] = {
-        --角色10
-        TypeName = "Hat",
+    [7] = {
+        --角色7
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -272,9 +190,9 @@ local EquipmentConfig = {
             Growth = 9,  -- 提高成长值 (满级为52 > 46, 差值为8)
         },
     },
-    [11] = {
-        --角色11
-        TypeName = "Hat",
+    [8] = {
+        --角色8
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -299,9 +217,9 @@ local EquipmentConfig = {
             Growth = 7,  -- 提高成长值 (13+7 * 5=48 > 46, 差值为2)
         },
     },
-    [12] = {
-        --角色12
-        TypeName = "Hat",
+    [9] = {
+        --角色9
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -326,9 +244,9 @@ local EquipmentConfig = {
             Growth = 6,  -- 保持不变
         },
     },
-    [13] = {
-        --角色极3
-        TypeName = "Hat",
+    [10] = {
+        --角色10
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -353,9 +271,9 @@ local EquipmentConfig = {
             Growth = 6,  -- 保持不变
         },
     },
-    [14] = {
-        --角色14
-        TypeName = "Hat",
+    [11] = {
+        --角色11
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -380,9 +298,9 @@ local EquipmentConfig = {
             Growth = 2,  -- 降低成长值 (36 < 46, 差值为10)
         },
     },
-    [15] = {
-        --角色15
-        TypeName = "Hat",
+    [12] = {
+        --角色12
+        TypeName = "Part",
         --属性极
         Attributes = {
             -- 生命值
@@ -407,9 +325,9 @@ local EquipmentConfig = {
             Growth = 5,  -- 降低成长值 (19+5 * 5=44 < 46, 差值为2)
         },
     },
-    [16] = {
-        --角色16
-        TypeName = "Hat",
+    [13] = {
+        --角色13
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
@@ -434,441 +352,143 @@ local EquipmentConfig = {
             Growth = 6,  -- 保持不变
         },
     },
-    [17] = {
-        --下装1
-        TypeName = "Glasses",
+    [14] = {
+        --角色14
+        TypeName = "Part",
         --属性参数
         Attributes = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 65,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 1,
-            -- 成长值
-            Growth = 2,
-
-        },
-    },
-    [18] = {
-        --下装2
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 1,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 78, -- 提高基础值
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 2,
-            -- 成长值
-            Growth = 1,  -- 降低成长值 （83 < 88, 差值为5）
-        },
-    },
-    [19] = {
-        --下装3
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 1,
-            -- 精准度
-            Accuracy = 73,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 2,
-            -- 成长值
-            Growth = 3,
-        },
-    },
-    [20] = {
-        --下装4
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命极
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 1,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 73,  
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 2,
-            -- 成长值
-            Growth = 3, 
-        },
-    },
-    [21] = {
-        --下装5
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack =0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 1,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 78,  --降低精准度
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 3,
-            -- 成长值
-            Growth = 7, --提升成长值（113>106 差值为7）
-        },
-    },
-    [22] = {
-        --下装6
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-          HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 1,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 86,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 3,
-            -- 成长值
-            Growth =4,
-        },
-    },
-    [23] = {
-        --下装7
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 1,
-            -- 精准度
-            Accuracy = 95, --提升基础值
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 3,
-            -- 成长值
-            Growth = 1,  --降低成长值 （100<106,插值为6）
-        },
-    },
-    [24] = {
-        --下装8
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 1,
-            -- 精准度
-            Accuracy = 86,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 3,
-            -- 成长值
-            Growth = 4,
-        },
-    },
-    [25] = {
-        --下装9
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,  -- 保持不变
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 2,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 90,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 4,  -- 保持不变
-        },
-    },
-    [26] = {
-        --下装10
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0, 
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外极伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 2,
-            -- 精准度
-            Accuracy = 80,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 8,  -- 提高成长值 (120 > 110, 差值为10)
-        },
-    },
-    [27] = {
-        --下装11
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,  
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干极外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 2,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准极
-            Accuracy = 89,
-            -- 品阶(1=绿色,2=蓝色,3=紫色极4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 5,  -- 提高成长值 (114>110, 差值为4)
-        },
-    },
-    [28] = {
-        --下装12
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack =0,  -- 保持不变
-            -- 头部额外增伤
-            HeadShotIncrease  = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 2,
-            -- 精准度
-            Accuracy = 90,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 4,  -- 保持不变
-        },
-    },
-    [29] = {
-        --下装13
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,  -- 保持不变
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 2,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 90,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 4,  -- 保持不变
-        },
-    },
-    [30] = {
-        --下装14
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,  
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 2,
-            -- 精准度
-            Accuracy = 100,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 1,  -- 降低成长值 (105 < 110, 差值为5)
-        },
-    },
-    [31] = {
-        --下装15
-        TypeName = "Glasses",
-        --属性极
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack =0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 2,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 96,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 2,  -- 降低成长值 (106 < 110, 差值为4)
-        },
-    },
-    [32] = {
-        --下装16
-        TypeName = "Glasses",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 0,
-            -- 攻击力
-            Attack = 0,  -- 保持不变
+            Attack = 16,  -- 保持不变
             -- 头部额外增极
             HeadShotIncrease = 0,
             -- 躯干额外增伤
             BodyShotIncrease = 0,
             -- 头部额外减伤
+            HeadShotReduction = 2,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 6,  -- 保持不变
+        },
+    },
+    [15] = {
+        --上衣1
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 125,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
             HeadShotReduction = 0,
             -- 躯干额外减伤
             BodyShotReduction = 0,
             -- 伤害减免
-            DamageReduction = 2,
+            DamageReduction = 0,
             -- 精准度
-            Accuracy =90,
+            Accuracy = 0,
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 4,
+            Grade = 1,
             -- 成长值
-            Growth = 4,  -- 保持不变
+            Growth = 24,
         },
     },
-    [33] = {
-        --上衣1
+    [16] = {
+        --上衣2
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 130,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 23,
+        },
+    },
+    [17] = {
+        --上衣3
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 110,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 27,
+        },
+    },
+    [18] = {
+        --上衣4
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 120,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 25,
+        },
+    },
+    [19] = {
+        --上衣5
         TypeName = "Cloth",
         --属性参数
         Attributes = {
@@ -895,8 +515,36 @@ local EquipmentConfig = {
 
         },
     },
-    [34] = {
-        --上衣2
+    [20] = {
+        --上衣6
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 120,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 25,
+
+        },
+    },
+    [21] = {
+        --上衣7
         TypeName = "Cloth",
         --属性参数
         Attributes = {
@@ -922,39 +570,12 @@ local EquipmentConfig = {
             Growth = 30 , --提高成长值（310< 340 ,差值为30）
         },
     },
-    [35] = {
-        --上衣3
+    [22] = {
+        --上衣8
         TypeName = "Cloth",
         --属性参数
         Attributes = {
             -- 生命值
-            Heal = 140,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 1,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 0,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 2,
-            -- 成长值
-            Growth = 40,
-        },
-    },
-    [36] = {
-        --上衣4
-        TypeName = "Cloth",
-        --属性参数
-        Attributes = {
-            -- 生命极
             Heal = 140,
             -- 攻击力
             Attack = 0,
@@ -976,8 +597,224 @@ local EquipmentConfig = {
             Growth = 40,
         },
     },
-    [37] = {
-        --上衣5
+    [23] = {
+        --上衣9
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 160 , --提高基础值
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 30 , --提高成长值（310< 340 ,差值为30）
+        },
+    },
+    [24] = {
+        --上衣10
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 140,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 40,
+        },
+    },
+    [25] = {
+        --上衣11
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 120,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 50,
+        },
+    },
+    [26] = {
+        --上衣12
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 140,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 40,
+        },
+    },
+    [27] = {
+        --上衣13
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 130 , --提高基础值
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 45 , --提高成长值（310< 340 ,差值为30）
+        },
+    },
+    [28] = {
+        --上衣14
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 140,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 40,
+        },
+    },
+    [29] = {
+        --上衣15
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 170 , --提高基础值
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 25 , --提高成长值（310< 340 ,差值为30）
+        },
+    },
+    [30] = {
+        --上衣16
+        TypeName = "Cloth",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 140,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 40,
+        },
+    },
+    [31] = {
+        --上衣17
         TypeName = "Cloth",
         --属性参数
         Attributes = {
@@ -1003,8 +840,8 @@ local EquipmentConfig = {
             Growth = 40,--降低（390< 410 ,差值为20）
         },
     },
-    [38] = {
-        --上衣6
+    [32] = {
+        --上衣18
         TypeName = "Cloth",
         --属性参数
         Attributes = {
@@ -1030,62 +867,8 @@ local EquipmentConfig = {
             Growth = 60, --提高成长值（440< 410 ,差值为30）
         },
     },
-    [39] = {
-        --上衣7
-        TypeName = "Cloth",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 160,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 1,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 0,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 3,
-            -- 成长值
-            Growth = 50,
-        },
-    },
-    [40] = {
-        --上衣8
-        TypeName = "Cloth",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 160,
-            -- 攻击力
-            Attack = 0,
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 0,
-            -- 伤害减免
-            DamageReduction = 1,
-            -- 精准度
-            Accuracy = 0,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 3,
-            -- 成长值
-            Growth = 50,
-        },
-    },
-    [41] = {
-        --上衣9
+    [33] = {
+        --上衣19
         TypeName = "Cloth",
         --属性参数
         Attributes = {
@@ -1111,8 +894,8 @@ local EquipmentConfig = {
             Growth = 55,  -- 保持不变
         },
     },
-    [42] = {
-        --上衣10
+    [34] = {
+        --上衣20
         TypeName = "Cloth",
         --属性参数
         Attributes = {
@@ -1138,35 +921,8 @@ local EquipmentConfig = {
             Growth = 70,  -- 提高成长值 (505 > 455, 差值为50)
         },
     },
-    [43] = {
-        --上衣11
-        TypeName = "Cloth",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 160,
-            -- 攻击力
-            Attack = 0, 
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干极外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 2,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准极
-            Accuracy = 0,
-            -- 品阶(1=绿色,2=蓝色,3=紫色极4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 65,  -- 提高成长值 (485 > 455, 差值为30)
-        },
-    },
-    [44] = {
-        --上衣12
+    [35] = {
+        --上衣21
         TypeName = "Cloth",
         --属性参数
         Attributes = {
@@ -1192,42 +948,15 @@ local EquipmentConfig = {
             Growth = 55,  -- 保持不变
         },
     },
-    [45] = {
-        --上衣13
-        TypeName = "Cloth",
-        --属性参数
-        Attributes = {
-            -- 生命值
-            Heal = 180,
-            -- 攻击力
-            Attack = 0,  -- 保持不变
-            -- 头部额外增伤
-            HeadShotIncrease = 0,
-            -- 躯干额外增伤
-            BodyShotIncrease = 0,
-            -- 头部额外减伤
-            HeadShotReduction = 0,
-            -- 躯干额外减伤
-            BodyShotReduction = 2,
-            -- 伤害减免
-            DamageReduction = 0,
-            -- 精准度
-            Accuracy = 0,
-            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-            Grade = 4,
-            -- 成长值
-            Growth = 55,  -- 保持不变
-        },
-    },
-    [46] = {
-        --上衣14
+    [36] = {
+        --上衣22
         TypeName = "Cloth",
         --属性参数
         Attributes = {
             -- 生命值
             Heal = 340,
             -- 攻击力
-            Attack = 0,  
+            Attack = 0,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -1246,8 +975,8 @@ local EquipmentConfig = {
             Growth = 10,  -- 降低成长值 (390 < 455, 差值为60)
         },
     },
-    [47] = {
-        --上衣15
+    [37] = {
+        --上衣23
         TypeName = "Cloth",
         --属性极
         Attributes = {
@@ -1273,16 +1002,619 @@ local EquipmentConfig = {
             Growth = 32,  -- 降低成长值 (420 < 455, 差值为35)
         },
     },
-    [48] = {
-        --上衣16
-        TypeName = "Cloth",
+    [38] = {
+        --下装1
+        TypeName = "Bottoms",
         --属性参数
         Attributes = {
             -- 生命值
-            Heal = 180,
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 63,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 3,
+
+        },
+    },
+    [39] = {
+        --下装2
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 68,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 1,
+
+        },
+    },
+    [40] = {
+        --下装3
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 65,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 2,
+
+        },
+    },
+    [41] = {
+        --下装4
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 65,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 2,
+
+        },
+    },
+    [42] = {
+        --下装5
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 65,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 2,
+
+        },
+    },
+    [43] = {
+        --下装6
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 50,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 5,
+
+        },
+    },
+    [44] = {
+        --下装7
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 78, -- 提高基础值
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 1,  -- 降低成长值 （83 < 88, 差值为5）
+        },
+    },
+    [45] = {
+        --下装8
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 72,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 4,
+        },
+    },
+    [46] = {
+        --下装9
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命极
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 71,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 5,
+        },
+    },
+    [47] = {
+        --下装10
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 78, -- 提高基础值
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 1,  -- 降低成长值 （83 < 88, 差值为5）
+        },
+    },
+    [48] = {
+        --下装11
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 73,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 3,
+        },
+    },
+
+    [49] = {
+        --下装12
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命极
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 73,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 3,
+        },
+    },
+    [50] = {
+        --下装13
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命极
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 73,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 3,
+        },
+    },
+    [51] = {
+        --下装14
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命极
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 70,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 4,
+        },
+    },
+    [52] = {
+        --下装15
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命极
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy =60,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 7,
+        },
+    },
+    [53] = {
+        --下装16
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命极
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 73,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 3,
+        },
+    },
+
+
+    [54] = {
+        --下装17
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack =0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 1,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 78,  --降低精准度
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 7, --提升成长值（113>106 差值为7）
+        },
+    },
+    [55] = {
+        --下装18
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 1,
+            -- 精准度
+            Accuracy = 95, --提升基础值
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 1,  --降低成长值 （100<106,插值为6）
+        },
+    },
+    [56] = {
+        --下装19
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
             -- 攻击力
             Attack = 0,  -- 保持不变
-            -- 头部额外增极
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 2,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 90,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 4,  -- 保持不变
+        },
+    },
+    [57] = {
+        --下装20
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外极伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 2,
+            -- 精准度
+            Accuracy = 80,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 8,  -- 提高成长值 (120 > 110, 差值为10)
+        },
+    },
+    [58] = {
+        --下装21
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干极外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 2,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准极
+            Accuracy = 89,
+            -- 品阶(1=绿色,2=蓝色,3=紫色极4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 5,  -- 提高成长值 (114>110, 差值为4)
+        },
+    },
+    [59] = {
+        --下装22
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack =0,  -- 保持不变
+            -- 头部额外增伤
+            HeadShotIncrease  = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 2,
+            -- 精准度
+            Accuracy = 90,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 4,  -- 保持不变
+        },
+    },
+    [60] = {
+        --下装23
+        TypeName = "Bottoms",
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 0,
+            -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
             BodyShotIncrease = 0,
@@ -1293,11 +1625,11 @@ local EquipmentConfig = {
             -- 伤害减免
             DamageReduction = 2,
             -- 精准度
-            Accuracy = 0,
+            Accuracy = 100,
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 55,  -- 保持不变
+            Growth = 1,  -- 降低成长值 (105 < 110, 差值为5)
         },
     },
 }

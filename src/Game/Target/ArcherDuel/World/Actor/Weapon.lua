@@ -317,7 +317,7 @@ function Weapon:Update(DeltaTime)
                     --命中类型
                     Result.HitType = PlayInteractive.HIT_TYPE.Character
                     --当前命中速度
-                    Result.HitImpulse = UMath:GetNormalize(Velocity) * self.Attributes.Mass * 25
+                    Result.HitImpulse = Velocity * self.Attributes.Mass
                     Result.ProjectileID = ProjectileInstanceID
                     --命中目标
                     self:HitTarget(ID, Result)
@@ -332,7 +332,7 @@ function Weapon:Update(DeltaTime)
                     --命中类型
                     Result.HitType = PlayInteractive.HIT_TYPE.Element
                     --当前命中速度
-                    Result.HitImpulse = UMath:GetNormalize(Velocity) * self.Attributes.Mass * 25
+                    Result.HitImpulse = Velocity * self.Attributes.Mass
                     Result.ProjectileID = ProjectileInstanceID
                     --命中目标
                     self:HitTarget(ID, Result)
@@ -468,11 +468,13 @@ end
 ---@param ElementID 命中对象标识
 ---@param Result 命中结果信息
 function Weapon:HitTarget(ElementID, Result)
-    -- --命中之后自己切回待机状态
-    -- self.OwnerPlayer:Idle()
-
+    Log:PrintLog("--------------->", Result.HitImpulse)
     --受击者相应
     if Result and Result.HitType == PlayInteractive.HIT_TYPE.Character then
+        --调整冲量，未来走配置
+        local ImpulseForward = UMath:GetNormalize(Result.HitImpulse)
+        Result.HitImpulse = ImpulseForward * 375000
+
         --命中角色，由角色响应
         if self.CurrentScene then
             if Result.HitBody == Character.SOCKET_NAME.Head and self.OwnerPlayer:IsControlled() then
@@ -493,6 +495,13 @@ function Weapon:HitTarget(ElementID, Result)
             end
         end
     else
+        local SceneResource = self.CurrentScene:GetResource()
+        local Obstacle = SceneResource and SceneResource.Obstacle
+        if Obstacle and Obstacle[ElementID] then
+            --绑定到障碍物元件
+            Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
+            Element:AddForce(ElementID, Result.HitImpulse)
+        end
         --切换回合
         if self.CurrentScene then
             self.CurrentScene:SwitchTurn()

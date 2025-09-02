@@ -508,6 +508,11 @@ local SceneConfig = {
                     Offset = Engine.Vector(-1200, 150, 250),
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
+                --障碍物场景标识
+                Obstacle = {
+                    [618] = true,
+                    [621] = true
+                },
             }
         },
         --样条设置
