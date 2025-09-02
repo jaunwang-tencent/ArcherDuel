@@ -49,13 +49,9 @@ local function SetTurnState(self, ActorID, State)
         Actor.MyTurn = State
         --看我
         if State then
-            if Actor:IsControlled() then
-                Actor:SyncLocation()
-                self:LookStart()
-            else
-                Actor:SyncLocation()
-                self:LookPlayer(Actor.Transform)
-            end
+            --同步坐标位置
+            Actor:SyncLocation()
+            self:LookPlayer(Actor)
         end
     end
 end
@@ -173,6 +169,16 @@ function Battle:GetDisplacement()
     end
 end
 
+--- 爆头提示
+function Battle:HeadShot()
+    --爆头提示
+    if self.CriticalHitReward then
+        UI:SetVisible({self.CriticalHitReward.HeadShotUI}, true)
+        System:FireSignEvent(_GAME.Sign.HeadShot)
+    end
+end
+
+--[[
 --- 观察目标
 ---@param CameraSceneId 相机元件标识
 ---@param Position 位置
@@ -281,14 +287,70 @@ function Battle:LookProjectile(Position)
         LookTarget(self.CurrentRunningCamera, Position, offest, NeetSwitch)
     end
 end
+--[-[]]
+--- 观察目标
+---@param CameraSceneId 相机元件标识
+---@param Position 位置
+---@param Offset 偏移
+---@param NeetSwitch 是否切镜
+local function LookTarget(CameraSceneId, Position, Offset, NeetSwitch)
+    --开启影视相机
+    if NeetSwitch then
+        Camera:MovieCameraStart(CameraSceneId)
+    end
+    Element:SetPosition(CameraSceneId, Position, Element.COORDINATE.World)
+    Element:SetForward(CameraSceneId, -Offset)
+end
 
---- 爆头提示
-function Battle:HeadShot()
-    --爆头提示
-    if self.CriticalHitReward then
-        UI:SetVisible({self.CriticalHitReward.HeadShotUI}, true)
-        System:FireSignEvent(_GAME.Sign.HeadShot)
+--- 观察玩家(敌人)
+---@param Position 位置
+function Battle:LookPlayer(Player)
+    local Position = Player:GetLocation()
+    local SceneResource = self:GetResource()
+    local CameraConfig = SceneResource and SceneResource.Camera
+    if CameraConfig then
+        -- Log:PrintLog("TXPerform(LookPlayer)")
+        local NeetSwitch = false
+        if self.CurrentRunningCamera ~= CameraConfig.CharacterCameraSceneId then
+            NeetSwitch = true
+            self.CurrentRunningCamera = CameraConfig.CharacterCameraSceneId
+        end
+        --设置影视相机位置与朝向
+        local CharacterCameraPosition = Position + CameraConfig.Offset
+        local CharacterCameraOffset
+        if self:IsCurrentTurnControlled() then
+            --己方看对方
+            local NextPlayer = self:GetActor(self.NextTurn)
+            local NextPosition = FakeCharacter:GetPosition(NextPlayer.UID)
+            CharacterCameraOffset = CharacterCameraPosition - (Position + NextPosition)/2
+        else
+            --对方看中间
+            CharacterCameraOffset = CameraConfig.Offset
+        end
+
+        --朝向反算
+        LookTarget(self.CurrentRunningCamera, CharacterCameraPosition, CharacterCameraOffset, NeetSwitch)
     end
 end
+
+--- 观察投掷物
+---@param Position 位置
+function Battle:LookProjectile(Position)
+    local SceneResource = self:GetResource()
+    local CameraConfig = SceneResource and SceneResource.Camera
+    if CameraConfig then
+        -- Log:PrintLog("TXPerform(LookProjectile)")
+        local NeetSwitch = false
+        if self.CurrentRunningCamera ~= CameraConfig.ProjectileCameraSceneId then
+            NeetSwitch = true
+            self.CurrentRunningCamera = CameraConfig.ProjectileCameraSceneId
+        end
+        --设置影视相机位置与朝向
+        local CharacterCameraPosition = Position + CameraConfig.Offset
+        LookTarget(self.CurrentRunningCamera, CharacterCameraPosition, CameraConfig.Offset, NeetSwitch)
+    end
+end
+--]]
+
 
 return Battle
