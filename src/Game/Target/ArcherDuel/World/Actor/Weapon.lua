@@ -87,8 +87,7 @@ function Weapon:SamplePosition(PitchRadian, Velocity, Gravity, Time)
         local Displacement = self.CurrentScene:GetDisplacement()
         if Displacement then
             local OffsetY = Displacement.Y
-            local OwnerIsControlled = self.OwnerPlayer:IsControlled()
-            if not OwnerIsControlled then
+            if Displacement.Y > 0 then
                 OffsetY = -OffsetY
             end
             local WeaponResource = self:GetResource()
@@ -98,7 +97,7 @@ function Weapon:SamplePosition(PitchRadian, Velocity, Gravity, Time)
             Y = -Y * 0.01 * X / Distance
 
             --反转
-            if not OwnerIsControlled then
+            if Displacement.X > 0 then
                 X = -X
                 Y = -Y
             end
@@ -116,8 +115,8 @@ function Weapon:SampleVelocity(PitchRadian, Velocity, Gravity, Time)
     local Z = Velocity * math.sin(PitchRadian) - Gravity * Time
 
     --反转
-    local OwnerIsControlled = self.OwnerPlayer:IsControlled()
-    if not OwnerIsControlled then
+    local Displacement = self.CurrentScene:GetDisplacement()
+    if Displacement and Displacement.X > 0 then
         X = -X
     end
     return Engine.Vector(X, 0, Z)
@@ -401,7 +400,7 @@ function Weapon:GetSpawnerOffset()
     local SpawnerOffset = Engine.Vector(ProjectileData.Offset.X, ProjectileData.Offset.Y, ProjectileData.Offset.Z)
     --获取位移
     local Displacement = self.CurrentScene:GetDisplacement()
-    if Displacement.Y > 0 then
+    if Displacement and Displacement.Y > 0 then
         SpawnerOffset.Y = -SpawnerOffset.Y
     end
     return SpawnerOffset
@@ -414,7 +413,8 @@ function Weapon:GetSpawnerPosition()
     local ProjectileData = WeaponResource and WeaponResource.Projectile
     local SpawnerPosition = self.OwnerPlayer:GetLocation()
     SpawnerPosition = SpawnerPosition + ProjectileData.Offset
-    if not self.OwnerPlayer:IsControlled() then
+    local Displacement = self.CurrentScene:GetDisplacement()
+    if Displacement and Displacement.Y > 0 then
         SpawnerPosition.Y = SpawnerPosition.Y - 2 * ProjectileData.Offset.Y
     end
     return SpawnerPosition

@@ -393,7 +393,7 @@ end
 
 function Player:SetPlayerRotation(Rotation)
     local rot = Rotation - Engine.Rotator(0, 0, 90)
-    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzz SetPlayerRotation", Rotation)
+    --Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzz SetPlayerRotation", Rotation)
     FakeCharacter:SetRotation(self.UID, rot)
 end
 
