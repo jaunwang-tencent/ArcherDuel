@@ -66,6 +66,8 @@ local CharacterConfig = {
                 S = 0.01,
                 --样条分段量【数值越小越平滑，性能越差，反之亦然】
                 Segment = 100,
+                --瞄准线分段量【数值越小越平滑，性能越差，反之亦然】
+                AimTrackSegment = 50,
             },
             --瞄准优化【非样条曲线方案才生效】
             Optimization = true,
@@ -83,8 +85,6 @@ local CharacterConfig = {
             ShowTrackLength = 5,
             --显示轨迹时间步伐【单位：秒】
             ShowTrackTimeStep = 0.05,
-            --瞄准度
-            AimRate = 0.6,
             --当前轨迹颜色
             CurrentTrackColor = "#6CCAFF",
             --历史轨迹颜色

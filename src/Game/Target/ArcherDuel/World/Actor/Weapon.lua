@@ -187,7 +187,8 @@ function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
 
                 --样条采样
                 Log:PrintLog(string.format("GenerateCurve(PitchDegree=%f, CenterOffset = %f, Curvature = %f, Amplitude = %f)", PitchDegree, CenterOffset, Curvature, Amplitude))
-                local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, EndPoint, HitSpline.Segment, Curvature, 1)
+                local Segment = LimitDistance and HitSpline.AimTrackSegment or HitSpline.Segment
+                local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, EndPoint, Segment, Curvature, 1)
 
                 if CurvePoints then
                     local PointCount = #CurvePoints

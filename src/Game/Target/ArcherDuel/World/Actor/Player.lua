@@ -18,7 +18,7 @@ function Player:OnCreate(Context)
     local Controlled = Context and Context.Controlled or false
     --在此创建假人【这个非常耗】
     self.UID = FakeCharacter:CreateCharacter(self.Transform.Location, self.Transform.Rotation, self.Transform.Scale, not Controlled)
-    self:SetPlayerRotation(self.Transform.Rotation)
+    self:SetFakeCharacterRotation(self.Transform.Rotation)
     if Controlled then
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
@@ -391,10 +391,11 @@ function Player:PerformHitStart(Impulse, BodyType)
     end)
 end
 
-function Player:SetPlayerRotation(Rotation)
-    local rot = Rotation - Engine.Rotator(0, 0, 90)
-    --Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzz SetPlayerRotation", Rotation)
-    FakeCharacter:SetRotation(self.UID, rot)
+--- 设置假人旋转【逆时针旋转90度】
+---@param Rotation 欧拉角
+function Player:SetFakeCharacterRotation(Rotation)
+    Rotation = Rotation - Engine.Rotator(0, 0, 90)
+    FakeCharacter:SetRotation(self.UID, Rotation)
 end
 
 --- 倒地表演
@@ -424,7 +425,7 @@ function Player:PerformFallback()
             BodyRotation.Z = BodyRotation.Z +360
         end
         Log:PrintLog("TXPerform(BodyRotation, 3)", BodyRotation)
-        self:SetPlayerRotation(BodyRotation)
+        self:SetFakeCharacterRotation(BodyRotation)
         TargetRotation = BodyRotation
     end
 
@@ -488,11 +489,9 @@ function Player:PerformStandup(TargetRotation)
             --瞬時旋转
             self:PerformHitOver()
         else
-            -- Log:PrintLog("zzzzzzzzzzzzzzzzzz TXPerform(BodyRotation, TargetRotation)", TargetRotation)
             UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
                 local BlendRotation = Rotation * Progress + TargetRotation * (1 - Progress)
-                -- Log:PrintLog("zzzzzzzzzzzzzzzzzz TXPerform(BodyRotation, FaceToTargetBlendWeight)", Progress, BlendRotation)
-                self:SetPlayerRotation(BlendRotation)
+                self:SetFakeCharacterRotation(BlendRotation)
             end, function()
                 self:PerformHitOver()
             end)
@@ -505,7 +504,7 @@ function Player:PerformHitOver()
     --原始朝向
     local Rotation = self:GetRotation()
     Log:PrintLog("TXPerform(BodyRotation, Last)", Rotation)
-    self:SetPlayerRotation(Rotation)
+    self:SetFakeCharacterRotation(Rotation)
 
     Log:PrintLog("TXPerform(Animation = Idle)", self.UID)
     FakeCharacter:PlayAnim(self.UID, self.Animations.Idle)
