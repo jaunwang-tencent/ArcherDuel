@@ -22,6 +22,7 @@ function Player:OnCreate(Context)
     if Controlled then
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
+        Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.MeshVisibility, false)
         FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
     end
 

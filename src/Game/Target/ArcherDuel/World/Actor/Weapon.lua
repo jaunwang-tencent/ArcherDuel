@@ -468,7 +468,6 @@ end
 ---@param ElementID 命中对象标识
 ---@param Result 命中结果信息
 function Weapon:HitTarget(ElementID, Result)
-    Log:PrintLog("--------------->", Result.HitImpulse)
     --受击者相应
     if Result and Result.HitType == PlayInteractive.HIT_TYPE.Character then
         --调整冲量，未来走配置
@@ -496,14 +495,30 @@ function Weapon:HitTarget(ElementID, Result)
         end
     else
         local SceneResource = self.CurrentScene:GetResource()
-        local Obstacle = SceneResource and SceneResource.Obstacle
-        if Obstacle and Obstacle[ElementID] then
+        --障碍物
+        local Obstacles = SceneResource and SceneResource.Obstacles
+        if Obstacles and Obstacles[ElementID] then
             --绑定到障碍物元件
             Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
             --施加力
             local ImpulseForward = UMath:GetNormalize(Result.HitImpulse)
             local HitImpulse = ImpulseForward * 5000
             Element:AddForce(ElementID, HitImpulse)
+        end
+        --空中活体
+        local Bodys = SceneResource and SceneResource.Bodys
+        local BodyInfo = Bodys and Bodys[ElementID]
+        if BodyInfo then
+            --绑定到障碍物元件
+            Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
+            --移动到地面
+            local Start = Element:GetPosition(ElementID)
+            local End = Start + Engine.Vector(0, 0, -5000)
+            local ID, Info = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End)
+            local DropPosition = false and ID and Info.hitPos or End
+            local DropTime = 0.01 * UMath:GetVectorLength(Start - DropPosition) / BodyInfo.DropVelocity
+            --直线掉落
+            Element:MoveTo(ElementID, DropPosition, DropTime, Element.CURVE.linear, Start)
         end
         --切换回合
         if self.CurrentScene then

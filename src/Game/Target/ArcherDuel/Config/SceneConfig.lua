@@ -509,10 +509,18 @@ local SceneConfig = {
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
                 --障碍物场景标识
-                Obstacle = {
+                Obstacles = {
                     [618] = true,
-                    [621] = true
+                    [621] = true,
+                    [677] = true
                 },
+                --活体【命中后开启物理掉落，但不受力】
+                Bodys = {
+                    [661] = {
+                        --掉落速度【单位：米每秒】
+                        DropVelocity = 10
+                    }
+                }
             }
         },
         --样条设置
