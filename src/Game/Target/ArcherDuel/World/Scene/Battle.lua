@@ -85,26 +85,26 @@ function Battle:LoadCharacter(Context)
     local SceneResource = self:GetResource()
     if SceneResource then
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
+        local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Local)
         Element:SetVisibility(SceneResource.BirthPoint.Local, false)
-        local Rotation = Element:GetRotation(SceneResource.BirthPoint.Local)
-
         self.CurrentTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = LocalPosition,
-            Rotation = Rotation,
+            Rotation = LocalRotation,
             Scale = Engine.Vector(1, 1, 1),
             Controlled = true,
             Situation = Context.Scene.Situation,
             CharacterConfigID = Context.Character.Index,
             WeaponConfigID = Context.Weapon.Index
         })
-        self.cameraOffestTurn = math.abs(Rotation.Z) > 90
+        self.cameraOffestTurn = math.abs(LocalRotation.Z) > 90
 
         --对方
         local EnemyPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
+        local EnemyRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
         Element:SetVisibility(SceneResource.BirthPoint.Enemy, false)
         self.NextTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = EnemyPosition,
-            Rotation = Element:GetRotation(SceneResource.BirthPoint.Enemy),
+            Rotation = EnemyRotation,
             Scale = Engine.Vector(1, 1, 1),
             Controlled = false,
             Situation = Context.Scene.Situation,
@@ -209,7 +209,7 @@ function Battle:LookPlayer(Tranfrom)
 
         local forward = UMath:GetNormalize(UMath:RotatorToForward(Tranfrom.Rotation))
         local up = Engine.Vector(0, 0, 1)
-        local right = UMath:GetNormalize(Engine.Vector(up.Y*forward.Z-up.Z*forward.Y, up.Z*forward.X-up.X*forward.Z, up.X*forward.Y-up.Y*forward.X))
+        local right = UMath:GetNormalize(UMath:GetVectorCross(up, forward))
         local offest = CameraConfig.EnemyOffset
 
         --设置影视相机位置与朝向
@@ -251,7 +251,7 @@ function Battle:LookStart()
 
         local forward = UMath:GetNormalize(UMath:RotatorToForward(curRotation))
         local up = Engine.Vector(0, 0, 1)
-        local right = UMath:GetNormalize(Engine.Vector(up.Y*forward.Z-up.Z*forward.Y, up.Z*forward.X-up.X*forward.Z, up.X*forward.Y-up.Y*forward.X))
+        local right = UMath:GetNormalize(UMath:GetVectorCross(up, forward))
         local offest = CameraConfig.Offset
 
         --设置影视相机位置与朝向
