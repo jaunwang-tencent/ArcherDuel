@@ -310,7 +310,7 @@ function Weapon:Update(DeltaTime)
             local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Character, Start, End, true, 100)
             if ID then
                 --后续由API层提供
-                local RayLine = (End - Start) * 100
+                local RayLine = (End - Start) * 10
                 Result.HitBody = FakeCharacter:CheckPartWithRaycast(ID, Start - RayLine, End + RayLine)
                 if Result.HitBody then
                     Log:PrintLog("TXPerform(HitBody)", Result.HitBody)
