@@ -13,14 +13,14 @@ function SystemFSM:OnCreate(Context)
         --场景
         Scene = {
             --战斗情境
-            Situation = 1,    --1-海岛，2-雪地，3-城市，4-天空遗迹，5-沙漠，6-太空，7-室外，8-室内
+            Situation = 7,    --1-海岛，2-雪地，3-城市，4-天空遗迹，5-沙漠，6-太空，7-室外，8-室内
             --战斗场景
             Index = 1
         },
         --武器
         Weapon = {
-            Index = UMath:GetRandomInt(1, 3),
-            --Index = 2,
+            --Index = UMath:GetRandomInt(1, 3),
+            Index = 3,
         },
         Character = {
             Index = 1

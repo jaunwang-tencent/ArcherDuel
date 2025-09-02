@@ -372,31 +372,33 @@ function Player:PerformHitStart(Impulse, BodyType)
     local Position1 = FakeCharacter:GetPosition(self.UID)
     local OffsetPosition = Position1 - SocketPosition1
 
-    --施加冲量
-    local HasAdded = false
-    local ImpulseSetting = UGCS.Target.ArcherDuel.Config.GameConfig.ImpulseSetting
-    local ImpulseList = ImpulseSetting and ImpulseSetting[BodyType]
-    if ImpulseList then
-        --反向前向【朝后】【只关心X轴方向】
-        local ReverseForward = -self:GetForward()
-        for _, ImpulseItem in pairs(ImpulseList) do
-            local ImpulseValue = ImpulseItem.ImpulseValue
-            local ForwardDegree = ImpulseItem.ForwardDegree
-            if ImpulseValue and ForwardDegree then
-                local ForwardRadian = UMath:DegToRad(ForwardDegree)
-                local ImpulseForward = Engine.Vector(math.cos(ForwardRadian), 0, math.sin(ForwardRadian))
-                if ReverseForward.X < 0 then
-                    ImpulseForward.X = -ImpulseForward.X
+    if Impulse and BodyType then
+        --施加冲量
+        local HasAdded = false
+        local ImpulseSetting = UGCS.Target.ArcherDuel.Config.GameConfig.ImpulseSetting
+        local ImpulseList = ImpulseSetting and ImpulseSetting[BodyType]
+        if ImpulseList then
+            --反向前向【朝后】【只关心X轴方向】
+            local ReverseForward = -self:GetForward()
+            for _, ImpulseItem in pairs(ImpulseList) do
+                local ImpulseValue = ImpulseItem.ImpulseValue
+                local ForwardDegree = ImpulseItem.ForwardDegree
+                if ImpulseValue and ForwardDegree then
+                    local ForwardRadian = UMath:DegToRad(ForwardDegree)
+                    local ImpulseForward = Engine.Vector(math.cos(ForwardRadian), 0, math.sin(ForwardRadian))
+                    if ReverseForward.X < 0 then
+                        ImpulseForward.X = -ImpulseForward.X
+                    end
+                    HasAdded = true
+                    FakeCharacter:AddImpulse(self.UID, ImpulseForward * ImpulseValue, BodyType)
                 end
-                HasAdded = true
-                FakeCharacter:AddImpulse(self.UID, ImpulseForward * ImpulseValue, BodyType)
             end
         end
-    end
 
-    --如果没有施加，则给一个默认冲量【速度相关】
-    if not HasAdded then
-        FakeCharacter:AddImpulse(self.UID, Impulse, BodyType)
+        --如果没有施加，则给一个默认冲量【速度相关】
+        if not HasAdded then
+            FakeCharacter:AddImpulse(self.UID, Impulse, BodyType)
+        end
     end
 
     --躺地一段时间

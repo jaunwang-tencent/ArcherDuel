@@ -307,10 +307,10 @@ function Weapon:Update(DeltaTime)
             local Start = self.LastProjectilePosition
             local End = CurrentPosition
             --优先命中人
-            local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Character, Start, End)
+            local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Character, Start, End, true, 100)
             if ID then
                 --后续由API层提供
-                local RayLine = (End - Start) * 10
+                local RayLine = (End - Start) * 100
                 Result.HitBody = FakeCharacter:CheckPartWithRaycast(ID, Start - RayLine, End + RayLine)
                 if Result.HitBody then
                     Log:PrintLog("TXPerform(HitBody)", Result.HitBody)
@@ -327,7 +327,7 @@ function Weapon:Update(DeltaTime)
                 end
             else
                 --再命中场景
-                ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End)
+                ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End, true, 10)
                 if ID and ID ~= ProjectileInstanceID then
                     --命中类型
                     Result.HitType = PlayInteractive.HIT_TYPE.Element
@@ -436,13 +436,15 @@ function Weapon:SpawnProjectile(PitchDegree)
         Element:SetRotation(ElementID,Rotation,Element.COORDINATE.World)
         Element:SetScale(ElementID,Scale)
 
-        local effectId = Particle:PlayOnActor(ProjectileData.Particle, ElementID, false)
-        Particle:SetParticleScale(effectId,Engine.Vector(5,5,5))
-        Particle:SetParticlePosition(effectId,ProjectileData.ParticleOffset)
+        if ProjectileData.Particle and false then
+            local effectId = Particle:PlayOnActor(ProjectileData.Particle, ElementID, false)
+            Particle:SetParticleScale(effectId,Engine.Vector(5,5,5))
+            Particle:SetParticlePosition(effectId,ProjectileData.ParticleOffset)
+        end
 
         --当前投掷物实例信息
         self.ProjectileInstance = {
-            --生成时刻
+            --生成时刻`
             SpwanTimestamp = UGCS.Framework.Application.current:Watch(),
             --投掷物标识
             ElementID = ElementID,
@@ -496,13 +498,19 @@ function Weapon:HitTarget(ElementID, Result)
     else
         local SceneResource = self.CurrentScene:GetResource()
         --障碍物
-        local Obstacles = SceneResource and SceneResource.Obstacles
-        if Obstacles and Obstacles[ElementID] then
+        local Obstacle = SceneResource and SceneResource.Obstacle
+        local MovableList = Obstacle and Obstacle.MovableList
+        if MovableList and MovableList[ElementID] then
             --绑定到障碍物元件
             Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
+
+            --对方受击表演`
+            --local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
+            --NextTurnPlayer:PerformHitStart()
+
             --施加力
             local ImpulseForward = UMath:GetNormalize(Result.HitImpulse)
-            local HitImpulse = ImpulseForward * 5000
+            local HitImpulse = ImpulseForward * 250
             Element:AddForce(ElementID, HitImpulse)
         end
         --空中活体
@@ -514,7 +522,6 @@ function Weapon:HitTarget(ElementID, Result)
             --移动到地面
             local Start = Element:GetPosition(ElementID)
             local End = Start + Engine.Vector(0, 0, -5000)
-            local ID, Info = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End)
             local DropPosition = false and ID and Info.hitPos or End
             local DropTime = 0.01 * UMath:GetVectorLength(Start - DropPosition) / BodyInfo.DropVelocity
             --直线掉落

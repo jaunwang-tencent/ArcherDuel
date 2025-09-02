@@ -23,38 +23,47 @@ function Battle:OnCreate(Context)
 
     --备份所有障碍物位置
     local SceneResource = self:GetResource()
-    local Obstacles = SceneResource and SceneResource.Obstacles
-    if Obstacles then
-        self.TransformList = {}
-        for SceneID, _ in pairs(Obstacles) do
-            self.TransformList[SceneID] = {
-                Position = Element:GetPosition(SceneID),
-                Rotation = Element:GetRotation(SceneID)
-            }
+    local Obstacle = SceneResource and SceneResource.Obstacle
+    if Obstacle then
+        self.ObstacleTransformList = {}
+        --可移动物体
+        local MovableList = Obstacle.MovableList
+        if MovableList then
+            for SceneID, _ in pairs(MovableList) do
+                self.ObstacleTransformList[SceneID] = {
+                    Position = Element:GetPosition(SceneID),
+                    Rotation = Element:GetRotation(SceneID)
+                }
+                --全部打开【通过脚本打开可移动的障碍物】
+                Element:SetMass(SceneID, 2500)
+                Element:SetFriction(SceneID, 0.2)
+                Element:SetPhysics(SceneID, true, true, true)
+            end
+        end
+
+        --备份所有活体位置
+        local BodyList = Obstacle.BodyList
+        if BodyList then
+            for SceneID, _ in pairs(BodyList) do
+                self.ObstacleTransformList[SceneID] = {
+                    Position = Element:GetPosition(SceneID),
+                    Rotation = Element:GetRotation(SceneID)
+                }
+            end
         end
     end
-    --备份所有活体位置
-    local Bodys = SceneResource and SceneResource.Bodys
-    if Bodys then
-        self.TransformList = self.TransformList or {}
-        for SceneID, _ in pairs(Bodys) do
-            self.TransformList[SceneID] = {
-                Position = Element:GetPosition(SceneID),
-                Rotation = Element:GetRotation(SceneID)
-            }
-        end
-    end
+    
 end
 
 --- 销毁
 function Battle:OnDestroy()
     Battle.super.OnDestroy(self)
-    if self.TransformList then
-        for SceneID, Tranfrom in pairs(self.TransformList) do
+    if self.ObstacleTransformList then
+        for SceneID, Tranfrom in pairs(self.ObstacleTransformList) do
             Element:SetPosition(SceneID, Tranfrom.Position, Element.COORDINATE.World)
             Element:SetRotation(SceneID, Tranfrom.Rotation, Element.COORDINATE.World)
         end
-        self.TransformList = nil
+        self.ObstacleTransformList = nil
     end
 
     if self.CriticalHitReward then
