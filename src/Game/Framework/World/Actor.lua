@@ -54,6 +54,24 @@ function Actor:GetForward()
     return UMath:GetNormalize(UMath:RotatorToForward(self.Transform.Rotation))
 end
 
+function Actor:GetUp()
+    return Engine.Vector(0, 0, 1)
+end
+
+function Actor:GetRight()
+    local Up = self:GetUp()
+    local Forward = self:GetForward()
+    return UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))
+end
+
+function Actor:GetOffsetPosition(X, Y, Z)
+    local Forward = self:GetForward()
+    local Up = Engine.Vector(0, 0, 1)
+    local Right = UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))
+    local OffsetPosition = self.Transform.Location + Forward * X + Right * Y + Up * Z
+    return OffsetPosition
+end
+
 function Actor:SetScale(Scale)
     self.Transform.Scale = Scale
 end
