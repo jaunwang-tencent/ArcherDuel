@@ -53,7 +53,10 @@ local GameConfig = {
     },
     --音效设置
     SoundSetting = {
-
+        --游戏开始【吹哨子】
+        GameStart = 700356,
+        --游戏匹配【齿轮转动】
+        GameMatch = 700373
     },
     --特效设置
     EffectSetting = {

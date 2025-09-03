@@ -272,6 +272,17 @@ local WeaponConfig = {
             --待机动作
             Idle = "BowIdle",
         },
+        --音效设置
+        SoundSetting = {
+            --拉弓
+            PullString = 700359,
+            --投掷
+            Fire = 700360,
+            --飞行
+            Fly = 700361,
+            --命中
+            Hit = 700374
+        },
         --属性参数
         Attributes = {
             --线速率【单位：米每秒】
@@ -525,6 +536,15 @@ local WeaponConfig = {
             --待机动作
             Idle = "AxeIdle",
         },
+        --音效设置
+        SoundSetting = {
+            --投掷
+            Fire = 700358,
+            --飞行
+            Fly = 700363,
+            --命中
+            Hit = 700374
+        },
         --属性参数
         Attributes = {
             --线速率【单位：米每秒】
@@ -749,6 +769,15 @@ local WeaponConfig = {
             Fire = "SpearAttack",
             --待机动作
             Idle = "SpearIdle",
+        },
+        --音效设置
+        SoundSetting = {
+            --投掷
+            Fire = 700357,
+            --飞行
+            Fly = 700362,
+            --命中
+            Hit = 700374
         },
         --属性参数
         Attributes = {
