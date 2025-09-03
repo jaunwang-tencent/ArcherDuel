@@ -1,3 +1,5 @@
+local Prop_L = "Prop_L"
+local Prop_R = "Prop_R"
 --武器配置
 local WeaponConfig = {
     [1] = {
@@ -19,7 +21,7 @@ local WeaponConfig = {
                     --弓弦【默认：272】
                     Spring = 272,
                     --左手拿弓
-                    BindBone = Character.SOCKET_NAME.Prop_L,
+                    BindBone = Prop_L,
                 },
                 --投射物
                 Projectile = {
@@ -42,7 +44,7 @@ local WeaponConfig = {
                     --弓弦【默认：272】
                     Spring = 272,
                     --左手拿弓
-                    BindBone = Character.SOCKET_NAME.Prop_L,
+                    BindBone = Prop_L,
                 },
                 --投射物
                 Projectile = {
@@ -65,7 +67,7 @@ local WeaponConfig = {
                     --弓弦【默认：272】
                     Spring = 272,
                     --左手拿弓
-                    BindBone = Character.SOCKET_NAME.Prop_L,
+                    BindBone = Prop_L,
                 },
                 --投射物
                 Projectile = {
@@ -88,7 +90,7 @@ local WeaponConfig = {
                     --弓弦【链式特效类型（火焰链）225】【专用：272】
                     Spring = 272,
                     --左手拿弓
-                    BindBone = Character.SOCKET_NAME.Prop_L,
+                    BindBone = Prop_L,
                 },
                 --投射物
                 Projectile = {
@@ -113,7 +115,7 @@ local WeaponConfig = {
                     --弓弦【链式特效类型（火焰链）225】【专用：272】
                     Spring = 272,
                     --左手拿弓
-                    BindBone = Character.SOCKET_NAME.Prop_L,
+                    BindBone = Prop_L,
                 },
                 --投射物
                 Projectile = {
@@ -138,7 +140,7 @@ local WeaponConfig = {
                     --弓弦【链式特效类型（火焰链）225】【专用：272】
                     Spring = 272,
                     --左手拿弓
-                    BindBone = Character.SOCKET_NAME.Prop_L,
+                    BindBone = Prop_L,
                 },
                 --投射物
                 Projectile = {
@@ -162,7 +164,7 @@ local WeaponConfig = {
                     --弓弦【链式特效类型（火焰链）225】【专用：272】
                     Spring = 272,
                     --左手拿弓
-                    BindBone = Character.SOCKET_NAME.Prop_L,
+                    BindBone = Prop_L,
                 },
                 --投射物
                 Projectile = {
@@ -187,7 +189,7 @@ local WeaponConfig = {
                     --弓弦【链式特效类型（火焰链）225】【专用：272】
                     Spring = 272,
                     --左手拿弓
-                    BindBone = Character.SOCKET_NAME.Prop_L,
+                    BindBone = Prop_L,
                 },
                 --投射物
                 Projectile = {
@@ -253,7 +255,7 @@ local WeaponConfig = {
                     -- 手持点立方体实例id
                     Root = 1034,
                     --右手持斧
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -273,7 +275,7 @@ local WeaponConfig = {
                     -- 手持点立方体实例id
                     Root = 516,
                     --右手持斧
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -294,7 +296,7 @@ local WeaponConfig = {
                     -- 手持点立方体实例id
                     Root = 1806,
                     --右手持斧
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -314,7 +316,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 2095,
                     --右手持斧
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -333,7 +335,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 1926,
                     --右手持斧
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -353,7 +355,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 781,
                     --右手持斧
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -373,7 +375,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 493,
                     --右手持斧
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -393,7 +395,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 1838,
                     --右手持斧
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -461,7 +463,7 @@ local WeaponConfig = {
                     -- 手持点立方体实例id
                     Root = 892,
                     --右手持矛
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -478,7 +480,7 @@ local WeaponConfig = {
                     -- 手持点立方体实例id
                     Root = 517,
                     --右手持矛
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -496,7 +498,7 @@ local WeaponConfig = {
                     -- 手持点立方体实例id
                     Root = 1932,
                     --右手持矛
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -513,7 +515,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 2094,
                     --右手持矛
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -530,7 +532,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 1927,
                     --右手持矛
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -548,7 +550,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 782,
                     --右手持矛
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -565,7 +567,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 494,
                     --右手持矛
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
@@ -583,7 +585,7 @@ local WeaponConfig = {
                 HeldItem = {
                     Root = 1839,
                     --右手持矛
-                    BindBone = Character.SOCKET_NAME.Prop_R,
+                    BindBone = Prop_R,
                 },
                 --投射物
                 Projectile = {
