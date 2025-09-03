@@ -69,6 +69,80 @@ local GameConfig = {
         --地面摩擦系数【单位：1】
         FrictionFactor = 0.1,
     },
+    --各个部位质量分布
+    MassDistribution = {
+        --标准体形【总质量：395KG】
+        [1] = {
+            --臀部
+            [Character.SOCKET_NAME.Pelvis] = 60,
+            --左大腿
+            [Character.SOCKET_NAME.ThighL] = 20,
+            --右大腿
+            [Character.SOCKET_NAME.ThighR] = 20,
+            --脊柱
+            [Character.SOCKET_NAME.Spine] = 80,
+            --胸部
+            [Character.SOCKET_NAME.Spine1] = 50,
+            --脖子
+            [Character.SOCKET_NAME.Neck] = 15,
+            --头
+            [Character.SOCKET_NAME.Head] = 30,
+            --左上臂
+            [Character.SOCKET_NAME.UpperArm_L] = 30,
+            --右上臂
+            [Character.SOCKET_NAME.UpperArm_R] = 30,
+            --左前臂
+            [Character.SOCKET_NAME.Forearm_L] = 30,
+            --右前臂
+            [Character.SOCKET_NAME.Forearm_R] = 30,
+        },
+        --3&3.5头身【总质量：415KG】
+        [2] = {
+            --臀部
+            [Character.SOCKET_NAME.Pelvis] = 60,
+            --左大腿
+            [Character.SOCKET_NAME.ThighL] = 20,
+            --右大腿
+            [Character.SOCKET_NAME.ThighR] = 20,
+            --左小腿
+            [Character.SOCKET_NAME.Calf_L] = 10,
+            --右小腿
+            [Character.SOCKET_NAME.Calf_R] = 10,
+            --脊柱
+            [Character.SOCKET_NAME.Spine] = 80,
+            --胸部
+            [Character.SOCKET_NAME.Spine1] = 50,
+            --脖子
+            [Character.SOCKET_NAME.Neck] = 15,
+            --头
+            [Character.SOCKET_NAME.Head] = 30,
+            --左上臂
+            [Character.SOCKET_NAME.UpperArm_L] = 30,
+            --右上臂
+            [Character.SOCKET_NAME.UpperArm_R] = 30,
+            --左前臂
+            [Character.SOCKET_NAME.Forearm_L] = 30,
+            --右前臂
+            [Character.SOCKET_NAME.Forearm_R] = 30,
+        },
+        --Chiilkawa【总质量：280KG】
+        [3] = {
+            --臀部
+            [Character.SOCKET_NAME.Pelvis] = 60,
+            --左大腿
+            [Character.SOCKET_NAME.ThighL] = 20,
+            --右大腿
+            [Character.SOCKET_NAME.ThighR] = 20,
+            --脊柱
+            [Character.SOCKET_NAME.Spine] = 80,
+            --头
+            [Character.SOCKET_NAME.Head] = 40,
+            --左上臂
+            [Character.SOCKET_NAME.UpperArm_L] = 30,
+            --右上臂
+            [Character.SOCKET_NAME.UpperArm_R] = 30,
+        }
+    },
     --冲量设置
     ImpulseSetting = {
         --[[

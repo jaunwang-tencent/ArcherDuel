@@ -3,24 +3,36 @@ local Weapon = UGCS.RTTI.Class("Weapon", UGCS.Framework.Actor)
 
 -- 武器投掷物实例池
 local ProjectilesPool = {}
-local function GetProjectile(id, callBack)
-    if id and callBack then
-        if ProjectilesPool[id] and #ProjectilesPool[id] > 0 then
-            local elementId = table.remove(ProjectilesPool[id])
-            callBack(elementId)
+
+--- 获取投掷物
+---@param SceneID 投掷物模型场景标识【类型】
+---@param CallBack 回调函数
+local function GetProjectile(SceneID, CallBack)
+    if SceneID and CallBack then
+        local Pool =  ProjectilesPool[SceneID]
+        if Pool and #Pool > 0 then
+            local ElementID = table.remove(Pool)
+            CallBack(ElementID)
         else
-            Element:SpawnElementWithTransform(Element.SPAWN_TYPE.Prefab, id, function(ElementID)
-                callBack(ElementID)
+            Element:SpawnElementWithTransform(Element.SPAWN_TYPE.Prefab, SceneID, function(ElementID)
+                CallBack(ElementID)
             end)
         end
     end
 end
 
-local function RemoveProjectile(elementId, id)
-    if id and elementId then
-        ProjectilesPool[id] =  ProjectilesPool[id] or {}
-        Element:SetPosition(elementId,Engine.Vector(-100000, -100000, -1000000),Element.COORDINATE.World)
-        table.insert(ProjectilesPool[id], elementId)
+--- 销毁投掷物实例
+---@param ElementID 投掷物实例场景标识【实例】
+---@param SceneID 投掷物模型场景标识【类型】
+local function RemoveProjectile(ElementID, SceneID)
+    if SceneID and ElementID then
+        local Pool =  ProjectilesPool[SceneID]
+        if not Pool then
+            Pool = {}
+            ProjectilesPool[SceneID] = Pool
+        end
+        Element:SetPosition(ElementID, Engine.Vector(-10000, -10000, -10000), Element.COORDINATE.World)
+        table.insert(Pool, ElementID)
     end
 end
 
@@ -60,8 +72,8 @@ function Weapon:OnDestroy()
     self.UID = nil
 
     --销毁投掷物实例
-    for elementId, id in pairs(self.Projectiles) do
-        RemoveProjectile(elementId, id)
+    for ElementID, ScenenID in pairs(self.Projectiles) do
+        RemoveProjectile(ElementID, ScenenID)
     end
     self.Projectiles = nil
     self.Config = nil
@@ -307,7 +319,7 @@ function Weapon:Update(DeltaTime)
             local Start = self.LastProjectilePosition
             local End = CurrentPosition
             --优先命中人
-            local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Character, Start, End, true, 100)
+            local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Character, Start, End)
             if ID then
                 --后续由API层提供
                 local RayLine = (End - Start) * 10
@@ -327,7 +339,7 @@ function Weapon:Update(DeltaTime)
                 end
             else
                 --再命中场景
-                ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End, true, 10)
+                ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End)
                 if ID and ID ~= ProjectileInstanceID then
                     --命中类型
                     Result.HitType = PlayInteractive.HIT_TYPE.Element
@@ -436,12 +448,6 @@ function Weapon:SpawnProjectile(PitchDegree)
         Element:SetRotation(ElementID,Rotation,Element.COORDINATE.World)
         Element:SetScale(ElementID,Scale)
 
-        if ProjectileData.Particle and false then
-            local effectId = Particle:PlayOnActor(ProjectileData.Particle, ElementID, false)
-            Particle:SetParticleScale(effectId,Engine.Vector(5,5,5))
-            Particle:SetParticlePosition(effectId,ProjectileData.ParticleOffset)
-        end
-
         --当前投掷物实例信息
         self.ProjectileInstance = {
             --生成时刻`
@@ -450,9 +456,15 @@ function Weapon:SpawnProjectile(PitchDegree)
             ElementID = ElementID,
             --投掷角度
             PitchDegree = PitchDegree,
-            --投掷特效
-            EffectId = effectId,
         }
+        --绑定投掷物特效
+        if ProjectileData.Particle then
+            --投掷特效
+            local EffectID = Particle:PlayOnActor(ProjectileData.Particle, ElementID, false)
+            Particle:SetParticleScale(EffectID, Engine.Vector(5,5,5))
+            Particle:SetParticlePosition(EffectID, ProjectileData.ParticleOffset)
+            self.ProjectileInstance.EffectID = EffectID
+        end
         --构建样条曲线
         self.ProjectileInstance.SplineCurve = self:BuildSplineCurve(PitchDegree)
         if self.ProjectileInstance.SplineCurve then
@@ -496,43 +508,50 @@ function Weapon:HitTarget(ElementID, Result)
             end
         end
     else
+        local NeedSwitchTurn = true
+        --场景资源
         local SceneResource = self.CurrentScene:GetResource()
         --障碍物
         local Obstacle = SceneResource and SceneResource.Obstacle
-        local MovableList = Obstacle and Obstacle.MovableList
-        if MovableList and MovableList[ElementID] then
-            --绑定到障碍物元件
-            Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
+        if Obstacle then
+            local MovableList = Obstacle.MovableList
+            if MovableList and MovableList[ElementID] then
+                --绑定到障碍物元件
+                Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
 
-            --对方受击表演`
-            --local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
-            --NextTurnPlayer:PerformHitStart()
+                --对方受击表演`
+                local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
+                NextTurnPlayer:PerformHitStart()
+                NeedSwitchTurn = false
 
-            --施加力
-            local ImpulseForward = UMath:GetNormalize(Result.HitImpulse)
-            local HitImpulse = ImpulseForward * 250
-            Element:AddForce(ElementID, HitImpulse)
-        end
-        --空中活体
-        local Bodys = SceneResource and SceneResource.Bodys
-        local BodyInfo = Bodys and Bodys[ElementID]
-        if BodyInfo then
-            --绑定到障碍物元件
-            Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
-            --移动到地面
-            local Start = Element:GetPosition(ElementID)
-            local End = Start + Engine.Vector(0, 0, -5000)
-            local DropPosition = false and ID and Info.hitPos or End
-            local DropTime = 0.01 * UMath:GetVectorLength(Start - DropPosition) / BodyInfo.DropVelocity
-            --直线掉落
-            Element:MoveTo(ElementID, DropPosition, DropTime, Element.CURVE.linear, Start)
+                --施加力
+                local ImpulseForward = UMath:GetNormalize(Result.HitImpulse)
+                local HitForce = ImpulseForward * Obstacle.ForceSize
+                Element:AddForce(ElementID, HitForce)
+            end
+            --空中活体
+            local BodyList = Obstacle.BodyList
+            if BodyList and BodyList[ElementID] then
+                --移动到地面
+                local Position = Element:GetPosition(ElementID)
+                local DropPosition = Position + Obstacle.DropOffset
+                --位置瞬移
+                Element:SetPosition(ElementID, DropPosition, Element.COORDINATE.World)
+                --播放特效
+                Particle:PlayAtPosition(Obstacle.ExplosionEffect, Position, 1, false, 3)
+
+                --销毁投掷物
+                local SceneID = self.Projectiles[self.ProjectileInstance.ElementID]
+                RemoveProjectile(self.ProjectileInstance.ElementID, SceneID)
+                self.Projectiles[self.ProjectileInstance.ElementID] = nil
+            end
         end
         --切换回合
-        if self.CurrentScene then
+        if NeedSwitchTurn and self.CurrentScene then
             self.CurrentScene:SwitchTurn()
         end
     end
-    Particle:StopParticle(self.ProjectileInstance.EffectId)
+    Particle:StopParticle(self.ProjectileInstance.EffectID)
     self.ProjectileInstance = nil
     self.LastProjectilePosition = nil
 end

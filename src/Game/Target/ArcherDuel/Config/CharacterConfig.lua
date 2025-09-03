@@ -45,7 +45,7 @@ local CharacterConfig = {
         --瞄准设置
         AimSetting = {
             --瞄准冷却时间【单位：秒】
-            CoolDownTime = 0.1,
+            CoolDownTime = 1,
             --样条采样方案
             SampleSpline = true,
             --命中样条【贝塞尔曲线】限定参数

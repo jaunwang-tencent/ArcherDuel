@@ -508,11 +508,10 @@ local SceneConfig = {
                     Offset = Engine.Vector(-1200, 150, 250),
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
-
                 --障碍物场景标识【可以被标识】
                 Obstacle = {
-                    --命中可移动物体的冲量大小
-                    ImpulseSize = 1000,
+                    --命中可移动物体的力大小【单位：牛】
+                    ForceSize = 1000,
                     --可移动物体列表
                     MovableList  = {
                         [1851] = true,
@@ -520,14 +519,13 @@ local SceneConfig = {
                     },
                     --掉落速度【单位：米每秒】
                     DropOffset = Engine.Vector(0, 0, -10000),
-                    --命中后爆炸特效资源标识
-                    ExplosionEffect = 1001,
+                    --命中后爆炸特效资源标识【梦幻爆炸】
+                    ExplosionEffect = 8,
                     --活体列表【命中后直接瞬移，播放爆炸效果】
                     BodyList = {
                         [1870] = true,
                     }
                 },
-
             }
         },
         --样条设置
