@@ -88,11 +88,10 @@ local function SetTurnState(self, ActorID, State)
         Actor.MyTurn = State
         --看我
         if State then
+            Actor:SyncLocation()
             if Actor:IsControlled() then
-                Actor:SyncLocation()
                 self:LookStart()
             else
-                Actor:SyncLocation()
                 self:LookPlayer(Actor.Transform)
             end
         end
@@ -206,7 +205,7 @@ function Battle:GetDisplacement()
         local AttackPlayer = self:GetActor(self.CurrentTurn)
         local TargetPlayer = self:GetActor(self.NextTurn)
         if AttackPlayer and TargetPlayer then
-            local Displacement = AttackPlayer:GetLocation() - TargetPlayer:GetLocation()
+            local Displacement = TargetPlayer:GetLocation() - AttackPlayer:GetLocation()
             return Displacement
         end
     end
