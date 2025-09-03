@@ -474,6 +474,7 @@ function Weapon:SpawnProjectile(PitchDegree)
         --首次刷新主相机
         self.CurrentScene:LookProjectile(StartPosition)
 
+        --管理投掷物
         self.Projectiles[ElementID] = ProjectileData.Root
     end)
 end

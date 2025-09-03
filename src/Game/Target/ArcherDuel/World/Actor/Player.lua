@@ -222,6 +222,8 @@ end
 --- 待机状态
 ---@return Success 状态是否切换成功
 function Player:Idle()
+    Log:PrintLog("TXPerform(Animation = Idle)", self.UID)
+    FakeCharacter:PlayAnim(self.UID, self.Animations.Idle)
     if self.FSM then
         local IdleState = UGCS.Target.ArcherDuel.Character.States.IdleState
         return self.FSM:SwitchState(IdleState)
@@ -532,9 +534,6 @@ function Player:PerformHitOver()
     local Rotation = self:GetRotation()
     Log:PrintLog("TXPerform(BodyRotation, Last)", Rotation)
     self:SetFakeCharacterRotation(Rotation)
-
-    Log:PrintLog("TXPerform(Animation = Idle)", self.UID)
-    FakeCharacter:PlayAnim(self.UID, self.Animations.Idle)
 
     --切换到待机状态
     self:Idle()
