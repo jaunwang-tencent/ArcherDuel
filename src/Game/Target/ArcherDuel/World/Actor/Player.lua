@@ -175,39 +175,52 @@ end
 function Player:UpdateMovementState()
     local Start = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.ProbeBone)
     local End = Start + Engine.Vector(0, 0, -100000)
-    self.MovementState = nil
-    local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End)
-    if ID then
-        local Height = Start.Z - Result.hitPos.Z
-        if Height > self.Config.MovementProbe.LandingProbe then
-            --浮空态
-            self.MovementState = EMovement.Float
-        end
-    else
-        --浮空态
-        self.MovementState = EMovement.Float
-    end
+    --最终移动状态
+    local MovementState
 
-    if not self.MovementState then
-        --进一步检测非浮空态位移态
-        if self.LastSocketPosition then
-            --检测到距离上一次位移差超过容错值则判定为移动态
-            local Distance = UMath:GetDistance(Start, self.LastSocketPosition)
-            if Distance < self.Config.MovementProbe.ProbeTolerance then
-                self.MovementState = EMovement.Idle
-            else
-                self.MovementState = EMovement.Move
+    --移动探针
+    local MovementProbe = self.Config and self.Config.MovementProbe
+    if MovementProbe then
+        local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End)
+        if ID then
+            local Height = Start.Z - Result.hitPos.Z
+            if Height > MovementProbe.LandingProbe then
+                --浮空态
+                MovementState = EMovement.Float
             end
         else
-            --第一次刷新，判定为待机态
-            self.MovementState = EMovement.Idle
+            --浮空态
+            MovementState = EMovement.Float
+        end
+
+        if not MovementState then
+            --进一步检测非浮空态位移态
+            if self.LastSocketPosition then
+                --检测到距离上一次位移差超过容错值则判定为移动态
+                local Distance = UMath:GetDistance(Start, self.LastSocketPosition)
+                if Distance < MovementProbe.ProbeTolerance then
+                    MovementState = EMovement.Idle
+                else
+                    MovementState = EMovement.Move
+                end
+            else
+                --第一次刷新，判定为待机态
+                MovementState = EMovement.Idle
+            end
         end
     end
+
     --更新探针骨骼
     self.LastSocketPosition = Start
-    if self.MovementState == EMovement.Idle then
+    if MovementState == EMovement.Idle then
         --只有在待机态时才刷新位置
         self:SyncLocation()
+    end
+
+    --更新移动状态
+    if self.MovementState ~= MovementState then
+        self.MovementState = MovementState
+        Log:PrintLog("TXPerform(MovementStateChanged)", MovementState)
     end
 end
 
@@ -378,8 +391,15 @@ function Player:PerformHitStart(Impulse, BodyType)
         --施加冲量
         local HasAdded = false
         local ImpulseSetting = UGCS.Target.ArcherDuel.Config.GameConfig.ImpulseSetting
-        local ImpulseList = ImpulseSetting and ImpulseSetting[BodyType]
-        if ImpulseList then
+        --根据命中部位获取物理作用方案
+        local ImpulsePolicy = ImpulseSetting and ImpulseSetting[BodyType]
+        if ImpulsePolicy then
+            --随机一套策略方案
+            local PolicyCount = #ImpulsePolicy
+            local PolicyIndex = UMath:GetRandomInt(1, PolicyCount)
+            --拿到冲量策略
+            local ImpulseList = ImpulsePolicy[PolicyIndex]
+
             --反向前向【朝后】【只关心X轴方向】
             local ReverseForward = -self:GetForward()
             for _, ImpulseItem in pairs(ImpulseList) do

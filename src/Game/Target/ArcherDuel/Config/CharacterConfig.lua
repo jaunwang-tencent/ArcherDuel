@@ -29,7 +29,7 @@ local CharacterConfig = {
         },
         --身体部位设置【可考虑独立出来】
         BodySetting = {
-            --探針g骨骼
+            --探針骨骼
             ProbeBone = Character.SOCKET_NAME.Root,
             --胶囊偏移
             OffsetBone = Character.SOCKET_NAME.Pelvis,
@@ -38,9 +38,9 @@ local CharacterConfig = {
             --胸部骨骼
             ChestBone = Character.SOCKET_NAME.Spine1,
             --武器左持
-            WeaponLeftHand = "Prop_L",
+            WeaponLeftHand = Character.SOCKET_NAME.Prop_L,
             --武器右持
-            WeaponRightHand = "Prop_R"
+            WeaponRightHand = Character.SOCKET_NAME.Prop_R
         },
         --瞄准设置
         AimSetting = {

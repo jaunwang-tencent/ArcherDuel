@@ -144,18 +144,53 @@ local GameConfig = {
         }
     },
     --冲量设置
+    --[-[
     ImpulseSetting = {
-        --[[
+        --命中部位
         [Character.SOCKET_NAME.Head] = {
+            --方案1【随机方案】
             [1] = {
-                --冲量大小
-                ImpulseValue = 240000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 20
+                --实际物理作用，可能有多个，游戏师自定义
+                [1] = {
+                    --冲量作用部位
+                    BodyType = Character.SOCKET_NAME.Head,
+                    --冲量大小
+                    ImpulseValue = 240000,
+                    --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
+                    ForwardDegree = 10
+                },
+                [2] = {
+                    --冲量作用部位
+                    BodyType = Character.SOCKET_NAME.Pelvis,
+                    --冲量大小
+                    ImpulseValue = 240000,
+                    --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
+                    ForwardDegree = -25
+                }
             },
+            --方案2
+            [2] = {
+                --实际物理作用，可能有多个，游戏师自定义
+                [1] = {
+                    --冲量作用部位
+                    BodyType = Character.SOCKET_NAME.Head,
+                    --冲量大小
+                    ImpulseValue = 240000,
+                    --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
+                    ForwardDegree = 30
+                },
+                [2] = {
+                    --冲量作用部位
+                    BodyType = Character.SOCKET_NAME.Pelvis,
+                    --冲量大小
+                    ImpulseValue = 240000,
+                    --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
+                    ForwardDegree = -20
+                }
+            }
         }
-        --]]
     }
+    --]]
 }
 
 return GameConfig

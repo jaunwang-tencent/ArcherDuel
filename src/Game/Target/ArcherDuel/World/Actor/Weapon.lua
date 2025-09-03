@@ -198,7 +198,7 @@ function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
                 local Curvature = K * SplineSetting.Curvature
 
                 --样条采样
-                Log:PrintLog(string.format("GenerateCurve(PitchDegree=%f, CenterOffset = %f, Curvature = %f, Amplitude = %f)", PitchDegree, CenterOffset, Curvature, Amplitude))
+                --Log:PrintLog(string.format("GenerateCurve(PitchDegree=%f, CenterOffset = %f, Curvature = %f, Amplitude = %f)", PitchDegree, CenterOffset, Curvature, Amplitude))
                 local Segment = LimitDistance and HitSpline.AimTrackSegment or HitSpline.Segment
                 local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, EndPoint, Segment, Curvature, 1)
 
@@ -515,12 +515,16 @@ function Weapon:HitTarget(ElementID, Result)
         --障碍物
         local Obstacle = SceneResource and SceneResource.Obstacle
         if Obstacle then
+            --投掷物实例标识
+            local ProjectileElementID = self.ProjectileInstance.ElementID
+
+            --可移动物体
             local MovableList = Obstacle.MovableList
             if MovableList and MovableList[ElementID] then
                 --绑定到障碍物元件
-                Element:BindingToElement(self.ProjectileInstance.ElementID, ElementID)
+                Element:BindingToElement(ProjectileElementID, ElementID)
 
-                --对方受击表演`
+                --对方受击表演
                 local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
                 NextTurnPlayer:PerformHitStart()
                 NeedSwitchTurn = false
@@ -542,9 +546,10 @@ function Weapon:HitTarget(ElementID, Result)
                 Particle:PlayAtPosition(Obstacle.ExplosionEffect, Position, 1, false, 3)
 
                 --销毁投掷物
-                local SceneID = self.Projectiles[self.ProjectileInstance.ElementID]
-                RemoveProjectile(self.ProjectileInstance.ElementID, SceneID)
-                self.Projectiles[self.ProjectileInstance.ElementID] = nil
+                local SceneID = self.Projectiles[ProjectileElementID]
+                RemoveProjectile(ProjectileElementID, SceneID)
+                Log:PrintLog("XXXXXXXXXXXXXXXXX", ProjectileElementID, SceneID)
+                self.Projectiles[ProjectileElementID] = nil
             end
         end
         --切换回合
