@@ -169,56 +169,68 @@ function Player:IsInState(StateType)
     end
 end
 
+--- 移动探针
+function Player:ProbeMovement()
+    self.LastPosition = nil
+    self.LastTimestamp = nil
+    self.MovementState = nil
+end
+
 --- 获取指定玩家移动状态【浮空、着地移动，着地停止】
 ---@param ActorID 角色标识
 ---@return 移动类型
 function Player:UpdateMovementState()
-    local Start = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.ProbeBone)
-    local End = Start + Engine.Vector(0, 0, -100000)
-    --最终移动状态
-    local MovementState
+    --只要不是静止状态，则探测移动状态
+    if self.MovementState ~= EMovement.Idle then
+        local CurrentTimestamp = UGCS.Framework.Application.current:Watch()
+        local Start = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.ProbeBone)
+        local End = Start + Engine.Vector(0, 0, -100000)
+        --最终移动状态
+        local MovementState
 
-    --移动探针
-    local MovementProbe = self.Config and self.Config.MovementProbe
-    if MovementProbe then
-        local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End)
-        if ID then
-            local Height = Start.Z - Result.hitPos.Z
-            if Height > MovementProbe.LandingProbe then
+        --移动探针
+        local MovementProbe = self.Config and self.Config.MovementProbe
+        if MovementProbe then
+            local ID, Result = PlayInteractive:GetHitResultWithRaycast(PlayInteractive.HIT_TYPE.Element, Start, End)
+            if ID then
+                local Height = Start.Z - Result.hitPos.Z
+                if Height > MovementProbe.LandingProbe then
+                    --浮空态
+                    MovementState = EMovement.Float
+                end
+            else
                 --浮空态
                 MovementState = EMovement.Float
             end
-        else
-            --浮空态
-            MovementState = EMovement.Float
-        end
 
-        if not MovementState then
-            --进一步检测非浮空态位移态
-            if self.LastSocketPosition then
-                --检测到距离上一次位移差超过容错值则判定为移动态
-                local Distance = UMath:GetDistance(Start, self.LastSocketPosition)
-                if Distance < MovementProbe.ProbeTolerance then
-                    MovementState = EMovement.Idle
+            if not MovementState then
+                --进一步检测非浮空态位移态
+                if self.LastPosition then
+                    --检测到距离上一次位移差超过容错值则判定为移动态
+                    local Distance = UMath:GetDistance(Start, self.LastPosition)
+                    local Velocity = Distance / (self.LastTimestamp - CurrentTimestamp)
+                    Log:PrintLog("TXPerform(Velocity)", Velocity)
+                    if Velocity < MovementProbe.ProbeTolerance then
+                        MovementState = EMovement.Idle
+                    else
+                        MovementState = EMovement.Move
+                    end
                 else
+                    --第一次刷新，判定为移动态，与下次才能算数是否处于移动状态
                     MovementState = EMovement.Move
                 end
-            else
-                --第一次刷新，判定为待机态
-                MovementState = EMovement.Idle
             end
         end
-    end
 
-    --更新探针骨骼
-    self.LastSocketPosition = Start
-    if MovementState == EMovement.Idle then
-        --只有在待机态时才刷新位置
-        self:SyncLocation()
-    end
+        --更新探针骨骼位置与时刻
+        self.LastPosition = Start
+        self.LastTimestamp = CurrentTimestamp
+        if MovementState == EMovement.Idle then
+            --只有在待机态时才刷新位置
+            self:SyncLocation()
+        end
 
-    --更新移动状态
-    if self.MovementState ~= MovementState then
+        --更新移动状态
         self.MovementState = MovementState
         Log:PrintLog("TXPerform(MovementStateChanged)", MovementState)
     end
@@ -230,6 +242,42 @@ function Player:SyncLocation()
     local Position = FakeCharacter:GetPosition(self.UID)
     self:SetLocation(Position)
     return Position
+end
+
+--- 设置假人旋转【逆时针旋转90度】
+---@param Rotation 欧拉角
+function Player:SetFakeCharacterRotation(Rotation)
+    Rotation = Rotation - Engine.Rotator(0, 0, 90)
+    FakeCharacter:SetRotation(self.UID, Rotation)
+end
+
+-- 获取玩家装备数据
+function Player:GetEquipData(ForceUpdate)
+    if ForceUpdate or not self.EquipData then
+        local PlayerID = Character:GetLocalPlayerId()
+        local Bow_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bow_Num")
+        local Spear_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Spear_Num")
+        local Axe_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Axe_Num")
+        local Hat_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Hat_Num")
+        local Glasses_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Glasses_Num")
+        local Cloth_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Num")
+        local Bow_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bow_Lv")
+        local Spear_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Spear_Lv")
+        local Axe_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Axe_Lv")
+        local Hat_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Hat_Lv")
+        local Glasses_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Glasses_Lv")
+        local Cloth_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Lv")
+
+        self.EquipData = {
+            damage = 150, -- 基础伤害
+            head_damageRate = 0.2, -- 头部伤害倍率
+            body_damageRate = 0.1, -- 身体伤害倍率
+            hp = 200, -- 血量加成
+            head_protection = 0.2, -- 头部保护
+            body_protection = 0.1, -- 身体保护
+        }
+    end
+    return self.EquipData
 end
 
 --- 待机状态
@@ -335,35 +383,6 @@ function Player:PerformFire()
     end)
 end
 
--- 获取玩家装备数据
-function Player:GetEquipData(ForceUpdate)
-    if ForceUpdate or not self.EquipData then
-        local PlayerID = Character:GetLocalPlayerId()
-        local Bow_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bow_Num")
-        local Spear_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Spear_Num")
-        local Axe_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Axe_Num")
-        local Hat_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Hat_Num")
-        local Glasses_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Glasses_Num")
-        local Cloth_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Num")
-        local Bow_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bow_Lv")
-        local Spear_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Spear_Lv")
-        local Axe_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Axe_Lv")
-        local Hat_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Hat_Lv")
-        local Glasses_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Glasses_Lv")
-        local Cloth_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Lv")
-
-        self.EquipData = {
-            damage = 150, -- 基础伤害
-            head_damageRate = 0.2, -- 头部伤害倍率
-            body_damageRate = 0.1, -- 身体伤害倍率
-            hp = 200, -- 血量加成
-            head_protection = 0.2, -- 头部保护
-            body_protection = 0.1, -- 身体保护
-        }
-    end
-    return self.EquipData
-end
-
 --- 命中伤害
 ---@param Damage 伤害值
 ---@param BodyType 身体部位
@@ -378,6 +397,9 @@ end
 ---@param Impulse 冲量
 ---@param BodyType 身体部位
 function Player:PerformHitStart(Impulse, BodyType)
+    --受击表演开始时清空移动状态，触发位置探针
+    self:ProbeMovement()
+
     --开始物理模拟【务必在施加冲量之前开启物理模拟】
     FakeCharacter:EnableSimulatePhysics(self.UID, true)
     FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1)
@@ -438,13 +460,6 @@ function Player:PerformHitStart(Impulse, BodyType)
         --表演倒地
         self:PerformFallback()
     end)
-end
-
---- 设置假人旋转【逆时针旋转90度】
----@param Rotation 欧拉角
-function Player:SetFakeCharacterRotation(Rotation)
-    Rotation = Rotation - Engine.Rotator(0, 0, 90)
-    FakeCharacter:SetRotation(self.UID, Rotation)
 end
 
 --- 倒地表演
