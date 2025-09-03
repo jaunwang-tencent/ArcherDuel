@@ -115,16 +115,16 @@ function BattleModule:OnTouchPressed(_, Y)
         local PitchDegree = self:GetPitchDegree(Y)
         self:AdjustPitchCursor(PitchDegree)
         Player:Aim(PitchDegree)
-        Player:DrawCurrentTrack(PitchDegree)
-    end
 
-    --瞄准计时
-    UGCS.Framework.Executor.Cancel(self.AimCDExecutorID)
-    local AimSetting = self.CharacterConfig.AimSetting
-    self.AimCDExecutorID = UGCS.Framework.Executor.Delay(AimSetting.CoolDownTime, function()
-        self.AimCDExecutorID = nil
-        Log:PrintLog("TXAllowFire()")
-    end)
+        --瞄准计时
+        UGCS.Framework.Executor.Cancel(self.AimCDExecutorID)
+        local AimSetting = self.CharacterConfig.AimSetting
+        self.AimCDExecutorID = UGCS.Framework.Executor.Delay(AimSetting.CoolDownTime, function()
+            self.AimCDExecutorID = nil
+            Log:PrintLog("TXAllowFire()")
+            Player:DrawCurrentTrack(PitchDegree)
+        end)
+    end
 end
 
 function BattleModule:OnTouchMove(_, Y)
@@ -138,7 +138,9 @@ function BattleModule:OnTouchMove(_, Y)
             local PitchDegree = self:GetPitchDegree(Y)
             self:AdjustPitchCursor(PitchDegree)
             Player:Aim(PitchDegree)
-            Player:DrawCurrentTrack(PitchDegree)
+            if not self.AimCDExecutorID then
+                Player:DrawCurrentTrack(PitchDegree)
+            end
         end
     end
 end
@@ -155,12 +157,17 @@ function BattleModule:OnTouchReleased(_, Y)
             local PitchDegree = self:GetPitchDegree(Y)
             self:AdjustPitchCursor(PitchDegree)
             Player:Fire(PitchDegree)
-            Player:DrawCurrentTrack()
+            
+            if not self.AimCDExecutorID then
+                Player:DrawCurrentTrack()
+            end
             Player:DrawHistoryTrack()
             --记录本次曲线
             self.HistoryPitchDegree = PitchDegree
         end
     end
+    UGCS.Framework.Executor.Cancel(self.AimCDExecutorID)
+    self.AimCDExecutorID = nil
     self.LastY = nil
     self.OnPressY = nil
     self.PressedHeight = nil
