@@ -31,7 +31,7 @@ local function RemoveProjectile(ElementID, SceneID)
             Pool = {}
             ProjectilesPool[SceneID] = Pool
         end
-        Element:SetPosition(ElementID, Engine.Vector(-10000, -10000, -10000), Element.COORDINATE.World)
+        Element:SetPosition(ElementID, Engine.Vector(1000, 1000, 1000), Element.COORDINATE.World)
         table.insert(Pool, ElementID)
     end
 end
@@ -358,8 +358,10 @@ function Weapon:Update(DeltaTime)
             end
         end
 
-        --设置位置
-        Element:SetPosition(ProjectileInstanceID, CurrentPosition, Element.COORDINATE.World)
+        --设置位置【只有在管理器中的实例才允许更新位置】
+        if self.Projectiles[ProjectileInstanceID] then
+            Element:SetPosition(ProjectileInstanceID, CurrentPosition, Element.COORDINATE.World)
+        end
 
         --备份上一帧位置
         if NeedRecordPosition then
