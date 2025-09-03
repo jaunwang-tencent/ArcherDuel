@@ -22,6 +22,10 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
+                    --特效标识
+                    Particle = 333,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -29,6 +33,10 @@ local WeaponConfig = {
                     Root = 918,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效偏移
+                    Particle = 269,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(-500, 0, 0),
                 }
             },
             --雪地
@@ -45,6 +53,10 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
+                    --特效标识
+                    Particle = 333,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -52,6 +64,10 @@ local WeaponConfig = {
                     Root = 611,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效偏移
+                    Particle = 269,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(-500, 0, 0),
                 }
             },
             --城市
@@ -68,6 +84,10 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
+                    --特效标识
+                    Particle = 333,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -75,6 +95,10 @@ local WeaponConfig = {
                     Root = 1901,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效偏移
+                    Particle = 269,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(-500, 0, 0),
                 }
             },
             --天空遗迹
@@ -91,6 +115,10 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
+                    --特效标识
+                    Particle = 333,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -98,7 +126,9 @@ local WeaponConfig = {
                     Root = 1480,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效偏移
                     Particle = 269,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-500, 0, 0),
                 }
             },
@@ -116,6 +146,10 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
+                    --特效标识
+                    Particle = 333,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -123,7 +157,9 @@ local WeaponConfig = {
                     Root = 2021,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效偏移
                     Particle = 269,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-500, 0, 0),
                 }
             },
@@ -141,6 +177,10 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
+                    --特效标识
+                    Particle = 333,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -148,7 +188,9 @@ local WeaponConfig = {
                     Root = 876,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效偏移
                     Particle = 269,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-500, 0, 0),
                 }
             },
@@ -165,6 +207,10 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
+                    --特效标识
+                    Particle = 333,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -172,10 +218,11 @@ local WeaponConfig = {
                     Root = 588,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效偏移
                     Particle = 269,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-500, 0, 0),
                 }
-
             },
             --室内
             [8] = {
@@ -190,6 +237,10 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
+                    --特效标识
+                    Particle = 333,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -197,7 +248,9 @@ local WeaponConfig = {
                     Root = 1933,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效偏移
                     Particle = 269,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-500, 0, 0),
                 }
             },
@@ -256,6 +309,10 @@ local WeaponConfig = {
                     Root = 1034,
                     --右手持斧
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 335,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -263,8 +320,11 @@ local WeaponConfig = {
                     Root = 1035,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --旋转速度
                     RotationalSpeed = -8,
+                    --特效偏移
                     Particle = 271,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(500, 0, 300),
                 },
             },
@@ -276,6 +336,10 @@ local WeaponConfig = {
                     Root = 516,
                     --右手持斧
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 335,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -283,11 +347,13 @@ local WeaponConfig = {
                     Root = 532,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --旋转速度
                     RotationalSpeed = -8,
+                    --特效偏移
                     Particle = 271,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(500, 0, 300),
                 },
-
             },
             --城市
             [3] = {
@@ -297,6 +363,10 @@ local WeaponConfig = {
                     Root = 1806,
                     --右手持斧
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 335,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -304,11 +374,13 @@ local WeaponConfig = {
                     Root = 1822,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
+                    --旋转速度
                     RotationalSpeed = -8,
+                    --特效偏移
                     Particle = 271,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(500, 0, 300),
                 },
-
             },
             --天空遗迹
             [4] = {
@@ -317,15 +389,21 @@ local WeaponConfig = {
                     Root = 2095,
                     --右手持斧
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 335,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 2096,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --旋转速度，只有斧子才有
+                    --旋转速度
                     RotationalSpeed = -8,
+                    --特效偏移
                     Particle = 271,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(500, 0, 300),
                 }
             },
@@ -336,18 +414,23 @@ local WeaponConfig = {
                     Root = 1926,
                     --右手持斧
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 335,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 1942,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --旋转速度，只有斧子才有
+                    --旋转速度
                     RotationalSpeed = -8,
+                    --特效偏移
                     Particle = 271,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(500, 0, 300),
                 }
-
             },
             --太空
             [6] = {
@@ -356,18 +439,23 @@ local WeaponConfig = {
                     Root = 781,
                     --右手持斧
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 335,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 797,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --旋转速度，只有斧子才有
+                    --旋转速度
                     RotationalSpeed = -8,
+                    --特效偏移
                     Particle = 271,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(500, 0, 300),
                 }
-
             },
             --室外
             [7] = {
@@ -376,18 +464,23 @@ local WeaponConfig = {
                     Root = 493,
                     --右手持斧
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 335,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 509,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --旋转速度，只有斧子才有
+                    --旋转速度
                     RotationalSpeed = -8,
+                    --特效偏移
                     Particle = 271,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(500, 0, 300),
                 }
-
             },
             --室内
             [8] = {
@@ -396,18 +489,23 @@ local WeaponConfig = {
                     Root = 1838,
                     --右手持斧
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 335,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 1854,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --旋转速度，只有斧子才有
+                    --旋转速度
                     RotationalSpeed = -8,
+                    --特效偏移
                     Particle = 271,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(500, 0, 300),
                 }
-
             },
         },
         --所持武器对应的动作
@@ -464,6 +562,10 @@ local WeaponConfig = {
                     Root = 892,
                     --右手持矛
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 334,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -481,6 +583,10 @@ local WeaponConfig = {
                     Root = 517,
                     --右手持矛
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 334,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -489,7 +595,6 @@ local WeaponConfig = {
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 },
-
             },
             --城市
             [3] = {
@@ -499,6 +604,10 @@ local WeaponConfig = {
                     Root = 1932,
                     --右手持矛
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 334,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
@@ -507,7 +616,6 @@ local WeaponConfig = {
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 },
-
             },
             --天空遗迹
             [4] = {
@@ -516,13 +624,19 @@ local WeaponConfig = {
                     Root = 2094,
                     --右手持矛
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 334,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 2093,
                     --偏移量【与人之间的偏移，枪口】
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效标识
                     Particle = 270,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-1500,0,0),
                 }
             },
@@ -533,16 +647,21 @@ local WeaponConfig = {
                     Root = 1927,
                     --右手持矛
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 334,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 1941,
                     --偏移量【与人之间的偏移，枪口】
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效标识
                     Particle = 270,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-1500,0,0),
                 }
-
             },
             --太空
             [6] = {
@@ -551,13 +670,19 @@ local WeaponConfig = {
                     Root = 782,
                     --右手持矛
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 334,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 796,
                     --偏移量【与人之间的偏移，枪口】
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效标识
                     Particle = 270,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-1500,0,0),
                 }
             },
@@ -568,16 +693,21 @@ local WeaponConfig = {
                     Root = 494,
                     --右手持矛
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 334,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 508,
                     --偏移量【与人之间的偏移，枪口】
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效标识
                     Particle = 270,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-1500,0,0),
                 }
-
             },
             --室内
             [8] = {
@@ -586,17 +716,21 @@ local WeaponConfig = {
                     Root = 1839,
                     --右手持矛
                     BindBone = Prop_R,
+                    --特效标识
+                    Particle = 334,
+                    --特效偏移
+                    ParticleOffset = Engine.Vector(50, 0, 0),
                 },
                 --投射物
                 Projectile = {
                     Root = 1853,
                     --偏移量【与人之间的偏移，枪口】
                     Offset = Engine.Vector(0, 50, 80),
+                    --特效标识
                     Particle = 270,
+                    --特效偏移
                     ParticleOffset = Engine.Vector(-1500,0,0),
                 }
-
-
             },
         },
         --所持武器对应的动作
