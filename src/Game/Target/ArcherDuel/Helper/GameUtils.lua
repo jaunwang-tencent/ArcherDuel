@@ -42,7 +42,7 @@ end
 ---@param Displacement 两者之间位移
 function GameUtils.ComputeHitRange(SplineConfig, Displacement)
     --计算垂直偏差
-    local OffsetZ = -Displacement.Z * 0.01
+    local OffsetZ = Displacement.Z * 0.01
     --重新计算角度区间
     local LowerDegree = SplineConfig.LowerDegree + OffsetZ * SplineConfig.K1
     local UpperDegree = SplineConfig.UpperDegree + OffsetZ * SplineConfig.K1
