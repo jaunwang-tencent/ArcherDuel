@@ -18,7 +18,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [2] = {
@@ -35,7 +34,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [3] = {
@@ -52,7 +50,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [4] = {
@@ -69,7 +66,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [5] = {
@@ -86,7 +82,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 847,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             --死亡底板场景
@@ -118,7 +113,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 495,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [2] = {
@@ -135,7 +129,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 495,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             --死亡底板场景
@@ -167,7 +160,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 1786,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [2] = {
@@ -184,7 +176,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 1786,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             [3] = {
@@ -201,7 +192,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 1786,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
             },
             --死亡底板场景
@@ -233,7 +223,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [2] = {
@@ -250,7 +239,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [3] = {
@@ -267,7 +255,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [4] = {
@@ -284,7 +271,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [5] = {
@@ -301,7 +287,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2085,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             --死亡底板场景
@@ -333,7 +318,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2051,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [2] = {
@@ -350,7 +334,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2051,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [3] = {
@@ -367,7 +350,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2051,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [4] = {
@@ -384,7 +366,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 2051,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             --死亡底板场景
@@ -416,7 +397,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [2] = {
@@ -433,7 +413,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [3] = {
@@ -450,7 +429,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [4] = {
@@ -467,7 +445,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [5] = {
@@ -484,7 +461,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 906,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             --死亡底板场景
@@ -516,7 +492,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 475,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
                 --障碍物场景标识【可以被标识】
                 Obstacle = {
@@ -570,7 +545,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [2] = {
@@ -587,7 +561,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [3] = {
@@ -604,7 +577,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [4] = {
@@ -621,7 +593,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
             [5] = {
@@ -638,7 +609,6 @@ local SceneConfig = {
                     ProjectileCameraSceneId = 1820,
                     --相机偏移【与观察目标之间的偏移，比如人、投掷物】
                     Offset = Engine.Vector(-1200, 150, 250),
-                    EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
         },

@@ -272,7 +272,7 @@ function Battle:LookPlayer(Tranfrom)
         local forward = UMath:GetNormalize(UMath:RotatorToForward(Tranfrom.Rotation))
         local up = Engine.Vector(0, 0, 1)
         local right = UMath:GetNormalize(UMath:GetVectorCross(up, forward))
-        local offest = CameraConfig.EnemyOffset
+        local offest = Engine.Vector(-CameraConfig.Offset.X, -CameraConfig.Offset.Y, CameraConfig.Offset.Z)
 
         --设置影视相机位置与朝向
         local CharacterCameraPosition = Tranfrom.Location + forward * offest.X + right * offest.Y + up * offest.Z
