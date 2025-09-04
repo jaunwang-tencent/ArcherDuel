@@ -170,7 +170,7 @@ function Player:CheckContact(ElementID)
     --在此判定与角色之间的关系
     local Start = self:GetLocation()
     local End = Start + Engine.Vector(0, 0, -1000)
-    local HitIDs = PlayInteractive:GetHitResultsWithCapsule(PlayInteractive.HIT_TYPE.Element, Start, End, 50, 50, true, 10)
+    local HitIDs = PlayInteractive:GetHitResultsWithCapsule(PlayInteractive.HIT_TYPE.Element, Start, End, 50, 50)
     for _, ID in pairs(HitIDs) do
         if ID == ElementID then
             return true
