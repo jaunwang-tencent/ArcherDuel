@@ -272,8 +272,8 @@ local WeaponConfig = {
             --待机动作
             Idle = "BowIdle",
         },
-        --音效设置
-        SoundSetting = {
+        --所持武器对应的音效
+        Audios = {
             --拉弓
             PullString = 700359,
             --投掷
@@ -536,8 +536,8 @@ local WeaponConfig = {
             --待机动作
             Idle = "AxeIdle",
         },
-        --音效设置
-        SoundSetting = {
+        --所持武器对应的音效
+        Audios = {
             --投掷
             Fire = 700358,
             --飞行
@@ -770,8 +770,8 @@ local WeaponConfig = {
             --待机动作
             Idle = "SpearIdle",
         },
-        --音效设置
-        SoundSetting = {
+        --所持武器对应的音效
+        Audios = {
             --投掷
             Fire = 700357,
             --飞行
