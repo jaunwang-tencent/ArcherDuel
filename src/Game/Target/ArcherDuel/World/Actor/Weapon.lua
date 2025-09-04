@@ -178,8 +178,8 @@ function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
                 local StartPoint = self:GetSpawnerOffset()
                 --必经点
                 local EndPoint = Displacement
-                --96为中心点偏移量，写死的
-                EndPoint.Z = EndPoint.Z - 48 + CenterOffset
+                --终点偏移计算
+                EndPoint.Z = EndPoint.Z + CenterOffset
 
                 --计算XOY平面距离
                 local XYDistance = GetXOYDistance(StartPoint, EndPoint)
