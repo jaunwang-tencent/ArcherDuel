@@ -77,6 +77,10 @@ function Weapon:OnDestroy()
     end
     self.Projectiles = nil
     self.Config = nil
+    if self.HeldItemEffectID then
+        Particle:StopParticle(self.HeldItemEffectID)
+        self.HeldItemEffectID = nil
+    end
 end
 
 --- 调整武器方向
@@ -394,7 +398,13 @@ function Weapon:LoadAppearance()
         --绑定到玩家身上
         local CharacterUID = self.OwnerPlayer.UID
         Element:BindingToCharacterOrNPC(ElementID, CharacterUID, HeldItem.BindBone, Character.SOCKET_MODE.SnapToTarget)
-
+        --绑定投掷物特效
+        if HeldItem.Particle then
+            --投掷特效
+            self.HeldItemEffectID = Particle:PlayOnActor(HeldItem.Particle, ElementID, false)
+            Particle:SetParticleScale(self.HeldItemEffectID, Engine.Vector(5,5,5))
+            Particle:SetParticlePosition(self.HeldItemEffectID, HeldItem.ParticleOffset)
+        end
         --绑定结束
         self:OnLoadAppearanceCompleted(ElementID)
     end, nil, Rotation, Scale)
@@ -554,12 +564,16 @@ function Weapon:HitTarget(ElementID, Result)
                 --销毁投掷物
                 local SceneID = self.Projectiles[ProjectileElementID]
                 RemoveProjectile(ProjectileElementID, SceneID)
-                Log:PrintLog("XXXXXXXXXXXXXXXXX", ProjectileElementID, SceneID)
                 self.Projectiles[ProjectileElementID] = nil
             end
         end
         --切换回合
         if NeedSwitchTurn and self.CurrentScene then
+            --播放音效
+            local Audios = self.Config and self.Config.Audios
+            if Audios then
+                self.OwnerPlayer:PlayAudio(Audios.Hit)
+            end
             self.CurrentScene:SwitchTurn()
         end
     end

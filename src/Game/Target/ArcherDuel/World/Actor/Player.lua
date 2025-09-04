@@ -77,6 +77,7 @@ function Player:OnCreate(Context)
 
     --引用武器配置中的动画【因为持有不同武器播放的动画不一样，所以就设计在武器配置中了】
     self.Animations = WeaponConfig.Animations
+    self.Audios = WeaponConfig.Audios
 
     --创建曲线
     if self.Attributes.Controlled then
@@ -85,14 +86,14 @@ function Player:OnCreate(Context)
     end
 
     --待机动画
-    Log:PrintLog("TXPerform(Animation = Idle)", self.UID)
-    FakeCharacter:PlayAnim(self.UID, self.Animations.Idle)
+    self:PlayAnim(self.Animations.Idle)
 end
 
 function Player:OnDestroy()
     --清空配置
     self.Config = nil
     self.Animations = nil
+    self.Audios = nil
 
     self.Weapon:Destroy()
     self.Weapon = nil
@@ -280,11 +281,30 @@ function Player:GetEquipData(ForceUpdate)
     return self.EquipData
 end
 
+--- 播放音效【2D】
+---@param SFXType 音效类型
+function Player:PlayAudio(SFXType)
+    if SFXType then
+        Log:PrintLog(string.format("TXPerform(Audio = %d, UID = %d)", SFXType, self.UID))
+        Audio:PlaySFXAudio2D(SFXType, 4, 100, 0)
+    end
+end
+
+--- 播放动画
+---@param AnimName 动画名称
+function Player:PlayAnim(AnimName)
+    if AnimName then
+        Log:PrintLog(string.format("TXPerform(Animation = %s, UID = %d)", AnimName, self.UID))
+        FakeCharacter:PlayAnim(self.UID, AnimName)
+    end
+end
+
 --- 待机状态
 ---@return Success 状态是否切换成功
 function Player:Idle()
-    Log:PrintLog("TXPerform(Animation = Idle)", self.UID)
-    FakeCharacter:PlayAnim(self.UID, self.Animations.Idle)
+    --播放动画
+    self:PlayAnim(self.Animations.Idle)
+
     if self.FSM then
         local IdleState = UGCS.Target.ArcherDuel.Character.States.IdleState
         return self.FSM:SwitchState(IdleState)
@@ -354,8 +374,11 @@ end
 
 --表演瞄准
 function Player:PerformAim()
-    Log:PrintLog("TXPerform(Animation = Aim)", self.UID)
-    FakeCharacter:PlayAnim(self.UID, self.Animations.Aim)
+    --播放音效
+    self:PlayAudio(self.Audios.PullString)
+
+    --播放动作
+    self:PlayAnim(self.Animations.Aim)
 
     --瞄准时武器表演
     self.Weapon:Perform(self.Config.Perform.PullStringTime)
@@ -364,22 +387,25 @@ end
 --- 发射投掷物
 ---@param PitchDegree 俯仰角【单位：角度】
 function Player:FireProjectile(PitchDegree)
+    --播放音效
+    self:PlayAudio(self.Audios.Fly)
     self.Weapon:SpawnProjectile(PitchDegree)
 end
 
 --- 攻击表演
 function Player:PerformFire()
+    --播放音效
+    self:PlayAudio(self.Audios.Fire)
+
     --播放使用对应的武器动作
-    Log:PrintLog("TXPerform(Animation = Fire)", self.UID)
-    FakeCharacter:PlayAnim(self.UID, self.Animations.Fire)
+    self:PlayAnim(self.Animations.Fire)
 
     --攻击时武器表演
     self.Weapon:Perform()
 
     --一段时间回到持有武器待机动作
     UGCS.Framework.Executor.Delay(self.Config.Perform.FireToIdleTime, function()
-        Log:PrintLog("TXPerform(Animation = Idle)", self.UID)
-        FakeCharacter:PlayAnim(self.UID, self.Animations.Idle)
+        self:PlayAnim(self.Animations.Idle)
     end)
 end
 
@@ -397,6 +423,9 @@ end
 ---@param Impulse 冲量
 ---@param BodyType 身体部位
 function Player:PerformHitStart(Impulse, BodyType)
+    --播放音效
+    self:PlayAudio(self.Audios.Hit)
+
     --受击表演开始时清空移动状态，触发位置探针
     self:ProbeMovement()
 
@@ -500,12 +529,10 @@ function Player:PerformFallback()
         --倒下时，以命中身体部位决定到底姿态
         if FaceRotation.X > 0 then
             --面朝上
-            Log:PrintLog("TXPerform(Animation = HitBackLoop)", self.UID)
-            FakeCharacter:PlayAnim(self.UID, self.Animations.HitBackLoop)
+            self:PlayAnim(self.Animations.HitBackLoop)
         else
             --面朝下
-            Log:PrintLog("TXPerform(Animation = HitFrontLoop)", self.UID)
-            FakeCharacter:PlayAnim(self.UID, self.Animations.HitFrontLoop)
+            self:PlayAnim(self.Animations.HitFrontLoop)
         end
 
         --播放起身动作
@@ -537,12 +564,10 @@ function Player:PerformStandup(TargetRotation)
     local FaceRotation = FakeCharacter:GetSocketRotation(self.UID, self.Config.BodySetting.FaceBone)
     if FaceRotation.X > 0 then
         --面朝上
-        Log:PrintLog("TXPerform(Animation = HitBackToIdle)", self.UID)
-        FakeCharacter:PlayAnim(self.UID, self.Animations.HitBackToIdle)
+        self:PlayAnim(self.Animations.HitBackToIdle)
     else
         --面朝下
-        Log:PrintLog("TXPerform(Animation = HitFrontToIdle)", self.UID)
-        FakeCharacter:PlayAnim(self.UID, self.Animations.HitFrontToIdle)
+        self:PlayAnim(self.Animations.HitFrontToIdle)
     end
 
     UGCS.Framework.Executor.Delay(self.Config.Perform.HitToIdleTime, function()

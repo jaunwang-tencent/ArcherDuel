@@ -53,7 +53,10 @@ local GameConfig = {
     },
     --音效设置
     SoundSetting = {
-
+        --游戏开始【吹哨子】
+        GameStart = 700356,
+        --游戏匹配【齿轮转动】
+        GameMatch = 700373
     },
     --特效设置
     EffectSetting = {
@@ -67,7 +70,7 @@ local GameConfig = {
         --重力加速度【单位：米每平方秒】
         Gravity = 20,
         --地面摩擦系数【单位：1】
-        FrictionFactor = 0.1,
+        FrictionFactor = 0.2,
     },
     --各个部位质量分布
     MassDistribution = {
