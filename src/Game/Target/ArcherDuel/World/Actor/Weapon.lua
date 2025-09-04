@@ -520,6 +520,7 @@ function Weapon:HitTarget(ElementID, Result)
             end
         end
     else
+        --是否需要切回合
         local NeedSwitchTurn = true
         --场景资源
         local SceneResource = self.CurrentScene:GetResource()
@@ -534,11 +535,13 @@ function Weapon:HitTarget(ElementID, Result)
             if MovableList and MovableList[ElementID] then
                 --绑定到障碍物元件
                 Element:BindingToElement(ProjectileElementID, ElementID)
-
-                --对方受击表演
-                local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
-                NextTurnPlayer:PerformHitStart()
-                NeedSwitchTurn = false
+            
+                --对方受击表演【假摔，没任何伤害!^_^!】
+                local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()                
+                if NextTurnPlayer:CheckContact(ElementID) then
+                    NextTurnPlayer:PerformHitStart()
+                    NeedSwitchTurn = false
+                end
 
                 --施加力
                 local ImpulseForward = UMath:GetNormalize(Result.HitImpulse)

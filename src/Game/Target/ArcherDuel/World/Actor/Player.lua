@@ -164,6 +164,21 @@ function Player:IsInState(StateType)
     end
 end
 
+--- 检测当前角色是否与目标元件接触
+---@param ElementID 元件标识
+function Player:CheckContact(ElementID)
+    --在此判定与角色之间的关系
+    local Start = self:GetLocation()
+    local End = Start + Engine.Vector(0, 0, -1000)
+    local HitIDs = PlayInteractive:GetHitResultsWithCapsule(PlayInteractive.HIT_TYPE.Element, Start, End, 50, 50, true, 10)
+    for _, ID in pairs(HitIDs) do
+        if ID == ElementID then
+            return true
+        end
+    end
+    return false
+end
+
 --- 移动探针
 function Player:ProbeMovement()
     self.LastPosition = nil
@@ -210,24 +225,24 @@ function Player:UpdateMovementState()
                     else
                         MovementState = EMovement.Move
                     end
-                else
-                    --第一次刷新，判定为移动态，与下次才能算数是否处于移动状态
-                    MovementState = EMovement.Move
                 end
+            end
+        end
+
+        --更新移动状态
+        if MovementState then
+            self.MovementState = MovementState
+            Log:PrintLog("TXPerform(MovementStateChanged)", MovementState)
+
+            if MovementState == EMovement.Idle then
+                --只有在待机态时才刷新位置
+                self:SyncLocation()
             end
         end
 
         --更新探针骨骼位置与时刻
         self.LastPosition = Start
         self.LastTimestamp = CurrentTimestamp
-        if MovementState == EMovement.Idle then
-            --只有在待机态时才刷新位置
-            self:SyncLocation()
-        end
-
-        --更新移动状态
-        self.MovementState = MovementState
-        Log:PrintLog("TXPerform(MovementStateChanged)", MovementState)
     end
 end
 
@@ -640,9 +655,10 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
         local SplinePoints = {}
         if PitchDegree and AimSetting then
             if self.Weapon then
+                local ShowTrackLength = AimSetting.ShowTrackLength
                 if AimSetting.SampleSpline then
                     local SpawnerPosition = self:GetLocation()
-                    local SplineCurve = self.Weapon:BuildSplineCurve(PitchDegree, AimSetting.ShowTrackLength)
+                    local SplineCurve = self.Weapon:BuildSplineCurve(PitchDegree, ShowTrackLength)
                     for _, SplineKeyPoint in pairs(SplineCurve) do
                         local RelativePosition = SplineKeyPoint.Point
                         local SplinePoint = SpawnerPosition + RelativePosition
@@ -659,13 +675,15 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
                     local OwnerScene = self.OwnerScene
                     local InitVelocity = self.Weapon.Attributes.Velocity
                     local Gravity = OwnerScene:GetGravity()
+                    --这里确保有效性
+                    ShowTrackLength = ShowTrackLength or 5
                     while true do
                         DeltaTime = DeltaTime + AimSetting.ShowTrackTimeStep
                         local RelativePosition = self.Weapon:SamplePosition(PitchRadian, InitVelocity, Gravity, DeltaTime)
                         local SplinePoint = SpawnerPosition + RelativePosition * 100
                         table.insert(SplinePoints, SplinePoint)
                         RelativePosition.Z = 0
-                        if UMath:GetVectorLength(RelativePosition) >= AimSetting.ShowTrackLength then
+                        if UMath:GetVectorLength(RelativePosition) >= ShowTrackLength then
                             --退出
                             break
                         end

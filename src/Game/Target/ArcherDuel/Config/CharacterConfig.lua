@@ -53,9 +53,9 @@ local CharacterConfig = {
                 --人物的高度【单位：米】
                 CharacterHeight = 1.5,
                 --角度下限（打脚）【单位：角度】
-                LowerDegree = -3,
+                LowerDegree = 28,
                 --角度上限（打头）【单位：角度】
-                UpperDegree = 3,
+                UpperDegree = 34,
                 --标准间距【单位：米】
                 L = 50,
                 --纵向偏移系数
