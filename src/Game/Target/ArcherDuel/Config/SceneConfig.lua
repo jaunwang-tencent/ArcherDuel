@@ -88,7 +88,9 @@ local SceneConfig = {
                     Offset = Engine.Vector(-1200, 150, 250),
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
-            }
+            },
+            --死亡底板场景
+            --DeadLine = 670
         },
         --样条设置
         SplineSetting = {
@@ -135,7 +137,9 @@ local SceneConfig = {
                     Offset = Engine.Vector(-1200, 150, 250),
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
-            }
+            },
+            --死亡底板场景
+            --DeadLine = 670
         },
         --样条设置
         SplineSetting = {
@@ -199,8 +203,9 @@ local SceneConfig = {
                     Offset = Engine.Vector(-1200, 150, 250),
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 }
-            }
-
+            },
+            --死亡底板场景
+            --DeadLine = 670
         },
         --样条设置
         SplineSetting = {
@@ -298,7 +303,9 @@ local SceneConfig = {
                     Offset = Engine.Vector(-1200, 150, 250),
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
-            }
+            },
+            --死亡底板场景
+            --DeadLine = 670
         },
         --样条设置
         SplineSetting = {
@@ -380,7 +387,8 @@ local SceneConfig = {
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
-
+            --死亡底板场景
+            --DeadLine = 670
         },
         --样条设置
         SplineSetting = {
@@ -479,6 +487,8 @@ local SceneConfig = {
                     EnemyOffset = Engine.Vector(1200, -150, 250),
                 },
             },
+            --死亡底板场景
+            --DeadLine = 670
         },
         --样条设置
         SplineSetting = {
@@ -530,7 +540,9 @@ local SceneConfig = {
                         [1870] = true,
                     }
                 },
-            }
+            },
+            --死亡底板场景
+            DeadLine = 670
         },
         --样条设置
         SplineSetting = {

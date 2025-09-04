@@ -557,7 +557,7 @@ function Weapon:HitTarget(ElementID, Result)
                 --位置瞬移
                 Element:SetPosition(ElementID, DropPosition, Element.COORDINATE.World)
                 --播放特效
-                Particle:PlayAtPosition(Obstacle.ExplosionEffect, Position, 1, false, 3)
+                Particle:PlayAtPosition(Obstacle.ExplosionEffect, Position, 1)
 
                 --销毁投掷物
                 local SceneID = self.Projectiles[ProjectileElementID]

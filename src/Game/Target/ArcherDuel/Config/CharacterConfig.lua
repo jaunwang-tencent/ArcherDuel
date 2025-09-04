@@ -26,6 +26,8 @@ local CharacterConfig = {
             LandingProbe = 50,
             --移动探针容差值
             ProbeTolerance = 10,
+            --检查待机时间
+            CheckIdleTime = 1
         },
         --身体部位设置【可考虑独立出来】
         BodySetting = {
@@ -53,9 +55,9 @@ local CharacterConfig = {
                 --人物的高度【单位：米】
                 CharacterHeight = 1.5,
                 --角度下限（打脚）【单位：角度】
-                LowerDegree = 28,
+                LowerDegree = 7,
                 --角度上限（打头）【单位：角度】
-                UpperDegree = 34,
+                UpperDegree = 13,
                 --标准间距【单位：米】
                 L = 50,
                 --纵向偏移系数
@@ -82,11 +84,11 @@ local CharacterConfig = {
             --最大俯仰角【单位：角度】
             MaxPitchDegree = 80,
             --显示轨迹长度【水平方向距离，单位：米】
-            ShowTrackLength = 5,
+            --ShowTrackLength = 5,
             --显示轨迹时间步伐【单位：秒】
             ShowTrackTimeStep = 0.05,
             --当前轨迹颜色
-            CurrentTrackColor = "#6CCAFF",
+            CurrentTrackColor = "#006CCAFF",
             --历史轨迹颜色
             HistoryTrackColor = "#C1C1C1FF",
             --起始透明度

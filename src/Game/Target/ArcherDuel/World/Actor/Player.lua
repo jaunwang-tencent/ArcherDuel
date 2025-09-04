@@ -184,6 +184,7 @@ function Player:ProbeMovement()
     self.LastPosition = nil
     self.LastTimestamp = nil
     self.MovementState = nil
+    self.IdleTimestamp = nil
 end
 
 --- 获取指定玩家移动状态【浮空、着地移动，着地停止】
@@ -206,10 +207,12 @@ function Player:UpdateMovementState()
                 local Height = Start.Z - Result.hitPos.Z
                 if Height > MovementProbe.LandingProbe then
                     --浮空态
+                    self.IdleTimestamp = nil
                     MovementState = EMovement.Float
                 end
             else
                 --浮空态
+                self.IdleTimestamp = nil
                 MovementState = EMovement.Float
             end
 
@@ -218,11 +221,20 @@ function Player:UpdateMovementState()
                 if self.LastPosition then
                     --检测到距离上一次位移差超过容错值则判定为移动态
                     local Distance = UMath:GetDistance(Start, self.LastPosition)
-                    local Velocity = Distance / (self.LastTimestamp - CurrentTimestamp)
+                    local DeltaTime = CurrentTimestamp - self.LastTimestamp
+                    local Velocity = Distance / DeltaTime
                     Log:PrintLog("TXPerform(Velocity)", Velocity)
                     if Velocity < MovementProbe.ProbeTolerance then
-                        MovementState = EMovement.Idle
+                        if self.IdleTimestamp then
+                            local IdlePassTime = CurrentTimestamp - self.IdleTimestamp
+                            if IdlePassTime > MovementProbe.CheckIdleTime then
+                                MovementState = EMovement.Idle
+                            end
+                        else
+                            self.IdleTimestamp = CurrentTimestamp
+                        end
                     else
+                        self.IdleTimestamp = nil
                         MovementState = EMovement.Move
                     end
                 end
@@ -524,6 +536,7 @@ function Player:PerformHitStart(Impulse, BodyType)
         if SocketPosition2 then
             --先禁用可移动物体
             self.OwnerScene:EnableMovable(false)
+            Log:PrintLog("TXPerform(ResetPosition, MovementState)", self.MovementState)
             --修正坐标【会影响接触的可移动障碍物】
             local Position2 = SocketPosition2 + OffsetPosition
             FakeCharacter:SetPosition(self.UID, Position2)
