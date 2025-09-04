@@ -20,7 +20,7 @@ function SystemFSM:OnCreate(Context)
         --武器
         Weapon = {
             --Index = UMath:GetRandomInt(1, 3),
-            Index = 3,
+            Index = 1,
         },
         Character = {
             Index = 1

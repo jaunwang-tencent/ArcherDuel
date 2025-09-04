@@ -569,6 +569,11 @@ function Weapon:HitTarget(ElementID, Result)
         end
         --切换回合
         if NeedSwitchTurn and self.CurrentScene then
+            --播放音效
+            local Audios = self.Config and self.Config.Audios
+            if Audios then
+                self.OwnerPlayer:PlayAudio(Audios.Hit)
+            end
             self.CurrentScene:SwitchTurn()
         end
     end
