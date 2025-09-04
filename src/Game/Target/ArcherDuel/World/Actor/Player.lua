@@ -655,6 +655,9 @@ function Player:PerformHitOver()
     local Rotation = self:GetRotation()
     Log:PrintLog("TXPerform(BodyRotation, Last)", Rotation)
     self:SetFakeCharacterRotation(Rotation)
+    
+    --起来后同步位置
+    self:SyncLocation()
 
     --切换到待机状态
     self:Idle()
