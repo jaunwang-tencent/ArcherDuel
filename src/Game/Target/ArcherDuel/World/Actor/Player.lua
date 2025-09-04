@@ -223,7 +223,7 @@ function Player:UpdateMovementState()
                     local Distance = UMath:GetDistance(Start, self.LastPosition)
                     local DeltaTime = CurrentTimestamp - self.LastTimestamp
                     local Velocity = Distance / DeltaTime
-                    Log:PrintLog("TXPerform(Velocity)", Velocity)
+                    --Log:PrintLog("TXPerform(Velocity)", Velocity)
                     if Velocity < MovementProbe.ProbeTolerance then
                         if self.IdleTimestamp then
                             local IdlePassTime = CurrentTimestamp - self.IdleTimestamp
