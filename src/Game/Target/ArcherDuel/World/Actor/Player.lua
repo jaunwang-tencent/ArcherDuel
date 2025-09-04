@@ -450,7 +450,14 @@ function Player:HandleDamage(Attacker, BodyType)
 
     --4、扣血计算
     local Health = self:GetHealth()
-    local Additional = DefenderEquipData.hp or 0
+    local Additional = 0
+    if DefenderEquipData.hp then
+        --消耗装备上的血量值
+        Additional = DefenderEquipData.hp
+        --装备护甲损耗
+        local LossValue = Additional
+        DefenderEquipData.hp = DefenderEquipData.hp - LossValue
+    end
     Health = Health + Additional - Damage
     self:SetHealth(Health)
 end
