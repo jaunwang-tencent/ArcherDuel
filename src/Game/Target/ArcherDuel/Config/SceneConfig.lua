@@ -514,8 +514,8 @@ local SceneConfig = {
                     ForceSize = 1000,
                     --可移动物体摩擦系数
                     Friction = 0.2,
-                    --可移动物体质量【改成密度比较好？更具体积大小而易】
-                    Mass = 100,
+                    --密度，元件单位缩放情况下的质量
+                    Density = 100,
                     --可移动物体列表
                     MovableList  = {
                         [1851] = true,

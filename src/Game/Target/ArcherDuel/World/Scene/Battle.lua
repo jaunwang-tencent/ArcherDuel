@@ -35,7 +35,10 @@ function Battle:OnCreate(Context)
                     Rotation = Element:GetRotation(SceneID)
                 }
                 --全部打开【通过脚本打开可移动的障碍物】
-                Element:SetMass(SceneID, Obstacle.Mass)
+                local Scale = Element:GetScale(SceneID)
+                --计算质量【按缩放计算】
+                local Mass = Obstacle.Density * Scale.X * Scale.Y * Scale.Z
+                Element:SetMass(SceneID, Mass)
                 Element:SetFriction(SceneID, Obstacle.Friction)
                 Element:SetPhysics(SceneID, true, true, true)
             end
