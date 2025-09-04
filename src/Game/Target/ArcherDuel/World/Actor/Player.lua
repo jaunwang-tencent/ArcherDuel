@@ -500,7 +500,9 @@ function Player:PerformHitStart(Impulse, BodyType)
         --躺地一段时间后，移动胶囊体，对齐到可视化网格
         local SocketPosition2 = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.OffsetBone)
         if SocketPosition2 then
-            --修正坐标
+            --先禁用可移动物体
+            self.OwnerScene:EnableMovable(false)
+            --修正坐标【会影响接触的可移动障碍物】
             local Position2 = SocketPosition2 + OffsetPosition
             FakeCharacter:SetPosition(self.UID, Position2)
             --刷新位置
@@ -580,6 +582,9 @@ end
 function Player:PerformStandup(TargetRotation)
     --站起来后关闭物理模拟
     --FakeCharacter:EnableSimulatePhysics(self.UID, false)
+
+    --先恢复可移动物体
+    self.OwnerScene:EnableMovable(true)
 
     --站起时以面向朝向来决定站起
     local FaceRotation = FakeCharacter:GetSocketRotation(self.UID, self.Config.BodySetting.FaceBone)

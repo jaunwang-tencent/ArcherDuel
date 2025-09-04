@@ -81,6 +81,17 @@ function Battle:OnDestroy()
     self.BattleSceneConfig = nil
 end
 
+--- 是否禁用可移动物体【这里主要是为了解决角色被命中后，将角色的碰撞胶囊挪回网格体位置时在途径过程中发生碰撞】
+---@param Enable 是
+function Battle:EnableMovable(Enable)
+    local SceneResource = self:GetResource()
+    local Obstacle = SceneResource and SceneResource.Obstacle
+    local MovableList = Obstacle and Obstacle.MovableList
+    for SceneID, _ in pairs(MovableList) do
+        Element:SetPhysics(SceneID, Enable, true, Enable)
+    end
+end
+
 --- 设置轮回这状态
 ---@param self 自身实例
 ---@param ActorID 角色标识
