@@ -211,6 +211,16 @@ function Battle:GetDisplacement()
     end
 end
 
+--- 爆头提示
+function Battle:HeadShot()
+    --爆头提示
+    if self.CriticalHitReward then
+        UI:SetVisible({self.CriticalHitReward.HeadShotUI}, true)
+        System:FireSignEvent(_GAME.Sign.HeadShot)
+    end
+end
+
+---------------------------------------------以下为相机相关操作---------------------------------------------
 --- 观察目标
 ---@param CameraSceneId 相机元件标识
 ---@param Position 位置
@@ -319,14 +329,6 @@ function Battle:LookProjectile(Position)
         LookTarget(self.CurrentRunningCamera, Position, offest, NeetSwitch)
     end
 end
-
---- 爆头提示
-function Battle:HeadShot()
-    --爆头提示
-    if self.CriticalHitReward then
-        UI:SetVisible({self.CriticalHitReward.HeadShotUI}, true)
-        System:FireSignEvent(_GAME.Sign.HeadShot)
-    end
-end
+---------------------------------------------以上为相机相关操作---------------------------------------------
 
 return Battle
