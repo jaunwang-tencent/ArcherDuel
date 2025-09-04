@@ -416,7 +416,7 @@ function Player:HandleDamage(Attacker, BodyType)
 
     --3、伤害计算
     --3.1、基础伤害
-    local Damage = AttackerEquipData and AttackerEquipData.damage or Attacker.Attributes.Damage
+    local Damage = AttackerEquipData and AttackerEquipData.damage or Attacker.Weapon.Attributes.Attack
     --3.2、伤害加成
     if AttackerEquipData and DefenderEquipData then
         if BodyType == Character.SOCKET_NAME.Head then
