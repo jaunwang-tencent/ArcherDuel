@@ -277,7 +277,6 @@ function Battle:LookPlayer(Player)
             Location = (Location + NextLocation)/2
         else
             --对方看对方
-            Location = Player:GetLocation()
             Offest.X = -Offest.X
             Offest.Y = -Offest.Y
         end
