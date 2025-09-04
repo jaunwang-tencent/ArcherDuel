@@ -43,12 +43,6 @@ function Player:OnCreate(Context)
         end
     end
 
-    -- 读取玩家装备数据
-    local equipData = self:GetEquipData()
-    if equipData and equipData.hp then
-        self.Attributes.Health = self.Attributes.Health + equipData.hp
-    end
-
     --抬头血量显示
     local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
     local BattleView = UISetting and UISetting.BattleView
@@ -340,12 +334,14 @@ function Player:Fire(PitchDegree)
 end
 
 --- 角色命中
----@param Result 命中信息
+---@param Attacker 攻击者
+---@param AttackImpulse 攻击冲量
+---@param BodyType 身体部位
 ---@return Success 状态是否切换成功
-function Player:Hit(Result)
+function Player:Hit(Attacker, AttackImpulse, BodyType)
     if self.FSM then
         local HitState = UGCS.Target.ArcherDuel.Character.States.HitState
-        return self.FSM:SwitchState(HitState, {HitInfo = Result})
+        return self.FSM:SwitchState(HitState, { Attacker = Attacker, AttackImpulse = AttackImpulse, BodyType = BodyType})
     else
         return false
     end
@@ -409,13 +405,38 @@ function Player:PerformFire()
     end)
 end
 
---- 命中伤害
----@param Damage 伤害值
+--- 处理伤害【关于伤害计算相关的数值计算全部收敛到这里，外面就不要搞了】
+---@param Attacker 攻击者
 ---@param BodyType 身体部位
-function Player:HitDamage(Damage, BodyType)
-    local Health = self:GetHealth()
+function Player:HandleDamage(Attacker, BodyType)
+    --1、获取攻击者装备
+    local AttackerEquipData = Attacker:GetEquipData()
+    --2、获取防御者装备
+    local DefenderEquipData = self:GetEquipData()
+
+    --3、伤害计算
+    --3.1、基础伤害
+    local Damage = AttackerEquipData and AttackerEquipData.damage or AttackerEquipData.Attributes.Damage
+    --3.2、伤害加成
+    if AttackerEquipData and DefenderEquipData then
+        if BodyType == Character.SOCKET_NAME.Head then
+            --爆头
+            Damage = Damage * (1 + AttackerEquipData.head_damageRate or 0)
+            Damage = Damage * (1 - DefenderEquipData.head_protection or 0)
+        else
+            --打身
+            Damage = Damage * (1 + AttackerEquipData.body_damageRate or 0)
+            Damage = Damage * (1 - DefenderEquipData.body_protection or 0)
+        end
+    end
+    --3.3、伤害倍率
     local DamageRate = self:GetDamageRate(BodyType)
-    Health = Health - Damage * DamageRate
+    Damage = Damage * DamageRate
+
+    --4、扣血计算
+    local Health = self:GetHealth()
+    local Additional = DefenderEquipData.hp or 0
+    Health = Health + Additional - Damage
     self:SetHealth(Health)
 end
 

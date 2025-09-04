@@ -513,15 +513,10 @@ function Weapon:HitTarget(ElementID, Result)
             end
             local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
             if ElementID == NextTurnPlayer.UID then
-                local EquipData = self.OwnerPlayer:GetEquipData()
-                if EquipData and EquipData.damage then
-                    Result.damage = EquipData.damage
-                    Result.head_damageRate = EquipData.head_damageRate
-                    Result.body_damageRate = EquipData.body_damageRate
-                else
-                    Result.damage = self.Attributes.Damage
-                end
-                NextTurnPlayer:Hit(Result)
+                --将投射物附加到角色身上
+                Element:BindingToCharacterOrNPC(Result.ProjectileID, ElementID, Result.HitBody, Character.SOCKET_MODE.KeepWorld)
+                --角色命中
+                NextTurnPlayer:Hit(self.OwnerPlayer, Result.HitImpulse, Result.HitBody)
             end
         end
     else

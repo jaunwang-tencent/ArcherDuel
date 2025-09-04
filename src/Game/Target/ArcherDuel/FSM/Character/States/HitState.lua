@@ -5,7 +5,7 @@ local HitState = UGCS.RTTI.Class("HitState", UGCS.Framework.State)
 ---@param Args 参数列表
 ---@return 是否切换成功
 function HitState:OnSwitch(Args)
-    if Args and Args.HitInfo then
+    if Args and Args.Attacker and Args.AttackImpulse and Args.BodyType then
         --需要有命中信息才能进入
         return true
     end
@@ -19,30 +19,13 @@ function HitState:OnEnter(Previous, Args)
     self.OwnerPlayer = self.FSM.OwnerPlayer
 
     --绑定到目标角色
-    local CharacterUID = self.OwnerPlayer.UID
-    local ProjectileID = Args.HitInfo.ProjectileID
-    local HitBody = Args.HitInfo.HitBody
+    local Attacker, AttackImpulse, BodyType = Args.Attacker, Args.AttackImpulse, Args.BodyType
 
-    --将投射物附加到角色身上
-    Element:BindingToCharacterOrNPC(ProjectileID, CharacterUID, HitBody, Character.SOCKET_MODE.KeepWorld)
-
-    --伤害计算
-    local damage = Args.HitInfo.damage
-    local equipData = self.OwnerPlayer:GetEquipData()
-    if equipData then
-        if HitBody == Character.SOCKET_NAME.Head then
-            damage = damage * (1 + Args.HitInfo.head_damageRate or 0)
-            damage = damage * (1 - equipData.head_protection or 0)
-        else
-            damage = damage * (1 + Args.HitInfo.body_damageRate or 0)
-            damage = damage * (1 - equipData.body_protection or 0)
-        end
-    end
-
-    self.OwnerPlayer:HitDamage(damage, HitBody)
+    --处理伤害
+    self.OwnerPlayer:HandleDamage(Attacker, BodyType)
 
     --开始表演
-    self.OwnerPlayer:PerformHitStart(Args.HitInfo.HitImpulse, HitBody)
+    self.OwnerPlayer:PerformHitStart(AttackImpulse, BodyType)
 end
 
 --- 重置状态
