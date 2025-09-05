@@ -522,7 +522,6 @@ function Player:HandleDamage(Attacker, BodyType)
 
     --4、扣血计算
     local Health = self:GetHealth()
-    Damage = 1
     Health = Health - Damage
     self:SetHealth(Health)
 end

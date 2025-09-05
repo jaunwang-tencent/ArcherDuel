@@ -66,7 +66,7 @@ local CharacterConfig = {
             --瞄准冷却时间【单位：秒】
             CoolDownTime = 1.2,
             --样条采样方案
-            SampleSpline = true,
+            SampleSpline = false,
             --命中样条【贝塞尔曲线】限定参数
             HitSpline = {
                 --样条分段量【数值越小越平滑，性能越差，反之亦然】
