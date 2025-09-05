@@ -94,30 +94,6 @@ function Battle:EnableMovable(Enable)
     end
 end
 
---- 设置轮回这状态
----@param self 自身实例
----@param ActorID 角色标识
----@param State 状态
-local function SetTurnState(self, ActorID, State)
-    local Actor = self:GetActor(ActorID)
-    if Actor then
-        Actor.MyTurn = State
-        --看我
-        if State then
-            Actor:SyncLocation()
-            self:LookPlayer(Actor)
-        end
-    end
-end
-
---- 应用回合状态
----@param self 自身实例
-local function ApplyTurnState(self)
-    --设置回合状态
-    SetTurnState(self, self.CurrentTurn, true)
-    SetTurnState(self, self.NextTurn, false)
-end
-
 --- 获取指定战斗阶段资源配置
 function Battle:GetResource()
     if self.SceneIndex then
@@ -174,8 +150,8 @@ function Battle:LoadCharacter(Context)
             Equipments = NextEquipments,
         })
 
-        --首次应用状态
-        ApplyTurnState(self)
+        local CurrentTurnPlayer = self:GetCurrentTurnPlayer()
+        self:LookPlayer(CurrentTurnPlayer)
     else
         Log:PrintError("没有指定场景的配置信息")
     end
@@ -184,46 +160,23 @@ end
 --- 切换回合
 ---@return Success 回合切换是否成功
 function Battle:SwitchTurn()
-    local ExecuteSwitchTurn = function()
-        if self.CurrentTurn and self.NextTurn then
-            --这里根据状态加一层保护
-            local TempTurn = self.CurrentTurn
-            self.CurrentTurn = self.NextTurn
-            self.NextTurn = TempTurn
-    
-            --设置回合状态
-            ApplyTurnState(self)
-    
-            --对外抛出事件
-            if self.OnSwitchTurn then
-                self.OnSwitchTurn()
-            end
-            return true
-        else
-            return false
+    if self.CurrentTurn and self.NextTurn then
+        --这里根据状态加一层保护
+        local TempTurn = self.CurrentTurn
+        self.CurrentTurn = self.NextTurn
+        self.NextTurn = TempTurn
+
+        --看我
+        local CurrentTurnPlayer = self:GetCurrentTurnPlayer()
+        self:LookPlayer(CurrentTurnPlayer)
+
+        --对外抛出事件
+        if self.OnSwitchTurn then
+            self.OnSwitchTurn()
         end
-    end
-    --获取当前时刻
-    local CurrentTimestamp = UGCS.Framework.Application.current:Watch()
-    --计算时间戳
-    local DelayTime = 0
-    local BlendTime = 1.2
-    if self.LastSwitchTimestamp then
-        --当相机切换时间差小于混合时间时，这会导致相机瞬移
-        local DeltaTime = CurrentTimestamp - self.LastSwitchTimestamp
-        --补齐混合时间
-        DelayTime = BlendTime - DeltaTime
-        if DelayTime > 0 then
-            --补齐混合时间
-            DelayTime = DelayTime + BlendTime
-        end
-    end
-    if DelayTime > 0 then
-        UGCS.Framework.Executor.Delay(DelayTime, function()
-            ExecuteSwitchTurn()
-        end)
+        return true
     else
-        return ExecuteSwitchTurn()
+        return false
     end
 end
 
@@ -292,26 +245,52 @@ end
 --- 观察玩家(敌人)
 ---@param Player 目标玩家
 function Battle:LookPlayer(Player)
-    local SceneResource = self:GetResource()
-    local CameraConfig = SceneResource and SceneResource.Camera
-    if CameraConfig then
-        Log:PrintLog("TXPerform(LookPlayer)")
-        --当前角色位置
-        local Location = Player:GetLocation()
-        local Offest = Engine.Vector(CameraConfig.Offset.X, CameraConfig.Offset.Y, CameraConfig.Offset.Z)
-        if Player:IsControlled() then
-            --己方看中间
-            local NextPlayer = self:GetActor(self.NextTurn)
-            local NextLocation = NextPlayer:GetLocation()
-            Location = (Location + NextLocation)/2
-        else
-            --对方看对方
-            Offest.X = -Offest.X
-            Offest.Y = -Offest.Y
+    --真正的执行看
+    local ExecuteLook = function()
+        local SceneResource = self:GetResource()
+        local CameraConfig = SceneResource and SceneResource.Camera
+        if CameraConfig then
+            Log:PrintLog("TXPerform(LookPlayer)")
+            --当前角色位置
+            local Location = Player:GetLocation()
+            local Offest = Engine.Vector(CameraConfig.Offset.X, CameraConfig.Offset.Y, CameraConfig.Offset.Z)
+            if Player:IsControlled() then
+                --己方看中间
+                local NextPlayer = self:GetActor(self.NextTurn)
+                local NextLocation = NextPlayer:GetLocation()
+                Location = (Location + NextLocation)/2
+            else
+                --对方看对方
+                Offest.X = -Offest.X
+                Offest.Y = -Offest.Y
+            end
+            local Position = Player:GetOffsetPosition(Offest.X, Offest.Y, Offest.Z)
+            local Forward = Location - Position
+            self:LookTarget(CameraConfig.CharacterCameraSceneId, Position, Forward)
         end
-        local Position = Player:GetOffsetPosition(Offest.X, Offest.Y, Offest.Z)
-        local Forward = Location - Position
-        self:LookTarget(CameraConfig.CharacterCameraSceneId, Position, Forward)
+    end
+
+    --获取当前时刻
+    local CurrentTimestamp = UGCS.Framework.Application.current:Watch()
+    --计算时间戳
+    local DelayTime = 0
+    local BlendTime = 1.2
+    if self.LastSwitchTimestamp then
+        --当相机切换时间差小于混合时间时，这会导致相机瞬移
+        local DeltaTime = CurrentTimestamp - self.LastSwitchTimestamp
+        --补齐混合时间
+        DelayTime = BlendTime - DeltaTime
+        if DelayTime > 0 then
+            --补齐混合时间
+            DelayTime = DelayTime + 0.2
+        end
+    end
+    if DelayTime > 0 then
+        UGCS.Framework.Executor.Delay(DelayTime, function()
+            ExecuteLook()
+        end)
+    else
+        return ExecuteLook()
     end
 end
 
