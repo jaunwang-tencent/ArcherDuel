@@ -806,14 +806,16 @@ function Player:DrawHistoryTrack(PitchDegree)
 end
 
 function Player:ChangeCharacterBody(Equipments)
-    local bodyIds = {}
-    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
-    for i, v in pairs(Equipments) do
-        if EquipmentConfig[v] and EquipmentConfig[v].EquipID then
-            table.insert(bodyIds, EquipmentConfig[v].EquipID)
+    if Equipments then
+        local bodyIds = {}
+        local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+        for i, v in pairs(Equipments) do
+            if EquipmentConfig[v] and EquipmentConfig[v].EquipID then
+                table.insert(bodyIds, EquipmentConfig[v].EquipID)
+            end
         end
+        FakeCharacter:ChangeCharacterBody(self.UID, bodyIds)
     end
-    FakeCharacter:ChangeCharacterBody(self.UID, bodyIds)
 end
 
 return Player

@@ -302,7 +302,7 @@ function Weapon:Update(DeltaTime)
         if RelativePosition then
             SpawnerPosition = self.OwnerPlayer:GetLocation()
             if IsOver then
-                self:HitTarget()
+                self:HitTarget(nil, { hitPos = SpawnerPosition + RelativePosition })
                 return
             end
             Velocity.Y = 0
@@ -539,7 +539,9 @@ end
 ---@param Result 命中结果信息
 function Weapon:HitTarget(ElementID, Result)
     --在此播放命中特效
-    self:PlayEffectOnPosition(Result.hitPos, "Hit")
+    if Result and Result.hitPos then
+        self:PlayEffectOnPosition(Result.hitPos, "Hit")
+    end
 
     --受击者相应
     if Result and Result.HitType == PlayInteractive.HIT_TYPE.Character then
@@ -568,7 +570,7 @@ function Weapon:HitTarget(ElementID, Result)
         local SceneResource = self.CurrentScene:GetResource()
         --障碍物
         local Obstacle = SceneResource and SceneResource.Obstacle
-        if Obstacle then
+        if Obstacle and ElementID then
             --投掷物实例标识
             local ProjectileElementID = self.ProjectileInstance.ElementID
 
