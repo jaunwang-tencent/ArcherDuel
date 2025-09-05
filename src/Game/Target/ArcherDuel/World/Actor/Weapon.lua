@@ -302,7 +302,7 @@ function Weapon:Update(DeltaTime)
         if RelativePosition then
             SpawnerPosition = self.OwnerPlayer:GetLocation()
             if IsOver then
-                self:HitTarget(nil, { hitPos = SpawnerPosition + RelativePosition })
+                self:HitTarget()
                 return
             end
             Velocity.Y = 0
@@ -540,7 +540,9 @@ end
 ---@param ElementID 命中对象标识
 ---@param Result 命中结果信息
 function Weapon:HitTarget(ElementID, Result)
-    local NeedPlayEffect = true
+    --投掷物实例标识
+    local ProjectileElementID = self.ProjectileInstance.ElementID
+    local NeedPlayEffect, NeedDestroyProjectile = true, false
     --受击者相应
     if Result and Result.HitType == PlayInteractive.HIT_TYPE.Character then
         --调整冲量，未来走配置
@@ -569,9 +571,6 @@ function Weapon:HitTarget(ElementID, Result)
         --障碍物
         local Obstacle = SceneResource and SceneResource.Obstacle
         if Obstacle and ElementID then
-            --投掷物实例标识
-            local ProjectileElementID = self.ProjectileInstance.ElementID
-
             --可移动物体
             local MovableList = Obstacle.MovableList
             if MovableList and MovableList[ElementID] then
@@ -603,11 +602,15 @@ function Weapon:HitTarget(ElementID, Result)
                 --self:PlayEffectOnPosition(Position, "Explosion")
                 --无需播放特效
                 NeedPlayEffect = false
-
-                --销毁投掷物
-                local SceneID = self.Projectiles[ProjectileElementID]
-                RemoveProjectile(ProjectileElementID, SceneID)
-                self.Projectiles[ProjectileElementID] = nil
+                --需要销毁投掷物
+                NeedDestroyProjectile = true
+            end
+        else
+            if not ElementID then
+                --无需播放特效
+                NeedPlayEffect = true
+                --没有命中任何元件时，则销毁投掷物
+                NeedDestroyProjectile = true
             end
         end
         --切换回合
@@ -621,8 +624,15 @@ function Weapon:HitTarget(ElementID, Result)
         end
     end
     --在此播放命中特效
-    if NeedPlayEffect and Result and Result.hitPos then
-        self:PlayEffectOnPosition(Result.hitPos, "Hit")
+    if NeedPlayEffect then
+        self:PlayEffectOnElement(ProjectileElementID, "Hit")
+    end
+    --需要销毁投掷物
+    if NeedDestroyProjectile then
+        --销毁投掷物
+        local SceneID = self.Projectiles[ProjectileElementID]
+        RemoveProjectile(ProjectileElementID, SceneID)
+        self.Projectiles[ProjectileElementID] = nil
     end
     Particle:StopParticle(self.ProjectileInstance.EffectID)
     self.ProjectileInstance = nil
