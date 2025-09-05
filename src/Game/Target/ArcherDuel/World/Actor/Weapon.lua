@@ -432,7 +432,7 @@ function Weapon:PlayEffectOnPosition(Position, EffectName)
     local EffectData = self:GetEffect(EffectName)
     if EffectData and Position then
         --投掷特效
-        local EffectID = Particle:PlayAtPosition(EffectData.ID, Position + EffectData.Offet, 5, true, 100)
+        local EffectID = Particle:PlayAtPosition(EffectData.ID, Position + EffectData.Offset, 5, true, 100)
         return EffectID
     end
 end

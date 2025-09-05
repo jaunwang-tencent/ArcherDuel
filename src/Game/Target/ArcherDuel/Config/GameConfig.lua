@@ -58,13 +58,6 @@ local GameConfig = {
         --游戏匹配【齿轮转动】
         GameMatch = 700373
     },
-    --特效设置
-    EffectSetting = {
-        --命中角色
-        HitCharacter = 1,
-        --命中其它
-        HitOther = 2,
-    },
     --物理
     Physics = {
         --重力加速度【单位：米每平方秒】

@@ -481,8 +481,8 @@ local SceneConfig = {
             [1] = {
                 --阵营出生点
                 BirthPoint = {
-                    Local = 324,
-                    Enemy = 290
+                    Local = 290,
+                    Enemy = 324
                 },
                 --相机
                 Camera = {
@@ -503,8 +503,8 @@ local SceneConfig = {
                     Density = 100,
                     --可移动物体列表
                     MovableList  = {
-                        [1851] = true,
-                        [1852] = true,
+                        [618] = true,
+                        [621] = true,
                     },
                     --掉落速度【单位：米每秒】
                     DropOffset = Engine.Vector(0, 0, -10000),
@@ -512,7 +512,7 @@ local SceneConfig = {
                     ExplosionEffect = 8,
                     --活体列表【命中后直接瞬移，播放爆炸效果】
                     BodyList = {
-                        [1870] = true,
+                        [661] = true,
                     }
                 },
             },
