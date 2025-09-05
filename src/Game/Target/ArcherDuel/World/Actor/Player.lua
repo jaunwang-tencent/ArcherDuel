@@ -267,6 +267,11 @@ end
 ---@param Rotation 欧拉角
 function Player:SetFakeCharacterRotation(Rotation)
     Rotation = Rotation - Engine.Rotator(0, 0, 90)
+    if Rotation.Z > 180 then
+        Rotation.Z = Rotation.Z - 360
+    elseif Rotation.Z  < -180 then
+        Rotation.Z = Rotation.Z + 360
+    end
     FakeCharacter:SetRotation(self.UID, Rotation)
 end
 
@@ -517,6 +522,7 @@ function Player:HandleDamage(Attacker, BodyType)
 
     --4、扣血计算
     local Health = self:GetHealth()
+    Damage = 1
     Health = Health - Damage
     self:SetHealth(Health)
 end
