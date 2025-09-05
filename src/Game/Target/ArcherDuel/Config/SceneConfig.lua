@@ -476,6 +476,8 @@ local SceneConfig = {
     },
     --室外
     [7] = {
+        -- 是否为黄金赛场景
+        IsGold = true,
         --战斗场景资源
         Resource = {
             [1] = {

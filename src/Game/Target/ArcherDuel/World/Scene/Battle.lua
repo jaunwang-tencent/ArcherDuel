@@ -137,6 +137,11 @@ function Battle:LoadCharacter(Context)
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Local)
         Element:SetVisibility(SceneResource.BirthPoint.Local, false)
+        local CurrentEquipments = {}
+        local PlayerID = Character:GetLocalPlayerId()
+        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Part_Num"))
+        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Bottoms_Num"))
+        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Cloth_Num"))
         self.CurrentTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = LocalPosition,
             Rotation = LocalRotation,
@@ -144,7 +149,8 @@ function Battle:LoadCharacter(Context)
             Controlled = true,
             Situation = Context.Scene.Situation,
             CharacterConfigID = Context.Character.Index,
-            WeaponConfigID = Context.Weapon.Index
+            WeaponConfigID = Context.Weapon.Index,
+            Equipments = CurrentEquipments,
         })
         --主控视角是否反向
         self.ControlledViewTurn = math.abs(LocalRotation.Z) > 90
@@ -153,6 +159,10 @@ function Battle:LoadCharacter(Context)
         local EnemyPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
         local EnemyRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
         Element:SetVisibility(SceneResource.BirthPoint.Enemy, false)
+        local NextEquipments = {}
+        for i, v in ipairs(Context.RivalInfo.Equipments) do
+            table.insert(NextEquipments, v)
+        end
         self.NextTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = EnemyPosition,
             Rotation = EnemyRotation,
@@ -160,7 +170,8 @@ function Battle:LoadCharacter(Context)
             Controlled = false,
             Situation = Context.Scene.Situation,
             CharacterConfigID = Context.Character.Index,
-            WeaponConfigID = Context.Weapon.Index
+            WeaponConfigID = Context.RivalInfo.WeaponId,
+            Equipments = NextEquipments,
         })
 
         --首次应用状态
@@ -309,6 +320,33 @@ function Battle:LookProjectile(Position)
         Position = Position + Offset
         LookTarget(self.CurrentRunningCamera, Position, -Offset, NeedSwitch)
     end
+end
+
+
+-- 表演场景，从对手占位前面面扫过
+function Battle:OnGoldShow(showTime)
+    local SceneResource = self:GetResource()
+    if SceneResource then
+        local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
+        local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
+
+		local startOffest = {X = 500, Y = -500, Z = 250} -- 起始偏移点
+		local endOffest = {X = 500, Y = 500, Z = 250} -- 结束偏移点
+		local Forward = UMath:RotatorToForward(LocalRotation)
+		local Up = Engine.Vector(0, 0, 1)
+		local Right = UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))
+		local OffsetPosition1 = LocalPosition + Forward * startOffest.X + Right * startOffest.Y + Up * startOffest.Z
+		local OffsetPosition2 = LocalPosition + Forward * endOffest.X + Right * endOffest.Y + Up * endOffest.Z
+
+		local CameraConfig = SceneResource and SceneResource.Camera
+		if CameraConfig then
+			local CameraSceneId= CameraConfig.ProjectileCameraSceneId
+			Camera:MovieCameraStart(CameraSceneId)
+			Element:SetForward(CameraSceneId, Forward)
+			-- 移动相机
+			Element:MoveTo(CameraSceneId,OffsetPosition2,showTime,Element.CURVE.linear,OffsetPosition1)
+		end
+	end
 end
 ---------------------------------------------以上为相机相关操作---------------------------------------------
 

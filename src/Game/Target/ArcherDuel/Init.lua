@@ -57,6 +57,7 @@ UGCS.Target.ArcherDuel.World.Actor.Spear = require "Game.Target.ArcherDuel.World
 --场景
 UGCS.Target.ArcherDuel.World.Scene = {}
 UGCS.Target.ArcherDuel.World.Scene.Battle = require "Game.Target.ArcherDuel.World.Scene.Battle"
+UGCS.Target.ArcherDuel.World.Scene.GoldBattle = require "Game.Target.ArcherDuel.World.Scene.GoldBattle"
 
 --模块
 UGCS.Target.ArcherDuel.Modules = {}

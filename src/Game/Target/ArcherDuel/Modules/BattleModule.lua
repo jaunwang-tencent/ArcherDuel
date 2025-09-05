@@ -16,6 +16,12 @@ function BattleModule:Open(Context)
 
     --创建战场
     self.BattleScene = UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.World.Scene.Battle, Context)
+    if Context.GoldInfos and #Context.GoldInfos > 0 then
+        self.GoldBattleScenes = {}
+        for _, v in ipairs(Context.GoldInfos) do
+            table.insert(self.GoldBattleScenes, UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.World.Scene.GoldBattle, v))
+        end
+    end
 
     --来到战场之后，注册输入事件
     System:RegisterEvent(Events.ON_TOUCH_SCREEN_PRESSED, function (x, y) self:OnTouchPressed(x, y) end)
@@ -28,6 +34,8 @@ function BattleModule:Open(Context)
 
     --游戏结束
     System:RegisterGameEvent(_GAME.Events.GameEnd, self.OnGameEnd, self)
+    --黄金赛镜头表演
+    System:RegisterGameEvent(_GAME.Events.GoldShow, self.OnGoldShow, self)
 
     --从场景中萃取【固定的】
     self.SceneGravity = self.BattleScene:GetGravity()
@@ -44,8 +52,8 @@ function BattleModule:Open(Context)
         UI:SetVisible(self.BattleViewIDList, true)
 
         -- 设置玩家昵称
-        UI:SetText({BattleView.LocalPlayer.NickName},Chat:GetCustomName(Character:GetLocalPlayerId()))
-        UI:SetText({BattleView.EnemyPlayer.NickName},"神箭手")
+        UI:SetText({BattleView.LocalPlayer.NickName}, Chat:GetCustomName(Character:GetLocalPlayerId()))
+        UI:SetText({BattleView.EnemyPlayer.NickName}, Context.RivalInfo.Name)
 
         local AimPitch = BattleView.AimPitch
         if AimPitch then
@@ -57,6 +65,11 @@ end
 
 function BattleModule:Update(DeltaTime)
     self.BattleScene:Update(DeltaTime)
+    if self.GoldBattleScenes then
+        for _, v in ipairs(self.GoldBattleScenes) do
+            v:Update(DeltaTime)
+        end
+    end
 end
 
 --- 关闭
@@ -78,6 +91,13 @@ function BattleModule:Close()
 
     self.BattleScene:Destroy()
     self.BattleScene = nil
+
+    if self.GoldBattleScenes then
+        for _, v in ipairs(self.GoldBattleScenes) do
+            v:Destroy()
+        end
+        self.GoldBattleScenes = nil
+    end
 
     self.SceneGravity = nil
     self.PitchRulerSize = nil
@@ -179,6 +199,32 @@ function BattleModule:OnGameEnd(IsControlledDead)
         --切换到结算状态
         self.RoomFSM:SwitchState(UGCS.Target.ArcherDuel.Room.States.ResultState, {OpenResult = Sign})
     end
+end
+
+-- 黄金赛镜头表演
+function BattleModule:OnGoldShow()
+    local delayTime, showTime = 0, 1
+    -- 黄金赛镜头表演
+    if self.GoldBattleScenes and self.GoldBattleScenes[1] then
+        self.GoldBattleScenes[1]:OnGoldShow(showTime)
+    end
+    delayTime = delayTime + showTime
+    -- 黑屏表演
+    TimerManager:AddTimer(delayTime, function()
+        System:FireSignEvent(_GAME.Sign.BlackScreen)
+    end)
+    delayTime = delayTime + 1
+    -- 黄金赛镜头表演
+    TimerManager:AddTimer(delayTime, function()
+        if self.BattleScene then
+            self.BattleScene:OnGoldShow(showTime)
+        end
+    end)
+    delayTime = delayTime + showTime
+    -- 表演结束，继续游戏
+    TimerManager:AddTimer(delayTime, function()
+        System:FireSignEvent(_GAME.Sign.GoldBattleContinue)
+    end)
 end
 
 --- 获取俯仰角弧度

@@ -14,16 +14,20 @@ local EMovement = {
 function Player:OnCreate(Context)
     Player.super.OnCreate(self, Context)
 
+    -- 是否只做表演
+    self.OnlyShow = Context and Context.OnlyShow or false
     --是否为本地控制
     local Controlled = Context and Context.Controlled or false
     --在此创建假人【这个非常耗】
     self.UID = FakeCharacter:CreateCharacter(self.Transform.Location, self.Transform.Rotation, self.Transform.Scale, not Controlled)
     self:SetFakeCharacterRotation(self.Transform.Rotation)
+    -- 给假人换装
+    self:ChangeCharacterBody(Context.Equipments)
     if Controlled then
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.MeshVisibility, false)
-        FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
+        -- FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
     end
 
     --获取角色配置【只读】
@@ -43,35 +47,25 @@ function Player:OnCreate(Context)
         end
     end
 
-    --抬头血量显示
-    local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
-    local BattleView = UISetting and UISetting.BattleView
-    if BattleView then
-        local PlayerView = self.Attributes.Controlled and BattleView.LocalPlayer or BattleView.EnemyPlayer
-        if PlayerView then
-            self.UI_HP = PlayerView.HPValue
-            local HUD_HPList = {self.UI_HP}
-            UI:SetProgressMaxValue(HUD_HPList, self.Attributes.Health)
-            UI:SetProgressCurrentValue(HUD_HPList, self.Attributes.Health)
-        end
-    end
-
     --创建角色后，分配角色状态机
     self.FSM = UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.Character.FSM, {
         OwnerPlayer = self
     })
 
     --创建武器
-    local WeaponConfig = UGCS.Target.ArcherDuel.Config.WeaponConfig[Context.WeaponConfigID]
-    self.Weapon = UGCS.RTTI.CreateInstanceByTypeName(WeaponConfig.TypeName, {
+    self.WeaponConfig = UGCS.Target.ArcherDuel.Config.WeaponConfig[Context.WeaponConfigID]
+    self.Weapon = UGCS.RTTI.CreateInstanceByTypeName(self.WeaponConfig.TypeName, {
         WeaponConfigID = Context.WeaponConfigID,
         Situation = Context.Situation,
         OwnerPlayer = self
     })
 
     --引用武器配置中的动画【因为持有不同武器播放的动画不一样，所以就设计在武器配置中了】
-    self.Animations = WeaponConfig.Animations
-    self.Audios = WeaponConfig.Audios
+    self.Animations = self.WeaponConfig.Animations
+    self.Audios = self.WeaponConfig.Audios
+
+    -- 设置角色初始血量
+    self:SetPlayerHP()
 
     --创建曲线
     if self.Attributes.Controlled then
@@ -134,6 +128,7 @@ end
 --- 设置血量
 ---@param Health 血量
 function Player:SetHealth(Health)
+    if self.OnlyShow then return end
     self.Attributes.Health = Health
     if self.UI_HP then
         --刷新血条
@@ -273,6 +268,26 @@ function Player:SetFakeCharacterRotation(Rotation)
     FakeCharacter:SetRotation(self.UID, Rotation)
 end
 
+
+-- 获取玩家装备数据
+function Player:SetPlayerHP()
+    local equipData = self:GetEquipData()
+    self.Attributes.Health = self.Attributes.Health + equipData.hp
+
+    --抬头血量显示
+    local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
+    local BattleView = UISetting and UISetting.BattleView
+    if BattleView then
+        local PlayerView = self.Attributes.Controlled and BattleView.LocalPlayer or BattleView.EnemyPlayer
+        if PlayerView then
+            self.UI_HP = PlayerView.HPValue
+            local HUD_HPList = {self.UI_HP}
+            UI:SetProgressMaxValue(HUD_HPList, self.Attributes.Health)
+            UI:SetProgressCurrentValue(HUD_HPList, self.Attributes.Health)
+        end
+    end
+end
+
 -- 获取玩家装备数据
 function Player:GetEquipData(ForceUpdate)
     if ForceUpdate or not self.EquipData then
@@ -280,24 +295,62 @@ function Player:GetEquipData(ForceUpdate)
         local Bow_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bow_Num")
         local Spear_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Spear_Num")
         local Axe_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Axe_Num")
-        local Hat_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Hat_Num")
-        local Glasses_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Glasses_Num")
+        local Part_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Part_Num")
+        local Bottoms_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bottoms_Num")
         local Cloth_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Num")
         local Bow_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bow_Lv")
         local Spear_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Spear_Lv")
         local Axe_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Axe_Lv")
-        local Hat_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Hat_Lv")
-        local Glasses_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Glasses_Lv")
+        local Part_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Part_Lv")
+        local Bottoms_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bottoms_Lv")
         local Cloth_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Lv")
 
-        self.EquipData = {
-            damage = 150, -- 基础伤害
-            head_damageRate = 0.2, -- 头部伤害倍率
-            body_damageRate = 0.1, -- 身体伤害倍率
-            hp = 200, -- 血量加成
-            head_protection = 0.2, -- 头部保护
-            body_protection = 0.1, -- 身体保护
-        }
+        local Weapon_Num , Weapon_Lv
+        if self.WeaponType == 1 then
+            Weapon_Num = Bow_Num
+            Weapon_Lv = Bow_Lv
+        elseif self.WeaponType == 2 then
+            Weapon_Num = Spear_Num
+            Weapon_Lv = Spear_Lv
+        else
+            Weapon_Num = Axe_Num
+            Weapon_Lv = Axe_Lv
+        end
+         -- 基础伤害
+        local damage = 20-- self.WeaponConfig[Weapon_Num].Attributes.Attack + self.WeaponConfig[Weapon_Num].Attributes.Growth * Weapon_Lv + self.WeaponConfig[Part_Num].Attributes.Attack + self.WeaponConfig[Part_Num].Attributes.Growth * Part_Lv
+        -- 头部伤害倍率
+        local head_damageRate = 1-- self.WeaponConfig[Weapon_Num].Attributes.HeadShotIncrease
+        -- 身体伤害倍率
+        local body_damageRate = 1-- self.WeaponConfig[Weapon_Num].Attributes.BodyShotIncrease
+        -- 血量加成
+        local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+        local hp = 100-- EquipmentConfig[Cloth_Num].Attributes.Heal + self.WeaponConfig[Cloth_Num].Attributes.Growth * Cloth_Lv
+        -- 头部保护
+        local head_protection = 0-- EquipmentConfig[Part_Num].Attributes.HeadShotReduction + EquipmentConfig[Cloth_Num].Attributes.DamageReduction + EquipmentConfig[Bottoms_Num].Attributes.DamageReduction
+        -- 身体保护
+        local body_protection = 0-- EquipmentConfig[Cloth_Num].Attributes.BodyShotReduction + EquipmentConfig[Bottoms_Num].Attributes.BodyShotReduction + EquipmentConfig[Cloth_Num].Attributes.DamageReduction + EquipmentConfig[Bottoms_Num].Attributes.DamageReduction
+
+        if self:IsControlled() then -- 玩家自身的属性
+            self.EquipData = {
+                damage = damage,
+                head_damageRate = head_damageRate,
+                body_damageRate = body_damageRate,
+                hp = hp,
+                head_protection = head_protection,
+                body_protection = body_protection
+            }
+        else -- 玩家对手的属性
+            local rate = math.random(8, 10)
+            rate = rate / 10
+            self.EquipData = {
+                damage = damage * rate,
+                head_damageRate = head_damageRate * rate,
+                body_damageRate = body_damageRate * rate,
+                hp = hp * rate,
+                head_protection = head_protection * rate,
+                body_protection = body_protection * rate,
+            }
+        end
     end
     return self.EquipData
 end
@@ -462,15 +515,16 @@ function Player:HandleDamage(Attacker, BodyType)
 
     --4、扣血计算
     local Health = self:GetHealth()
-    local Additional = 0
-    if DefenderEquipData.hp then
-        --消耗装备上的血量值
-        Additional = DefenderEquipData.hp
-        --装备护甲损耗
-        local LossValue = Additional
-        DefenderEquipData.hp = DefenderEquipData.hp - LossValue
-    end
-    Health = Health + Additional - Damage
+    -- local Additional = 0
+    -- if DefenderEquipData.hp then
+    --     --消耗装备上的血量值
+    --     Additional = DefenderEquipData.hp
+    --     --装备护甲损耗
+    --     local LossValue = Additional
+    --     DefenderEquipData.hp = DefenderEquipData.hp - LossValue
+    -- end
+    -- Health = Health + Additional - Damage
+    Health = Health - Damage
     self:SetHealth(Health)
 end
 
@@ -749,6 +803,17 @@ function Player:DrawHistoryTrack(PitchDegree)
         local TrackColor = AimSetting.HistoryTrackColor
         DrawAimTrack(self, self.HistorySplineId, PitchDegree, TrackColor)
     end
+end
+
+function Player:ChangeCharacterBody(Equipments)
+    local bodyIds = {}
+    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+    for i, v in pairs(Equipments) do
+        if EquipmentConfig[v] and EquipmentConfig[v].EquipID then
+            table.insert(bodyIds, EquipmentConfig[v].EquipID)
+        end
+    end
+    FakeCharacter:ChangeCharacterBody(self.UID, bodyIds)
 end
 
 return Player

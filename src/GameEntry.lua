@@ -17,13 +17,21 @@ _GAME.Sign = {
     --再来一局
     BattleAgain = "Battle Again",
     --爆头信号
-    HeadShot = "Head Shot"
+    HeadShot = "Head Shot",
+    --黄金赛镜头表演
+    GoldShow = "Gold Show",
+    --黑屏表演
+    BlackScreen = "Black Screen",
+    --黄金赛继续
+    GoldBattleContinue = "GoldBattleContinue",
 }
 
 --游戏内事件
 _GAME.Events = {
     --游戏结束
     GameEnd = "GameEnd",
+    --黄金赛镜头表演
+    GoldShow = "GoldShow",
 }
 
 -- 网络协议
