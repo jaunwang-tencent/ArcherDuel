@@ -181,60 +181,68 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                 local EndPoint = Displacement
                 --终点偏移计算
                 EndPoint.Z = EndPoint.Z + CenterOffset
+                
+                --朝向
+                local Forward = EndPoint - StartPoint
+                local MiddlePoint
+                --计算XOY平面距离
+                local XYDistance = GetXOYDistance(StartPoint, EndPoint)
+                local K = XYDistance / HitSpline.L
+                if Forward.Z > 0 and false then
+                    Forward.Z = 0
+                    Forward = UMath:GetNormalize(Forward)
+                    MiddlePoint = EndPoint
+                    EndPoint = StartPoint + Forward * XYDistance * 200
+                else
+                    --计算振幅
+                    local Amplitude = K * SplineSetting.Amplitude
+                    --首尾朝向
+                    Forward.Y = 0
+                    Forward = UMath:GetNormalize(Forward)
+                    --计算法线
+                    local Normal = Engine.Vector(-Forward.Z, 0, Forward.X)
+                    --法线始终朝上
+                    if Normal.Z < 0 then
+                        Normal = -Normal
+                    end
+                    --法线朝向偏移一定振幅
+                    --中点【这一步很重要】
+                    MiddlePoint = (StartPoint + EndPoint) * 0.5
+                    local DesiredMiddlePoint = MiddlePoint + Normal * Amplitude * 100
+                    local Min = math.min(StartPoint.X, EndPoint.X)
+                    local Max = math.max(StartPoint.X, EndPoint.X)
+                    local Delta
+                    if DesiredMiddlePoint.X > Max then
+                        Delta = DesiredMiddlePoint.X - Max
+                    elseif DesiredMiddlePoint.X < Min then
+                        Delta = Min - DesiredMiddlePoint.X
+                    end
+                    if Delta then
+                        --校正曲线边界
+                        Amplitude = Amplitude * Delta / math.abs(MiddlePoint.X - DesiredMiddlePoint.X)
+                        DesiredMiddlePoint = MiddlePoint + Normal * Amplitude * 100
+                        Log:PrintWarning("OutOfSplineBound")
+                    end
+                    --使用预期终点
+                    MiddlePoint = DesiredMiddlePoint
+                end
+                
                 if not IsAimTrack then
                     --Y轴随机偏移【策划要求】
                     local Swing = AimSetting.Swing * 100
                     EndPoint.Y = EndPoint.Y + UMath:GetRandomFloat(-Swing, Swing)
                 end
-
-                --计算XOY平面距离
-                local XYDistance = GetXOYDistance(StartPoint, EndPoint)
-                local K = XYDistance / HitSpline.L
-
-                --计算振幅
-                local Amplitude = K * SplineSetting.Amplitude
-                --中点【这一步很重要】
-                local MiddlePoint = (StartPoint + EndPoint) * 0.5
-                --首尾朝向
-                local Forward = EndPoint - StartPoint
-                Forward.Y = 0
-                Forward = UMath:GetNormalize(Forward)
-                --计算法线
-                local Normal = Engine.Vector(-Forward.Z, 0, Forward.X)
-                --法线始终朝上
-                if Normal.Z < 0 then
-                    Normal = -Normal
-                end
-                --法线朝向偏移一定振幅
-                local DesiredMiddlePoint = MiddlePoint + Normal * Amplitude * 100
-                local Min = math.min(StartPoint.X, EndPoint.X)
-                local Max = math.max(StartPoint.X, EndPoint.X)
-                local Delta
-                if DesiredMiddlePoint.X > Max then
-                    Delta = DesiredMiddlePoint.X - Max
-                elseif DesiredMiddlePoint.X < Min then
-                    Delta = Min - DesiredMiddlePoint.X
-                end
-                if Delta then
-                    --校正曲线边界
-                    Amplitude = Amplitude * Delta / math.abs(MiddlePoint.X - DesiredMiddlePoint.X)
-                    DesiredMiddlePoint = MiddlePoint + Normal * Amplitude * 100
-                    Log:PrintWarning("OutOfSplineBound")
-                end
-                --使用预期终点
-                MiddlePoint = DesiredMiddlePoint
-
                 --曲率
                 local Curvature = K * SplineSetting.Curvature
-
                 --样条采样
                 --Log:PrintLog(string.format("GenerateCurve(PitchDegree=%f, CenterOffset = %f, Curvature = %f, Amplitude = %f)", PitchDegree, CenterOffset, Curvature, Amplitude))
                 local Segment = LimitDistance and HitSpline.AimTrackSegment or HitSpline.Segment
-                local ExtraRate = nil
+                local ExtraRate = 0
                 local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, EndPoint, Segment, Curvature, ExtraRate)
 
                 if CurvePoints then
                     local PointCount = #CurvePoints
+                    local OverIndex = PointCount
                     local VX = self.Attributes.Velocity * 100
                     if Forward.X < 0 then
                         VX = -VX
@@ -250,7 +258,7 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                         for Index = 0, 50 do
                             local Time = Index * 0.1
                             local X = VX * Time
-                            local Z = VZ * Time - 500 * Time * Time
+                            local Z = VZ * Time - 250 * Time * Time
                             local Offset = Engine.Vector(X, 0, Z)
                             table.insert(CurvePoints, EndPoint + Offset)
                         end
@@ -259,34 +267,23 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
 
                     if PointCount > 0 then
                         local SplineCurve = {
-                            [1] = {
-                                Time = 0,
-                                Point = CurvePoints[1]
-                            }
+                            [1] = { Time = 0, Point = CurvePoints[1] }
                         }
+                        local CurveLength = 0
                         for Index = 2, PointCount do
-                            local Point = CurvePoints[Index]
-                            local SplineKey = {
-                                Time = Point.X / VX,
-                                Point = Point
-                            }
+                            local Point1 = CurvePoints[Index - 1]
+                            local Point2 = CurvePoints[Index]
+                            local SplineKey = { Time = Point2.X / VX, Point = Point2 }
                             SplineCurve[Index] = SplineKey
-
+                            CurveLength = CurveLength + GetXOYDistance(Point1, Point2)
                             --越界处理
-                            if LimitDistance and GetXOYDistance(CurvePoints[1], SplineKey.Point) > LimitDistance then
+                            if LimitDistance and CurveLength > LimitDistance then
                                 --跳出
                                 break
                             end
                         end
-
-                        --打印处样条曲线
-                        --[[
-                        for Index, SplineKey in pairs(SplineCurve) do
-                            Log:PrintLog("SplineKey", Index, SplineKey.Time, SplineKey.Point)
-                        end
-                        --]]
                         self.LastSplineCurve = SplineCurve
-                        return SplineCurve
+                        return SplineCurve, OverIndex
                     end
                 end
             end
@@ -299,6 +296,7 @@ end
 function Weapon:SamplePositionAndVelocity(Timestamp)
     local SplineCurve = self.ProjectileInstance and self.ProjectileInstance.SplineCurve
     if SplineCurve then
+        local SplineOverIndex = self.ProjectileInstance.SplineOverIndex
         local KeyPointCount = #SplineCurve
         for KeyIndex = 1, KeyPointCount do
             local Current = SplineCurve[KeyIndex]
@@ -309,14 +307,14 @@ function Weapon:SamplePositionAndVelocity(Timestamp)
                         local TimeLerp = (Timestamp - Current.Time) / (Next.Time - Current.Time)
                         local Position = Current.Point * (1 - TimeLerp) + Next.Point * TimeLerp
                         local Velocity = Next.Point - Current.Point
-                        return Position, Velocity, false
+                        return Position, Velocity, false, KeyIndex > SplineOverIndex
                     end
                 else
                     local Previous = SplineCurve[KeyIndex - 1]
                     if Previous then
                         local Position = Current.Point
                         local Velocity = Current.Point - Previous.Point
-                        return Position, Velocity, true
+                        return Position, Velocity, true, true
                     end
                 end
             end
@@ -333,11 +331,11 @@ function Weapon:Update(DeltaTime)
         local PassTime = CurrentTimestamp - self.ProjectileInstance.SpwanTimestamp
 
         --位置速度采样
-        local RelativePosition, Velocity, IsOver = self:SamplePositionAndVelocity(PassTime)
+        local RelativePosition, Velocity, CurveOver, SplineOver = self:SamplePositionAndVelocity(PassTime)
         local SpawnerPosition
         if RelativePosition then
             SpawnerPosition = self.OwnerPlayer:GetLocation()
-            if IsOver then
+            if CurveOver then
                 self:HitTarget()
                 return
             end
@@ -349,7 +347,7 @@ function Weapon:Update(DeltaTime)
             --根据流逝时间采样投射物位置
             local PitchRadian = UMath:DegToRad(self.ProjectileInstance.PitchDegree)
             RelativePosition = self:SamplePosition(PitchRadian, InitVelocity, Gravity, PassTime) * 100
-            Velocity =  self:SampleVelocity(PitchRadian, InitVelocity, Gravity, PassTime)
+            Velocity = self:SampleVelocity(PitchRadian, InitVelocity, Gravity, PassTime)
             SpawnerPosition = self:GetSpawnerPosition()
         end
         --校正武器朝向
@@ -359,7 +357,17 @@ function Weapon:Update(DeltaTime)
         --挪到发射器位置
         local CurrentPosition = SpawnerPosition + RelativePosition
         --刷新相机【相机跟随投掷物】
-        self.CurrentScene:LookProjectile(CurrentPosition)
+        if SplineOver and false then
+            --样条结束后提前看玩家
+            local NextPlayer = self.CurrentScene:GetNextTurnPlayer()
+            if not self.HasLook then
+                self.HasLook = true
+                self.CurrentScene:LookPlayer(NextPlayer)
+            end
+        else
+            self.HasLook = nil
+            self.CurrentScene:LookProjectile(CurrentPosition)
+        end
 
         --投掷物实例
         local ProjectileInstanceID = self.ProjectileInstance.ElementID
@@ -559,7 +567,7 @@ function Weapon:SpawnProjectile(PitchDegree)
         --播放掷物物特效
         self.ProjectileInstance.EffectID = self:PlayEffectOnElement(ElementID, "Projectile")
         --构建样条曲线
-        self.ProjectileInstance.SplineCurve = self:BuildSplineCurve(PitchDegree, false)
+        self.ProjectileInstance.SplineCurve, self.ProjectileInstance.SplineOverIndex = self:BuildSplineCurve(PitchDegree, false)
         if self.ProjectileInstance.SplineCurve then
             --初始化曲线光标【性能优化使用】
             self.ProjectileInstance.CurveCursor = 1
