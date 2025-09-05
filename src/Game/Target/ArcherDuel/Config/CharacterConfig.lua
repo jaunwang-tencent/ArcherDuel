@@ -46,20 +46,20 @@ local CharacterConfig = {
         },
         --瞄准设置
         AimSetting = {
+            --人物的高度【单位：米】
+            CharacterHeight = 2.3,
+            --角度下限（打脚）【单位：角度】
+            LowerDegree = 14,
+            --角度上限（打头）【单位：角度】
+            UpperDegree = 19,
+            --标准间距【单位：米】
+            StandardDistance = 50,
             --瞄准冷却时间【单位：秒】
             CoolDownTime = 1.2,
             --样条采样方案
             SampleSpline = true,
             --命中样条【贝塞尔曲线】限定参数
             HitSpline = {
-                --人物的高度【单位：米】
-                CharacterHeight = 2.3,
-                --角度下限（打脚）【单位：角度】
-                LowerDegree = 14,
-                --角度上限（打头）【单位：角度】
-                UpperDegree = 19,
-                --标准间距【单位：米】
-                L = 50,
                 --纵向偏移系数
                 K1 = 1,
                 --横向偏移系数
@@ -77,8 +77,6 @@ local CharacterConfig = {
             AnglePrePixel = 0.2,
             --單元角度Z轴偏移量【像素到世界偏移的换算系数，手感优化】
             OffsetZPrePixel = 0.1,
-            --AI命中偏移【单位：米】
-            AIHitZOffset = 0.1,
             --最小俯仰角【单位：角度】
             MinPitchDegree = -80,
             --最大俯仰角【单位：角度】

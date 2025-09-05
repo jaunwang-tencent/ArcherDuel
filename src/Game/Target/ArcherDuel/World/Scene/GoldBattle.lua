@@ -228,7 +228,7 @@ function GoldBattle:GetAIAimPitchDegree()
     if Displacement then
         local AimSetting = self.CharacterConfig.AimSetting
         if AimSetting.SampleSpline then
-            local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting.HitSpline, Displacement)
+            local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
             local PitchDegree = math.random(math.floor(LowerDegree * 10) - 50, math.floor(UpperDegree * 10) + 50) * 0.1
             Log:PrintLog(string.format("GetAIAimPitchDegree(PitchDegree=%f)", PitchDegree))
             return PitchDegree
@@ -236,8 +236,9 @@ function GoldBattle:GetAIAimPitchDegree()
             local V = self:GetCurrentTurnCharacterProjectileVelocity()
             local G = self.SceneGravity
             local L, H = math.abs(Displacement.X) * 0.01, Displacement.Z * 0.01
-            local PitchDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputePitch(V, G, L, -H + AimSetting.AIHitZOffset)
-            PitchDegree = PitchDegree + math.random(-5, 5)
+            local Foot, Head = H - 0.5, H + AimSetting.CharacterHeight + 0.5
+            local TH = UMath:GetRandomFloat(Foot, Head)
+            local PitchDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputePitch(V, G, L, -TH)
             return PitchDegree
         end
     end

@@ -37,18 +37,31 @@ function GameUtils.ComputePitch(V, G, L, H)
     end
 end
 
+--- 根据水平距离和垂直高度以及俯仰角算出初速度速度
+---@param P 俯仰角度
+---@param G 重力加速度
+---@param L 水平距离
+---@param H 垂直高度
+function GameUtils.ComputeVelocity(P, G, L, H)
+    local T = math.tan(UMath:DegToRad(P))
+    local K = 0.5 * (T * T + 1) * G / (L * T - H)
+    local V = math.sqrt(K) * L
+    return V
+end
+
 --- 通过样条曲线配置参数和位移重新计算命中区域
----@param SplineConfig 命中曲线配置参数
+---@param AimSetting 瞄准设置
 ---@param Displacement 两者之间位移
-function GameUtils.ComputeHitRange(SplineConfig, Displacement)
+function GameUtils.ComputeHitRange(AimSetting, Displacement)
+    local SplineConfig = AimSetting.HitSpline
     --计算垂直偏差
     local OffsetZ = Displacement.Z * 0.01
     --重新计算角度区间
-    local LowerDegree = SplineConfig.LowerDegree + OffsetZ * SplineConfig.K1
-    local UpperDegree = SplineConfig.UpperDegree + OffsetZ * SplineConfig.K1
+    local LowerDegree = AimSetting.LowerDegree + OffsetZ * SplineConfig.K1
+    local UpperDegree = AimSetting.UpperDegree + OffsetZ * SplineConfig.K1
     local XY = math.sqrt(Displacement.X * Displacement.X + Displacement.Y * Displacement.Y) * 0.01
     --计算水平偏差
-    local OffsetXY = XY - SplineConfig.L
+    local OffsetXY = XY - AimSetting.StandardDistance
     --先上移
     LowerDegree = LowerDegree + OffsetXY * SplineConfig.K2
     UpperDegree = UpperDegree + OffsetXY * SplineConfig.K2
@@ -56,7 +69,7 @@ function GameUtils.ComputeHitRange(SplineConfig, Displacement)
     local K = math.max(0.01, 1 - OffsetXY * SplineConfig.S)
     LowerDegree = LowerDegree * K
     UpperDegree = UpperDegree * K
-    local Message = string.format("ComputeHitRange([%f, %f]->[%f, %f])", SplineConfig.LowerDegree, SplineConfig.UpperDegree, LowerDegree, UpperDegree)
+    local Message = string.format("ComputeHitRange([%f, %f]->[%f, %f])", AimSetting.LowerDegree, AimSetting.UpperDegree, LowerDegree, UpperDegree)
     Log:PrintLog(Message)
     return LowerDegree, UpperDegree
 end

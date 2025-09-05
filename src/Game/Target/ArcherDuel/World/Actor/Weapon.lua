@@ -113,7 +113,7 @@ function Weapon:SamplePosition(PitchRadian, Velocity, Gravity, Time)
             Y = -Y * 0.01 * X / Distance
 
             --反转
-            if Displacement.X > 0 then
+            if Displacement.X < 0 then
                 X = -X
                 Y = -Y
             end
@@ -166,11 +166,11 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
             local SplineSetting = self.CurrentScene.Config.SplineSetting
             if HitSpline and SplineSetting then
                 --重新计算命中区域
-                local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(HitSpline, Displacement)
+                local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
                 --经过小孔（相机）投射到纸片（屏幕空间）上的高度
                 local ImageHeight = UpperDegree - LowerDegree
                 --纸片（屏幕空间）距离小孔（相机）之间的距离
-                local ImageLength = ImageHeight * Distance / (HitSpline.CharacterHeight * 100)
+                local ImageLength = ImageHeight * Distance / (AimSetting.CharacterHeight * 100)
                 --中点
                 local MiddleDegree = 0.5 * (UpperDegree + LowerDegree)
                 local CenterOffset = (PitchDegree - MiddleDegree) / ImageLength * Distance
@@ -189,7 +189,7 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
 
                 --计算XOY平面距离
                 local XYDistance = GetXOYDistance(StartPoint, EndPoint)
-                local K = XYDistance / HitSpline.L
+                local K = XYDistance / AimSetting.StandardDistance
 
                 --计算振幅
                 local Amplitude = K * SplineSetting.Amplitude

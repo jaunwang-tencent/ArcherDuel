@@ -61,7 +61,7 @@ local GameConfig = {
     --物理
     Physics = {
         --重力加速度【单位：米每平方秒】
-        Gravity = 20,
+        Gravity = 10,
         --地面摩擦系数【单位：1】
         FrictionFactor = 0.2,
     },
