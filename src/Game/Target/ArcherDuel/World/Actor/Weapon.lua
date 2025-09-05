@@ -393,6 +393,50 @@ function Weapon:GetResource()
     end
 end
 
+--- 获取特效数据
+---@param Name 特效名称
+function Weapon:GetEffect(Name)
+    --优先找资源里面的
+    local WeaponResource = self.Config and self.Config.Resource
+    local ResourceData = WeaponResource[Name]
+    local EffectData = ResourceData and ResourceData.Effect
+    
+    --如果找不到则找特效
+    if not EffectData then
+        --武器资产
+        local Effects = self.Config and self.Config.Effects
+        --命中特效
+        EffectData = Effects and Effects[Name]
+    end
+    return EffectData
+end
+
+--- 在元件身上播放特效
+---@param ElementID 元件标识
+---@param EffectName 特效名称
+function Weapon:PlayEffectOnElement(ElementID, EffectName)
+    local EffectData = self:GetEffect(EffectName)
+    if EffectData and ElementID then
+        --投掷特效
+        local EffectID = Particle:PlayOnActor(EffectData.ID, ElementID, false)
+        Particle:SetParticleScale(EffectID, Engine.Vector(5,5,5))
+        Particle:SetParticlePosition(EffectID, EffectData.Offset)
+        return EffectID
+    end
+end
+
+--- 在指定位置播放特效
+---@param Position 指定位置
+---@param EffectName 特效名称
+function Weapon:PlayEffectOnPosition(Position, EffectName)
+    local EffectData = self:GetEffect(EffectName)
+    if EffectData and Position then
+        --投掷特效
+        local EffectID = Particle:PlayAtPosition(EffectData.ID, Position + EffectData.Offet, 5, true, 100)
+        return EffectID
+    end
+end
+
 --- 加载武器外观
 function Weapon:LoadAppearance()
     local WeaponResource = self:GetResource()
@@ -404,13 +448,8 @@ function Weapon:LoadAppearance()
         --绑定到玩家身上
         local CharacterUID = self.OwnerPlayer.UID
         Element:BindingToCharacterOrNPC(ElementID, CharacterUID, HeldItem.BindBone, Character.SOCKET_MODE.SnapToTarget)
-        --绑定投掷物特效
-        if HeldItem.Particle then
-            --投掷特效
-            self.HeldItemEffectID = Particle:PlayOnActor(HeldItem.Particle, ElementID, false)
-            Particle:SetParticleScale(self.HeldItemEffectID, Engine.Vector(5,5,5))
-            Particle:SetParticlePosition(self.HeldItemEffectID, HeldItem.ParticleOffset)
-        end
+        --播放手持物特效
+        self.HeldItemEffectID = self:PlayEffectOnElement(ElementID, "HeldItem")
         --绑定结束
         self:OnLoadAppearanceCompleted(ElementID)
     end, nil, Rotation, Scale)
@@ -479,14 +518,8 @@ function Weapon:SpawnProjectile(PitchDegree)
             --投掷角度
             PitchDegree = PitchDegree,
         }
-        --绑定投掷物特效
-        if ProjectileData.Particle then
-            --投掷特效
-            local EffectID = Particle:PlayOnActor(ProjectileData.Particle, ElementID, false)
-            Particle:SetParticleScale(EffectID, Engine.Vector(5,5,5))
-            Particle:SetParticlePosition(EffectID, ProjectileData.ParticleOffset)
-            self.ProjectileInstance.EffectID = EffectID
-        end
+        --播放掷物物特效
+        self.ProjectileInstance.EffectID = self:PlayEffectOnElement(ElementID, "Projectile")
         --构建样条曲线
         self.ProjectileInstance.SplineCurve = self:BuildSplineCurve(PitchDegree, false)
         if self.ProjectileInstance.SplineCurve then
@@ -501,10 +534,13 @@ function Weapon:SpawnProjectile(PitchDegree)
     end)
 end
 
---- 命中目标
+--- 命中目标ss
 ---@param ElementID 命中对象标识
 ---@param Result 命中结果信息
 function Weapon:HitTarget(ElementID, Result)
+    --在此播放命中特效
+    self:PlayEffectOnPosition(Result.hitPos, "Hit")
+
     --受击者相应
     if Result and Result.HitType == PlayInteractive.HIT_TYPE.Character then
         --调整冲量，未来走配置
