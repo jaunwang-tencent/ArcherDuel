@@ -55,9 +55,9 @@ local CharacterConfig = {
                 --人物的高度【单位：米】
                 CharacterHeight = 2.3,
                 --角度下限（打脚）【单位：角度】
-                LowerDegree = 26,
+                LowerDegree = 14,
                 --角度上限（打头）【单位：角度】
-                UpperDegree = 31,
+                UpperDegree = 19,
                 --标准间距【单位：米】
                 L = 50,
                 --纵向偏移系数
@@ -84,11 +84,11 @@ local CharacterConfig = {
             --最大俯仰角【单位：角度】
             MaxPitchDegree = 80,
             --显示轨迹长度【水平方向距离，单位：米】
-            ShowTrackLength = 5,
+            ShowTrackLength = 4,
             --显示轨迹时间步伐【单位：秒】
             ShowTrackTimeStep = 0.05,
             --当前轨迹颜色
-            CurrentTrackColor = "#006CCAFF",
+            CurrentTrackColor = "#00E3FF",
             --历史轨迹颜色
             HistoryTrackColor = "#C1C1C1FF",
             --起始透明度
@@ -115,7 +115,7 @@ local CharacterConfig = {
         --角色属性参数
         Attributes = {
             --健康值
-            Health = 0,
+            Health = 100,
         },
     }
 }
