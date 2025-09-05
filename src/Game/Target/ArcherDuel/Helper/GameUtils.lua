@@ -56,7 +56,7 @@ function GameUtils.ComputeHitRange(SplineConfig, Displacement)
     local K = math.max(0.01, 1 - OffsetXY * SplineConfig.S)
     LowerDegree = LowerDegree * K
     UpperDegree = UpperDegree * K
-    local Message = string.format("ComputeHitRange(LowerDegree=%f->%f, UpperDegree=%f->%f, OffsetXY = %f, Displacement = %s)", SplineConfig.LowerDegree, LowerDegree, SplineConfig.UpperDegree, UpperDegree, OffsetXY, Displacement)
+    local Message = string.format("ComputeHitRange([%f, %f]->[%f, %f])", SplineConfig.LowerDegree, SplineConfig.UpperDegree, LowerDegree, UpperDegree)
     Log:PrintLog(Message)
     return LowerDegree, UpperDegree
 end
