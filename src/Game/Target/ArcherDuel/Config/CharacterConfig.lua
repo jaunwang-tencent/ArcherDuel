@@ -4,11 +4,11 @@ local CharacterConfig = {
         --表演
         Perform = {
             --AI待机到瞄准时间【单位：秒】
-            AIIdleToAimTime = 2,
+            AIIdleToAimTime = 0.5,
             --AI瞄准到射击时间【单位：秒】
             AIAimToFireTime = 2,
             --拉弓弦所需时间【单位：秒，只针对箭】
-            PullStringTime = 2,
+            PullStringTime = 1.5,
             --射击到待机时长【单位：秒】
             FireToIdleTime = 1,
             --趟地停留时长,被被击倒躺在地上【单位：秒】
@@ -47,25 +47,25 @@ local CharacterConfig = {
         --瞄准设置
         AimSetting = {
             --瞄准冷却时间【单位：秒】
-            CoolDownTime = 1,
+            CoolDownTime = 1.2,
             --样条采样方案
             SampleSpline = true,
             --命中样条【贝塞尔曲线】限定参数
             HitSpline = {
                 --人物的高度【单位：米】
-                CharacterHeight = 1.5,
+                CharacterHeight = 2.3,
                 --角度下限（打脚）【单位：角度】
-                LowerDegree = 7,
+                LowerDegree = 26,
                 --角度上限（打头）【单位：角度】
-                UpperDegree = 13,
+                UpperDegree = 31,
                 --标准间距【单位：米】
                 L = 50,
                 --纵向偏移系数
                 K1 = 1,
                 --横向偏移系数
-                K2 = 1,
+                K2 = 2,
                 --横向缩放系数
-                S = 0.01,
+                S = 0.02,
                 --样条分段量【数值越小越平滑，性能越差，反之亦然】
                 Segment = 100,
                 --瞄准线分段量【数值越小越平滑，性能越差，反之亦然】
@@ -84,7 +84,7 @@ local CharacterConfig = {
             --最大俯仰角【单位：角度】
             MaxPitchDegree = 80,
             --显示轨迹长度【水平方向距离，单位：米】
-            --ShowTrackLength = 5,
+            ShowTrackLength = 5,
             --显示轨迹时间步伐【单位：秒】
             ShowTrackTimeStep = 0.05,
             --当前轨迹颜色
@@ -115,7 +115,7 @@ local CharacterConfig = {
         --角色属性参数
         Attributes = {
             --健康值
-            Health = 400,
+            Health = 0,
         },
     }
 }
