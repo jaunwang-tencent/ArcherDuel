@@ -238,8 +238,10 @@ function Player:UpdateMovementState()
 
         --更新移动状态
         if MovementState then
-            self.MovementState = MovementState
-            Log:PrintLog("TXPerform(MovementStateChanged)", MovementState)
+            if self.MovementState ~= MovementState then
+                self.MovementState = MovementState
+                Log:PrintLog("TXPerform(MovementStateChanged)", MovementState)
+            end
 
             if MovementState == EMovement.Idle then
                 --只有在待机态时才刷新位置
