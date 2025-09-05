@@ -47,7 +47,7 @@ local CharacterConfig = {
         --瞄准设置
         AimSetting = {
             --人物的高度【单位：米】
-            CharacterHeight = 2.3,
+            CharacterHeight = 1.8,
             --角度下限（打脚）【单位：角度】
             LowerDegree = 14,
             --角度上限（打头）【单位：角度】
@@ -66,7 +66,7 @@ local CharacterConfig = {
             --瞄准冷却时间【单位：秒】
             CoolDownTime = 1.2,
             --样条采样方案
-            SampleSpline = false,
+            SampleSpline = true,
             --命中样条【贝塞尔曲线】限定参数
             HitSpline = {
                 --样条分段量【数值越小越平滑，性能越差，反之亦然】

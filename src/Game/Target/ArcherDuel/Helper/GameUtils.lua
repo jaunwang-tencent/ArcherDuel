@@ -44,7 +44,13 @@ end
 ---@param H 垂直高度
 function GameUtils.ComputeVelocity(P, G, L, H)
     local T = math.tan(UMath:DegToRad(P))
-    local K = 0.5 * (T * T + 1) * G / (L * T - H)
+    local D = L * T - H
+    if D < 0 then
+        D = -D
+    elseif D == 0 then
+        D = 1
+    end
+    local K = 0.5 * (T * T + 1) * G / D
     local V = math.sqrt(K) * L
     return V
 end
@@ -69,8 +75,6 @@ function GameUtils.ComputeHitRange(AimSetting, Displacement)
     local K = math.max(0.01, 1 - OffsetXY * Coefficient.S)
     LowerDegree = LowerDegree * K
     UpperDegree = UpperDegree * K
-    local Message = string.format("ComputeHitRange([%f, %f]->[%f, %f])", AimSetting.LowerDegree, AimSetting.UpperDegree, LowerDegree, UpperDegree)
-    Log:PrintLog(Message)
     return LowerDegree, UpperDegree
 end
 

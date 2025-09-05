@@ -751,16 +751,17 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
                     local Gravity = OwnerScene:GetGravity()
                     --这里确保有效性
                     ShowTrackLength = ShowTrackLength or 5
-                    while true do
+                    local TotalLength = 0
+                    local LastPosition
+                    while TotalLength < ShowTrackLength do
                         DeltaTime = DeltaTime + AimSetting.ShowTrackTimeStep
                         local RelativePosition = self.Weapon:SamplePosition(PitchRadian, InitVelocity, Gravity, DeltaTime)
+                        if LastPosition then
+                            TotalLength = TotalLength + UMath:GetDistance(LastPosition, RelativePosition) 
+                        end
+                        LastPosition = RelativePosition
                         local SplinePoint = SpawnerPosition + RelativePosition * 100
                         table.insert(SplinePoints, SplinePoint)
-                        RelativePosition.Z = 0
-                        if UMath:GetVectorLength(RelativePosition) >= ShowTrackLength then
-                            --退出
-                            break
-                        end
                     end
                 end
             end

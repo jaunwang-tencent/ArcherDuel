@@ -150,6 +150,7 @@ end
 
 --- 计算高度差
 ---@param PitchDegree 俯仰角【单位：角度】
+---@return 高度偏移【单位：米】
 function Weapon:GetHeightOffset(PitchDegree)
     --高度差
     local HeightOffset = 0
@@ -159,16 +160,15 @@ function Weapon:GetHeightOffset(PitchDegree)
     local Displacement = self.CurrentScene:GetDisplacement()
     if Displacement and AimSetting then
         --计算直线距离
-        local Distance = UMath:GetVectorLength(Displacement)
+        local Distance = UMath:GetVectorLength(Displacement) * 0.01
         --重新计算命中区域
         local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
-        --经过小孔（相机）投射到纸片（屏幕空间）上的高度
-        local ImageHeight = UpperDegree - LowerDegree
-        --纸片（屏幕空间）距离小孔（相机）之间的距离
-        local ImageLength = ImageHeight * Distance / (AimSetting.CharacterHeight * 100)
-        --中点
-        local MiddleDegree = 0.5 * (UpperDegree + LowerDegree)
-        HeightOffset = (PitchDegree - MiddleDegree) / ImageLength * Distance
+        --半高
+        local HalfDegreeRange = 0.5 * (UpperDegree + LowerDegree)
+        --高度偏移
+        HeightOffset = AimSetting.CharacterHeight * (PitchDegree - HalfDegreeRange) / (UpperDegree - LowerDegree)
+        local Message = string.format("ComputeHitRange([%f, %f]->[%f, %f]=>%f->%f)", AimSetting.LowerDegree, AimSetting.UpperDegree, LowerDegree, UpperDegree, PitchDegree, HeightOffset)
+        Log:PrintLog(Message)
     end
     return HeightOffset
 end
@@ -188,7 +188,7 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
             local SplineSetting = self.CurrentScene.Config.SplineSetting
             if HitSpline and SplineSetting then
                 --计算高度差
-                local HeightOffset = self:GetHeightOffset(PitchDegree)
+                local HeightOffset = self:GetHeightOffset(PitchDegree) * 100
 
                 --获取目标点坐标位置
                 local StartPoint = self:GetSpawnerOffset()
@@ -271,7 +271,6 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                         end
                         PointCount = #CurvePoints
                     end
-
                     if PointCount > 0 then
                         local SplineCurve = {
                             [1] = {
@@ -279,16 +278,19 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                                 Point = CurvePoints[1]
                             }
                         }
+                        local TotalLength = 0
                         for Index = 2, PointCount do
-                            local Point = CurvePoints[Index]
+                            local Point1 = CurvePoints[Index - 1]
+                            local Point2 = CurvePoints[Index]
                             local SplineKey = {
-                                Time = Point.X / VX,
-                                Point = Point
+                                Time = Point2.X / VX,
+                                Point = Point2
                             }
                             SplineCurve[Index] = SplineKey
 
                             --越界处理
-                            if LimitDistance and GetXOYDistance(CurvePoints[1], SplineKey.Point) > LimitDistance then
+                            TotalLength = TotalLength + UMath:GetDistance(Point1, Point2) * 0.01
+                            if LimitDistance and TotalLength > LimitDistance then
                                 --跳出
                                 break
                             end
@@ -351,7 +353,7 @@ function Weapon:ComputeVelocity(PitchDegree)
             local Gravity = self.CurrentScene:GetGravity()
             local L, H = math.abs(Displacement.X) * 0.01, Displacement.Z * 0.01
             --计算高度差
-            local HeightOffset = self:GetHeightOffset(PitchDegree) * 0.01
+            local HeightOffset = self:GetHeightOffset(PitchDegree)
             local Velocity = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeVelocity(PitchDegree, Gravity, L, H + HeightOffset)
             return Velocity
         end
