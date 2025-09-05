@@ -151,8 +151,9 @@ end
 
 --- 根据当前角度构建样条轨迹
 ---@param PitchDegree 角度
+---@param IsAimTrack 是否位瞄准轨迹【瞄准轨迹不允许摆动】
 ---@param LimitDistance 限制距离【XOY平面，不填则不限制】
-function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
+function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
     --玩家角色配置
     local CharacterConfig = self.OwnerPlayer.Config
     local AimSetting = CharacterConfig and CharacterConfig.AimSetting
@@ -180,6 +181,11 @@ function Weapon:BuildSplineCurve(PitchDegree, LimitDistance)
                 local EndPoint = Displacement
                 --终点偏移计算
                 EndPoint.Z = EndPoint.Z + CenterOffset
+                if not IsAimTrack then
+                    --Y轴随机偏移【策划要求】
+                    local Swing = AimSetting.Swing * 100
+                    EndPoint.Y = EndPoint.Y + UMath:GetRandomFloat(-Swing, Swing)
+                end
 
                 --计算XOY平面距离
                 local XYDistance = GetXOYDistance(StartPoint, EndPoint)
@@ -482,7 +488,7 @@ function Weapon:SpawnProjectile(PitchDegree)
             self.ProjectileInstance.EffectID = EffectID
         end
         --构建样条曲线
-        self.ProjectileInstance.SplineCurve = self:BuildSplineCurve(PitchDegree)
+        self.ProjectileInstance.SplineCurve = self:BuildSplineCurve(PitchDegree, false)
         if self.ProjectileInstance.SplineCurve then
             --初始化曲线光标【性能优化使用】
             self.ProjectileInstance.CurveCursor = 1

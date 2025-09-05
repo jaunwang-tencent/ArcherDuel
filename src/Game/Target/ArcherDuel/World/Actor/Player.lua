@@ -681,7 +681,7 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
                 local ShowTrackLength = AimSetting.ShowTrackLength
                 if AimSetting.SampleSpline then
                     local SpawnerPosition = self:GetLocation()
-                    local SplineCurve = self.Weapon:BuildSplineCurve(PitchDegree, ShowTrackLength)
+                    local SplineCurve = self.Weapon:BuildSplineCurve(PitchDegree, true, ShowTrackLength)
                     for _, SplineKeyPoint in pairs(SplineCurve) do
                         local RelativePosition = SplineKeyPoint.Point
                         local SplinePoint = SpawnerPosition + RelativePosition
