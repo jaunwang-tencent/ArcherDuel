@@ -246,18 +246,32 @@ end
 
 ---------------------------------------------以下为相机相关操作---------------------------------------------
 --- 观察目标
----@param CameraSceneId 相机元件标识
 ---@param Position 位置
 ---@param Forward 朝向
----@param NeedSwitch 是否切镜
-local function LookTarget(CameraSceneId, Position, Forward, NeedSwitch)
-    --开启影视相机
-    if NeedSwitch then
-        Camera:MovieCameraStart(CameraSceneId)
-    end
+local function LookTarget(Position, Forward)
     --设置影视相机位置与朝向
     Element:SetPosition(CameraSceneId, Position, Element.COORDINATE.World)
     Element:SetForward(CameraSceneId, Forward)
+end
+
+--- 相机切换
+---@param CameraSceneId 相机标识
+function Battle:SwitchCamera(CameraSceneId)
+    if self.CurrentRunningCamera ~= CameraSceneId then
+        --记录当前时刻
+        local CurrentTimestamp = UGCS.Framework.Application.current:Watch()
+        --存储相机
+        self.CurrentRunningCamera = CameraSceneId
+        --开启影视相机
+        Camera:MovieCameraStart(CameraSceneId)
+        if self.LastSwitchTimestamp then
+            Log:PrintLog("TXPerform(SwitchCamera)", CurrentTimestamp - self.LastSwitchTimestamp)
+        else
+            Log:PrintLog("TXPerform(SwitchCamera)")
+        end
+        --记录历史时刻
+        self.LastSwitchTimestamp = CurrentTimestamp
+    end
 end
 
 --- 观察玩家(敌人)
@@ -266,18 +280,7 @@ function Battle:LookPlayer(Player)
     local SceneResource = self:GetResource()
     local CameraConfig = SceneResource and SceneResource.Camera
     if CameraConfig then
-        -- Log:PrintLog("TXPerform(LookPlayer)")
-        local NeedSwitch = false
-        if self.CurrentRunningCamera ~= CameraConfig.CharacterCameraSceneId then
-            NeedSwitch = true
-            self.CurrentRunningCamera = CameraConfig.CharacterCameraSceneId
-        end
-
-        --开启影视相机
-        if NeedSwitch then
-            Camera:MovieCameraStart(self.CurrentRunningCamera)
-        end
-
+        Log:PrintLog("TXPerform(LookPlayer)")
         --当前角色位置
         local Location = Player:GetLocation()
         local Offest = Engine.Vector(CameraConfig.Offset.X, CameraConfig.Offset.Y, CameraConfig.Offset.Z)
@@ -294,7 +297,8 @@ function Battle:LookPlayer(Player)
 
         local Position = Player:GetOffsetPosition(Offest.X, Offest.Y, Offest.Z)
         local Forward = Location - Position
-        LookTarget(self.CurrentRunningCamera, Position, Forward, NeedSwitch)
+        self:SwitchCamera(CameraConfig.CharacterCameraSceneId)
+        LookTarget(Position, Forward)
     end
 end
 
@@ -304,12 +308,7 @@ function Battle:LookProjectile(Position)
     local SceneResource = self:GetResource()
     local CameraConfig = SceneResource and SceneResource.Camera
     if CameraConfig then
-        -- Log:PrintLog("TXPerform(LookProjectile)")
-        local NeedSwitch = false
-        if self.CurrentRunningCamera ~= CameraConfig.ProjectileCameraSceneId then
-            NeedSwitch = true
-            self.CurrentRunningCamera = CameraConfig.ProjectileCameraSceneId
-        end
+        Log:PrintLog("TXPerform(LookProjectile)")
 
         --相机偏移【主控视角】
         local Offset = Engine.Vector(CameraConfig.Offset.X, CameraConfig.Offset.Y, CameraConfig.Offset.Z)
@@ -318,7 +317,8 @@ function Battle:LookProjectile(Position)
             Offset.Y = -Offset.Y
         end
         Position = Position + Offset
-        LookTarget(self.CurrentRunningCamera, Position, -Offset, NeedSwitch)
+        self:SwitchCamera(CameraConfig.ProjectileCameraSceneId)
+        LookTarget(Position, -Offset)
     end
 end
 
