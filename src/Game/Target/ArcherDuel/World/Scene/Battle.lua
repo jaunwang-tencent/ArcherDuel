@@ -184,22 +184,46 @@ end
 --- 切换回合
 ---@return Success 回合切换是否成功
 function Battle:SwitchTurn()
-    if self.CurrentTurn and self.NextTurn then
-        --这里根据状态加一层保护
-        local TempTurn = self.CurrentTurn
-        self.CurrentTurn = self.NextTurn
-        self.NextTurn = TempTurn
-
-        --设置回合状态
-        ApplyTurnState(self)
-
-        --对外抛出事件
-        if self.OnSwitchTurn then
-            self.OnSwitchTurn()
+    local ExecuteSwitchTurn = function()
+        if self.CurrentTurn and self.NextTurn then
+            --这里根据状态加一层保护
+            local TempTurn = self.CurrentTurn
+            self.CurrentTurn = self.NextTurn
+            self.NextTurn = TempTurn
+    
+            --设置回合状态
+            ApplyTurnState(self)
+    
+            --对外抛出事件
+            if self.OnSwitchTurn then
+                self.OnSwitchTurn()
+            end
+            return true
+        else
+            return false
         end
-        return true
+    end
+    --获取当前时刻
+    local CurrentTimestamp = UGCS.Framework.Application.current:Watch()
+    --计算时间戳
+    local DelayTime = 0
+    local BlendTime = 1.2
+    if self.LastSwitchTimestamp then
+        --当相机切换时间差小于混合时间时，这会导致相机瞬移
+        local DeltaTime = CurrentTimestamp - self.LastSwitchTimestamp
+        --补齐混合时间
+        DelayTime = BlendTime - DeltaTime
+        if DelayTime > 0 then
+            --补齐混合时间
+            DelayTime = DelayTime + BlendTime
+        end
+    end
+    if DelayTime > 0 then
+        UGCS.Framework.Executor.Delay(DelayTime, function()
+            ExecuteSwitchTurn()
+        end)
     else
-        return false
+        return ExecuteSwitchTurn()
     end
 end
 
@@ -257,11 +281,6 @@ function Battle:LookTarget(CameraSceneId, Position, Forward)
         self.CurrentRunningCamera = CameraSceneId
         --开启影视相机
         Camera:MovieCameraStart(CameraSceneId)
-        if self.LastSwitchTimestamp then
-            Log:PrintLog("TXPerform(SwitchCamera)", CurrentTimestamp - self.LastSwitchTimestamp)
-        else
-            Log:PrintLog("TXPerform(SwitchCamera)")
-        end
         --记录历史时刻
         self.LastSwitchTimestamp = CurrentTimestamp
     end
