@@ -230,7 +230,7 @@ local WeaponConfig = {
             --投掷物特效
             Projectile = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
             --命中特效
-            Hit = { ID = 1, Offset = Engine.Vector(0,0,0), Size = 5 }
+            Hit = { ID = 1, Offset = Engine.Vector(0,0,0), Size = 1 }
         },
         --属性参数
         Attributes = {
@@ -437,7 +437,7 @@ local WeaponConfig = {
             --投掷物特效
             Projectile = { ID = 271, Offset = Engine.Vector(500, 0, 300), Size = 5 },
             --命中特效
-            Hit = { ID = 1, Offset = Engine.Vector(0,0,0), Size = 5 }
+            Hit = { ID = 1, Offset = Engine.Vector(0,0,0), Size = 1 }
         },
         --属性参数
         Attributes = {
@@ -628,7 +628,7 @@ local WeaponConfig = {
             --投掷物特效
             Projectile = { ID = 270, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
             --命中特效
-            Hit = { ID = 1, Offset = Engine.Vector(0, 0, 0), Size = 5 }
+            Hit = { ID = 1, Offset = Engine.Vector(0, 0, 0), Size = 1}
         },
         --属性参数
         Attributes = {
