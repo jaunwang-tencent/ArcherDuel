@@ -321,7 +321,7 @@ function Battle:LookProjectile(Position)
     local SceneResource = self:GetResource()
     local CameraConfig = SceneResource and SceneResource.Camera
     if CameraConfig then
-        Log:PrintLog("TXPerform(LookProjectile)")
+        --Log:PrintLog("TXPerform(LookProjectile)")
         --相机偏移【主控视角】
         local Offset = Engine.Vector(CameraConfig.Offset.X, CameraConfig.Offset.Y, CameraConfig.Offset.Z)
         if self.ControlledViewTurn then

@@ -206,7 +206,23 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                     Normal = -Normal
                 end
                 --法线朝向偏移一定振幅
-                MiddlePoint = MiddlePoint + Normal * Amplitude * 100
+                local DesiredMiddlePoint = MiddlePoint + Normal * Amplitude * 100
+                local Min = math.min(StartPoint.X, EndPoint.X)
+                local Max = math.max(StartPoint.X, EndPoint.X)
+                local Delta
+                if DesiredMiddlePoint.X > Max then
+                    Delta = DesiredMiddlePoint.X - Max
+                elseif DesiredMiddlePoint.X < Min then
+                    Delta = Min - DesiredMiddlePoint.X
+                end
+                if Delta then
+                    --校正曲线边界
+                    Amplitude = Amplitude * Delta / math.abs(MiddlePoint.X - DesiredMiddlePoint.X)
+                    DesiredMiddlePoint = MiddlePoint + Normal * Amplitude * 100
+                    Log:PrintWarning("OutOfSplineBound")
+                end
+                --使用预期终点
+                MiddlePoint = DesiredMiddlePoint
 
                 --曲率
                 local Curvature = K * SplineSetting.Curvature
@@ -214,13 +230,33 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                 --样条采样
                 --Log:PrintLog(string.format("GenerateCurve(PitchDegree=%f, CenterOffset = %f, Curvature = %f, Amplitude = %f)", PitchDegree, CenterOffset, Curvature, Amplitude))
                 local Segment = LimitDistance and HitSpline.AimTrackSegment or HitSpline.Segment
-                local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, EndPoint, Segment, Curvature, 1)
+                local ExtraRate = nil
+                local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, EndPoint, Segment, Curvature, ExtraRate)
 
                 if CurvePoints then
                     local PointCount = #CurvePoints
-                    XYDistance = GetXOYDistance(CurvePoints[1], CurvePoints[PointCount])
-                    --计算飞行总时间
-                    local TotalTime = XYDistance / self.Attributes.Velocity
+                    local VX = self.Attributes.Velocity * 100
+                    if Forward.X < 0 then
+                        VX = -VX
+                    end
+                    if not ExtraRate and PointCount > 1 then
+                        --补充后半段
+                        local Point1 = CurvePoints[PointCount]
+                        local Point2 = CurvePoints[PointCount - 1]
+                        local Velocity = UMath:GetNormalize(Point1 - Point2)
+                        local Tant = Velocity.Z / Velocity.X
+                        local VZ = Tant * VX
+                        --补充50帧
+                        for Index = 0, 50 do
+                            local Time = Index * 0.1
+                            local X = VX * Time
+                            local Z = VZ * Time - 500 * Time * Time
+                            local Offset = Engine.Vector(X, 0, Z)
+                            table.insert(CurvePoints, EndPoint + Offset)
+                        end
+                        PointCount = #CurvePoints
+                    end
+
                     if PointCount > 0 then
                         local SplineCurve = {
                             [1] = {
@@ -228,11 +264,11 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                                 Point = CurvePoints[1]
                             }
                         }
-                        local DeltaTime = TotalTime / (PointCount - 1)
                         for Index = 2, PointCount do
+                            local Point = CurvePoints[Index]
                             local SplineKey = {
-                                Time = DeltaTime * (Index - 1),
-                                Point = CurvePoints[Index]
+                                Time = Point.X / VX,
+                                Point = Point
                             }
                             SplineCurve[Index] = SplineKey
 

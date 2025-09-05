@@ -132,9 +132,9 @@ function BattleModule:OnTouchPressed(_, Y)
     local Player = self.BattleScene:GetCurrentTurnPlayer()
     if Player and Player:IsControlled() then
         --只有主控角色才能执行用户输入
-        local PitchDegree = self:GetPitchDegree(Y)
-        self:AdjustPitchCursor(PitchDegree)
-        Player:Aim(PitchDegree)
+        self.PitchDegree = self:GetPitchDegree(Y)
+        self:AdjustPitchCursor(self.PitchDegree)
+        Player:Aim(self.PitchDegree)
 
         --瞄准计时
         UGCS.Framework.Executor.Cancel(self.AimCDExecutorID)
@@ -142,7 +142,7 @@ function BattleModule:OnTouchPressed(_, Y)
         self.AimCDExecutorID = UGCS.Framework.Executor.Delay(AimSetting.CoolDownTime, function()
             self.AimCDExecutorID = nil
             Log:PrintLog("TXAllowFire()")
-            Player:DrawCurrentTrack(PitchDegree)
+            Player:DrawCurrentTrack(self.PitchDegree)
         end)
     end
 end
@@ -155,11 +155,11 @@ function BattleModule:OnTouchMove(_, Y)
         local Player = self.BattleScene:GetCurrentTurnPlayer()
         if Player and Player:IsControlled() then
             --只有主控角色才能执行用户输入
-            local PitchDegree = self:GetPitchDegree(Y)
-            self:AdjustPitchCursor(PitchDegree)
-            Player:Aim(PitchDegree)
+            self.PitchDegree = self:GetPitchDegree(Y)
+            self:AdjustPitchCursor(self.PitchDegree)
+            Player:Aim(self.PitchDegree)
             if not self.AimCDExecutorID then
-                Player:DrawCurrentTrack(PitchDegree)
+                Player:DrawCurrentTrack(self.PitchDegree)
             end
         end
     end
@@ -174,16 +174,16 @@ function BattleModule:OnTouchReleased(_, Y)
             --还在瞄准CD中，切回待机状态
             Player:Idle()
         else
-            local PitchDegree = self:GetPitchDegree(Y)
-            self:AdjustPitchCursor(PitchDegree)
-            Player:Fire(PitchDegree)
+            self.PitchDegree = self:GetPitchDegree(Y)
+            self:AdjustPitchCursor(self.PitchDegree)
+            Player:Fire(self.PitchDegree)
             
             if not self.AimCDExecutorID then
                 Player:DrawCurrentTrack()
             end
             Player:DrawHistoryTrack()
             --记录本次曲线
-            self.HistoryPitchDegree = PitchDegree
+            self.HistoryPitchDegree = self.PitchDegree
         end
     end
     UGCS.Framework.Executor.Cancel(self.AimCDExecutorID)
