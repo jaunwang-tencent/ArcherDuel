@@ -419,7 +419,8 @@ function Weapon:PlayEffectOnElement(ElementID, EffectName)
     if EffectData and ElementID then
         --投掷特效
         local EffectID = Particle:PlayOnActor(EffectData.ID, ElementID, false)
-        Particle:SetParticleScale(EffectID, Engine.Vector(5,5,5))
+        local Size = EffectData.Size and EffectData.Size or 1
+        Particle:SetParticleScale(EffectID, Engine.Vector(Size, Size, Size))
         Particle:SetParticlePosition(EffectID, EffectData.Offset)
         return EffectID
     end
@@ -432,7 +433,8 @@ function Weapon:PlayEffectOnPosition(Position, EffectName)
     local EffectData = self:GetEffect(EffectName)
     if EffectData and Position then
         --投掷特效
-        local EffectID = Particle:PlayAtPosition(EffectData.ID, Position + EffectData.Offset, 5, true, 100)
+        local Size = EffectData.Size and EffectData.Size or 1
+        local EffectID = Particle:PlayAtPosition(EffectData.ID, Position + EffectData.Offset, Size, true, 100)
         return EffectID
     end
 end
