@@ -540,11 +540,7 @@ end
 ---@param ElementID 命中对象标识
 ---@param Result 命中结果信息
 function Weapon:HitTarget(ElementID, Result)
-    --在此播放命中特效
-    if Result and Result.hitPos then
-        self:PlayEffectOnPosition(Result.hitPos, "Hit")
-    end
-
+    local NeedPlayEffect = true
     --受击者相应
     if Result and Result.HitType == PlayInteractive.HIT_TYPE.Character then
         --调整冲量，未来走配置
@@ -604,6 +600,9 @@ function Weapon:HitTarget(ElementID, Result)
                 Element:SetPosition(ElementID, DropPosition, Element.COORDINATE.World)
                 --播放特效
                 Particle:PlayAtPosition(Obstacle.ExplosionEffect, Position, 1)
+                --self:PlayEffectOnPosition(Position, "Explosion")
+                --无需播放特效
+                NeedPlayEffect = false
 
                 --销毁投掷物
                 local SceneID = self.Projectiles[ProjectileElementID]
@@ -620,6 +619,10 @@ function Weapon:HitTarget(ElementID, Result)
             end
             self.CurrentScene:SwitchTurn()
         end
+    end
+    --在此播放命中特效
+    if NeedPlayEffect and Result and Result.hitPos then
+        self:PlayEffectOnPosition(Result.hitPos, "Hit")
     end
     Particle:StopParticle(self.ProjectileInstance.EffectID)
     self.ProjectileInstance = nil

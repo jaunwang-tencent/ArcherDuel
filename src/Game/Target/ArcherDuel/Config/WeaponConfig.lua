@@ -229,8 +229,10 @@ local WeaponConfig = {
             HeldItem = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 },
             --投掷物特效
             Projectile = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            --爆炸特效
+            Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
-            Hit = { ID = 1, Offset = Engine.Vector(0,0,0), Size = 1 }
+            Hit = { ID = 1, Offset = Engine.Vector(0,0,0), Size = 0.5 },
         },
         --属性参数
         Attributes = {
@@ -436,8 +438,10 @@ local WeaponConfig = {
             HeldItem = { ID = 335, Offset = Engine.Vector(50, 0, 0), Size = 5 },
             --投掷物特效
             Projectile = { ID = 271, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            --爆炸特效
+            Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
-            Hit = { ID = 1, Offset = Engine.Vector(0,0,0), Size = 1 }
+            Hit = { ID = 1, Offset = Engine.Vector(0,0,0), Size = 0.5 },
         },
         --属性参数
         Attributes = {
@@ -627,8 +631,10 @@ local WeaponConfig = {
             HeldItem = { ID = 334, Offset = Engine.Vector(50, 0, 0), Size = 5 },
             --投掷物特效
             Projectile = { ID = 270, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            --爆炸特效
+            Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
-            Hit = { ID = 1, Offset = Engine.Vector(0, 0, 0), Size = 1}
+            Hit = { ID = 1, Offset = Engine.Vector(0, 0, 0), Size = 0.5 },
         },
         --属性参数
         Attributes = {
