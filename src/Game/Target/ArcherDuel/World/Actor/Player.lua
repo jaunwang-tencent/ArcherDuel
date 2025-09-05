@@ -748,7 +748,7 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
                     local DeltaTime = 0
                     local PitchRadian = UMath:DegToRad(PitchDegree)
                     local OwnerScene = self.OwnerScene
-                    local InitVelocity = self.Weapon.Attributes.Velocity
+                    local InitVelocity = self.Weapon:ComputeVelocity(PitchDegree)
                     local Gravity = OwnerScene:GetGravity()
                     --这里确保有效性
                     ShowTrackLength = ShowTrackLength or 5

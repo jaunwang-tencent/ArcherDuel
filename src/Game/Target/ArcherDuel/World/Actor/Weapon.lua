@@ -103,7 +103,7 @@ function Weapon:SamplePosition(PitchRadian, Velocity, Gravity, Time)
         local Displacement = self.CurrentScene:GetDisplacement()
         if Displacement then
             local K = Displacement.Y / Displacement.X
-            local Y = -K * X 
+            local Y = K * X 
             --反转
             if Displacement and Displacement.X < 0 then
                 X = -X
@@ -141,38 +141,61 @@ local function GetXOYDistance(A, B)
     return XYLength
 end
 
+--- 获取瞄准设置
+function Weapon:GetAimSetting()
+    local CharacterConfig = self.OwnerPlayer.Config
+    local AimSetting = CharacterConfig and CharacterConfig.AimSetting
+    return AimSetting
+end
+
+--- 计算高度差
+---@param PitchDegree 俯仰角【单位：角度】
+function Weapon:GetHeightOffset(PitchDegree)
+    --高度差
+    local HeightOffset = 0
+    --获取瞄准设置
+    local AimSetting = self:GetAimSetting()
+    --计算两点间距
+    local Displacement = self.CurrentScene:GetDisplacement()
+    if Displacement and AimSetting then
+        --计算直线距离
+        local Distance = UMath:GetVectorLength(Displacement)
+        --重新计算命中区域
+        local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
+        --经过小孔（相机）投射到纸片（屏幕空间）上的高度
+        local ImageHeight = UpperDegree - LowerDegree
+        --纸片（屏幕空间）距离小孔（相机）之间的距离
+        local ImageLength = ImageHeight * Distance / (AimSetting.CharacterHeight * 100)
+        --中点
+        local MiddleDegree = 0.5 * (UpperDegree + LowerDegree)
+        HeightOffset = (PitchDegree - MiddleDegree) / ImageLength * Distance
+    end
+    return HeightOffset
+end
+
 --- 根据当前角度构建样条轨迹
 ---@param PitchDegree 角度
 ---@param IsAimTrack 是否位瞄准轨迹【瞄准轨迹不允许摆动】
 ---@param LimitDistance 限制距离【XOY平面，不填则不限制】
 function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
-    --玩家角色配置
-    local CharacterConfig = self.OwnerPlayer.Config
-    local AimSetting = CharacterConfig and CharacterConfig.AimSetting
+    --获取瞄准设置
+    local AimSetting = self:GetAimSetting()
     if AimSetting.SampleSpline then
         --计算两点间距
         local Displacement = self.CurrentScene:GetDisplacement()
         if Displacement then
-            local Distance = UMath:GetVectorLength(Displacement)
             local HitSpline = AimSetting.HitSpline
             local SplineSetting = self.CurrentScene.Config.SplineSetting
             if HitSpline and SplineSetting then
-                --重新计算命中区域
-                local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
-                --经过小孔（相机）投射到纸片（屏幕空间）上的高度
-                local ImageHeight = UpperDegree - LowerDegree
-                --纸片（屏幕空间）距离小孔（相机）之间的距离
-                local ImageLength = ImageHeight * Distance / (AimSetting.CharacterHeight * 100)
-                --中点
-                local MiddleDegree = 0.5 * (UpperDegree + LowerDegree)
-                local CenterOffset = (PitchDegree - MiddleDegree) / ImageLength * Distance
+                --计算高度差
+                local HeightOffset = self:GetHeightOffset(PitchDegree)
 
                 --获取目标点坐标位置
                 local StartPoint = self:GetSpawnerOffset()
                 --必经点
                 local EndPoint = Displacement
                 --终点偏移计算
-                EndPoint.Z = EndPoint.Z + CenterOffset
+                EndPoint.Z = EndPoint.Z + HeightOffset
                 if not IsAimTrack then
                     --Y轴随机偏移【策划要求】
                     local Swing = AimSetting.Swing * 100
@@ -316,6 +339,26 @@ function Weapon:SamplePositionAndVelocity(Timestamp)
     end
 end
 
+--- 根据俯仰角计算武器应该打出的速度
+---@param PitchDegree 俯仰角
+function Weapon:ComputeVelocity(PitchDegree)
+    local Displacement = self.CurrentScene:GetDisplacement()
+    if Displacement then
+        local CharacterConfig = self.OwnerPlayer.Config
+        local AimSetting = CharacterConfig and CharacterConfig.AimSetting
+        if AimSetting then
+            local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
+            local Gravity = self.CurrentScene:GetGravity()
+            local L, H = math.abs(Displacement.X) * 0.01, Displacement.Z * 0.01
+            --计算高度差
+            local HeightOffset = self:GetHeightOffset(PitchDegree) * 0.01
+            local Velocity = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeVelocity(PitchDegree, Gravity, L, H + HeightOffset)
+            return Velocity
+        end
+    end
+    return self.Attributes.Velocity
+end
+
 --- 刷新武器
 ---@param DeltaTime 时间戳
 function Weapon:Update(DeltaTime)
@@ -335,12 +378,13 @@ function Weapon:Update(DeltaTime)
             Velocity.Y = 0
         else
             --采样速度
-            local InitVelocity = self.Attributes.Velocity
+            local PitchDegree = self.ProjectileInstance.PitchDegree
+            local InitVelocity = self:ComputeVelocity(PitchDegree)
             local Gravity = self.CurrentScene:GetGravity()
             --根据流逝时间采样投射物位置
-            local PitchRadian = UMath:DegToRad(self.ProjectileInstance.PitchDegree)
+            local PitchRadian = UMath:DegToRad(PitchDegree)
             RelativePosition = self:SamplePosition(PitchRadian, InitVelocity, Gravity, PassTime) * 100
-            Velocity =  self:SampleVelocity(PitchRadian, InitVelocity, Gravity, PassTime)
+            Velocity = self:SampleVelocity(PitchRadian, InitVelocity, Gravity, PassTime)
         end
         --校正武器朝向
         if UMath:GetVectorLength(Velocity) ~= 0 then

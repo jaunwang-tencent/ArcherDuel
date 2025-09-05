@@ -123,12 +123,6 @@ function BattleModule:OnTouchPressed(_, Y)
 
     self.LastY = Y
     self.OnPressY = Y
-    local V = self:GetCurrentTurnCharacterProjectileVelocity()
-    local G = self.SceneGravity
-    local Displacement = self.BattleScene:GetDisplacement()
-    local L = math.abs(Displacement.X) * 0.01
-    self.PressedHeight = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHeight(V, G, L, 0)
-
     local Player = self.BattleScene:GetCurrentTurnPlayer()
     if Player and Player:IsControlled() then
         --只有主控角色才能执行用户输入
@@ -157,9 +151,6 @@ function BattleModule:OnTouchMove(_, Y)
             --只有主控角色才能执行用户输入
             self.PitchDegree = self:GetPitchDegree(Y)
             self:AdjustPitchCursor(self.PitchDegree)
-            local V1 = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeVelocity(14, 10, 50, 0)
-            local V2 = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeVelocity(19, 10, 50, 2.3)
-            Log:PrintLog("V1,V2", V1, V2)
             Player:Aim(self.PitchDegree)
             if not self.AimCDExecutorID then
                 Player:DrawCurrentTrack(self.PitchDegree)
@@ -193,7 +184,6 @@ function BattleModule:OnTouchReleased(_, Y)
     self.AimCDExecutorID = nil
     self.LastY = nil
     self.OnPressY = nil
-    self.PressedHeight = nil
 end
 
 function BattleModule:OnGameEnd(IsControlledDead)
@@ -237,21 +227,7 @@ function BattleModule:GetPitchDegree(TouchY)
     local PitchDegree = 0
     if self.OnPressY then
         local DeltaY = self.OnPressY - TouchY
-        if AimSetting.Optimization and not AimSetting.SampleSpline then
-            local Displacement = self.BattleScene:GetDisplacement()
-            if Displacement then
-                local DeltaH = DeltaY * AimSetting.OffsetZPrePixel
-                local V = self:GetCurrentTurnCharacterProjectileVelocity()
-                local G = self.SceneGravity
-                local L = math.abs(Displacement.X) * 0.01
-                local H = self.PressedHeight + DeltaH
-                PitchDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputePitch(V, G, L, H)
-            else
-                PitchDegree = DeltaY * AimSetting.AnglePrePixel
-            end
-        else
-            PitchDegree = DeltaY * AimSetting.AnglePrePixel
-        end
+        PitchDegree = DeltaY * AimSetting.AnglePrePixel
         -- Log:PrintLog(string.format("TXPerform(DeltaY=%d, PitchDegree = %f)", DeltaY, PitchDegree))
     end
 
@@ -263,13 +239,6 @@ function BattleModule:GetPitchDegree(TouchY)
     end
 
     return PitchDegree
-end
-
---- 获取当前回合角色手持武器投掷物速度
-function BattleModule:GetCurrentTurnCharacterProjectileVelocity()
-    local CurrentTurnPlayer = self.BattleScene:GetCurrentTurnPlayer()
-    local WeaponAttributes = CurrentTurnPlayer.Weapon.Attributes
-    return WeaponAttributes and WeaponAttributes.Velocity
 end
 
 --- 调整俯仰角游标
@@ -314,18 +283,10 @@ function BattleModule:GetAIAimPitchDegree()
     local Displacement = self.BattleScene:GetDisplacement()
     if Displacement then
         local AimSetting = self.CharacterConfig.AimSetting
-        if AimSetting.SampleSpline then
+        if AimSetting then
             local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
             local PitchDegree = math.random(math.floor(LowerDegree * 10) - 50, math.floor(UpperDegree * 10) + 50) * 0.1
             Log:PrintLog(string.format("GetAIAimPitchDegree(PitchDegree=%f)", PitchDegree))
-            return PitchDegree
-        else
-            local V = self:GetCurrentTurnCharacterProjectileVelocity()
-            local G = self.SceneGravity
-            local L, H = math.abs(Displacement.X) * 0.01, Displacement.Z * 0.01
-            local Foot, Head = H - 0.5, H + AimSetting.CharacterHeight + 0.5
-            local TH = UMath:GetRandomFloat(Foot, Head)
-            local PitchDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputePitch(V, G, L, -TH)
             return PitchDegree
         end
     end
