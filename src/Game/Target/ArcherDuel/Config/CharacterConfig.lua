@@ -54,18 +54,21 @@ local CharacterConfig = {
             UpperDegree = 19,
             --标准间距【单位：米】
             StandardDistance = 50,
-            --瞄准冷却时间【单位：秒】
-            CoolDownTime = 1.2,
-            --样条采样方案
-            SampleSpline = true,
-            --命中样条【贝塞尔曲线】限定参数
-            HitSpline = {
+            --瞄准系数
+            Coefficient = {
                 --纵向偏移系数
                 K1 = 1,
                 --横向偏移系数
                 K2 = 2,
                 --横向缩放系数
                 S = 0.02,
+            },
+            --瞄准冷却时间【单位：秒】
+            CoolDownTime = 1.2,
+            --样条采样方案
+            SampleSpline = true,
+            --命中样条【贝塞尔曲线】限定参数
+            HitSpline = {
                 --样条分段量【数值越小越平滑，性能越差，反之亦然】
                 Segment = 100,
                 --瞄准线分段量【数值越小越平滑，性能越差，反之亦然】

@@ -102,18 +102,10 @@ function Weapon:SamplePosition(PitchRadian, Velocity, Gravity, Time)
         --获取攻击者和受击者位移
         local Displacement = self.CurrentScene:GetDisplacement()
         if Displacement then
-            local OffsetY = Displacement.Y
-            if Displacement.X < 0 then
-                OffsetY = -OffsetY
-            end
-            local WeaponResource = self:GetResource()
-            local ProjectileConfig = WeaponResource and WeaponResource.Projectile
-            local Y = ProjectileConfig.Offset.Y + OffsetY
-            local Distance = math.abs(Displacement.X) * 0.01
-            Y = -Y * 0.01 * X / Distance
-
+            local K = Displacement.Y / Displacement.X
+            local Y = -K * X 
             --反转
-            if Displacement.X < 0 then
+            if Displacement and Displacement.X < 0 then
                 X = -X
                 Y = -Y
             end
@@ -334,9 +326,8 @@ function Weapon:Update(DeltaTime)
 
         --位置速度采样
         local RelativePosition, Velocity, IsOver = self:SamplePositionAndVelocity(PassTime)
-        local SpawnerPosition
+        local SpawnerPosition = self.OwnerPlayer:GetLocation()
         if RelativePosition then
-            SpawnerPosition = self.OwnerPlayer:GetLocation()
             if IsOver then
                 self:HitTarget()
                 return
@@ -350,7 +341,6 @@ function Weapon:Update(DeltaTime)
             local PitchRadian = UMath:DegToRad(self.ProjectileInstance.PitchDegree)
             RelativePosition = self:SamplePosition(PitchRadian, InitVelocity, Gravity, PassTime) * 100
             Velocity =  self:SampleVelocity(PitchRadian, InitVelocity, Gravity, PassTime)
-            SpawnerPosition = self:GetSpawnerPosition()
         end
         --校正武器朝向
         if UMath:GetVectorLength(Velocity) ~= 0 then

@@ -732,8 +732,8 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
         if PitchDegree and AimSetting then
             if self.Weapon then
                 local ShowTrackLength = AimSetting.ShowTrackLength
+                local SpawnerPosition = self:GetLocation()
                 if AimSetting.SampleSpline then
-                    local SpawnerPosition = self:GetLocation()
                     local SplineCurve = self.Weapon:BuildSplineCurve(PitchDegree, true, ShowTrackLength)
                     for _, SplineKeyPoint in pairs(SplineCurve) do
                         local RelativePosition = SplineKeyPoint.Point
@@ -742,7 +742,6 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
                     end
                 else
                     --计算起点【角色位置做一点偏移，即箭矢位置】
-                    local SpawnerPosition = self.Weapon:GetSpawnerPosition()
                     table.insert(SplinePoints, SpawnerPosition)
 
                     --分别计算X，Z分量

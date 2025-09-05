@@ -53,20 +53,20 @@ end
 ---@param AimSetting 瞄准设置
 ---@param Displacement 两者之间位移
 function GameUtils.ComputeHitRange(AimSetting, Displacement)
-    local SplineConfig = AimSetting.HitSpline
+    local Coefficient = AimSetting.Coefficient
     --计算垂直偏差
     local OffsetZ = Displacement.Z * 0.01
     --重新计算角度区间
-    local LowerDegree = AimSetting.LowerDegree + OffsetZ * SplineConfig.K1
-    local UpperDegree = AimSetting.UpperDegree + OffsetZ * SplineConfig.K1
+    local LowerDegree = AimSetting.LowerDegree + OffsetZ * Coefficient.K1
+    local UpperDegree = AimSetting.UpperDegree + OffsetZ * Coefficient.K1
     local XY = math.sqrt(Displacement.X * Displacement.X + Displacement.Y * Displacement.Y) * 0.01
     --计算水平偏差
     local OffsetXY = XY - AimSetting.StandardDistance
     --先上移
-    LowerDegree = LowerDegree + OffsetXY * SplineConfig.K2
-    UpperDegree = UpperDegree + OffsetXY * SplineConfig.K2
+    LowerDegree = LowerDegree + OffsetXY * Coefficient.K2
+    UpperDegree = UpperDegree + OffsetXY * Coefficient.K2
     --再缩放
-    local K = math.max(0.01, 1 - OffsetXY * SplineConfig.S)
+    local K = math.max(0.01, 1 - OffsetXY * Coefficient.S)
     LowerDegree = LowerDegree * K
     UpperDegree = UpperDegree * K
     local Message = string.format("ComputeHitRange([%f, %f]->[%f, %f])", AimSetting.LowerDegree, AimSetting.UpperDegree, LowerDegree, UpperDegree)
