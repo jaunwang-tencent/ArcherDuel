@@ -133,7 +133,8 @@ function GoldBattle:LoadCharacter(Context)
             Scale = Engine.Vector(1, 1, 1),
             Situation = Context.Situation,
             CharacterConfigID = Context.CharacterIndex,
-            WeaponConfigID = Context.Player1.weaponId,
+            WeaponConfigID = Context.Player1.weapons[1],
+			Equipments = Context.Player1.equipments,
             Controlled = false,
 			OnlyShow = true,
         })
@@ -148,7 +149,8 @@ function GoldBattle:LoadCharacter(Context)
             Scale = Engine.Vector(1, 1, 1),
             Situation = Context.Situation,
             CharacterConfigID = Context.CharacterIndex,
-            WeaponConfigID = Context.Player2.weaponId,
+            WeaponConfigID = Context.Player2.weapons[1],
+			Equipments = Context.Player2.equipments,
             Controlled = false,
 			OnlyShow = true,
         })
@@ -199,11 +201,25 @@ function GoldBattle:GetDisplacement()
         local AttackPlayer = self:GetActor(self.CurrentTurn)
         local TargetPlayer = self:GetActor(self.NextTurn)
         if AttackPlayer and TargetPlayer then
-            local Displacement = AttackPlayer:GetLocation() - TargetPlayer:GetLocation()
+            local Displacement = TargetPlayer:GetLocation() - AttackPlayer:GetLocation()
             return Displacement
         end
     end
 end
+
+--- 是否禁用可移动物体【这里主要是为了解决角色被命中后，将角色的碰撞胶囊挪回网格体位置时在途径过程中发生碰撞】
+---@param Enable 是
+function GoldBattle:EnableMovable(Enable)
+    local SceneResource = self:GetResource()
+    local Obstacle = SceneResource and SceneResource.Obstacle
+    local MovableList = Obstacle and Obstacle.MovableList
+    if MovableList then
+        for SceneID, _ in pairs(MovableList) do
+            Element:SetPhysics(SceneID, Enable, true, Enable)
+        end
+    end
+end
+
 
 --- 回合切换事件
 function GoldBattle:OnSwitchTurn()
@@ -268,8 +284,8 @@ function GoldBattle:OnGoldShow(showTime)
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Local)
 
-		local startOffest = {X = 500, Y = -500, Z = 250} -- 起始偏移点
-		local endOffest = {X = 500, Y = 500, Z = 250} -- 结束偏移点
+		local startOffest = {X = -600, Y = -300, Z = 250} -- 起始偏移点
+		local endOffest = {X = -600, Y = 300, Z = 250} -- 结束偏移点
 		local Forward = UMath:RotatorToForward(LocalRotation)
 		local Up = Engine.Vector(0, 0, 1)
 		local Right = UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))

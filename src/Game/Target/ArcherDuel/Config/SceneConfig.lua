@@ -518,6 +518,120 @@ local SceneConfig = {
                     }
                 },
             },
+            [2] = {
+                --阵营出生点
+                BirthPoint = {
+                    Local = 972,
+                    Enemy = 973
+                },
+                --相机
+                Camera = {
+                    --角色观察相机元件标识【用于观察玩家角色使用】
+                    CharacterCameraSceneId = 474,
+                    --投掷物追踪相机元件标识【用于观察投掷物使用】
+                    ProjectileCameraSceneId = 475,
+                    --相机偏移【与观察目标之间的偏移，比如人、投掷物】
+                    Offset = Engine.Vector(-1200, 150, 250),
+                },
+                --障碍物场景标识【可以被标识】
+                Obstacle = {
+                    --命中可移动物体的力大小【单位：牛】
+                    ForceSize = 1000,
+                    --可移动物体摩擦系数
+                    Friction = 0.2,
+                    --密度，元件单位缩放情况下的质量
+                    Density = 100,
+                    --可移动物体列表
+                    MovableList  = {
+                        [618] = true,
+                        [621] = true,
+                    },
+                    --掉落速度【单位：米每秒】
+                    DropOffset = Engine.Vector(0, 0, -10000),
+                    --命中后爆炸特效资源标识【梦幻爆炸】
+                    ExplosionEffect = 8,
+                    --活体列表【命中后直接瞬移，播放爆炸效果】
+                    BodyList = {
+                        [661] = true,
+                    }
+                },
+            },
+            [3] = {
+                --阵营出生点
+                BirthPoint = {
+                    Local = 1313,
+                    Enemy = 1314
+                },
+                --相机
+                Camera = {
+                    --角色观察相机元件标识【用于观察玩家角色使用】
+                    CharacterCameraSceneId = 474,
+                    --投掷物追踪相机元件标识【用于观察投掷物使用】
+                    ProjectileCameraSceneId = 475,
+                    --相机偏移【与观察目标之间的偏移，比如人、投掷物】
+                    Offset = Engine.Vector(-1200, 150, 250),
+                },
+                --障碍物场景标识【可以被标识】
+                Obstacle = {
+                    --命中可移动物体的力大小【单位：牛】
+                    ForceSize = 1000,
+                    --可移动物体摩擦系数
+                    Friction = 0.2,
+                    --密度，元件单位缩放情况下的质量
+                    Density = 100,
+                    --可移动物体列表
+                    MovableList  = {
+                        [618] = true,
+                        [621] = true,
+                    },
+                    --掉落速度【单位：米每秒】
+                    DropOffset = Engine.Vector(0, 0, -10000),
+                    --命中后爆炸特效资源标识【梦幻爆炸】
+                    ExplosionEffect = 8,
+                    --活体列表【命中后直接瞬移，播放爆炸效果】
+                    BodyList = {
+                        [661] = true,
+                    }
+                },
+            },
+            [4] = {
+                --阵营出生点
+                BirthPoint = {
+                    Local = 1455,
+                    Enemy = 1456
+                },
+                --相机
+                Camera = {
+                    --角色观察相机元件标识【用于观察玩家角色使用】
+                    CharacterCameraSceneId = 474,
+                    --投掷物追踪相机元件标识【用于观察投掷物使用】
+                    ProjectileCameraSceneId = 475,
+                    --相机偏移【与观察目标之间的偏移，比如人、投掷物】
+                    Offset = Engine.Vector(-1200, 150, 250),
+                },
+                --障碍物场景标识【可以被标识】
+                Obstacle = {
+                    --命中可移动物体的力大小【单位：牛】
+                    ForceSize = 1000,
+                    --可移动物体摩擦系数
+                    Friction = 0.2,
+                    --密度，元件单位缩放情况下的质量
+                    Density = 100,
+                    --可移动物体列表
+                    MovableList  = {
+                        [618] = true,
+                        [621] = true,
+                    },
+                    --掉落速度【单位：米每秒】
+                    DropOffset = Engine.Vector(0, 0, -10000),
+                    --命中后爆炸特效资源标识【梦幻爆炸】
+                    ExplosionEffect = 8,
+                    --活体列表【命中后直接瞬移，播放爆炸效果】
+                    BodyList = {
+                        [661] = true,
+                    }
+                },
+            },
             --死亡底板场景
             DeadLine = 670
         },

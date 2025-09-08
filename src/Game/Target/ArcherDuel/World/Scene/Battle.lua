@@ -135,10 +135,6 @@ function Battle:LoadCharacter(Context)
         local EnemyPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
         local EnemyRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
         Element:SetVisibility(SceneResource.BirthPoint.Enemy, false)
-        local NextEquipments = {}
-        for i, v in ipairs(Context.RivalInfo.Equipments) do
-            table.insert(NextEquipments, v)
-        end
         self.NextTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = EnemyPosition,
             Rotation = EnemyRotation,
@@ -147,7 +143,7 @@ function Battle:LoadCharacter(Context)
             Situation = Context.Scene.Situation,
             CharacterConfigID = Context.Character.Index,
             WeaponConfigID = Context.RivalInfo.WeaponId,
-            Equipments = NextEquipments,
+            Equipments = Context.RivalInfo.Equipments,
         })
 
         local CurrentTurnPlayer = self:GetCurrentTurnPlayer()
@@ -319,8 +315,8 @@ function Battle:OnGoldShow(showTime)
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
 
-		local startOffest = {X = 500, Y = -500, Z = 250} -- 起始偏移点
-		local endOffest = {X = 500, Y = 500, Z = 250} -- 结束偏移点
+		local startOffest = {X = 500, Y = 300, Z = 250} -- 起始偏移点
+		local endOffest = {X = 500, Y = -300, Z = 250} -- 结束偏移点
 		local Forward = UMath:RotatorToForward(LocalRotation)
 		local Up = Engine.Vector(0, 0, 1)
 		local Right = UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))
@@ -331,7 +327,7 @@ function Battle:OnGoldShow(showTime)
 		if CameraConfig then
 			local CameraSceneId= CameraConfig.ProjectileCameraSceneId
 			Camera:MovieCameraStart(CameraSceneId)
-			Element:SetForward(CameraSceneId, Forward)
+			Element:SetForward(CameraSceneId, -Forward)
 			-- 移动相机
 			Element:MoveTo(CameraSceneId,OffsetPosition2,showTime,Element.CURVE.linear,OffsetPosition1)
 		end

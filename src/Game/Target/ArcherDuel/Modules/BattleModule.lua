@@ -14,6 +14,8 @@ function BattleModule:Open(Context)
     --持有房间状态机
     self.RoomFSM = Context.RoomFSM
 
+    self.IsGold = self.SceneConfig[Context.Scene.Situation].IsGold -- 是否为黄金赛
+
     --创建战场
     self.BattleScene = UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.World.Scene.Battle, Context)
     if Context.GoldInfos and #Context.GoldInfos > 0 then
@@ -36,6 +38,8 @@ function BattleModule:Open(Context)
     System:RegisterGameEvent(_GAME.Events.GameEnd, self.OnGameEnd, self)
     --黄金赛镜头表演
     System:RegisterGameEvent(_GAME.Events.GoldShow, self.OnGoldShow, self)
+    --黄金赛结束
+    System:RegisterGameEvent(_GAME.Events.GoldEnd, self.OnGoldEnd, self)
 
     --从场景中萃取【固定的】
     self.SceneGravity = self.BattleScene:GetGravity()
@@ -86,6 +90,10 @@ function BattleModule:Close()
     System:UnregisterEvent(Events.ON_TOUCH_SCREEN_PRESSED)
     System:UnregisterEvent(Events.ON_TOUCH_SCREEN_MOVED)
     System:UnregisterEvent(Events.ON_TOUCH_SCREEN_RELEASED)
+
+    System:UnregisterGameEvent(_GAME.Events.GameEnd, self.OnGameEnd)
+    System:UnregisterGameEvent(_GAME.Events.GoldShow, self.OnGoldShow)
+    System:UnregisterGameEvent(_GAME.Events.GoldEnd, self.OnGoldEnd)
 
     self.RoomFSM = nil
 
@@ -186,11 +194,10 @@ function BattleModule:OnTouchReleased(_, Y)
     self.OnPressY = nil
 end
 
-function BattleModule:OnGameEnd(IsControlledDead)
+function BattleModule:OnGameEnd()
     if self.RoomFSM then
-        local Sign = IsControlledDead and _GAME.Sign.GameOver or _GAME.Sign.GameVictory
         --切换到结算状态
-        self.RoomFSM:SwitchState(UGCS.Target.ArcherDuel.Room.States.ResultState, {OpenResult = Sign})
+        self.RoomFSM:SwitchState(UGCS.Target.ArcherDuel.Room.States.ResultState)
     end
 end
 
@@ -206,7 +213,7 @@ function BattleModule:OnGoldShow()
     TimerManager:AddTimer(delayTime, function()
         System:FireSignEvent(_GAME.Sign.BlackScreen)
     end)
-    delayTime = delayTime + 1
+    delayTime = delayTime + 2
     -- 黄金赛镜头表演
     TimerManager:AddTimer(delayTime, function()
         if self.BattleScene then
@@ -216,8 +223,13 @@ function BattleModule:OnGoldShow()
     delayTime = delayTime + showTime
     -- 表演结束，继续游戏
     TimerManager:AddTimer(delayTime, function()
+        self:OnGameEnd()
         System:FireSignEvent(_GAME.Sign.GoldBattleContinue)
     end)
+end
+
+-- 黄金赛结束
+function BattleModule:OnGoldEnd()
 end
 
 --- 获取俯仰角弧度

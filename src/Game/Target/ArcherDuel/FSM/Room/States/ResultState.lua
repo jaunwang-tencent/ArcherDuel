@@ -16,10 +16,7 @@ end
 ---@param Previous 上一状态
 ---@param Args 参数列表
 function ResultState:OnEnter(Previous, Args)
-    local OpenResult =  Args and Args.OpenResult
-    if OpenResult then
-        System:FireSignEvent(OpenResult)
-    end
+    
 end
 
 --- 重置状态

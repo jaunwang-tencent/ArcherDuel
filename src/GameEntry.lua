@@ -13,13 +13,17 @@ _GAME.Sign = {
     --游戏胜利
     GameVictory = "Game Victory",
     --游戏失败
-    GameOver = "Game Over",
+    GameFail = "Game Fail",
+    --游戏结束
+    GameEnd = "Game End",
     --再来一局
     BattleAgain = "Battle Again",
     --爆头信号
     HeadShot = "Head Shot",
     --黄金赛镜头表演
     GoldShow = "Gold Show",
+    --黄金赛结束
+    GoldEnd = "Gold End",
     --黑屏表演
     BlackScreen = "Black Screen",
     --黄金赛继续
@@ -32,6 +36,8 @@ _GAME.Events = {
     GameEnd = "GameEnd",
     --黄金赛镜头表演
     GoldShow = "GoldShow",
+    --黄金赛结束
+    GoldEnd = "GoldEnd",
 }
 
 -- 网络协议

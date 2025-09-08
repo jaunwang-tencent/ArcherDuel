@@ -19,15 +19,16 @@ function Player:OnCreate(Context)
     --是否为本地控制
     local Controlled = Context and Context.Controlled or false
     --在此创建假人【这个非常耗】
-    self.UID = FakeCharacter:CreateCharacter(self.Transform.Location, self.Transform.Rotation, self.Transform.Scale, not Controlled)
+    self.UID = FakeCharacter:CreateCharacter(self.Transform.Location, self.Transform.Rotation, self.Transform.Scale, false)
     self:SetFakeCharacterRotation(self.Transform.Rotation)
     -- 给假人换装
-    self:ChangeCharacterBody(Context.Equipments)
     if Controlled then
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.MeshVisibility, false)
         -- FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
+    else
+        self:ChangeCharacterBody(Context.Equipments)
     end
 
     --获取角色配置【只读】
@@ -107,6 +108,12 @@ function Player:OnDestroy()
         Element:RemoveSpline(self.CurrentSplineId)
         self.CurrentSplineId = nil
     end
+
+    UGCS.Framework.Executor.Cancel(self.FireTimer)
+    UGCS.Framework.Executor.Cancel(self.StandupTimer)
+    UGCS.Framework.Executor.Cancel(self.StandupTimer2)
+    UGCS.Framework.Executor.Cancel(self.HitTimer)
+    UGCS.Framework.Executor.Cancel(self.FallbackTimer)
 
     Player.super.OnDestroy(self)
 end
@@ -324,7 +331,7 @@ function Player:GetEquipData(ForceUpdate)
             Weapon_Lv = Axe_Lv
         end
          -- 基础伤害
-        local damage = 20-- self.WeaponConfig[Weapon_Num].Attributes.Attack + self.WeaponConfig[Weapon_Num].Attributes.Growth * Weapon_Lv + self.WeaponConfig[Part_Num].Attributes.Attack + self.WeaponConfig[Part_Num].Attributes.Growth * Part_Lv
+        local damage = 100-- self.WeaponConfig[Weapon_Num].Attributes.Attack + self.WeaponConfig[Weapon_Num].Attributes.Growth * Weapon_Lv + self.WeaponConfig[Part_Num].Attributes.Attack + self.WeaponConfig[Part_Num].Attributes.Growth * Part_Lv
         -- 头部伤害倍率
         local head_damageRate = 1-- self.WeaponConfig[Weapon_Num].Attributes.HeadShotIncrease
         -- 身体伤害倍率
@@ -441,8 +448,9 @@ function Player:Death()
         local DeathState = UGCS.Target.ArcherDuel.Character.States.DeathState
         self.FSM:SwitchState(DeathState, {})
 
-        -- 发送游戏结束事件
-        System:FireGameEvent(_GAME.Events.GameEnd, self:IsControlled())
+        -- 发送游戏结果信号
+        local Sign = self:IsControlled() and _GAME.Sign.GameFail or _GAME.Sign.GameVictory
+        System:FireSignEvent(Sign)
     end
 end
 
@@ -487,7 +495,7 @@ function Player:PerformFire()
     self.Weapon:Perform()
 
     --一段时间回到持有武器待机动作
-    UGCS.Framework.Executor.Delay(self.Config.Perform.FireToIdleTime, function()
+    self.FireTimer = UGCS.Framework.Executor.Delay(self.Config.Perform.FireToIdleTime, function()
         self:PlayAnim(self.Animations.Idle)
     end)
 end
@@ -582,7 +590,7 @@ function Player:PerformHitStart(Impulse, BodyType)
     end
 
     --躺地一段时间
-    UGCS.Framework.Executor.Delay(self.Config.Perform.LandingKeepTime, function()
+    self.HitTimer = UGCS.Framework.Executor.Delay(self.Config.Perform.LandingKeepTime, function()
         --躺地一段时间后，移动胶囊体，对齐到可视化网格
         local SocketPosition2 = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.OffsetBone)
         if SocketPosition2 then
@@ -651,7 +659,7 @@ function Player:PerformFallback()
         if self.Config.Perform.PhysicsBlendWeightTime <= 0 then
             self:PerformStandup(TargetRotation)
         else
-            UGCS.Framework.Updator.Alloc(self.Config.Perform.PhysicsBlendWeightTime, nil, function(Process)
+            self.FallbackTimer = UGCS.Framework.Updator.Alloc(self.Config.Perform.PhysicsBlendWeightTime, nil, function(Process)
                 --Log:PrintLog("TXPerform(PhysicsBlendWeight)", 1 - Process)
                 FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1 - Process)
             end, function()
@@ -683,7 +691,7 @@ function Player:PerformStandup(TargetRotation)
         self:PlayAnim(self.Animations.HitFrontToIdle)
     end
 
-    UGCS.Framework.Executor.Delay(self.Config.Perform.HitToIdleTime, function()
+    self.StandupTimer = UGCS.Framework.Executor.Delay(self.Config.Perform.HitToIdleTime, function()
         --原始朝向
         local Rotation = self:GetRotation()
         --受击倒地后站起来再将旋转调整回来
@@ -691,7 +699,7 @@ function Player:PerformStandup(TargetRotation)
             --瞬時旋转
             self:PerformHitOver()
         else
-            UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
+            self.StandupTimer2 = UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
                 local BlendRotation = Rotation * Progress + TargetRotation * (1 - Progress)
                 self:SetFakeCharacterRotation(BlendRotation)
             end, function()

@@ -29,7 +29,7 @@ function SystemFSM:OnCreate(Context)
         --场景
         Scene = {
             --战斗情境
-            Situation = 1,    --1-海岛，2-雪地，3-城市，4-天空遗迹，5-沙漠，6-太空，7-室外，8-室内
+            Situation = 7,    --1-海岛，2-雪地，3-城市，4-天空遗迹，5-沙漠，6-太空，7-室外，8-室内
             --战斗场景
             Index = 1
         },
@@ -94,35 +94,23 @@ function SystemFSM:OnCreate(Context)
             -- 打乱黄金赛场景排序
             local sceneArr = shuffled_copy({1,2,3,4})
             -- 第一个场景给主角
-            Context.Scene.Index = 1--sceneArr[1]
+            Context.Scene.Index = sceneArr[1]
 
             --黄金赛表演场景
-            local jsonStr = Archive:GetPlayerData(playerId, Archive.TYPE.String, "GoldBattleRivals")
-            Log:PrintLog("SystemFSM:OnCreate, Get GoldBattleRivals", jsonStr)
+            local jsonStr = Archive:GetPlayerData(playerId, Archive.TYPE.String, "GoldShowBattleInfo")
+            Log:PrintLog("SystemFSM:OnCreate, Get GoldShowBattleInfo", jsonStr)
+
+            jsonStr = '[[{"failCount":0,"name":"幸运儿","weapons":[1,2,3],"equipments":{"Cloth":33,"Bottoms":42,"Part":13}},{"failCount":0,"name":"社牛本牛","weapons":[1,2,3],"equipments":{"Cloth":19,"Bottoms":53,"Part":14}}],[{"failCount":0,"name":"爱胡萝卜的兔","weapons":[1,2,3],"equipments":{"Cloth":32,"Bottoms":42,"Part":2}},{"failCount":0,"name":"厕所摸鱼","weapons":[1,2,3],"equipments":{"Cloth":21,"Bottoms":44,"Part":10}}],[{"failCount":0,"weapons":[1,2,3],"equipments":{"Cloth":24,"Bottoms":60,"Part":11}},{"failCount":0,"weapons":[1,2,3],"equipments":{"Cloth":20,"Bottoms":52,"Part":1}}]]'
             local goldBattleRivals = MiscService:JsonStr2Table(jsonStr)
 
-            -- test
-            goldBattleRivals = {
-                {
-                    name = "Player1",
-                    weaponType = 1,
-                    weaponId = 1,
-                },
-                {
-                    name = "Player2",
-                    weaponType = 1,
-                    weaponId = 1,
-                },
-            }
             if goldBattleRivals and #goldBattleRivals > 0 then
-                local num = math.floor(#goldBattleRivals/2)
                 Context.GoldInfos = {}
-                for i = 1, num do
+                for i = 1, #goldBattleRivals do
                     local goldContext = {
-                        Player1 = goldBattleRivals[i * 2 - 1],
-                        Player2 = goldBattleRivals[i * 2],
+                        Player1 = goldBattleRivals[i][1],
+                        Player2 = goldBattleRivals[i][2],
                         Situation = Context.Scene.Situation,
-                        SceneIndex = 1,--sceneArr[i+1],
+                        SceneIndex = sceneArr[i+1],
                         CharacterIndex = 1,
                     }
                     table.insert(Context.GoldInfos, goldContext)
@@ -148,11 +136,24 @@ function SystemFSM:OnCreate(Context)
     --再来一局
     System:RegisterSignEvent(_GAME.Sign.BattleAgain, function()
         -- 重新开始匹配
-        System:FireSignEvent(_GAME.Sign.BattleMatching)
+        TimerManager:AddFrame(1, function()
+            System:FireSignEvent(_GAME.Sign.BattleMatching)
+        end)
     end)
 
-    -- 镜头表演
+    -- 对局结束
+    System:RegisterSignEvent(_GAME.Sign.GameEnd, function()
+        System:FireGameEvent(_GAME.Events.GameEnd)
+    end)
+
+    -- 黄金赛镜头表演
     System:RegisterSignEvent(_GAME.Sign.GoldShow, function()
+        System:FireGameEvent(_GAME.Events.GoldShow)
+    end)
+
+    -- 黄金赛结束
+    System:RegisterSignEvent(_GAME.Sign.GoldEnd, function()
+        System:FireGameEvent(_GAME.Events.GoldEnd)
     end)
 end
 
