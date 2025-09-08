@@ -26,7 +26,7 @@ function Player:OnCreate(Context)
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.MeshVisibility, false)
-        -- FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
+        FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
     else
         self:ChangeCharacterBody(Context.Equipments)
     end
@@ -331,7 +331,7 @@ function Player:GetEquipData(ForceUpdate)
             Weapon_Lv = Axe_Lv
         end
          -- 基础伤害
-        local damage = 100-- self.WeaponConfig[Weapon_Num].Attributes.Attack + self.WeaponConfig[Weapon_Num].Attributes.Growth * Weapon_Lv + self.WeaponConfig[Part_Num].Attributes.Attack + self.WeaponConfig[Part_Num].Attributes.Growth * Part_Lv
+        local damage = 20-- self.WeaponConfig[Weapon_Num].Attributes.Attack + self.WeaponConfig[Weapon_Num].Attributes.Growth * Weapon_Lv + self.WeaponConfig[Part_Num].Attributes.Attack + self.WeaponConfig[Part_Num].Attributes.Growth * Part_Lv
         -- 头部伤害倍率
         local head_damageRate = 1-- self.WeaponConfig[Weapon_Num].Attributes.HeadShotIncrease
         -- 身体伤害倍率
@@ -449,8 +449,8 @@ function Player:Death()
         self.FSM:SwitchState(DeathState, {})
 
         -- 发送游戏结果信号
-        local Sign = self:IsControlled() and _GAME.Sign.GameFail or _GAME.Sign.GameVictory
-        System:FireSignEvent(Sign)
+        local EventName = self:IsControlled() and _GAME.Events.BattleFail or _GAME.Events.BattleVictory
+        System:FireGameEvent(EventName)
     end
 end
 
@@ -668,6 +668,7 @@ function Player:PerformFallback()
         end
     else
         --死亡，回合结束
+    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzz 333")
         self:Death()
     end
 end

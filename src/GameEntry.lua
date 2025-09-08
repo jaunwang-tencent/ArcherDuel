@@ -2,40 +2,29 @@
 Setting:SwitchToVerticalScreen(true)
 
 _GAME = {}
---信号事件
-_GAME.Sign = {
-    --开始匹配
-    BattleMatching = "Battle Matching",
-    --匹配对手信息
-    BattleStorage = "Battle Storage",
-    --战斗开始
-    BattleStart = "Battle Start",
-    --游戏胜利
-    GameVictory = "Game Victory",
-    --游戏失败
-    GameFail = "Game Fail",
-    --游戏结束
-    GameEnd = "Game End",
-    --再来一局
-    BattleAgain = "Battle Again",
-    --爆头信号
-    HeadShot = "Head Shot",
-    --黄金赛镜头表演
-    GoldShow = "Gold Show",
-    --黄金赛结束
-    GoldEnd = "Gold End",
-    --黑屏表演
-    BlackScreen = "Black Screen",
-    --黄金赛继续
-    GoldBattleContinue = "GoldBattleContinue",
-}
 
 --游戏内事件
 _GAME.Events = {
+    --开始匹配
+    StartMatch = "StartMatch",
+    --匹配对手信息准备完成
+    MatchInfoReady = "MatchInfoReady",
+    --战斗开始
+    BattleStart = "BattleStart",
+    --对局胜利
+    BattleVictory = "BattleVictory",
+    --对局失败
+    BattleFail = "BattleFail",
     --游戏结束
     GameEnd = "GameEnd",
+    --爆头
+    HeadShot = "Head Shot",
     --黄金赛镜头表演
     GoldShow = "GoldShow",
+    --黑屏表演
+    BlackScreen = "BlackScreen",
+    --黄金赛继续
+    GoldBattleContinue = "GoldBattleContinue",
     --黄金赛结束
     GoldEnd = "GoldEnd",
 }
@@ -51,11 +40,13 @@ _GAME.NetMsg = {
 ------------------------------------------------- Game Require ------------------------------------------------------
 local GameServer = require "Server.GameServer"
 local GameClient = require "Client.GameClient"
+local GameMath = require "Math.GameMath"
 
 ------------------------------------------------- Game Life ---------------------------------------------------------
 -- 初始化
 GameServer:Init()
 GameClient:Init()
+GameMath:Init()
 
 -- 客户端游戏更新
 local function UpdateClient()
@@ -88,6 +79,8 @@ local function OnBeginPlay()
         -- 循环更新客户端
         TimerManager:AddLoopFrame(1, UpdateClient)
     end
+
+    GameMath:OnStart()
 end
 
 -- 脚本结束时调用
@@ -99,6 +92,8 @@ local function OnEndPlay()
     if System:IsClient() then
         GameClient:OnEnd()
     end
+
+    GameMath:OnEnd()
 end
 
 -- 监听脚本启动事件
