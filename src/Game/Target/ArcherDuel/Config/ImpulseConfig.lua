@@ -543,7 +543,7 @@ local ImpulseConfig = {
             }
         }
     },
-    -- 打脚方案（包含Pelvis、ThighL、ThighR）
+    -- 打脚方案（包含Pelvis、ThighL、ThighR、Calf_L、Calf_R、Foot_L、Foot_R）
     [Character.SOCKET_NAME.Pelvis] = {
         --方案1【随机方案】
         [1] = {
@@ -602,33 +602,6 @@ local ImpulseConfig = {
             }
         },
         [3] = {
-            --实际物理作用，可能有多个，游戏师自定义
-            [1] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Head,
-                --冲量大小
-                ImpulseValue = 120000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = -150
-            },
-            [2] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Spine,
-                --冲量大小
-                ImpulseValue = 160000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 30
-            },
-            [3] = {
-                --冲量作用部位
-                BodyType = Thigh_L,
-                --冲量大小
-                ImpulseValue = 180000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 60
-            }
-        },
-        [4] = {
             --实际物理作用，可能有多个，游戏师自定义
             [1] = {
                 --冲量作用部位
@@ -719,33 +692,6 @@ local ImpulseConfig = {
                 --冲量作用部位
                 BodyType = Character.SOCKET_NAME.Head,
                 --冲量大小
-                ImpulseValue = 120000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = -150
-            },
-            [2] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Spine,
-                --冲量大小
-                ImpulseValue = 160000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 30
-            },
-            [3] = {
-                --冲量作用部位
-                BodyType = Thigh_L,
-                --冲量大小
-                ImpulseValue = 180000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 60
-            }
-        },
-        [4] = {
-            --实际物理作用，可能有多个，游戏师自定义
-            [1] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Head,
-                --冲量大小
                 ImpulseValue = 40000,
                 --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
                 ForwardDegree = 90
@@ -826,33 +772,6 @@ local ImpulseConfig = {
             }
         },
         [3] = {
-            --实际物理作用，可能有多个，游戏师自定义
-            [1] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Head,
-                --冲量大小
-                ImpulseValue = 120000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = -150
-            },
-            [2] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Spine,
-                --冲量大小
-                ImpulseValue = 160000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 30
-            },
-            [3] = {
-                --冲量作用部位
-                BodyType = Thigh_L,
-                --冲量大小
-                ImpulseValue = 180000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 60
-            }
-        },
-        [4] = {
             --实际物理作用，可能有多个，游戏师自定义
             [1] = {
                 --冲量作用部位
@@ -943,33 +862,6 @@ local ImpulseConfig = {
                 --冲量作用部位
                 BodyType = Character.SOCKET_NAME.Head,
                 --冲量大小
-                ImpulseValue = 120000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = -150
-            },
-            [2] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Spine,
-                --冲量大小
-                ImpulseValue = 160000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 30
-            },
-            [3] = {
-                --冲量作用部位
-                BodyType = Thigh_L,
-                --冲量大小
-                ImpulseValue = 180000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 60
-            }
-        },
-        [4] = {
-            --实际物理作用，可能有多个，游戏师自定义
-            [1] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Head,
-                --冲量大小
                 ImpulseValue = 40000,
                 --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
                 ForwardDegree = 90
@@ -1050,33 +942,6 @@ local ImpulseConfig = {
             }
         },
         [3] = {
-            --实际物理作用，可能有多个，游戏师自定义
-            [1] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Head,
-                --冲量大小
-                ImpulseValue = 120000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = -150
-            },
-            [2] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Spine,
-                --冲量大小
-                ImpulseValue = 160000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 30
-            },
-            [3] = {
-                --冲量作用部位
-                BodyType = Thigh_L,
-                --冲量大小
-                ImpulseValue = 180000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 60
-            }
-        },
-        [4] = {
             --实际物理作用，可能有多个，游戏师自定义
             [1] = {
                 --冲量作用部位
@@ -1167,33 +1032,6 @@ local ImpulseConfig = {
                 --冲量作用部位
                 BodyType = Character.SOCKET_NAME.Head,
                 --冲量大小
-                ImpulseValue = 120000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = -150
-            },
-            [2] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Spine,
-                --冲量大小
-                ImpulseValue = 160000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 30
-            },
-            [3] = {
-                --冲量作用部位
-                BodyType = Thigh_L,
-                --冲量大小
-                ImpulseValue = 180000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 60
-            }
-        },
-        [4] = {
-            --实际物理作用，可能有多个，游戏师自定义
-            [1] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Head,
-                --冲量大小
                 ImpulseValue = 40000,
                 --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
                 ForwardDegree = 90
@@ -1279,33 +1117,6 @@ local ImpulseConfig = {
                 --冲量作用部位
                 BodyType = Character.SOCKET_NAME.Head,
                 --冲量大小
-                ImpulseValue = 120000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = -150
-            },
-            [2] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Spine,
-                --冲量大小
-                ImpulseValue = 160000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 30
-            },
-            [3] = {
-                --冲量作用部位
-                BodyType = Thigh_L,
-                --冲量大小
-                ImpulseValue = 180000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 60
-            }
-        },
-        [4] = {
-            --实际物理作用，可能有多个，游戏师自定义
-            [1] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Head,
-                --冲量大小
                 ImpulseValue = 40000,
                 --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
                 ForwardDegree = 90
@@ -1386,33 +1197,6 @@ local ImpulseConfig = {
             }
         },
         [3] = {
-            --实际物理作用，可能有多个，游戏师自定义
-            [1] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Head,
-                --冲量大小
-                ImpulseValue = 120000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = -150
-            },
-            [2] = {
-                --冲量作用部位
-                BodyType = Character.SOCKET_NAME.Spine,
-                --冲量大小
-                ImpulseValue = 160000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 30
-            },
-            [3] = {
-                --冲量作用部位
-                BodyType = Thigh_L,
-                --冲量大小
-                ImpulseValue = 180000,
-                --与逆向前向夹角【单位：角度，约定：向上为正，向下为负】
-                ForwardDegree = 60
-            }
-        },
-        [4] = {
             --实际物理作用，可能有多个，游戏师自定义
             [1] = {
                 --冲量作用部位

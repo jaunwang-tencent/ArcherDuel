@@ -59,14 +59,14 @@ local CharacterConfig = {
                 --纵向偏移系数
                 K1 = 1,
                 --横向偏移系数
-                K2 = 2,
+                K2 = 1,
                 --横向缩放系数
-                S = 0.02,
+                S = 0.01,
             },
             --瞄准冷却时间【单位：秒】
             CoolDownTime = 1.2,
             --样条采样方案
-            SampleSpline = true,
+            SampleSpline = false,
             --命中样条【贝塞尔曲线】限定参数
             HitSpline = {
                 --样条分段量【数值越小越平滑，性能越差，反之亦然】
@@ -116,7 +116,7 @@ local CharacterConfig = {
         --角色属性参数
         Attributes = {
             --健康值
-            Health = 100,
+            Health = 400,
         },
     }
 }
