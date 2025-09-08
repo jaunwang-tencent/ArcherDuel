@@ -556,9 +556,9 @@ function Player:PerformHitStart(Impulse, BodyType)
     if Impulse and BodyType then
         --施加冲量
         local HasAdded = false
-        local ImpulseSetting = UGCS.Target.ArcherDuel.Config.GameConfig.ImpulseSetting
+        local ImpulseConfig = UGCS.Target.ArcherDuel.Config.ImpulseConfig
         --根据命中部位获取物理作用方案
-        local ImpulsePolicy = ImpulseSetting and ImpulseSetting[BodyType]
+        local ImpulsePolicy = ImpulseConfig and ImpulseConfig[BodyType]
         if ImpulsePolicy then
             --随机一套策略方案
             local PolicyCount = #ImpulsePolicy

@@ -12,6 +12,7 @@ UGCS.Target.ArcherDuel.Config.WeaponConfig = require "Game.Target.ArcherDuel.Con
 UGCS.Target.ArcherDuel.Config.EquipmentConfig = require "Game.Target.ArcherDuel.Config.EquipmentConfig"
 UGCS.Target.ArcherDuel.Config.GameConfig = require "Game.Target.ArcherDuel.Config.GameConfig"
 UGCS.Target.ArcherDuel.Config.UIConfig = require "Game.Target.ArcherDuel.Config.UIConfig"
+UGCS.Target.ArcherDuel.Config.ImpulseConfig = require "Game.Target.ArcherDuel.Config.ImpulseConfig"
 
 --目标游戏应用
 UGCS.Target.ArcherDuel.App = require "Game.Target.ArcherDuel.ArcherDuelApp"
@@ -20,6 +21,7 @@ UGCS.Target.ArcherDuel.App = require "Game.Target.ArcherDuel.ArcherDuelApp"
 UGCS.Target.ArcherDuel.System = {}
 UGCS.Target.ArcherDuel.System.FSM = require "Game.Target.ArcherDuel.FSM.System.SystemFSM"
 UGCS.Target.ArcherDuel.System.States = {}
+UGCS.Target.ArcherDuel.System.States.LobbyState = require "Game.Target.ArcherDuel.FSM.System.States.LobbyState"
 UGCS.Target.ArcherDuel.System.States.MatchState = require "Game.Target.ArcherDuel.FSM.System.States.MatchState"
 UGCS.Target.ArcherDuel.System.States.RoomState = require "Game.Target.ArcherDuel.FSM.System.States.RoomState"
 
