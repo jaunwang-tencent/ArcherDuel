@@ -282,8 +282,8 @@ function Player:SetPlayerHP()
     self.Attributes.Health = self.Attributes.Health + equipData.hp
 
     --抬头血量显示
-    local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
-    local BattleView = UISetting and UISetting.BattleView
+    local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+    local BattleView = UIConfig and UIConfig.BattleView
     if BattleView then
         local PlayerView = self.Attributes.Controlled and BattleView.LocalPlayer or BattleView.EnemyPlayer
         if PlayerView then

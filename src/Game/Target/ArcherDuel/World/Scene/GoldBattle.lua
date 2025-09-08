@@ -9,8 +9,8 @@ function GoldBattle:OnCreate(Context)
     --获取场景配置【只读】
     self.Config = UGCS.Target.ArcherDuel.Config.SceneConfig[Context.Situation]
     self.CharacterConfig = UGCS.Target.ArcherDuel.Config.CharacterConfig[Context.CharacterIndex]
-    -- local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
-    -- local BattleView = UISetting and UISetting.BattleView
+    -- local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+    -- local BattleView = UIConfig and UIConfig.BattleView
     -- self.CriticalHitReward = BattleView and BattleView.CriticalHitReward
     -- if self.CriticalHitReward then
     --     UI:SetVisible({self.CriticalHitReward.ID}, true)
