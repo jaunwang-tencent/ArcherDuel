@@ -44,8 +44,8 @@ function BattleModule:Open(Context)
     --从场景中萃取【固定的】
     self.SceneGravity = self.BattleScene:GetGravity()
     --获取刻度尺
-    local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
-    local BattleView = UISetting and UISetting.BattleView
+    local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+    local BattleView = UIConfig and UIConfig.BattleView
     if BattleView then
         --显示主控界面
         self.BattleViewIDList = {
@@ -258,8 +258,8 @@ end
 function BattleModule:AdjustPitchCursor(PitchDegree)
     if self.PitchCursorPoint and self.PitchRulerSize then
         local AimSetting = self.CharacterConfig.AimSetting
-        local UISetting = UGCS.Target.ArcherDuel.Config.GameConfig.UISetting
-        local BattleView = UISetting and UISetting.BattleView
+        local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+        local BattleView = UIConfig and UIConfig.BattleView
         local AimPitch = BattleView and BattleView.AimPitch
         if AimPitch then
             --计算俯仰角比例
