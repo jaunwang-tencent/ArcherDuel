@@ -22,14 +22,18 @@ local UIConfig = {
         LocalPlayer = {
             --根节点页面ID
             ID = 105654,
+            --昵称
             NickName = 105652,
+            --血条
             HPValue = 105650,
         },
         --敌方玩家
         EnemyPlayer = {
             --根节点页面ID
             ID = 105659,
+            --昵称
             NickName = 105653,
+            --血条
             HPValue = 105649,
         },
         --瞄准角度
