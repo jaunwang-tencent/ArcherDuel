@@ -10,39 +10,59 @@ local UIConfig = {
                 --命中
                 Selected = 103769,
                 --未命中
-                Unselected = 100523
+                Unselected = 100523,
+                --视图子项
+                ViewItems = {
+                    100528, 100599
+                }
             },
             --装备
             Equipment = {
                 --命中
                 Selected = 103771,
                 --未命中
-                Unselected = 100522
+                Unselected = 100522,
+                --视图子项
+                ViewItems = {
+                    100528, 104495, 104496, 100571
+                }
             },
             --对决
             Fight = {
                 --命中
                 Selected = 103773,
                 --未命中
-                Unselected = 100526
+                Unselected = 100526,
+                --视图子项
+                ViewItems = {
+                    100528, 104220, 104219, 101121
+                }
             },
             --商店
             Store = {
                 --命中
                 Selected = 103775,
                 --未命中
-                Unselected = 100524
+                Unselected = 100524,
+                --视图子项
+                ViewItems = {
+                    107845,110208
+                }
             },
             --锦标赛
             Tournament = {
                 --命中
                 Selected = 103777,
                 --未命中
-                Unselected = 100525
+                Unselected = 100525,
+                --视图子项
+                ViewItems = {
+                    106562, 106605, 106518, 107540
+                }
             }
         },
-        --资源栏
-        ResourceBar = {
+        --通用-资源栏
+        GeneralResourceBar = {
             ID = 100528,
             --段位
             Rank = {
@@ -59,11 +79,30 @@ local UIConfig = {
                 ID = 103869,
                 Label = 103868
             },
-            --证券
+            --点券
             Securities = {
                 ID = 103873,
                 Label = 103872
             }
+        },
+        --商店-资源栏
+        StoreResourceBar = {
+            ID = 107845,
+            --蓝宝箱
+            BlueBox = {
+                ID = 107829,
+                Label = 107828
+            },
+            --黄宝箱
+            YellowBox = {
+                ID = 107833,
+                Label = 107832
+            },
+            --砖石
+            Diamonds = {
+                ID = 107837,
+                Label = 107836
+            },
         }
     },
     --装备视图
@@ -384,7 +423,7 @@ local UIConfig = {
                 Image = 100510,
             },
             --投矛
-            Attribute = {
+            Spear = {
                 Label = 104841,
                 Image = 100511,
             },
@@ -491,37 +530,6 @@ local UIConfig = {
             Text_Num_3 = 110352,
             --需要更换的图片
             Image_3 = 110349,
-        },
-        --购买礼包3
-        Buy_3 = {
-            --根节点页面ID--需添加到滚动列表
-            ID = 110252,
-            --倒计时
-            CountDown = 110358,
-            --按钮  注释：观看广告按钮
-            Button_1 = 110227,
-            --剩余可点击次数 10/10
-            Text_1 = 110222,
-            --需要更换的图片
-            Image_1 = 110216,
-            ---------------------------------
-            --按钮  注释点击购买按钮
-            Button_2 = 110230,
-            --剩余可点击次数 10/10
-            Text_2 = 110229,
-            --需要金币数量
-            Text_Num_2 = 110240,
-            --需要更换的图片
-            Image_2 = 110228,
-            ---------------------------------
-            --按钮  注释点击购买按钮
-            Button_3 = 110245,
-            --剩余可点击次数 10/10
-            Text_3 = 110244,
-            --需要金币数量
-            Text_Num_3 = 110246,
-            --需要更换的图片
-            Image_3 = 110243,
         },
         --购买礼包4
         Buy_4 = {

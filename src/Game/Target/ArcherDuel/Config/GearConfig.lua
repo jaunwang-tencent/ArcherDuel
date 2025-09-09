@@ -5,6 +5,7 @@ local GearConfig = {
         --角色1
         TypeName = "哈士奇",
         TypeID = 400100,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -33,6 +34,7 @@ local GearConfig = {
         --角色2
         TypeName = "好好鸭",
         TypeID = 400110,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -61,6 +63,7 @@ local GearConfig = {
         --角色3
         TypeName = "紫萝萝",
         TypeID = 400380,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -90,6 +93,7 @@ local GearConfig = {
         TypeName = "巨鳄霸",
         --角色
         TypeID = 400210,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -118,6 +122,7 @@ local GearConfig = {
         --角色5
         TypeName = "羊小萌",
         TypeID = 400480,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -146,6 +151,7 @@ local GearConfig = {
         --角色6
         TypeName = "小红狐",
         TypeID = 400470,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -174,6 +180,7 @@ local GearConfig = {
         --角色7
         TypeName = "玫珊珊",
         TypeID = 400390,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -202,6 +209,7 @@ local GearConfig = {
         --角色8
         TypeName = "哞哞牛",
         TypeID = 400070,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -230,6 +238,7 @@ local GearConfig = {
         --角色9
         TypeName = "鼠朵朵",
         TypeID = 402390,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -258,6 +267,7 @@ local GearConfig = {
         --角色10
         TypeName = "胖胖达",
         TypeID = 400140,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -286,6 +296,7 @@ local GearConfig = {
         --角色11
         TypeName = "小青蛙",
         TypeID = 402930,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -314,6 +325,7 @@ local GearConfig = {
         --角色12
         TypeName = "易斑斑",
         TypeID = 400020,
+        Category = 1,
         --属性极
         Attributes = {
             -- 生命值
@@ -342,6 +354,7 @@ local GearConfig = {
         --角色13
         TypeName = "卡皮巴拉",
         TypeID = 401370,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -370,6 +383,7 @@ local GearConfig = {
         --角色14
         TypeName = "虎子哥",
         TypeID = 400080,
+        Category = 1,
         --属性参数
         Attributes = {
             -- 生命值
@@ -399,6 +413,7 @@ local GearConfig = {
         TypeName = "少年时代上装",
         --换装ID
         TypeID = 510080,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -429,6 +444,7 @@ local GearConfig = {
         TypeName = "沙滩旅客上装",
         --换装ID
         TypeID = 510020,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -459,6 +475,7 @@ local GearConfig = {
         TypeName = "清爽运动上装",
         --换装ID
         TypeID = 510008,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -489,6 +506,7 @@ local GearConfig = {
         TypeName = "邻家学妹上装",
         --换装ID
         TypeID = 510133,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -519,6 +537,7 @@ local GearConfig = {
         TypeName = "蓝色童话上装",
         --换装ID
         TypeID = 510045,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -549,6 +568,7 @@ local GearConfig = {
         TypeName = "白桃气泡上装",
         --换装ID
         TypeID = 510044,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -571,17 +591,14 @@ local GearConfig = {
             Grade = 1,
             -- 成长值
             Growth = 25,
-
         },
     },
-
-
-
     [21] = {
         --上衣7
         TypeName = "星小递上装",
         --换装ID
         TypeID = 510019,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -611,6 +628,7 @@ local GearConfig = {
         TypeName = "芝士桃桃上装",
         --换装ID
         TypeID = 510041,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -640,6 +658,7 @@ local GearConfig = {
         TypeName = "三花摩卡上装",
         --换装ID
         TypeID = 510043,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -669,6 +688,7 @@ local GearConfig = {
         TypeName = "专业态度上装",
         --换装ID
         TypeID = 510216,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -693,12 +713,12 @@ local GearConfig = {
             Growth = 40,
         },
     },
-
     [25] = {
         --上衣11
         TypeName = "活力绅士上装",
         --换装ID
         TypeID = 510206,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -721,13 +741,14 @@ local GearConfig = {
             Grade = 2,
             -- 成长值
             Growth = 50 , 
+        },
     },
-},
     [26] = {
         --上衣12
         TypeName = "春风探险上装",
         --换装ID
         TypeID = 510131,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -757,6 +778,7 @@ local GearConfig = {
         TypeName = "彩虹旋律上装",
         --换装ID
         TypeID = 510028,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -786,6 +808,7 @@ local GearConfig = {
         TypeName = "烘焙甜心上装",
         --换装ID
         TypeID = 510029,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -815,6 +838,7 @@ local GearConfig = {
         TypeName = "灰色边缘上装",
         --换装ID
         TypeID = 510018,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -844,6 +868,7 @@ local GearConfig = {
         TypeName = "蓝莓戚风上装",
         --换装ID
         TypeID = 510050,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -873,6 +898,7 @@ local GearConfig = {
         TypeName = "红梅丝绒上装",
         --换装ID
         TypeID = 510032,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -902,6 +928,7 @@ local GearConfig = {
         TypeName = "最佳员工上装",
         --换装ID
         TypeID = 510005,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -931,6 +958,7 @@ local GearConfig = {
         TypeName = "绅士礼服上装",
         --换装ID
         TypeID = 510096,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -960,6 +988,7 @@ local GearConfig = {
         TypeName = "海岛风情上装",
         --换装ID
         TypeID = 510350,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -989,6 +1018,7 @@ local GearConfig = {
         TypeName = "海岛一刻上装",
         --换装ID
         TypeID = 510157,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1018,6 +1048,7 @@ local GearConfig = {
         TypeName = "春日校园上装",
         --换装ID
         TypeID = 510130,
+        Category = 2,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1047,6 +1078,7 @@ local GearConfig = {
         TypeName = "青春筑梦上装",
         --换装ID
         TypeID = 510170,
+        Category = 2,
         --属性极
         Attributes = {
             -- 生命值
@@ -1071,12 +1103,12 @@ local GearConfig = {
             Growth = 32,  -- 降低成长值 (420 < 455, 差值为35)
         },
     },
-    
     [38] = {
         --下装1
         TypeName = "少年时代下装",
         --换装ID
         TypeID = 520052,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1099,7 +1131,6 @@ local GearConfig = {
             Grade = 1,
             -- 成长值
             Growth = 3,
-
         },
     },
     [39] = {
@@ -1107,6 +1138,7 @@ local GearConfig = {
         TypeName = "沙滩旅客下装",
         --换装ID
         TypeID = 520017,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1129,7 +1161,6 @@ local GearConfig = {
             Grade = 1,
             -- 成长值
             Growth = 1,
-
         },
     },
     [40] = {
@@ -1137,6 +1168,7 @@ local GearConfig = {
         TypeName = "清爽运动下装",
         --换装ID
         TypeID = 520008,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1159,7 +1191,6 @@ local GearConfig = {
             Grade = 1,
             -- 成长值
             Growth = 2,
-
         },
     },
     [41] = {
@@ -1167,6 +1198,7 @@ local GearConfig = {
         TypeName = "邻家学妹下装",
         --换装ID
         TypeID = 520088,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1189,7 +1221,6 @@ local GearConfig = {
             Grade = 1,
             -- 成长值
             Growth = 2,
-
         },
     },
     [42] = {
@@ -1197,6 +1228,7 @@ local GearConfig = {
         TypeName = "蓝色童话下装",
         --换装ID
         TypeID = 520035,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1219,7 +1251,6 @@ local GearConfig = {
             Grade = 1,
             -- 成长值
             Growth = 2,
-
         },
     },
     [43] = {
@@ -1227,6 +1258,7 @@ local GearConfig = {
         TypeName = "白桃气泡下装",
         --换装ID
         TypeID = 520034,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1249,7 +1281,6 @@ local GearConfig = {
             Grade = 1,
             -- 成长值
             Growth = 5,
-
         },
     },
     [44] = {
@@ -1257,6 +1288,7 @@ local GearConfig = {
         TypeName = "星小递下装",
         --换装ID
         TypeID = 520016,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1286,6 +1318,7 @@ local GearConfig = {
         TypeName = "芝士桃桃下装",
         --换装ID
         TypeID = 520031,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1315,6 +1348,7 @@ local GearConfig = {
         TypeName = "三花摩卡下装",
         --换装ID
         TypeID = 520033,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命极
@@ -1344,6 +1378,7 @@ local GearConfig = {
         TypeName = "专业态度下装",
         --换装ID
         TypeID = 520153,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1373,6 +1408,7 @@ local GearConfig = {
         TypeName = "活力绅士下装",
         --换装ID
         TypeID = 520145,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命
@@ -1403,6 +1439,7 @@ local GearConfig = {
         TypeName = "春风探险下装",
         --换装ID
         TypeID = 520087,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命极
@@ -1432,6 +1469,7 @@ local GearConfig = {
         TypeName = "彩虹旋律下装",
         --换装ID
         TypeID = 520026,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命极
@@ -1461,6 +1499,7 @@ local GearConfig = {
         TypeName = "烘焙甜心下装",
         --换装ID
         TypeID = 520027,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命极
@@ -1490,6 +1529,7 @@ local GearConfig = {
         TypeName = "灰色边缘下装",
         --换装ID
         TypeID = 520015,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命极
@@ -1519,6 +1559,7 @@ local GearConfig = {
         TypeName = "蓝莓戚风下装",
         --换装ID
         TypeID = 520040,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命极
@@ -1543,13 +1584,12 @@ local GearConfig = {
             Growth = 3,
         },
     },
-
-
     [54] = {
         --下装17
         TypeName = "红梅丝绒下装",
         --换装ID
         TypeID = 520030,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1579,6 +1619,7 @@ local GearConfig = {
         TypeName = "最佳员工下装",
         --换装ID
         TypeID = 520005,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1608,6 +1649,7 @@ local GearConfig = {
         TypeName = "绅士礼服下装",
         --换装ID
         TypeID = 520065,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1637,6 +1679,7 @@ local GearConfig = {
         TypeName = "海岛风情下装",
         --换装ID
         TypeID = 520233,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1666,6 +1709,7 @@ local GearConfig = {
         TypeName = "海岛一刻下装",
         --换装ID
         TypeID = 520108,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1695,6 +1739,7 @@ local GearConfig = {
         TypeName = "春日校园下装",
         --换装ID
         TypeID = 520086,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1724,6 +1769,7 @@ local GearConfig = {
         TypeName = "青春筑梦下装",
         --换装ID
         TypeID = 520118,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1751,6 +1797,7 @@ local GearConfig = {
     [61] = {
         --弓箭1
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1778,6 +1825,7 @@ local GearConfig = {
     [62] = {
         --弓箭2
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1805,6 +1853,7 @@ local GearConfig = {
     [63] = {
         --弓箭3
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1832,6 +1881,7 @@ local GearConfig = {
     [64] = {
         --弓箭4
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命极
@@ -1859,6 +1909,7 @@ local GearConfig = {
     [65] = {
         --弓箭5
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1886,6 +1937,7 @@ local GearConfig = {
     [66] = {
         --弓箭6
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1913,6 +1965,7 @@ local GearConfig = {
     [67] = {
         --弓箭7
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1940,6 +1993,7 @@ local GearConfig = {
     [68] = {
         --弓箭8
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1967,6 +2021,7 @@ local GearConfig = {
     [69] = {
         --弓箭9
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -1994,6 +2049,7 @@ local GearConfig = {
     [70] = {
         --弓箭10
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2021,6 +2077,7 @@ local GearConfig = {
     [71] = {
         --弓箭11
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2048,6 +2105,7 @@ local GearConfig = {
     [72] = {
         --弓箭12
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2075,6 +2133,7 @@ local GearConfig = {
     [73] = {
         --弓箭极3
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2102,6 +2161,7 @@ local GearConfig = {
     [74] = {
         --弓箭14
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2129,6 +2189,7 @@ local GearConfig = {
     [75] = {
         --弓箭15
         TypeName = "Hat",
+        Category = 4,
         --属性极
         Attributes = {
             -- 生命值
@@ -2156,6 +2217,7 @@ local GearConfig = {
     [76] = {
         --弓箭16
         TypeName = "Hat",
+        Category = 4,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2183,6 +2245,7 @@ local GearConfig = {
     [77] = {
         --手斧1
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2205,12 +2268,12 @@ local GearConfig = {
             Grade = 1,
             -- 成长值
             Growth = 2,
-
         },
     },
     [78] = {
         --手斧2
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2238,6 +2301,7 @@ local GearConfig = {
     [79] = {
         --手斧3
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2265,6 +2329,7 @@ local GearConfig = {
     [80] = {
         --手斧4
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命极
@@ -2292,6 +2357,7 @@ local GearConfig = {
     [81] = {
         --手斧5
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2319,6 +2385,7 @@ local GearConfig = {
     [82] = {
         --手斧6
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2346,6 +2413,7 @@ local GearConfig = {
     [83] = {
         --手斧7
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2373,6 +2441,7 @@ local GearConfig = {
     [84] = {
         --手斧8
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2400,6 +2469,7 @@ local GearConfig = {
     [85] = {
         --手斧9
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2427,6 +2497,7 @@ local GearConfig = {
     [86] = {
         --手斧10
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2454,6 +2525,7 @@ local GearConfig = {
     [87] = {
         --手斧11
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2481,6 +2553,7 @@ local GearConfig = {
     [88] = {
         --手斧12
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2508,6 +2581,7 @@ local GearConfig = {
     [89] = {
         --手斧13
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2535,6 +2609,7 @@ local GearConfig = {
     [90] = {
         --手斧14
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2562,6 +2637,7 @@ local GearConfig = {
     [91] = {
         --手斧15
         TypeName = "Glasses",
+        Category = 5,
         --属性极
         Attributes = {
             -- 生命值
@@ -2589,6 +2665,7 @@ local GearConfig = {
     [92] = {
         --手斧16
         TypeName = "Glasses",
+        Category = 5,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2616,6 +2693,7 @@ local GearConfig = {
     [93] = {
         --长矛1
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2644,6 +2722,7 @@ local GearConfig = {
     [94] = {
         --长矛2
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2671,6 +2750,7 @@ local GearConfig = {
     [95] = {
         --长矛3
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2698,6 +2778,7 @@ local GearConfig = {
     [96] = {
         --长矛4
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命极
@@ -2725,6 +2806,7 @@ local GearConfig = {
     [97] = {
         --长矛5
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2752,6 +2834,7 @@ local GearConfig = {
     [98] = {
         --长矛6
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2779,6 +2862,7 @@ local GearConfig = {
     [99] = {
         --长矛7
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2806,6 +2890,7 @@ local GearConfig = {
     [100] = {
         --长矛8
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2833,6 +2918,7 @@ local GearConfig = {
     [101] = {
         --长矛9
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2860,6 +2946,7 @@ local GearConfig = {
     [102] = {
         --长矛10
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2887,6 +2974,7 @@ local GearConfig = {
     [103] = {
         --长矛11
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2914,6 +3002,7 @@ local GearConfig = {
     [104] = {
         --长矛12
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2941,6 +3030,7 @@ local GearConfig = {
     [105] = {
         --长矛13
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2968,6 +3058,7 @@ local GearConfig = {
     [106] = {
         --长矛14
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
@@ -2995,6 +3086,7 @@ local GearConfig = {
     [107] = {
         --长矛15
         TypeName = "Cloth",
+        Category = 6,
         --属性极
         Attributes = {
             -- 生命值
@@ -3022,6 +3114,7 @@ local GearConfig = {
     [108] = {
         --长矛16
         TypeName = "Cloth",
+        Category = 6,
         --属性参数
         Attributes = {
             -- 生命值
