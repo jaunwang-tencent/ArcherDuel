@@ -71,3 +71,5 @@ UGCS.Target.ArcherDuel.Modules.LobbyModule = require "Game.Target.ArcherDuel.Mod
 UGCS.Target.ArcherDuel.Modules.EquipmentModule = require "Game.Target.ArcherDuel.Modules.EquipmentModule"
 UGCS.Target.ArcherDuel.Modules.StoreModule = require "Game.Target.ArcherDuel.Modules.StoreModule"
 UGCS.Target.ArcherDuel.Modules.TaskModule = require "Game.Target.ArcherDuel.Modules.TaskModule"
+UGCS.Target.ArcherDuel.Modules.TournamentModule = require "Game.Target.ArcherDuel.Modules.TournamentModule"
+UGCS.Target.ArcherDuel.Modules.FightModule = require "Game.Target.ArcherDuel.Modules.FightModule"

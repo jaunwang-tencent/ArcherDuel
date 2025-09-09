@@ -10,8 +10,8 @@ local GearConfig = UGCS.Target.ArcherDuel.Config.GearConfig
 function LobbyModule:Open(Context)
     self:PerformLoading()
     self:CharacterStandby()
-    self:InitView()
     self:LoadData()
+    self:InitView()
 
     self:GameStart()
 end
@@ -73,16 +73,16 @@ function LobbyModule:InitView()
     for ViewName, ViewData in pairs(TitleBar) do
         if type(ViewData) == "table" and ViewData.Unselected then
             UI:RegisterPressed(ViewData.Unselected, function()
-                self:OnSwitchView(ViewData)
+                self:SwitchView(ViewName, ViewData)
             end)
         end
     end
 
     --切换到主视图
-    self:OnSwitchView(TitleBar.Fight)
+    self:SwitchView("Fight", TitleBar.Fight)
 end
 
-function LobbyModule:OnSwitchView(ViewData)
+function LobbyModule:SwitchView(ViewName, ViewData)
     --关闭上一页面
     if self.CurrentViewData then
         UI:SetVisible({self.CurrentViewData.Selected}, false)
@@ -90,11 +90,39 @@ function LobbyModule:OnSwitchView(ViewData)
     end
 
     --打开当前页面
-    UI:SetVisible({ViewData.Selected},true)
-    UI:SetVisible(ViewData.ViewItems, true)
+    if ViewData then
+        UI:SetVisible({ViewData.Selected},true)
+        UI:SetVisible(ViewData.ViewItems, true)
+    end
 
     --记录当前视图数据
     self.CurrentViewData = ViewData
+
+    --子类化操作
+    self:OnSwitchView(ViewName)
+end
+
+function LobbyModule:OnSwitchView(ViewName)
+    if self.CurrentModule then
+        self.CurrentModule:Close()
+        self.CurrentModule = nil
+    end
+    local TargetModule
+    if ViewName == "Task" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.TaskModule
+    elseif ViewName == "Equipment" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
+    elseif ViewName == "Fight" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.FightModule
+    elseif ViewName == "Store" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.StoreModule
+    elseif ViewName == "Tournament" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.TournamentModule
+    end
+    if TargetModule then
+        TargetModule:Open(self.PlayerData)
+        self.CurrentModule = TargetModule
+    end
 end
 
 --- 加载玩家数据
@@ -115,7 +143,8 @@ function LobbyModule:LoadData()
         "Equipped_Cloth_Lv",
         "Coin",
         "Diamond",
-        "Rank"
+        "Rank",
+        "Daily_Progress"
     }
     --玩家数据
     self.PlayerData = {}
@@ -135,31 +164,83 @@ function LobbyModule:LoadData()
         self.PlayerData[ArchiveKey] = Data
     end
 
-    --加载已拥有装备
-    local OwnedEquipped
+    --1、加载所有装备
+    local AllEquipment
     if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table") then
         --这里读取玩家的装备 --并进行排序
         local Owned_Equipped_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table")
         --文字转为组
-        OwnedEquipped = MiscService:JsonStr2Table(Owned_Equipped_Table)
+        AllEquipment = MiscService:JsonStr2Table(Owned_Equipped_Table)
     else
-        OwnedEquipped = {}
+        AllEquipment = {}
         local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true }
         for ID, Data in pairs(GearConfig) do
             local HasInit = InitEquippedID[ID]
-            OwnedEquipped[ID] = {
+            AllEquipment[ID] = {
                 ID = ID  ,                      --装备编号ID
                 Level = 1 ,                     --装备等级
                 Piece = 0 ,                     --碎片数量
                 Category = Data.Category ,      --装备类别
-                Equipped = HasInit,              --是否装备
-                Unlock = HasInit,                --是否解锁
+                Equipped = HasInit,             --是否装备
+                Unlock = HasInit,               --是否解锁
             }
         end
-        local Owned_Equipped_Table = MiscService:Table2JsonStr(OwnedEquipped)
-        Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table", Owned_Equipped_Table)
     end
-    self.PlayerData.OwnedEquipped = OwnedEquipped
+    self.PlayerData.AllEquipment = AllEquipment
+
+    --2、装备数据
+    --未解锁装备
+    local LockedEquipment = {}
+    --已使用装备
+    local HasUseEquipment = {}
+    --未使用装备
+    local UnUseEquipment = {}
+    --按类型分组且品质降序
+    local GroupByCategory = {}
+    for _, Equipment in pairs(AllEquipment) do
+        --按种类分类
+        local Group = GroupByCategory[Equipment.Category]
+        if not Group then
+            Group = {}
+            GroupByCategory[Equipment.Category] = Group
+        end
+        table.insert(Group, Equipment)
+
+        if not Equipment.Unlock and Equipment.Piece > 0 then
+            --没有解锁，则解锁，并消耗一个
+            Equipment.Unlock = true
+            Equipment.Piece = Equipment.Piece - 1
+        end
+        if Equipment.Equipped then
+            --已装备
+            table.insert(HasUseEquipment, Equipment)
+        else
+            --未装备
+            if Equipment.Unlock then
+                --已解锁
+                table.insert(UnUseEquipment, Equipment)
+            else
+                --未解锁
+                table.insert(LockedEquipment, Equipment)
+            end
+        end
+    end
+    --按品质排序
+    for _, Group in pairs(GroupByCategory) do
+        table.sort(Group, function(lhs, rhs)
+            local LHSA = GearConfig[lhs.ID].Attributes
+            local RHSA = GearConfig[rhs.ID].Attributes
+            return LHSA.Grade < RHSA.Grade
+        end)
+    end
+    self.PlayerData.LockedEquipment = LockedEquipment
+    self.PlayerData.HasUseEquipment = HasUseEquipment
+    self.PlayerData.UnUseEquipment = UnUseEquipment
+    self.PlayerData.GroupByCategory = GroupByCategory
+
+    --3、存储数据
+    local Owned_Equipped_Table = MiscService:Table2JsonStr(AllEquipment)
+    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table", Owned_Equipped_Table)
 end
 
 ---------------------------------------以下是待整合代码---------------------------------------
@@ -258,7 +339,6 @@ local Table_Equipped = {}
 local Owned_Num = 0
 local Locked_Num = 0
 local Daily_Progress = 0
-local LoadingComplete = false
 
 local function Storage()
     -----------------------------------------------------------------------------------------------------
@@ -694,6 +774,7 @@ end
 
 
 --------------------------点击事件----------------------------------
+--[[
 --UI切换系统
 UI:RegisterPressed(100504,function ()  -- 进入游戏
     -- 生成 1 到 8 的随机数字
@@ -806,7 +887,6 @@ for i, anniu in ipairs(qiriTAB) do  --七日挑战TAB奖励切换
     end) 
 end
 
---[[
 for i,anniu in ipairs(TongyongTAB) do  --切换各种页面 
     UI:RegisterPressed(anniu,function ()
         UI:SetVisible(Store_currency,false)
@@ -843,7 +923,6 @@ for i,anniu in ipairs(TongyongTAB) do  --切换各种页面
          end
     end)
 end
---]]
 
 for i, anniu in pairs(zhuangbei_hd) do  --主页已装备
     UI:RegisterPressed(anniu,function (ton)
@@ -878,6 +957,5 @@ for i , anniu in ipairs(VS_tab) do  --联赛tab
         UI:SetVisible({VS_yemian[i]},true)
     end)
 end
-
-
+--]]
 return LobbyModule
