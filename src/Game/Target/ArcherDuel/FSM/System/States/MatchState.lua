@@ -19,7 +19,7 @@ end
 ---@param Previous 上一状态
 ---@param Args 参数列表
 function MatchState:OnEnter(Previous, Args)
-    
+
 end
 
 --- 重置状态

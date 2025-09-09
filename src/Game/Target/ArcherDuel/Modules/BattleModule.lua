@@ -211,7 +211,7 @@ function BattleModule:OnGoldShow()
     delayTime = delayTime + showTime
     -- 黑屏表演
     TimerManager:AddTimer(delayTime, function()
-        System:FireSignEvent(_GAME.Sign.BlackScreen)
+        System:FireGameEvent(_GAME.Events.BlackScreen)
     end)
     delayTime = delayTime + 2
     -- 黄金赛镜头表演
@@ -224,7 +224,7 @@ function BattleModule:OnGoldShow()
     -- 表演结束，继续游戏
     TimerManager:AddTimer(delayTime, function()
         self:OnGameEnd()
-        System:FireSignEvent(_GAME.Sign.GoldBattleContinue)
+        System:FireGameEvent(_GAME.Events.GoldBattleContinue)
     end)
 end
 

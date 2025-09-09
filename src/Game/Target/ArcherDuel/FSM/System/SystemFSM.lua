@@ -50,80 +50,54 @@ function SystemFSM:OnCreate(Context)
         GoldInfos = nil,
     }
 
-    -- 获取对手信息
-    System:RegisterSignEvent(_GAME.Sign.BattleStorage, function()
-        local playerId = Character:GetLocalPlayerId()
-
-        --获取当前地图
-        local MapId = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "BattleStage")
-        Log:PrintLog("SystemFSM:OnCreate, Get BattleStage", MapId)
-        if MapId and MapId > 0 then
-            Context.Scene.Situation = MapId
-        end
+    -- 匹配信息已经准备
+    System:RegisterGameEvent(_GAME.Events.MatchInfoReady, function(MatchInfo)
         --获取战斗场景
-        local Scene_ID = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "BattleStage_Ordinal")
-        Log:PrintLog("SystemFSM:OnCreate, Get BattleStage_Ordinal", Scene_ID)
-        if Scene_ID and Scene_ID > 0 then
-            Context.Scene.Index = Scene_ID
-        end
+        Context.Scene.Situation = MatchInfo.MapId
+        Context.Scene.Index = MatchInfo.SceneId
         -- 获取战斗武器
-        local weaponId = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "BattleWeapon")
-        Log:PrintLog("SystemFSM:OnCreate, Get BattleWeapon", weaponId)
-        if weaponId and weaponId > 0 then
-            Context.Weapon.Index = weaponId
-        end
+        Context.Weapon.Type = MatchInfo.BattleWeapon.weaponType
+        Context.Weapon.Index = MatchInfo.BattleWeapon.weaponId
         -- 获取对手信息
-        Context.RivalInfo.WeaponId = Context.Weapon.Index
-        local jsonStr = Archive:GetPlayerData(playerId, Archive.TYPE.String, "BattleRivalInfo")
-        Log:PrintLog("SystemFSM:OnCreate, Get BattleRivalInfo", jsonStr)
-        local RivalInfo = MiscService:JsonStr2Table(jsonStr)
-        if RivalInfo then
-            if RivalInfo.name then
-                Context.RivalInfo.Name = RivalInfo.name
-            end
-            if RivalInfo.weaponId then
-                Context.RivalInfo.WeaponId = RivalInfo.weaponId
-            end
-            if RivalInfo.equipments then
-                Context.RivalInfo.Equipments = RivalInfo.equipments
-            end
-        end
+        Context.RivalInfo.Name = MatchInfo.BattleRivalInfo.name
+        Context.RivalInfo.WeaponId = MatchInfo.BattleRivalInfo.weaponId
+        Context.RivalInfo.Equipments = MatchInfo.BattleRivalInfo.equipments
 
-        -- 是否为黄金赛
-        if SceneConfigTable[Context.Scene.Situation] and SceneConfigTable[Context.Scene.Situation].IsGold then
-            -- 打乱黄金赛场景排序
-            local sceneArr = shuffled_copy({1,2,3,4})
-            -- 第一个场景给主角
-            Context.Scene.Index = sceneArr[1]
+        -- -- 是否为黄金赛
+        -- if SceneConfigTable[MatchInfo.MapId] and SceneConfigTable[MatchInfo.MapId].IsGold then
+        --     -- 打乱黄金赛场景排序
+        --     local sceneArr = shuffled_copy({1,2,3,4})
+        --     -- 第一个场景给主角
+        --     Context.Scene.Index = sceneArr[1]
 
-            --黄金赛表演场景
-            local jsonStr = Archive:GetPlayerData(playerId, Archive.TYPE.String, "GoldShowBattleInfo")
-            Log:PrintLog("SystemFSM:OnCreate, Get GoldShowBattleInfo", jsonStr)
+        --     --黄金赛表演场景
+        --     local jsonStr = Archive:GetPlayerData(playerId, Archive.TYPE.String, "GoldShowBattleInfo")
+        --     Log:PrintLog("SystemFSM:OnCreate, Get GoldShowBattleInfo", jsonStr)
 
-            jsonStr = '[[{"failCount":0,"name":"幸运儿","weapons":[1,2,3],"equipments":{"Cloth":33,"Bottoms":42,"Part":13}},{"failCount":0,"name":"社牛本牛","weapons":[1,2,3],"equipments":{"Cloth":19,"Bottoms":53,"Part":14}}],[{"failCount":0,"name":"爱胡萝卜的兔","weapons":[1,2,3],"equipments":{"Cloth":32,"Bottoms":42,"Part":2}},{"failCount":0,"name":"厕所摸鱼","weapons":[1,2,3],"equipments":{"Cloth":21,"Bottoms":44,"Part":10}}],[{"failCount":0,"weapons":[1,2,3],"equipments":{"Cloth":24,"Bottoms":60,"Part":11}},{"failCount":0,"weapons":[1,2,3],"equipments":{"Cloth":20,"Bottoms":52,"Part":1}}]]'
-            local goldBattleRivals = MiscService:JsonStr2Table(jsonStr)
+        --     jsonStr = '[[{"failCount":0,"name":"幸运儿","weapons":[1,2,3],"equipments":{"Cloth":33,"Bottoms":42,"Part":13}},{"failCount":0,"name":"社牛本牛","weapons":[1,2,3],"equipments":{"Cloth":19,"Bottoms":53,"Part":14}}],[{"failCount":0,"name":"爱胡萝卜的兔","weapons":[1,2,3],"equipments":{"Cloth":32,"Bottoms":42,"Part":2}},{"failCount":0,"name":"厕所摸鱼","weapons":[1,2,3],"equipments":{"Cloth":21,"Bottoms":44,"Part":10}}],[{"failCount":0,"weapons":[1,2,3],"equipments":{"Cloth":24,"Bottoms":60,"Part":11}},{"failCount":0,"weapons":[1,2,3],"equipments":{"Cloth":20,"Bottoms":52,"Part":1}}]]'
+        --     local goldBattleRivals = MiscService:JsonStr2Table(jsonStr)
 
-            if goldBattleRivals and #goldBattleRivals > 0 then
-                Context.GoldInfos = {}
-                for i = 1, #goldBattleRivals do
-                    local goldContext = {
-                        Player1 = goldBattleRivals[i][1],
-                        Player2 = goldBattleRivals[i][2],
-                        Situation = Context.Scene.Situation,
-                        SceneIndex = sceneArr[i+1],
-                        CharacterIndex = 1,
-                    }
-                    table.insert(Context.GoldInfos, goldContext)
-                end
-            end
-        end
+        --     if goldBattleRivals and #goldBattleRivals > 0 then
+        --         Context.GoldInfos = {}
+        --         for i = 1, #goldBattleRivals do
+        --             local goldContext = {
+        --                 Player1 = goldBattleRivals[i][1],
+        --                 Player2 = goldBattleRivals[i][2],
+        --                 Situation = Context.Scene.Situation,
+        --                 SceneIndex = sceneArr[i+1],
+        --                 CharacterIndex = 1,
+        --             }
+        --             table.insert(Context.GoldInfos, goldContext)
+        --         end
+        --     end
+        -- end
 
         self:SwitchState(UGCS.Target.ArcherDuel.System.States.MatchState, Context)
     end)
 
-    self.bRestart = false
     -- 战斗开始
-    System:RegisterSignEvent(_GAME.Sign.BattleStart, function()
+    self.bRestart = false
+    System:RegisterGameEvent(_GAME.Events.BattleStart, function()
         if self.bRestart then
             self:SwitchState(UGCS.Target.ArcherDuel.Room.States.LoadingState, Context)
         else
@@ -133,27 +107,9 @@ function SystemFSM:OnCreate(Context)
         end
     end)
 
-    --再来一局
-    System:RegisterSignEvent(_GAME.Sign.BattleAgain, function()
-        -- 重新开始匹配
-        TimerManager:AddFrame(1, function()
-            System:FireSignEvent(_GAME.Sign.BattleMatching)
-        end)
-    end)
-
-    -- 对局结束
-    System:RegisterSignEvent(_GAME.Sign.GameEnd, function()
-        System:FireGameEvent(_GAME.Events.GameEnd)
-    end)
-
-    -- 黄金赛镜头表演
-    System:RegisterSignEvent(_GAME.Sign.GoldShow, function()
-        System:FireGameEvent(_GAME.Events.GoldShow)
-    end)
-
-    -- 黄金赛结束
-    System:RegisterSignEvent(_GAME.Sign.GoldEnd, function()
-        System:FireGameEvent(_GAME.Events.GoldEnd)
+    -- 开始进行匹配
+    TimerManager:AddFrame(1, function()
+        System:FireGameEvent(_GAME.Events.StartMatch)
     end)
 end
 

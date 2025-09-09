@@ -232,7 +232,7 @@ local WeaponConfig = {
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
-            Hit = { ID = 37, Offset = Engine.Vector(0,0,-100), Size = 1 },
+            Hit = { ID = 201, Offset = Engine.Vector(250,0,0), Size = 8 },
         },
         --属性参数
         Attributes = {
@@ -441,7 +441,7 @@ local WeaponConfig = {
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
-            Hit = { ID = 37, Offset = Engine.Vector(0,0,-100), Size = 1 },
+            Hit = { ID = 201, Offset = Engine.Vector(250,0,0), Size = 8 },
         },
         --属性参数
         Attributes = {
@@ -634,7 +634,7 @@ local WeaponConfig = {
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
-            Hit = { ID = 37, Offset = Engine.Vector(0,0,-100), Size = 1 },
+            Hit = { ID = 201, Offset = Engine.Vector(250,0,0), Size = 8 },
         },
         --属性参数
         Attributes = {

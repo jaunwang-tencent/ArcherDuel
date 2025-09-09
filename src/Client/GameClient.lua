@@ -13,10 +13,6 @@ end
 -- 客户端游戏开始时
 function GameClient:OnStart()
     Log:PrintLog("[GameClient:OnStart]")
-
-    TimerManager:AddFrame(1, function ()
-        System:FireSignEvent(_GAME.Sign.BattleMatching)
-    end)
     
     UI:SetImage({100470},Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()))
 

@@ -26,7 +26,7 @@ function Player:OnCreate(Context)
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.MeshVisibility, false)
-        -- FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
+        FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
     else
         self:ChangeCharacterBody(Context.Equipments)
     end
@@ -331,7 +331,7 @@ function Player:GetEquipData(ForceUpdate)
             Weapon_Lv = Axe_Lv
         end
          -- 基础伤害
-        local damage = 100-- self.WeaponConfig[Weapon_Num].Attributes.Attack + self.WeaponConfig[Weapon_Num].Attributes.Growth * Weapon_Lv + self.WeaponConfig[Part_Num].Attributes.Attack + self.WeaponConfig[Part_Num].Attributes.Growth * Part_Lv
+        local damage = 20-- self.WeaponConfig[Weapon_Num].Attributes.Attack + self.WeaponConfig[Weapon_Num].Attributes.Growth * Weapon_Lv + self.WeaponConfig[Part_Num].Attributes.Attack + self.WeaponConfig[Part_Num].Attributes.Growth * Part_Lv
         -- 头部伤害倍率
         local head_damageRate = 1-- self.WeaponConfig[Weapon_Num].Attributes.HeadShotIncrease
         -- 身体伤害倍率
@@ -449,8 +449,8 @@ function Player:Death()
         self.FSM:SwitchState(DeathState, {})
 
         -- 发送游戏结果信号
-        local Sign = self:IsControlled() and _GAME.Sign.GameFail or _GAME.Sign.GameVictory
-        System:FireSignEvent(Sign)
+        local EventName = self:IsControlled() and _GAME.Events.BattleFail or _GAME.Events.BattleVictory
+        System:FireGameEvent(EventName)
     end
 end
 
@@ -738,14 +738,24 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
         local SplinePoints = {}
         if PitchDegree and AimSetting then
             if self.Weapon then
-                local ShowTrackLength = AimSetting.ShowTrackLength
+                -- local ShowTrackLength = AimSetting.ShowTrackLength
                 local SpawnerPosition = self:GetLocation()
                 if AimSetting.SampleSpline then
-                    local SplineCurve = self.Weapon:BuildSplineCurve(PitchDegree, true, ShowTrackLength)
-                    for _, SplineKeyPoint in pairs(SplineCurve) do
-                        local RelativePosition = SplineKeyPoint.Point
-                        local SplinePoint = SpawnerPosition + RelativePosition
-                        table.insert(SplinePoints, SplinePoint)
+                    local SplineCurve, MiddlePoint = self.Weapon:BuildSplineCurve(PitchDegree, true)
+                    for i, v in ipairs(SplineCurve) do
+                        if v.Point == MiddlePoint then
+                            if SplineCurve[i + 2] then
+                                table.insert(SplinePoints, SpawnerPosition + v.Point)
+                                table.insert(SplinePoints, SpawnerPosition + SplineCurve[i + 2].Point)
+                                break
+                            end
+                        end
+
+                        if (i-1)%3 == 0 then
+                            local RelativePosition = v.Point
+                            local SplinePoint = SpawnerPosition + RelativePosition
+                            table.insert(SplinePoints, SplinePoint)
+                        end
                     end
                 else
                     --计算起点【角色位置做一点偏移，即箭矢位置】
@@ -761,14 +771,16 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
                     ShowTrackLength = ShowTrackLength or 5
                     local TotalLength = 0
                     local LastPosition
+                    local forward = OwnerScene:GetDisplacement()
+
                     while TotalLength < ShowTrackLength do
                         DeltaTime = DeltaTime + AimSetting.ShowTrackTimeStep
                         local RelativePosition = self.Weapon:SamplePosition(PitchRadian, InitVelocity, Gravity, DeltaTime)
                         if LastPosition then
-                            TotalLength = TotalLength + UMath:GetDistance(LastPosition, RelativePosition) 
+                            TotalLength = TotalLength + UMath:GetDistance(LastPosition, RelativePosition)
                         end
                         LastPosition = RelativePosition
-                        local SplinePoint = SpawnerPosition + RelativePosition * 100
+                        local SplinePoint = SpawnerPosition + (RelativePosition + Engine.Vector(0, forward.Y*TotalLength*0.1, 0)) * 100
                         table.insert(SplinePoints, SplinePoint)
                     end
                 end
@@ -776,6 +788,9 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
         end
         --更新样条点
         Element:UpdateSplinePoints(SplineId, SplinePoints)
+        if self.HistorySplineId == SplineId then
+            Element:SetSplineSpeed(SplineId, 0)
+        end
 
         --设置轨迹颜色
         if TrackColor then

@@ -59,12 +59,12 @@ local CharacterConfig = {
                 --纵向偏移系数
                 K1 = 1,
                 --横向偏移系数
-                K2 = 2,
+                K2 = 1,
                 --横向缩放系数
-                S = 0.02,
+                S = 0.01,
             },
             --瞄准冷却时间【单位：秒】
-            CoolDownTime = 1.2,
+            CoolDownTime = 0.8,
             --样条采样方案
             SampleSpline = true,
             --命中样条【贝塞尔曲线】限定参数
@@ -87,7 +87,7 @@ local CharacterConfig = {
             --显示轨迹长度【水平方向距离，单位：米】
             ShowTrackLength = 4,
             --显示轨迹时间步伐【单位：秒】
-            ShowTrackTimeStep = 0.05,
+            ShowTrackTimeStep = 0.1,
             --当前轨迹颜色
             CurrentTrackColor = "#00E3FF",
             --历史轨迹颜色
@@ -116,7 +116,7 @@ local CharacterConfig = {
         --角色属性参数
         Attributes = {
             --健康值
-            Health = 100,
+            Health = 400,
         },
     }
 }

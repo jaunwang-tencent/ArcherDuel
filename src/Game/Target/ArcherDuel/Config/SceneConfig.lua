@@ -469,7 +469,7 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.4,
+            Curvature = 0.55,
             --中点振幅【单位：米】
             Amplitude = 3,
         }
