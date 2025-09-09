@@ -2,6 +2,8 @@
 local FightModule = {}
 --段位配置
 local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
+--UI配置
+local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 
 --- 打开
 ---@param PlayerData 玩家数据
@@ -21,21 +23,26 @@ function FightModule:Open(PlayerData)
         return levels[#levels]
     end
 
-    local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "RankIconList", CustomProperty.PROPERTY_TYPE.Image)
-    local level = getLevelByScore(RankInfoConfig, PlayerData["Player_BattlePoints_Num"])
-    if level.icon and list[level.icon] then
-        UI:SetImage({100492}, list[level.icon], true)
-    end
-    UI:SetText({100491}, level.name)
+    local HomeView = UIConfig.HomeView
+    local CenterView = HomeView and HomeView.CenterView
+    local Rank = CenterView and CenterView.Rank
+    if Rank then
+        local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "RankIconList", CustomProperty.PROPERTY_TYPE.Image)
+        local BattlePoints = PlayerData["Player_BattlePoints_Num"]
+        local level = getLevelByScore(RankInfoConfig, BattlePoints)
+        if level.icon and list[level.icon] then
+            UI:SetImage({Rank.Image}, list[level.icon], true)
+        end
+        UI:SetText({Rank.Text}, level.name)
 
-    if RankInfoConfig[level.id + 1] then
-        UI:SetProgressCurrentValue({100495}, PlayerData["Player_BattlePoints_Num"] - level.base_score)
-        UI:SetProgressMaxValue({100495}, RankInfoConfig[level.id + 1].base_score)
-    else
-        UI:SetProgressCurrentValue({100495}, PlayerData["Player_BattlePoints_Num"])
-        UI:SetProgressMaxValue({100495}, PlayerData["Player_BattlePoints_Num"])
+        if RankInfoConfig[level.id + 1] then
+            UI:SetProgressCurrentValue({Rank.Progress}, BattlePoints - level.base_score)
+            UI:SetProgressMaxValue({Rank.Progress}, RankInfoConfig[level.id + 1].base_score)
+        else
+            UI:SetProgressCurrentValue({Rank.Progress}, BattlePoints)
+            UI:SetProgressMaxValue({Rank.Progress}, BattlePoints)
+        end
     end
-
     --寄存玩家数据
     self.PlayerData = PlayerData
 end

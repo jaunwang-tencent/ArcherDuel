@@ -132,7 +132,7 @@ local UIConfig = {
         --右视图
         RightView = {
             ID = 104496,
-            -- 弓箭 
+            -- 弓箭
             Bow = {
                 Label = 104159,
                 Image = 100539,
@@ -211,7 +211,21 @@ local UIConfig = {
                 --视图
                 ID = 109447,
                 --项
-                Item = 109449
+                Item = {
+                    ID = 109449,
+                    --锁
+                    Lock = 109579,
+                    --等级
+                    Level = 109450,
+                    --满级
+                    MaxLevel = 109467,
+                    --进度条
+                    Progress = 109456,
+                    --是否已装备
+                    Equipped = 109451,
+                    --图标
+                    Icon = 109448,
+                }
             }
         },
         --装备详情视图
@@ -255,36 +269,52 @@ local UIConfig = {
             --可升级提示
             UpgradableTip = {
                 ID = 104176,
+                --可升级图标
+                Icon = 104175,
                 --升级进度
-                Progress = 104176
+                Progress = 100562
             },
             --未有装备
             NotEquipped = {
-                ID  =100577
+                ID = 100577,
+                --获取跳转按钮
+                JumpButton = 100576
             },
             --已装备
             Equipped = {
-                ID = 104184
+                ID = 104184,
+                --获取跳转按钮
+                JumpButton = 104183
             },
             --已装备可升级
             EquippedAndUpgradable = {
-                ID = 104194
+                ID = 104194,
+                --获取跳转按钮
+                JumpButton = 104191
             },
             --可升级
             Upgradable = {
-                ID = 104187
+                ID = 104187,
+                --获取跳转按钮
+                JumpButton = 104186
             },
             --已装备已满级
             EquippedAndMaxLevel = {
-                ID = 104204
+                ID = 104204,
+                --获取跳转按钮
+                JumpButton = 104202
             },
             --已有装备已满级
             OwnedAndMaxLevel = {
-                ID = 104198
+                ID = 104198,
+                --获取跳转按钮
+                JumpButton = 104197
             },
             --已有装备
             Owned = {
-                ID = 100573
+                ID = 100573,
+                --获取跳转按钮
+                JumpButton = 100568
             },
         }
     },

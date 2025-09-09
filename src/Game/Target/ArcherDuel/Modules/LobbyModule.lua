@@ -12,6 +12,10 @@ function LobbyModule:Open(Context)
     self:CharacterStandby()
     self:LoadData()
     self:InitView()
+    --跳转商城
+    System:RegisterGameEvent(_GAME.Events.JumpStore, function()
+        self:SwitchView("Store")
+    end)
 end
 
 --- 刷新
@@ -112,14 +116,19 @@ function LobbyModule:LoadData()
         local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true }
         for ID, Data in pairs(GearConfig) do
             local HasInit = InitEquippedID[ID]
-            AllEquipment[ID] = {
-                ID = ID  ,                      --装备编号ID
-                Level = 1 ,                     --装备等级
-                Piece = 0 ,                     --碎片数量
-                Category = Data.Category ,      --装备类别
-                Equipped = HasInit,             --是否装备
+            local Equipment = {
+                ID = ID,                        --装备编号ID
+                Level = 1,                      --装备等级
+                Piece = 0,                      --碎片数量
+                Category = Data.Category,       --装备类别
                 Unlock = HasInit,               --是否解锁
+                Equipped = HasInit,             --是否装备
             }
+            if HasInit then
+                Equipment.Piece = 35
+                Equipment.Level = 3
+            end
+            AllEquipment[ID] = Equipment
         end
     end
     self.PlayerData.AllEquipment = AllEquipment
@@ -190,16 +199,18 @@ function LobbyModule:InitView()
     for ViewName, ViewData in pairs(TitleBar) do
         if type(ViewData) == "table" and ViewData.Unselected then
             UI:RegisterPressed(ViewData.Unselected, function()
-                self:SwitchView(ViewName, ViewData)
+                self:SwitchView(ViewName)
             end)
         end
     end
 
     --切换到主视图
-    self:SwitchView("Fight", TitleBar.Fight)
+    self:SwitchView("Fight")
 end
 
-function LobbyModule:SwitchView(ViewName, ViewData)
+function LobbyModule:SwitchView(ViewName)
+    local TitleBar = UIConfig.MainView.TitleBar
+    local ViewData = TitleBar[ViewName]
     --关闭上一页面
     if self.CurrentViewData then
         UI:SetVisible({self.CurrentViewData.Selected}, false)
