@@ -20,6 +20,7 @@ function StoreModule:Open(PlayerData)
     --添加到滚动视图
     UI:AddToScrollView(StoreView.Scrollable, self.ScrollItems)
 
+    --注册获取事件
     --寄存玩家数据
     self.PlayerData = PlayerData
 end

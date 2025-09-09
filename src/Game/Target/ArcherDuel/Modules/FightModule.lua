@@ -66,6 +66,11 @@ end
 
 --- 关闭
 function FightModule:Close()
+    local HomeView = UIConfig.HomeView
+    local CenterView = HomeView and HomeView.CenterView
+    UI:UnRegisterPressed(CenterView.Ad_1.ID)
+    UI:UnRegisterPressed(CenterView.Ad_2.ID)
+
     self.PlayerData = nil
 end
 
