@@ -14,6 +14,7 @@ UGCS.Target.ArcherDuel.Config.GearConfig = require "Game.Target.ArcherDuel.Confi
 UGCS.Target.ArcherDuel.Config.GameConfig = require "Game.Target.ArcherDuel.Config.GameConfig"
 UGCS.Target.ArcherDuel.Config.UIConfig = require "Game.Target.ArcherDuel.Config.UIConfig"
 UGCS.Target.ArcherDuel.Config.ImpulseConfig = require "Game.Target.ArcherDuel.Config.ImpulseConfig"
+UGCS.Target.ArcherDuel.Config.RankInfoConfig = require "Game.Target.ArcherDuel.Config.RankInfoConfig"
 
 --目标游戏应用
 UGCS.Target.ArcherDuel.App = require "Game.Target.ArcherDuel.ArcherDuelApp"

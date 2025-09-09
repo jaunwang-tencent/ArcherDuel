@@ -2,8 +2,8 @@
 local TaskModule = {}
 
 --- 打开
----@param Context 上下文【透传数据】
-function TaskModule:Open(Context)
+---@param PlayerData 玩家数据
+function TaskModule:Open(PlayerData)
 
 end
 

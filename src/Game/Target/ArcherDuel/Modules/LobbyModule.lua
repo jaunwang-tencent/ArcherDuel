@@ -79,7 +79,8 @@ function LobbyModule:LoadData()
         "Coin",
         "Diamond",
         "Rank",
-        "Daily_Progress"
+        "Daily_Progress",
+        "Player_BattlePoints_Num",
     }
     --玩家数据
     self.PlayerData = {}
@@ -240,6 +241,11 @@ function LobbyModule:OnSwitchView(ViewName)
         self.CurrentModule = TargetModule
     end
 end
+
+
+
+
+
 
 ---------------------------------------以下是待整合代码---------------------------------------
 local qiriTAB = {101111,105203,105204,105205,105206,105207,105208}

@@ -355,6 +355,15 @@ end
 
 -- 普通赛胜利
 function GameMath:OnVictory()
+    --加积分
+    local Player_BattlePoints_Num = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Player_BattlePoints_Num")
+    if Player_BattlePoints_Num then
+        Player_BattlePoints_Num = Player_BattlePoints_Num + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
+    else
+        Player_BattlePoints_Num = 50
+    end
+    Log:PrintLog("[GameMath:OnVictory] Player_BattlePoints_Num" .. Player_BattlePoints_Num)
+    Archive:SetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Player_BattlePoints_Num", Player_BattlePoints_Num)
     UI:SetVisible({108298},true)
     local progress = 0
     local animation = nil
@@ -370,6 +379,18 @@ end
 
 -- 普通赛失败
 function GameMath:OnFail()
+    --减积分
+    local Player_BattlePoints_Num = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Player_BattlePoints_Num")
+    if Player_BattlePoints_Num then
+        Player_BattlePoints_Num = Player_BattlePoints_Num + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
+        if Player_BattlePoints_Num < 0 then
+            Player_BattlePoints_Num = 0
+        end
+    else
+        Player_BattlePoints_Num = 0
+    end
+    Log:PrintLog("[GameMath:OnFail] Player_BattlePoints_Num" .. Player_BattlePoints_Num)
+    Archive:SetPlayerData(self.localPlayerId,Archive.TYPE.Number , "Player_BattlePoints_Num", Player_BattlePoints_Num)
     UI:SetVisible({106509}, true)
     System:FireGameEvent(_GAME.Events.GameEnd)
 end
