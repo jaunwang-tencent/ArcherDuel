@@ -3,6 +3,12 @@ Setting:SwitchToVerticalScreen(true)
 
 _GAME = {}
 
+--信号事件
+_GAME.Sign = {
+    --爆头
+    HeadShot = "Head Shot",
+}
+
 --游戏内事件
 _GAME.Events = {
     --开始匹配
@@ -17,8 +23,6 @@ _GAME.Events = {
     BattleFail = "BattleFail",
     --游戏结束
     GameEnd = "GameEnd",
-    --爆头
-    HeadShot = "Head Shot",
     --黄金赛镜头表演
     GoldShow = "GoldShow",
     --黑屏表演

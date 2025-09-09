@@ -88,6 +88,10 @@ local GameConfig = {
             [Character.SOCKET_NAME.UpperArm_R] = 30,
         }
     },
+    --普通场胜利累加积分
+    VictoryAddScore = 50,
+    --普通场失败累加积分
+    FailAddScore = -20,
 }
 
 return GameConfig

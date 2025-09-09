@@ -45,10 +45,10 @@ end
 
 --- 释放刷新器
 ---@param UpdatorID 刷新标识
-function Updator.Free(UpdatorID)
+function Updator.Free(UpdatorID, notEnd)
     if UpdatorID then
         local Instance = GlobalUpdatorMap[UpdatorID]
-        if Instance and Instance.OnEnd then
+        if not notEnd and Instance and Instance.OnEnd then
             if Instance.OnEnd then
                 Instance.OnEnd(table.unpack(Instance.Args))
             end

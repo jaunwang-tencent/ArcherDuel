@@ -10,9 +10,11 @@ UGCS.Target.ArcherDuel.Config.CharacterConfig = require "Game.Target.ArcherDuel.
 UGCS.Target.ArcherDuel.Config.SceneConfig = require "Game.Target.ArcherDuel.Config.SceneConfig"
 UGCS.Target.ArcherDuel.Config.WeaponConfig = require "Game.Target.ArcherDuel.Config.WeaponConfig"
 UGCS.Target.ArcherDuel.Config.EquipmentConfig = require "Game.Target.ArcherDuel.Config.EquipmentConfig"
+UGCS.Target.ArcherDuel.Config.GearConfig = require "Game.Target.ArcherDuel.Config.GearConfig"
 UGCS.Target.ArcherDuel.Config.GameConfig = require "Game.Target.ArcherDuel.Config.GameConfig"
 UGCS.Target.ArcherDuel.Config.UIConfig = require "Game.Target.ArcherDuel.Config.UIConfig"
 UGCS.Target.ArcherDuel.Config.ImpulseConfig = require "Game.Target.ArcherDuel.Config.ImpulseConfig"
+UGCS.Target.ArcherDuel.Config.RankInfoConfig = require "Game.Target.ArcherDuel.Config.RankInfoConfig"
 
 --目标游戏应用
 UGCS.Target.ArcherDuel.App = require "Game.Target.ArcherDuel.ArcherDuelApp"
@@ -66,3 +68,9 @@ UGCS.Target.ArcherDuel.World.Scene.GoldBattle = require "Game.Target.ArcherDuel.
 UGCS.Target.ArcherDuel.Modules = {}
 UGCS.Target.ArcherDuel.Modules.LoadingModule = require "Game.Target.ArcherDuel.Modules.LoadingModule"
 UGCS.Target.ArcherDuel.Modules.BattleModule = require "Game.Target.ArcherDuel.Modules.BattleModule"
+UGCS.Target.ArcherDuel.Modules.LobbyModule = require "Game.Target.ArcherDuel.Modules.LobbyModule"
+UGCS.Target.ArcherDuel.Modules.EquipmentModule = require "Game.Target.ArcherDuel.Modules.EquipmentModule"
+UGCS.Target.ArcherDuel.Modules.StoreModule = require "Game.Target.ArcherDuel.Modules.StoreModule"
+UGCS.Target.ArcherDuel.Modules.TaskModule = require "Game.Target.ArcherDuel.Modules.TaskModule"
+UGCS.Target.ArcherDuel.Modules.TournamentModule = require "Game.Target.ArcherDuel.Modules.TournamentModule"
+UGCS.Target.ArcherDuel.Modules.FightModule = require "Game.Target.ArcherDuel.Modules.FightModule"

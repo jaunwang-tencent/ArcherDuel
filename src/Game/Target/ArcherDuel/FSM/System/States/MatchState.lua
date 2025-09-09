@@ -5,7 +5,7 @@ local MatchState = UGCS.RTTI.Class("MatchState", UGCS.Framework.State)
 ---@param Args 参数列表
 ---@return 是否切换成功
 function MatchState:OnSwitch(Args)
-    --[[
+    --[[    --这里比较特殊，因为元件脚本的生命周期进局限于当前场景！！！note by jaunwang at 2025-09-09
     if self.FSM:IsState(UGCS.Target.ArcherDuel.System.States.LobbyState) then
         --只能从大厅状态而来
         return true

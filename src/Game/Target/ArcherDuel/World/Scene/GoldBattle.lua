@@ -133,7 +133,7 @@ function GoldBattle:LoadCharacter(Context)
             Scale = Engine.Vector(1, 1, 1),
             Situation = Context.Situation,
             CharacterConfigID = Context.CharacterIndex,
-            WeaponConfigID = Context.Player1.weapons[1],
+            WeaponConfigID = Context.Player1.weaponId,
 			Equipments = Context.Player1.equipments,
             Controlled = false,
 			OnlyShow = true,
@@ -149,7 +149,7 @@ function GoldBattle:LoadCharacter(Context)
             Scale = Engine.Vector(1, 1, 1),
             Situation = Context.Situation,
             CharacterConfigID = Context.CharacterIndex,
-            WeaponConfigID = Context.Player2.weapons[1],
+            WeaponConfigID = Context.Player2.weaponId,
 			Equipments = Context.Player2.equipments,
             Controlled = false,
 			OnlyShow = true,
@@ -284,8 +284,8 @@ function GoldBattle:OnGoldShow(showTime)
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Local)
 
-		local startOffest = {X = -600, Y = -300, Z = 250} -- 起始偏移点
-		local endOffest = {X = -600, Y = 300, Z = 250} -- 结束偏移点
+		local startOffest = {X = -1000, Y = -200, Z = 250} -- 起始偏移点
+		local endOffest = {X = -1000, Y = 200, Z = 250} -- 结束偏移点
 		local Forward = UMath:RotatorToForward(LocalRotation)
 		local Up = Engine.Vector(0, 0, 1)
 		local Right = UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))

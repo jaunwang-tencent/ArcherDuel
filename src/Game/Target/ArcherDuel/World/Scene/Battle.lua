@@ -213,7 +213,7 @@ function Battle:HeadShot()
     --爆头提示
     if self.CriticalHitReward then
         UI:SetVisible({self.CriticalHitReward.HeadShotUI}, true)
-        System:FireGameEvent(_GAME.Events.HeadShot)
+        System:FireSignEvent(_GAME.Sign.HeadShot)
     end
 end
 
@@ -315,8 +315,8 @@ function Battle:OnGoldShow(showTime)
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
 
-		local startOffest = {X = 500, Y = 300, Z = 250} -- 起始偏移点
-		local endOffest = {X = 500, Y = -300, Z = 250} -- 结束偏移点
+		local startOffest = {X = 600, Y = 200, Z = 250} -- 起始偏移点
+		local endOffest = {X = 600, Y = -200, Z = 250} -- 结束偏移点
 		local Forward = UMath:RotatorToForward(LocalRotation)
 		local Up = Engine.Vector(0, 0, 1)
 		local Right = UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))
