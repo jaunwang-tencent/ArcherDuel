@@ -66,7 +66,7 @@ local CharacterConfig = {
             --瞄准冷却时间【单位：秒】
             CoolDownTime = 0.8,
             --样条采样方案
-            SampleSpline = false,
+            SampleSpline = true,
             --命中样条【贝塞尔曲线】限定参数
             HitSpline = {
                 --样条分段量【数值越小越平滑，性能越差，反之亦然】
@@ -87,7 +87,7 @@ local CharacterConfig = {
             --显示轨迹长度【水平方向距离，单位：米】
             ShowTrackLength = 4,
             --显示轨迹时间步伐【单位：秒】
-            ShowTrackTimeStep = 0.05,
+            ShowTrackTimeStep = 0.1,
             --当前轨迹颜色
             CurrentTrackColor = "#00E3FF",
             --历史轨迹颜色

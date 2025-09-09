@@ -53,18 +53,32 @@ MatchConfig.PlayerName = {
     "蓝天", "白云", "黑夜", "星空", "太阳", "月亮", "星星", "云朵",
     "春天", "夏天", "秋天", "冬天", "季节", "时光", "岁月", "日子"
 }
-
-MatchConfig.Map = {
-    -- [地图类型] = {name-地图名称，sceneIds-战斗场景Id列表}
-    [1] = {name = "海岛", sceneIds= {1,2,3,4,5}},
-    [2] = {name = "雪地", sceneIds= {1,2}},
-    [3] = {name = "城市", sceneIds= {1,2,3}},
-    [4] = {name = "天空遗迹", sceneIds= {1,2,3,4,5}},
-    [5] = {name = "沙漠", sceneIds= {1,2,3,4}},
-    [6] = {name = "太空", sceneIds= {1,2,3,4,5}},
-    [7] = {name = "室外", sceneIds= {1,2,3,4}},
-    [8] = {name = "室内", sceneIds= {1,2,3,4,5}},
+MatchConfig.Map = { -- 黄金赛场景配置
+    [1] = "海岛",
+    [2] = "雪地",
+    [3] = "城市",
+    [4] = "天空遗迹",
+    [5] = "沙漠",
+    [6] = "太空",
+    [7] = "室外",
+    [8] = "室内",
 }
 
+MatchConfig.GoldSceneConfig = { -- 黄金赛场景配置
+    [7] = {
+        Podium = 632, -- 领奖台
+        Top1 = 619, -- 第一名
+        Top2 = 621, -- 第二名
+        Top3 = 623, -- 第三名
+        Camera = 475, -- 相机
+    }
+}
+
+MatchConfig.Match_UI = {105664,105674,105675,105671,105670,105710,106082,106084,106085}
+MatchConfig.MatchUI_Start = {110069,110072,110070,109965,110071,109970,110065}
+MatchConfig.MatchUI_Next = {109965,110108,110079,110069,110109,110070}
+MatchConfig.Victory_UI = {108053,108052,108050,108057,108048,108480}
+MatchConfig.Fail_UI = {106509}
+MatchConfig.BlackScreen_UI = {109970,110054}
 
 return MatchConfig

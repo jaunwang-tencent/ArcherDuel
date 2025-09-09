@@ -668,7 +668,6 @@ function Player:PerformFallback()
         end
     else
         --死亡，回合结束
-    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzz 333")
         self:Death()
     end
 end
@@ -739,14 +738,24 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
         local SplinePoints = {}
         if PitchDegree and AimSetting then
             if self.Weapon then
-                local ShowTrackLength = AimSetting.ShowTrackLength
+                -- local ShowTrackLength = AimSetting.ShowTrackLength
                 local SpawnerPosition = self:GetLocation()
                 if AimSetting.SampleSpline then
-                    local SplineCurve = self.Weapon:BuildSplineCurve(PitchDegree, true, ShowTrackLength)
-                    for _, SplineKeyPoint in pairs(SplineCurve) do
-                        local RelativePosition = SplineKeyPoint.Point
-                        local SplinePoint = SpawnerPosition + RelativePosition
-                        table.insert(SplinePoints, SplinePoint)
+                    local SplineCurve, MiddlePoint = self.Weapon:BuildSplineCurve(PitchDegree, true)
+                    for i, v in ipairs(SplineCurve) do
+                        if v.Point == MiddlePoint then
+                            if SplineCurve[i + 2] then
+                                table.insert(SplinePoints, SpawnerPosition + v.Point)
+                                table.insert(SplinePoints, SpawnerPosition + SplineCurve[i + 2].Point)
+                                break
+                            end
+                        end
+
+                        if (i-1)%3 == 0 then
+                            local RelativePosition = v.Point
+                            local SplinePoint = SpawnerPosition + RelativePosition
+                            table.insert(SplinePoints, SplinePoint)
+                        end
                     end
                 else
                     --计算起点【角色位置做一点偏移，即箭矢位置】
@@ -762,14 +771,16 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
                     ShowTrackLength = ShowTrackLength or 5
                     local TotalLength = 0
                     local LastPosition
+                    local forward = OwnerScene:GetDisplacement()
+
                     while TotalLength < ShowTrackLength do
                         DeltaTime = DeltaTime + AimSetting.ShowTrackTimeStep
                         local RelativePosition = self.Weapon:SamplePosition(PitchRadian, InitVelocity, Gravity, DeltaTime)
                         if LastPosition then
-                            TotalLength = TotalLength + UMath:GetDistance(LastPosition, RelativePosition) 
+                            TotalLength = TotalLength + UMath:GetDistance(LastPosition, RelativePosition)
                         end
                         LastPosition = RelativePosition
-                        local SplinePoint = SpawnerPosition + RelativePosition * 100
+                        local SplinePoint = SpawnerPosition + (RelativePosition + Engine.Vector(0, forward.Y*TotalLength*0.1, 0)) * 100
                         table.insert(SplinePoints, SplinePoint)
                     end
                 end
@@ -777,6 +788,9 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
         end
         --更新样条点
         Element:UpdateSplinePoints(SplineId, SplinePoints)
+        if self.HistorySplineId == SplineId then
+            Element:SetSplineSpeed(SplineId, 0)
+        end
 
         --设置轨迹颜色
         if TrackColor then

@@ -210,6 +210,9 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                 local Amplitude = K * SplineSetting.Amplitude
                 --中点【这一步很重要】
                 local MiddlePoint = (StartPoint + EndPoint) * 0.5
+                if IsAimTrack then
+                    MiddlePoint.Y = EndPoint.Y
+                end
                 --首尾朝向
                 local Forward = EndPoint - StartPoint
                 Forward.Y = 0
@@ -303,7 +306,7 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                         end
                         --]]
                         self.LastSplineCurve = SplineCurve
-                        return SplineCurve
+                        return SplineCurve, MiddlePoint
                     end
                 end
             end
