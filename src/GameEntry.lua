@@ -32,7 +32,9 @@ _GAME.Events = {
     --黄金赛结束
     GoldEnd = "GoldEnd",
     --跳转模块
-    JumpModule = "JumpModule"
+    JumpModule = "JumpModule",
+    --刷新数据
+    RefreshData = "RefreshData"
 }
 
 -- 网络协议

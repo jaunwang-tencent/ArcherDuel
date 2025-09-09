@@ -4,6 +4,28 @@ local LobbyModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
 local GearConfig = UGCS.Target.ArcherDuel.Config.GearConfig
+--存档配置
+local ArchiveConfig = {
+    "Equipped_Bow_Num",
+    "Equipped_Spear_Num",
+    "Equipped_Axe_Num",
+    "Equipped_Hat_Num",
+    "Equipped_Glasses_Num",
+    "Equipped_Cloth_Num",
+    "Equipped_Bow_Lv",
+    "Equipped_Spear_Lv",
+    "Equipped_Axe_Lv",
+    "Equipped_Hat_Lv",
+    "Equipped_Glasses_Lv",
+    "Equipped_Cloth_Lv",
+    "Coin",                     --金币
+    "Diamond",                  --砖石
+    "Rank",                     --段位
+    "GoldBox",                  --金宝箱
+    "SilverBox",                --银宝箱
+    "Daily_Progress",
+    "Player_BattlePoints_Num",  --门票
+}
 
 --- 打开
 ---@param Context 上下文【透传数据】
@@ -12,10 +34,7 @@ function LobbyModule:Open(Context)
     self:CharacterStandby()
     self:LoadData()
     self:InitView()
-    --跳转商城
-    System:RegisterGameEvent(_GAME.Events.JumpModule, function(ModuleName)
-        self:SwitchView(ModuleName)
-    end)
+    self:RegisterGameEvent()
 end
 
 --- 刷新
@@ -26,7 +45,8 @@ end
 
 --- 关闭
 function LobbyModule:Close()
-
+    --离开时保存数据
+    self:SaveData()
 end
 
 --- 加载表演
@@ -66,28 +86,9 @@ end
 
 --- 加载玩家数据
 function LobbyModule:LoadData()
-    --存档配置
-    local ArchiveConfig = {
-        "Equipped_Bow_Num",
-        "Equipped_Spear_Num",
-        "Equipped_Axe_Num",
-        "Equipped_Hat_Num",
-        "Equipped_Glasses_Num",
-        "Equipped_Cloth_Num",
-        "Equipped_Bow_Lv",
-        "Equipped_Spear_Lv",
-        "Equipped_Axe_Lv",
-        "Equipped_Hat_Lv",
-        "Equipped_Glasses_Lv",
-        "Equipped_Cloth_Lv",
-        "Coin",
-        "Diamond",
-        "Rank",
-        "Daily_Progress",
-        "Player_BattlePoints_Num",
-    }
-    --玩家数据
-    self.PlayerData = {}
+    --1、玩家基础数据
+    self.PlayerData = { }
+    local BaseData = {}
     --加载基础数据
     for Index, ArchiveKey in ipairs(ArchiveConfig) do
         local Data
@@ -99,19 +100,27 @@ function LobbyModule:LoadData()
             else
                 Data = 1
             end
-            Archive:SetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey, Data)
         end
-        self.PlayerData[ArchiveKey] = Data
-    end
 
-    --1、加载所有装备
+        --写入数据
+        BaseData[ArchiveKey] = Data
+    end
+    --测试【砖石，用来购买商品】
+    BaseData.Diamond = 555555
+    self.PlayerData.BaseData = BaseData
+
+    --2、装备数据
+    --2.1、初始化装备
     local AllEquipment
-    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table") then
+    Log:PrintLog("LoadData", self.PlayerID)
+    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table") then
         --这里读取玩家的装备 --并进行排序
-        local Owned_Equipped_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table")
+        local All_Equipment_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table")
+        Log:PrintLog("LoadData", All_Equipment_Table)
         --文字转为组
-        AllEquipment = MiscService:JsonStr2Table(Owned_Equipped_Table)
+        AllEquipment = MiscService:JsonStr2Table(All_Equipment_Table)
     else
+        --没有则初始化
         AllEquipment = {}
         local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true }
         for ID, Data in pairs(GearConfig) do
@@ -132,60 +141,234 @@ function LobbyModule:LoadData()
         end
     end
     self.PlayerData.AllEquipment = AllEquipment
+    self:RefreshEquipmentData()
+
+    --3、商店数据
+    local AllGoods
+    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table") then
+        --这里读取玩家的装备 --并进行排序
+        local All_Goods_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table")
+        --文字转为组
+        AllGoods = MiscService:JsonStr2Table(All_Goods_Table)
+    else
+        --没有则初始化
+        AllGoods = {}
+        --3.1、限定奖池
+        AllGoods.LimitItem = {
+            [1] = {
+                --消耗品【约定：关系或】
+                Consumables = {
+                    --消耗一个黄金宝箱
+                    GoldBox = 1,
+                    --或者600个砖石
+                    Diamond = 600,
+                },
+                --商品
+                Goods = {
+                    Equipments = {
+                        [1] = { ID = 1, Piece = 10 },
+                        [2] = { ID = 15, Piece = 15 },
+                        [3] = { ID = 38, Piece = 20 },
+                        [4] = { ID = 61, Piece = 25 },
+                        [5] = { ID = 77, Piece = 30 },
+                        [6] = { ID = 93, Piece = 30 },
+                    }
+                }
+            },
+            [2] = {
+                --消耗品【约定：关系或】
+                Consumables = {
+                    --广告资源
+                    Ad = "test_ad_tag",
+                    --广告冷却时间
+                    AdCoolTime = 24 * 3600
+                },
+                --商品
+                Goods = {
+                    Equipments = {
+                        [1] = { ID = 1, Piece = 10 },
+                        [2] = { ID = 15, Piece = 15 },
+                        [3] = { ID = 38, Piece = 20 },
+                        [4] = { ID = 61, Piece = 25 },
+                        [5] = { ID = 77, Piece = 30 },
+                        [6] = { ID = 93, Piece = 30 },
+                    }
+                }
+            },
+            [3] = {
+                --消耗品
+                Consumables = {
+                    --消耗一个白银宝箱
+                    SilverBox = 1,
+                    --或者600个砖石
+                    Diamond = 180,
+                },
+                --商品
+                Goods = {
+                    Equipments = {
+                        [1] = { ID = 2, Piece = 10 },
+                        [2] = { ID = 16, Piece = 15 },
+                        [3] = { ID = 39, Piece = 20 },
+                        [4] = { ID = 62, Piece = 25 },
+                        [5] = { ID = 78, Piece = 30 },
+                        [6] = { ID = 94, Piece = 30 },
+                    }
+                }
+            },
+            [4] = {
+                --消耗品
+                Consumables = {
+                    --广告资源
+                    Ad = "test_ad_tag",
+                    --广告冷却时间
+                    AdCoolTime = 24 * 3600
+                },
+                --商品
+                Goods = {
+                    Equipments = {
+                        [1] = { ID = 2, Piece = 10 },
+                        [2] = { ID = 16, Piece = 15 },
+                        [3] = { ID = 39, Piece = 20 },
+                        [4] = { ID = 62, Piece = 25 },
+                        [5] = { ID = 78, Piece = 30 },
+                        [6] = { ID = 94, Piece = 30 },
+                    }
+                }
+            }
+        }
+        --3.2、每日限购
+        AllGoods.DailyItem = {
+            [1] = {
+                --消耗品
+                Consumables = {
+                    --消耗100个砖石
+                    Diamond = 100,
+                    --最大收集次数
+                    MaxCollect = 2,
+                    --已收集次数
+                    HasCollect = 0
+                },
+                --商品
+                Goods = {
+                    Equipments = {
+                        [1] = { ID = 3, Piece = 10 }
+                    }
+                }
+            },
+            [2] = {
+                --消耗品
+                Consumables = {
+                    --消耗50个砖石
+                    Diamond = 50,
+                    --最大收集次数
+                    MaxCollect = 3,
+                    --已收集次数
+                    HasCollect = 0
+                },
+                --商品
+                Goods = {
+                    Equipments = {
+                        [1] = { ID = 4, Piece = 10 }
+                    }
+                }
+            },
+            [3] = {
+                --消耗品
+                Consumables = {
+                    --消耗100个砖石
+                    Diamond = 600,
+                    --最大收集次数
+                    MaxCollect = 1,
+                    --已收集次数
+                    HasCollect = 0
+                },
+                --商品
+                Goods = {
+                    Equipments = {
+                        [1] = { ID = 5, Piece = 10 }
+                    }
+                }
+            }
+        }
+        --3.3、宝石
+        AllGoods.DiamondItem = {
+            [1] = {
+                --消耗品
+                Consumables = {
+                    --广告资源
+                    Ad = "test_ad_tag",
+                    --最大收集次数
+                    MaxCollect = 5,
+                    --已收集次数
+                    HasCollect = 0
+                },
+                --商品
+                Goods = {
+                    --获得砖石
+                    Diamond = 60
+                }
+            }
+        }
+        --3.4、金币
+        AllGoods.CoinItem = {
+            [1] = {
+                --消耗品
+                Consumables = {
+                    --消耗100个砖石
+                    Diamond = 150,
+                },
+                --商品
+                Goods = {
+                    Coin = 1500,
+                }
+            },
+            [2] = {
+                --消耗品
+                Consumables = {
+                    --消耗100个砖石
+                    Diamond = 1000,
+                },
+                --商品
+                Goods = {
+                    Coin = 12000,
+                }
+            },
+            [3] = {
+                --消耗品
+                Consumables = {
+                    --消耗100个砖石
+                    Diamond = 4200,
+                },
+                --商品
+                Goods = {
+                    Coin = 37000,
+                }
+            }
+        }
+    end
+    self.PlayerData.AllGoods = AllGoods
+    self:RefreshStoreData()
+end
+
+--- 保存玩家数据
+function LobbyModule:SaveData()
+    --1、基础数据
+    for _, ArchiveKey in ipairs(ArchiveConfig) do
+        local Data = self.PlayerData.BaseData[ArchiveKey]
+        Archive:SetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey, Data)
+    end
 
     --2、装备数据
-    --未解锁装备
-    local LockedEquipment = {}
-    --已使用装备
-    local HasUseEquipment = {}
-    --未使用装备
-    local UnUseEquipment = {}
-    --按类型分组且品质降序
-    local GroupByCategory = {}
-    for _, Equipment in pairs(AllEquipment) do
-        --按种类分类
-        local Group = GroupByCategory[Equipment.Category]
-        if not Group then
-            Group = {}
-            GroupByCategory[Equipment.Category] = Group
-        end
-        table.insert(Group, Equipment)
+    local AllEquipment = self.PlayerData.AllEquipment
+    local All_Equipment_Table = MiscService:Table2JsonStr(AllEquipment)
+    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table", All_Equipment_Table)
+    Log:PrintLog("SaveData", self.PlayerID, All_Equipment_Table)
 
-        if not Equipment.Unlock and Equipment.Piece > 0 then
-            --没有解锁，则解锁，并消耗一个
-            Equipment.Unlock = true
-            Equipment.Piece = Equipment.Piece - 1
-        end
-        if Equipment.Equipped then
-            --已装备
-            table.insert(HasUseEquipment, Equipment)
-        else
-            --未装备
-            if Equipment.Unlock then
-                --已解锁
-                table.insert(UnUseEquipment, Equipment)
-            else
-                --未解锁
-                table.insert(LockedEquipment, Equipment)
-            end
-        end
-    end
-    --按品质排序
-    for _, Group in pairs(GroupByCategory) do
-        table.sort(Group, function(lhs, rhs)
-            local LHSA = GearConfig[lhs.ID].Attributes
-            local RHSA = GearConfig[rhs.ID].Attributes
-            return LHSA.Grade < RHSA.Grade
-        end)
-    end
-    self.PlayerData.LockedEquipment = LockedEquipment
-    self.PlayerData.HasUseEquipment = HasUseEquipment
-    self.PlayerData.UnUseEquipment = UnUseEquipment
-    self.PlayerData.GroupByCategory = GroupByCategory
+    --3、商店数据
+    local AllGoods = self.PlayerData.AllGoods
+    local All_Goods_Table = MiscService:Table2JsonStr(AllGoods)
+    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table", All_Goods_Table)
 
-    --3、存储数据
-    local Owned_Equipped_Table = MiscService:Table2JsonStr(AllEquipment)
-    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table", Owned_Equipped_Table)
 end
 
 --- 初始化视图
@@ -238,12 +421,16 @@ function LobbyModule:OnSwitchView(ViewName)
     local TargetModule
     if ViewName == "Task" then
         TargetModule = UGCS.Target.ArcherDuel.Modules.TaskModule
+        self:RefreshGeneralResourceBar()
     elseif ViewName == "Equipment" then
         TargetModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
+        self:RefreshGeneralResourceBar()
     elseif ViewName == "Fight" then
         TargetModule = UGCS.Target.ArcherDuel.Modules.FightModule
+        self:RefreshGeneralResourceBar()
     elseif ViewName == "Store" then
         TargetModule = UGCS.Target.ArcherDuel.Modules.StoreModule
+        self:RefreshStoreResourceBar()
     elseif ViewName == "Tournament" then
         TargetModule = UGCS.Target.ArcherDuel.Modules.TournamentModule
     end
@@ -253,12 +440,113 @@ function LobbyModule:OnSwitchView(ViewName)
     end
 end
 
+function LobbyModule:RegisterGameEvent()
+    --跳转商城
+    System:RegisterGameEvent(_GAME.Events.JumpModule, function(ModuleName)
+        self:SwitchView(ModuleName)
+    end)
 
+    --刷新资源
+    System:RegisterGameEvent(_GAME.Events.RefreshData, function(DataType)
+        if DataType == "GeneralResource" then
+            self:RefreshGeneralResourceBar()
+        elseif DataType == "StoreResource" then
+            self:RefreshStoreResourceBar()
+        elseif DataType == "EquipmentData" then
+            self:RefreshEquipmentData()
+        elseif DataType == "StoreData" then
+            self:RefreshStoreData()
+        end
+    end)
+end
 
+--- 刷新装备
+function LobbyModule:RefreshEquipmentData()
+    Log:PrintLog("RefreshEquipmentData")
+    local AllEquipment = self.PlayerData.AllEquipment
+    --2.2、装备分类
+    --未解锁装备
+    local LockedEquipment = {}
+    --已使用装备
+    local HasUseEquipment = {}
+    --未使用装备
+    local UnUseEquipment = {}
+    --按类型分组且品质降序
+    local GroupByCategory = {}
+    for _, Equipment in pairs(AllEquipment) do
+        --按种类分类
+        local Group = GroupByCategory[Equipment.Category]
+        if not Group then
+            Group = {}
+            GroupByCategory[Equipment.Category] = Group
+        end
+        table.insert(Group, Equipment)
 
+        if not Equipment.Unlock and Equipment.Piece > 0 then
+            --没有解锁，则解锁，并消耗一个
+            Equipment.Unlock = true
+            Equipment.Piece = Equipment.Piece - 1
+        end
+        if Equipment.Equipped then
+            --已装备
+            table.insert(HasUseEquipment, Equipment)
+        else
+            --未装备
+            if Equipment.Unlock then
+                --已解锁
+                table.insert(UnUseEquipment, Equipment)
+            else
+                --未解锁
+                table.insert(LockedEquipment, Equipment)
+            end
+        end
+    end
+    --按品质排序
+    for _, Group in pairs(GroupByCategory) do
+        table.sort(Group, function(lhs, rhs)
+            local LHSA = GearConfig[lhs.ID].Attributes
+            local RHSA = GearConfig[rhs.ID].Attributes
+            return LHSA.Grade < RHSA.Grade
+        end)
+    end
+    self.PlayerData.LockedEquipment = LockedEquipment
+    self.PlayerData.HasUseEquipment = HasUseEquipment
+    self.PlayerData.UnUseEquipment = UnUseEquipment
+    self.PlayerData.GroupByCategory = GroupByCategory
+end
 
+--- 刷新商店
+function LobbyModule:RefreshStoreData()
+    
+end
+
+--- 刷新通用资源栏
+function LobbyModule:RefreshGeneralResourceBar()
+    local MainView = UIConfig.MainView
+    local GeneralResourceBar = MainView and MainView.GeneralResourceBar
+    if GeneralResourceBar then
+        local BaseData = self.PlayerData.BaseData
+        UI:SetText({GeneralResourceBar.Rank.Label}, tostring(BaseData.Rank))
+        UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(BaseData.Coin))
+        UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))
+        UI:SetText({GeneralResourceBar.Securities.Label}, tostring(BaseData.Player_BattlePoints_Num))
+    end
+end
+
+--- 刷新商店资源栏
+function LobbyModule:RefreshStoreResourceBar()
+    local MainView = UIConfig.MainView
+    local StoreResourceBar = MainView and MainView.StoreResourceBar
+    if StoreResourceBar then
+        local BaseData = self.PlayerData.BaseData
+        UI:SetText({StoreResourceBar.GoldBox.Label}, tostring(BaseData.GoldBox))
+        UI:SetText({StoreResourceBar.SilverBox.Label}, tostring(BaseData.SilverBox))
+        UI:SetText({StoreResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))
+    end
+end
 
 ---------------------------------------以下是待整合代码---------------------------------------
+--[[
 local qiriTAB = {101111,105203,105204,105205,105206,105207,105208}
 local qirijiangli = {101317,105092,105114,105136,105158,105180,105202   }
 local qiriTAB_anxia = {105209,105210,105211,105212,105213,105214,105215}
@@ -789,7 +1077,6 @@ end
 
 
 --------------------------点击事件----------------------------------
---[[
 --UI切换系统
 UI:RegisterPressed(100504,function ()  -- 进入游戏
     -- 生成 1 到 8 的随机数字
