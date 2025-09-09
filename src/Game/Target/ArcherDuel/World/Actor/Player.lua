@@ -111,9 +111,9 @@ function Player:OnDestroy()
 
     UGCS.Framework.Executor.Cancel(self.FireTimer)
     UGCS.Framework.Executor.Cancel(self.StandupTimer)
-    UGCS.Framework.Executor.Cancel(self.StandupTimer2)
+    UGCS.Framework.Updator.Free(self.StandupTimer2)
     UGCS.Framework.Executor.Cancel(self.HitTimer)
-    UGCS.Framework.Executor.Cancel(self.FallbackTimer)
+    UGCS.Framework.Updator.Free(self.FallbackTimer)
 
     Player.super.OnDestroy(self)
 end
@@ -624,6 +624,7 @@ function Player:PerformFallback()
         Log:PrintLog("TXPerform(BodyRotation, BodyForword)", BodyForword)
         local BodyRotation = UMath:ForwardToRotator(BodyForword)
         Log:PrintLog("TXPerform(BodyRotation, 1)", BodyRotation)
+        Log:PrintDebug("1111111111111111111111111")
         BodyRotation = BodyRotation - self:GetRotation()
         if FaceRotation.X <= 0 then
             Log:PrintLog("TXPerform(BodyRotation, 2)", BodyRotation)

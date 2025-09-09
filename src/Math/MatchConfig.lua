@@ -80,5 +80,29 @@ MatchConfig.MatchUI_Next = {109965,110108,110079,110069,110109,110070}
 MatchConfig.Victory_UI = {108053,108052,108050,108057,108048,108480}
 MatchConfig.Fail_UI = {106509}
 MatchConfig.BlackScreen_UI = {109970,110054}
+MatchConfig.GoldReward_UI = {110204}
+MatchConfig.GoldEnd_Reward_UI = {
+    {icon = 110713, text = 110715},
+    {icon = 110714, text = 110716},
+}
+MatchConfig.GoldWinner_Reward_UI = {
+    {icon = 110622, text = 110680},
+    {icon = 110679, text = 110681},
+}
+MatchConfig.GoldFailer_Reward_UI = {
+    {icon = 110678, text = 110624},
+    {icon = 110623, text = 110625},
+}
+MatchConfig.Gold_Head_UI = {110525,110522,110519,110516,110510,110513,110489} -- 黄金赛分组赛头像，从左到右，从下到上
+MatchConfig.GoldWinner_Head_UI = {110525,110522,110519,110516,110510,110513,110489} -- 黄金赛胜利者头像，从左到右，从下到上
+MatchConfig.GoldFailer_Head_UI = {110570,110573,110576,110579,110567,110561,110555,110558,110564,110552,110546,110549,110543} -- 黄金赛胜利者头像，从左到右，从下到上
+
+MatchConfig.GoldWinner_Reward = {
+    [1] = {
+        {id = 110713, icon = "", count = 100},
+        {id = 110713, count = 100},
+        {id = 110713, count = 100},
+    },
+}
 
 return MatchConfig
