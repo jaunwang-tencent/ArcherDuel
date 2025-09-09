@@ -110,6 +110,7 @@ end
 --- 获得物品
 ---@param Goods 物品
 function StoreModule:GainGoods(Goods)
+    --TODO：获得界面展示
     local BaseData = self.PlayerData.BaseData
     if Goods.Equipments then
         --获取装备
