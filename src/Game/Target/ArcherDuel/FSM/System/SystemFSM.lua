@@ -70,8 +70,8 @@ function SystemFSM:OnCreate(Context)
             -- 第一个场景给主角
             Context.Scene.Index = sceneArr[1]
 
+            Context.GoldInfos = {}
             if MatchInfo.GoldShowBattleRivals and #MatchInfo.GoldShowBattleRivals > 0 then
-                Context.GoldInfos = {}
                 for i = 1, #MatchInfo.GoldShowBattleRivals do
                     local goldContext = {
                         Player1 = MatchInfo.GoldShowBattleRivals[i][1],

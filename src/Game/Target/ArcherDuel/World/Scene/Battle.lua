@@ -213,7 +213,7 @@ function Battle:HeadShot()
     --爆头提示
     if self.CriticalHitReward then
         UI:SetVisible({self.CriticalHitReward.HeadShotUI}, true)
-        System:FireGameEvent(_GAME.Events.HeadShot)
+        System:FireSignEvent(_GAME.Sign.HeadShot)
     end
 end
 

@@ -19,6 +19,11 @@ function Bow:OnDestroy()
     --]]
     self.UpdatorID = nil
     self:RefreshBowString()
+
+    if self.String then
+        Particle:StopParticle(self.String.First)
+        Particle:StopParticle(self.String.Second)
+    end
 end
 
 --- 武器外观加载完毕

@@ -6,6 +6,8 @@ math.randomseed(TimerManager:GetClock()) -- 设置随机数种子
 function GameMath:Init()
     Log:PrintLog("[GameMath:Init]")
 
+    local list = CustomProperty:GetCustomProperty(System:GetScriptParentID(), "Avatar", CustomProperty.PROPERTY_TYPE.Image)
+    
     -- 构造武器类型表
     self.weaponMap = {}
     for i, v in pairs(UGCS.Target.ArcherDuel.Config.WeaponConfig) do
@@ -85,6 +87,7 @@ function GameMath:Init()
     self.goldBattleResult = false -- 黄金赛当前结果
     self.goldBattleRound = 0 -- 黄金赛比赛轮次
     self.isGoldFinalBattle = false -- 是否为黄金赛最后一轮
+    self.goldHeadStates = {} -- 黄金赛头像状态
 
     if self.isGold then
         self:InitGoldMatch()
@@ -394,15 +397,14 @@ function GameMath:InitGoldMatch()
         return res
     end
 
-    local headIcons = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(),"Heads",CustomProperty.PROPERTY_TYPE.Image)
+    local headIcons = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(),"Avatar",CustomProperty.PROPERTY_TYPE.Image)
 
-    table.insert(self.goldWinnerRivalInfo, {isSelf = true, index = 1})
+    table.insert(self.goldWinnerRivalInfo, {isSelf = true})
     -- 取 7 个不重复的整数
     local picks = sample_unique(#MatchConfig.PlayerName, 7)
     -- 保存随机7个对手的信息
     for i = 1, 7 do
         table.insert(self.goldWinnerRivalInfo, {
-            index = i+1, -- 位置标识
             failCount = 0, -- 失败次数，失败两次则被淘汰
             weapons = self:GetRandomWeapons(), -- 所有武器
             equipments = self:GetRandomEquipments(), -- 所有装备
@@ -536,7 +538,7 @@ function GameMath:GoldMathRivals()
             BattleRival = rival1
         end
     else
-        local function math(RivalInfo)
+        local function math(RivalInfo, isFail)
             if #RivalInfo < 2 then
                 return
             end
@@ -544,6 +546,10 @@ function GameMath:GoldMathRivals()
             while 2*battleIndex <= #RivalInfo do
                 local rival1 = RivalInfo[battleIndex*2-1]
                 local rival2 = RivalInfo[battleIndex*2]
+                -- if isFail and self.goldBattleRound == 2 then -- 败者组第二局比较特殊，1和3匹配，2和4匹配
+                --     rival1 = RivalInfo[battleIndex*2-1]
+                --     rival2 = RivalInfo[battleIndex*2+1]
+                -- end
                 if rival1.isSelf then
                     BattleRival = rival2
                 elseif rival2.isSelf then
@@ -558,7 +564,7 @@ function GameMath:GoldMathRivals()
             end
         end
         math(self.goldWinnerRivalInfo) -- 胜者组匹配
-        math(self.goldFailerRivalInfo) -- 败者组匹配
+        math(self.goldFailerRivalInfo, true) -- 败者组匹配
     end
 
     return MathRivals, BattleRival
@@ -580,13 +586,29 @@ function GameMath:OnGoldVictory()
         return
     end
 
-    -- 当前对手判定为负
-    self:GoldRivalDefeat(self.goldBattleRival.name)
+    local selfIndex = 1
+    if self.goldFailCount == 1 then
+        for i, v in ipairs(self.goldFailerRivalInfo) do
+            if v.isSelf then
+                selfIndex = v.index
+                break
+            end
+        end
+    end
+    local bWiner = self.goldFailCount == 0
+    self:SetGoldHeadState(bWiner, true, nil, selfIndex)
+    self:SetGoldHeadState(bWiner, false, self.goldBattleRival.name)
+
     -- 其他表演对手随机判定为负
     for i, v in pairs(self.goldShowBattleRivals) do
-        local index = math.random(1, 2)
-        self:GoldRivalDefeat(v[index].name)
+        local failIndex = math.random(1, 2)
+        local bWiner = v[failIndex].failCount == 0
+        self:SetGoldHeadState(bWiner, 1~=failIndex, v[1].name)
+        self:SetGoldHeadState(bWiner, 2~=failIndex, v[2].name)
+        self:GoldRivalDefeat(v[failIndex].name)
     end
+    -- 当前对手判定为负
+    self:GoldRivalDefeat(self.goldBattleRival.name)
 
     UI:SetVisible({105659,105654,105656,105662},false)
     UI:SetVisible({110038,110037,109970},true)
@@ -624,15 +646,19 @@ function GameMath:OnGoldFail()
         return
     end
 
-    -- 将自己放入败者组
-    table.remove(self.goldWinnerRivalInfo, 1)
-    table.insert(self.goldFailerRivalInfo, {isSelf = true, index = #self.goldFailerRivalInfo + 1})
-
     -- 其他表演对手随机判定为负
     for i, v in pairs(self.goldShowBattleRivals) do
-        local index = math.random(1, 2)
-        self:GoldRivalDefeat(v[index].name)
+        local failIndex = math.random(1, 2)
+        local bWiner = v[failIndex].failCount == 0
+        self:SetGoldHeadState(bWiner, 1~=failIndex, v[1].name)
+        self:SetGoldHeadState(bWiner, 2~=failIndex, v[2].name)
+        self:GoldRivalDefeat(v[failIndex].name)
     end
+
+    -- 将自己放入败者组
+    table.remove(self.goldWinnerRivalInfo, 1)
+    table.insert(self.goldFailerRivalInfo, {isSelf = true})
+    -- self:SetGoldHeadState(false, false, nil, true)
 
     UI:SetVisible({105659,105654,105656,105662},false)
     UI:SetVisible({110038,110048,109970},true)
@@ -682,8 +708,8 @@ function GameMath:OnGoldBattleContinue()
                 self.goldBattleRound = self.goldBattleRound + 1
                 local mathRivals = self:GoldMathRivals()
                 for _, v in pairs(mathRivals) do
-                    local index = math.random(1, 2)
-                    self:GoldRivalDefeat(v[index].name)
+                    local failIndex = math.random(1, 2)
+                    self:GoldRivalDefeat(v[failIndex].name)
                 end
             end
             self.isGoldFinalBattle = true
@@ -759,7 +785,40 @@ function GameMath:ShowGoldTop3(top3Players)
     -- 移动相机
     local pos = Element:GetPosition(MatchConfig.GoldSceneConfig[self.mapId].Podium)
     Element:MoveTo(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(3000,0,1000),1,Element.CURVE.linear)
-    Element:SetForward(MatchConfig.GoldSceneConfig[self.mapId].Camera,UMath.Vector(1,0,0))
+    -- Element:SetForward(MatchConfig.GoldSceneConfig[self.mapId].Camera,UMath.Vector(1,0,0))
+
+    TimerManager:AddTimer(2, function()
+        -- 公布排名
+        UI:SetVisible({110204},true)
+        UI:SetText({110206},"")
+    end)
+end
+
+function GameMath:SetGoldHeadState(bWiner, victory, name, isSelf)
+    local Head_UI, RivalInfo
+    if bWiner then --在胜者组
+        Head_UI = MatchConfig.GoldWinner_Head_UI
+        RivalInfo = self.goldWinnerRivalInfo
+    else --在败者组
+        Head_UI = MatchConfig.GoldFailer_Head_UI
+        RivalInfo = self.goldFailerRivalInfo
+    end
+
+    local index = 0
+    for i, v in ipairs(RivalInfo) do
+        if (v.name == name) or (isSelf and v.isSelf) then
+            index = i
+            break
+        end
+    end
+
+    local UIs = Head_UI[self.goldBattleRound]
+    if UIs and UIs[index] then
+        local state = victory and 1 or 2 --1:胜利，2:失败
+        self.goldHeadStates[state] = self.goldHeadStates[state] or {}
+        Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzzz ", bWiner, victory, index, UIs[index])
+        table.insert(self.goldHeadStates[state], UIs[index])
+    end
 end
 
 function GameMath:UpdateGoldHead()
@@ -768,52 +827,37 @@ function GameMath:UpdateGoldHead()
             if v.isSelf then
                 UI:SetImage({MatchConfig.Gold_Head_UI[i]}, Chat:GetCustomHeadIcon(self.localPlayerId), true)
             else
-                UI:SetImage({MatchConfig.Gold_Head_UI[i]}, v.headIcon, false)
+                UI:SetImage({MatchConfig.Gold_Head_UI[i]}, v.headIcon, true)
             end
         end
     else
-        local index = 0
+        local Head_UI, RivalInfo
         if self.goldFailCount == 0 then --在胜者组
-            if self.goldBattleRound == 2 then --第2局
-                index = 0
-            elseif self.goldBattleRound == 3 then --第3局
-                index = 4
-            end
-            for i, v in ipairs(self.goldWinnerRivalInfo) do
-                index = index + 1
-                UI:SetVisible({MatchConfig.GoldWinner_Head_UI[index]}, true)
-                if v.isSelf then
-                    UI:SetImage({MatchConfig.GoldWinner_Head_UI[index]}, Chat:GetCustomHeadIcon(self.localPlayerId), true)
-                else
-                    UI:SetImage({MatchConfig.GoldWinner_Head_UI[index]}, v.headIcon, false)
-                end
-            end
-            for i = index+1, #MatchConfig.GoldWinner_Head_UI do
-                UI:SetVisible({MatchConfig.GoldWinner_Head_UI[i]}, false)
-            end
+            Head_UI = MatchConfig.GoldWinner_Head_UI
+            RivalInfo = self.goldWinnerRivalInfo
         else --在败者组
-            if self.goldBattleRound == 2 then --第2局
-                index = 0
-            elseif self.goldBattleRound == 3 then --第3局
-                index = 4
-            elseif self.goldBattleRound == 4 then --第4局
-                index = 8
-            elseif self.goldBattleRound == 5 then --第5局
-                index = 10
-            end
-            for i, v in ipairs(self.goldFailerRivalInfo) do
+            Head_UI = MatchConfig.GoldFailer_Head_UI
+            RivalInfo = self.goldFailerRivalInfo
+        end
+        local UIs = Head_UI[self.goldBattleRound]
+        if UIs then
+            local index = 0
+            for i, v in ipairs(RivalInfo) do
                 index = index + 1
-                UI:SetVisible({MatchConfig.GoldFailer_Head_UI[index]}, true)
+                UI:SetVisible({UIs[index]}, true)
                 if v.isSelf then
-                    UI:SetImage({MatchConfig.GoldFailer_Head_UI[index]}, Chat:GetCustomHeadIcon(self.localPlayerId), true)
+                    UI:SetImage({UIs[index]}, Chat:GetCustomHeadIcon(self.localPlayerId), true)
                 else
-                    UI:SetImage({MatchConfig.GoldFailer_Head_UI[index]}, v.headIcon, false)
+                    UI:SetImage({UIs[index]}, v.headIcon, true)
                 end
+                UI:SetImageColor({UIs[index]}, self.goldBattleRound == 1 and "#FFFFFF" or "#0DEF0D")
             end
-            for i = index+1, #MatchConfig.GoldFailer_Head_UI do
-                UI:SetVisible({MatchConfig.GoldFailer_Head_UI[i]}, false)
+            for i = self.goldBattleRound+1, #MatchConfig.GoldWinner_Head_UI do
+                UI:SetVisible(MatchConfig.GoldWinner_Head_UI[i], false)
             end
         end
+        UI:SetImageColor(self.goldHeadStates[1], "#0DEF0D")
+        UI:SetImageColor(self.goldHeadStates[2], "#EF1414")
     end
 end
 

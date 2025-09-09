@@ -79,6 +79,12 @@ function Player:OnCreate(Context)
 end
 
 function Player:OnDestroy()
+    UGCS.Framework.Executor.Cancel(self.FireTimer)
+    UGCS.Framework.Executor.Cancel(self.StandupTimer)
+    UGCS.Framework.Updator.Free(self.StandupTimer2, true)
+    UGCS.Framework.Executor.Cancel(self.HitTimer)
+    UGCS.Framework.Updator.Free(self.FallbackTimer, true)
+
     --清空配置
     self.Config = nil
     self.Animations = nil
@@ -108,12 +114,6 @@ function Player:OnDestroy()
         Element:RemoveSpline(self.CurrentSplineId)
         self.CurrentSplineId = nil
     end
-
-    UGCS.Framework.Executor.Cancel(self.FireTimer)
-    UGCS.Framework.Executor.Cancel(self.StandupTimer)
-    UGCS.Framework.Updator.Free(self.StandupTimer2)
-    UGCS.Framework.Executor.Cancel(self.HitTimer)
-    UGCS.Framework.Updator.Free(self.FallbackTimer)
 
     Player.super.OnDestroy(self)
 end
