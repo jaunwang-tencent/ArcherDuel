@@ -1,9 +1,18 @@
 --战斗模块
 local LobbyModule = {}
+--UI配置
+local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+--装备配置
+local GearConfig = UGCS.Target.ArcherDuel.Config.GearConfig
 
 --- 打开
 ---@param Context 上下文【透传数据】
 function LobbyModule:Open(Context)
+    self:PerformLoading()
+    self:CharacterStandby()
+    self:InitView()
+    self:LoadData()
+
     self:GameStart()
 end
 
@@ -18,12 +27,140 @@ function LobbyModule:Close()
 
 end
 
+--- 加载表演
+function LobbyModule:PerformLoading()
+    UGCS.Target.ArcherDuel.Modules.LoadingModule:Open()
+    --分配定时刷新Buff
+    self.UpdatorID = UGCS.Framework.Updator.Alloc(1, function()
+    end, function(Progress)
+        if Progress < 1 then
+            -- 更新加载进度
+            UGCS.Target.ArcherDuel.Modules.LoadingModule:Update(Progress)
+        else
+            --关闭加载模块
+            UGCS.Target.ArcherDuel.Modules.LoadingModule:Close()
+            UGCS.Framework.Updator.Free(self.UpdatorID)
+        end
+    end)
+end
 
+--- 角色站街，TODO：换成假人，装备穿戴
+function LobbyModule:CharacterStandby()
+    --设置角色位置
+    TimerManager:AddTimer(0.5,function ()
+        Character:SetPosition(Character:GetLocalPlayerId(), Engine.Vector(-609.84,0,124.2))
+        Character:SetRotation(Character:GetLocalPlayerId(), Engine.Vector(0,0,-90))
+    end)
 
+    --本地角色
+    self.PlayerID =  Character:GetLocalPlayerId()
+    TimerManager:AddTimer(1,function ()
+        System:FireSignEvent("启动相机",{Character:GetLocalPlayerId()})
+    end)
 
+    --获取头像
+    UI:SetImage({100470},Chat:GetCustomHeadIcon(self.PlayerID))
+end
 
+--- 初始化视图
+function LobbyModule:InitView()
+    --菜单栏
+    local TitleBar = UIConfig.MainView.TitleBar
+    --打开主菜单
+    UI:SetVisible({TitleBar.ID}, true)
 
+    --注册菜单事件
+    for ViewName, ViewData in pairs(TitleBar) do
+        if type(ViewData) == "table" and ViewData.Unselected then
+            UI:RegisterPressed(ViewData.Unselected, function()
+                self:OnSwitchView(ViewData)
+            end)
+        end
+    end
 
+    --切换到主视图
+    self:OnSwitchView(TitleBar.Fight)
+end
+
+function LobbyModule:OnSwitchView(ViewData)
+    --关闭上一页面
+    if self.CurrentViewData then
+        UI:SetVisible({self.CurrentViewData.Selected}, false)
+        UI:SetVisible(self.CurrentViewData.ViewItems, false)
+    end
+
+    --打开当前页面
+    UI:SetVisible({ViewData.Selected},true)
+    UI:SetVisible(ViewData.ViewItems, true)
+
+    --记录当前视图数据
+    self.CurrentViewData = ViewData
+end
+
+--- 加载玩家数据
+function LobbyModule:LoadData()
+    --存档配置
+    local ArchiveConfig = {
+        "Equipped_Bow_Num",
+        "Equipped_Spear_Num",
+        "Equipped_Axe_Num",
+        "Equipped_Hat_Num",
+        "Equipped_Glasses_Num",
+        "Equipped_Cloth_Num",
+        "Equipped_Bow_Lv",
+        "Equipped_Spear_Lv",
+        "Equipped_Axe_Lv",
+        "Equipped_Hat_Lv",
+        "Equipped_Glasses_Lv",
+        "Equipped_Cloth_Lv",
+        "Coin",
+        "Diamond",
+        "Rank"
+    }
+    --玩家数据
+    self.PlayerData = {}
+    --加载基础数据
+    for Index, ArchiveKey in ipairs(ArchiveConfig) do
+        local Data
+        if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey) then
+            Data = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey)
+        else
+            if Index == 2 or Index == 3 or Index == 8 or Index == 9 then
+                Data = 0
+            else
+                Data = 1
+            end
+            Archive:SetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey, Data)
+        end
+        self.PlayerData[ArchiveKey] = Data
+    end
+
+    --加载已拥有装备
+    local OwnedEquipped
+    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table") then
+        --这里读取玩家的装备 --并进行排序
+        local Owned_Equipped_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table")
+        --文字转为组
+        OwnedEquipped = MiscService:JsonStr2Table(Owned_Equipped_Table)
+    else
+        OwnedEquipped = {}
+        local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true }
+        for ID, Data in pairs(GearConfig) do
+            local HasInit = InitEquippedID[ID]
+            OwnedEquipped[ID] = {
+                ID = ID  ,                      --装备编号ID
+                Level = 1 ,                     --装备等级
+                Piece = 0 ,                     --碎片数量
+                Category = Data.Category ,      --装备类别
+                Equipped = HasInit,              --是否装备
+                Unlock = HasInit,                --是否解锁
+            }
+        end
+        local Owned_Equipped_Table = MiscService:Table2JsonStr(OwnedEquipped)
+        Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table", Owned_Equipped_Table)
+    end
+    self.PlayerData.OwnedEquipped = OwnedEquipped
+end
 
 ---------------------------------------以下是待整合代码---------------------------------------
 local qiriTAB = {101111,105203,105204,105205,105206,105207,105208}
@@ -124,73 +261,6 @@ local Daily_Progress = 0
 local LoadingComplete = false
 
 local function Storage()
-    for i, string in ipairs(Storage_string) do
-        if not Archive:HasPlayerData(Player, Archive.TYPE.Number, string) then  -- 判断以往是否有数据
-            if i == 2 or i == 3 or i == 8 or i == 9 then
-               Archive:SetPlayerData(Player, Archive.TYPE.Number, string, 0)
-            else
-               Archive:SetPlayerData(Player, Archive.TYPE.Number, string, 1)
-            end
-        end
-    end
-    local Coin, Diamond
-    if  Archive:HasPlayerData(Player, Archive.TYPE.Number,"Coin") then   --段位分数
-        Coin =  Archive:GetPlayerData(Player, Archive.TYPE.Number,"Coin")
-    else
-        Archive:SetPlayerData(Player, Archive.TYPE.Number, "Coin", 0)
-        Coin = 0
-    end
-    if  Archive:HasPlayerData(Player, Archive.TYPE.Number,"Diamond") then   --段位分数
-        Diamond =  Archive:GetPlayerData(Player, Archive.TYPE.Number,"Diamond")
-    else
-        Archive:SetPlayerData(Player, Archive.TYPE.Number, "Diamond", 0)
-        Diamond = 0
-    end
-    UI:SetText({100474},Coin)
-    UI:SetText({103868},Diamond)
-
-
-    if not Archive:HasPlayerData(Player, Archive.TYPE.Number, "Rank") then   --段位分数
-        Archive:SetPlayerData(Player, Archive.TYPE.Number, "Rank", 0)
-    end
-    if Archive:GetPlayerData(Player,Archive.TYPE.Number,"Equipped_Spear_Num") ~= 0 then  -- 这里是投矛的存储
-        table.insert(zhuangbei_zb,100537)
-        table.insert(zhuangbei_hd,100510)
-    end
-    if Archive:GetPlayerData(Player,Archive.TYPE.Number,"Equipped_Axe_Num") ~= 0 then-- 这里是手斧的存储
-        table.insert(zhuangbei_zb,100538)
-        table.insert(zhuangbei_hd,100511)
-    end
-    --------------------这里是判定装备组的存储，如果没有的基于组的规则-----------------------
-    if Archive:HasPlayerData(Player,Archive.TYPE.String,"Owned_Equipped_Table") then
-        --这里读取玩家的装备 --并进行排序
-        local Owned_Equipped_Table = Archive:GetPlayerData(Player, Archive.TYPE.String, "Owned_Equipped_Table")
-        --文字转为组
-        Owned_Equipped = MiscService:JsonStr2Table(Owned_Equipped_Table)
-    else
-        Owned_Equipped = {}
-        local  number = 0
-        for ID1 = 1, 6 do  -- 六种装备
-            for id1 = 1, CategoryNum[ID1] do --十六个
-                number = number + 1
-                Owned_Equipped[number] ={
-                    ID = number  ,     --装备编号ID
-                    Level = 1 ,  --装备等级
-                    Piece =  0 ,--碎片数量
-                    Category =  ID1 ,  --装备类别
-                    Equipped =  2 ,  -- 是否装备 1 为是 2为不是
-                    Unlock =  2 ,  -- 解锁为1  未解锁为2
-                }
-            end
-        end
-        local  EquippedID = { 1 ,15, 38 , 61}
-        for _, v in ipairs(EquippedID) do  --刚进游戏的情况下，需要给他初始装备
-            Owned_Equipped[v].Equipped = 1
-            Owned_Equipped[v].Unlock = 1
-        end
-        Archive:SetPlayerData(Player, Archive.TYPE.String, "Owned_Equipped_Table", MiscService:Table2JsonStr(Owned_Equipped))
-    end
-
     -----------------------------------------------------------------------------------------------------
     Table_Equipped = {}--已经装备的装备
     Table_Owned_Equipped = {} -- 未装备的装备 （不包括未拥有）
@@ -218,9 +288,6 @@ local function Storage()
     for ID = 4, 1, -1 do --重复执行四次判定装备品阶，品阶越高，装备越在前
         for id = 1, 6 do --需要执行六次，将每个装备的排序
             for _, Owned  in ipairs(Owned_Equipped) do
-                if not Owned.ID then
-                    Log:PrintLog("XXXXXXX")
-                end
                 if  GearStorage[Owned.ID].Attributes.Grade  == ID  and  Owned.Equipped ~=1 and Owned.Category == id and Owned.Unlock == 1 then
                     table.insert(Table_NotCategory[id], Owned)
                     table.insert(Table_Owned_Equipped, Owned)
@@ -289,49 +356,15 @@ local function Storage()
         local Task = Archive:GetPlayerData(Player,Archive.TYPE.String,"Task")
         Task = MiscService:JsonStr2Table(Task)
     end
-
-    LoadingComplete = true
 end
 
 
 function LobbyModule:GameStart()
-    UI:SetVisible({106412},true) --设置进度条可见
-    local progress_bar = 0 --重置事件
-    LoadingComplete = false --重置存储判断
-
-    --[-[
-    --开局缓存
-    self.GameStart_Progress =  TimerManager:AddLoopTimer(0.005,function ()
-        if progress_bar == 99 and LoadingComplete then
-            TimerManager:RemoveTimer(self.GameStart_Progress)
-            UI:SetVisible({106412},false)
-        elseif progress_bar <= 98 then
-            progress_bar = progress_bar + 1
-            UI:SetProgressCurrentValue({106413},progress_bar)
-        end
-    end)
-    --]]
-
-   --设置角色位置
-   TimerManager:AddTimer(0.5,function ()
-        Character:SetPosition(Character:GetLocalPlayerId(),Engine.Vector(-609.84,0,124.2))
-        Character:SetRotation(Character:GetLocalPlayerId(),Engine.Vector(0,0,-90))
-   end)
-    --获取头像
-    UI:SetImage({100470},Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()))
     --打开主页界面
-    UI:SetVisible({105648,105662},false)
-    UI:SetVisible(TAB,true)
-    UI:SetVisible(currency,true)
-    UI:SetVisible(zhuye,true)
-    Player =  Character:GetLocalPlayerId() --本地角色
-    TimerManager:AddTimer(1,function ()
-        System:FireSignEvent("启动相机",{Character:GetLocalPlayerId()})
-    end)
     Storage()
 end
 
-function LobbyModule:ReadStorage (listViewId, itemIndex,Current) --瓦片视图输入
+function LobbyModule:ReadStorage(listViewId, itemIndex,Current) --瓦片视图输入
     --@@这里读取储存已装备的道具
     local ButtonUI = UI:GetListViewItemUID(listViewId, itemIndex,109448) -- 装备图标  同按钮
     local ClassTXT = UI:GetListViewItemUID(listViewId, itemIndex,109450) -- 等级文字
@@ -541,6 +574,8 @@ function LobbyModule:TileView()
                 UI:SetVisible({100570}, false)
 
                 local i = 4
+                UI:SetVisible(Store_currency,false)
+                UI:SetVisible(currency,false) 
                 UI:RemoveFromScrollView(110361,Shop_Gap_All)
                 UI:RemoveFromScrollView(110467,Task)
                 UI:SetVisible(Task,false)
@@ -557,6 +592,7 @@ function LobbyModule:TileView()
                 if i == 4 then
                     UI:SetVisible(shangdiandaoju,true)
                     UI:AddToScrollView(110361,Shop_Gap_All)
+                    UI:SetVisible(Store_currency,true) 
                 end
                 UI:SetVisible(zhengtitabyemian[i],true)
             end)
@@ -770,8 +806,11 @@ for i, anniu in ipairs(qiriTAB) do  --七日挑战TAB奖励切换
     end) 
 end
 
+--[[
 for i,anniu in ipairs(TongyongTAB) do  --切换各种页面 
     UI:RegisterPressed(anniu,function ()
+        UI:SetVisible(Store_currency,false)
+        UI:SetVisible(currency,false) 
         UI:RemoveFromScrollView(110361,Shop_Gap_All)
         UI:RemoveFromScrollView(110467,Task)
         UI:SetVisible(Task,false)
@@ -788,9 +827,13 @@ for i,anniu in ipairs(TongyongTAB) do  --切换各种页面
         if i == 4 then
             UI:SetVisible(shangdiandaoju,true)
                UI:AddToScrollView(110361,Shop_Gap_All)
+               UI:SetVisible(Store_currency,true) 
         elseif i == 1 then
+            UI:SetVisible(currency,true) 
             UI:SetVisible(Task,true)
             UI:AddToScrollView(110467,Task)
+        else
+            UI:SetVisible(currency,true) 
         end
 
         UI:SetVisible(zhengtitabyemian[i],true)
@@ -800,6 +843,7 @@ for i,anniu in ipairs(TongyongTAB) do  --切换各种页面
          end
     end)
 end
+--]]
 
 for i, anniu in pairs(zhuangbei_hd) do  --主页已装备
     UI:RegisterPressed(anniu,function (ton)
