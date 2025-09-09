@@ -8,6 +8,18 @@ local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --- 打开
 ---@param PlayerData 玩家数据
 function FightModule:Open(PlayerData)
+    local HomeView = UIConfig.HomeView
+    local CenterView = HomeView and HomeView.CenterView
+
+    --广告按钮监听
+    UI:RegisterPressed(CenterView.Ad_1.ID, function()
+        self:OnClickAd1()
+    end)
+
+    UI:RegisterPressed(CenterView.Ad_2.ID, function()
+        self:OnClickAd2()
+    end)
+
     local function getLevelByScore(levels, score)
         -- 假设 levels 已按照 base_score 升序排列
         local prev_level = levels[1]
@@ -23,8 +35,6 @@ function FightModule:Open(PlayerData)
         return levels[#levels]
     end
 
-    local HomeView = UIConfig.HomeView
-    local CenterView = HomeView and HomeView.CenterView
     local Rank = CenterView and CenterView.Rank
     if Rank then
         local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "RankIconList", CustomProperty.PROPERTY_TYPE.Image)
@@ -43,6 +53,7 @@ function FightModule:Open(PlayerData)
             UI:SetProgressMaxValue({Rank.Progress}, BattlePoints)
         end
     end
+
     --寄存玩家数据
     self.PlayerData = PlayerData
 end
@@ -56,6 +67,16 @@ end
 --- 关闭
 function FightModule:Close()
     self.PlayerData = nil
+end
+
+function FightModule:OnClickAd1()
+    --TODO：广告
+    --IAA:LetPlayerWatchAds()
+end
+
+function FightModule:OnClickAd2()
+    --TODO：广告
+    --IAA:LetPlayerWatchAds()
 end
 
 return FightModule

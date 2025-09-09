@@ -31,8 +31,8 @@ _GAME.Events = {
     GoldBattleContinue = "GoldBattleContinue",
     --黄金赛结束
     GoldEnd = "GoldEnd",
-    --跳转商城
-    JumpStore = "JumpStore"
+    --跳转模块
+    JumpModule = "JumpModule"
 }
 
 -- 网络协议

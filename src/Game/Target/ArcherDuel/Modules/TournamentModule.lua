@@ -1,10 +1,15 @@
 --锦标赛模块
 local TournamentModule = {}
+--UI配置
+local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 
 --- 打开
 ---@param PlayerData 玩家数据
 function TournamentModule:Open(PlayerData)
+    
 
+    --寄存玩家数据
+    self.PlayerData = PlayerData
 end
 
 --- 刷新

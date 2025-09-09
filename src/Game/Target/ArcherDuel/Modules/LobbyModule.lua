@@ -13,8 +13,8 @@ function LobbyModule:Open(Context)
     self:LoadData()
     self:InitView()
     --跳转商城
-    System:RegisterGameEvent(_GAME.Events.JumpStore, function()
-        self:SwitchView("Store")
+    System:RegisterGameEvent(_GAME.Events.JumpModule, function(ModuleName)
+        self:SwitchView(ModuleName)
     end)
 end
 

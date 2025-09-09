@@ -177,7 +177,7 @@ function EquipmentModule:Open(PlayerData)
         if type(ItemView) == "table" and ItemView.JumpButton then
             UI:RegisterPressed(ItemView.JumpButton, function()
                 --跳转到商城
-                System:FireGameEvent(_GAME.Events.JumpStore)
+                System:FireGameEvent(_GAME.Events.JumpModule, "Store")
                 --关掉详情页面
                 UI:SetVisible({EquipmentView.DetailView.ID}, false)
             end)
