@@ -12,8 +12,6 @@ function LobbyModule:Open(Context)
     self:CharacterStandby()
     self:LoadData()
     self:InitView()
-
-    self:GameStart()
 end
 
 --- 刷新
@@ -60,69 +58,6 @@ function LobbyModule:CharacterStandby()
 
     --获取头像
     UI:SetImage({100470},Chat:GetCustomHeadIcon(self.PlayerID))
-end
-
---- 初始化视图
-function LobbyModule:InitView()
-    --菜单栏
-    local TitleBar = UIConfig.MainView.TitleBar
-    --打开主菜单
-    UI:SetVisible({TitleBar.ID}, true)
-
-    --注册菜单事件
-    for ViewName, ViewData in pairs(TitleBar) do
-        if type(ViewData) == "table" and ViewData.Unselected then
-            UI:RegisterPressed(ViewData.Unselected, function()
-                self:SwitchView(ViewName, ViewData)
-            end)
-        end
-    end
-
-    --切换到主视图
-    self:SwitchView("Fight", TitleBar.Fight)
-end
-
-function LobbyModule:SwitchView(ViewName, ViewData)
-    --关闭上一页面
-    if self.CurrentViewData then
-        UI:SetVisible({self.CurrentViewData.Selected}, false)
-        UI:SetVisible(self.CurrentViewData.ViewItems, false)
-    end
-
-    --打开当前页面
-    if ViewData then
-        UI:SetVisible({ViewData.Selected},true)
-        UI:SetVisible(ViewData.ViewItems, true)
-    end
-
-    --记录当前视图数据
-    self.CurrentViewData = ViewData
-
-    --子类化操作
-    self:OnSwitchView(ViewName)
-end
-
-function LobbyModule:OnSwitchView(ViewName)
-    if self.CurrentModule then
-        self.CurrentModule:Close()
-        self.CurrentModule = nil
-    end
-    local TargetModule
-    if ViewName == "Task" then
-        TargetModule = UGCS.Target.ArcherDuel.Modules.TaskModule
-    elseif ViewName == "Equipment" then
-        TargetModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
-    elseif ViewName == "Fight" then
-        TargetModule = UGCS.Target.ArcherDuel.Modules.FightModule
-    elseif ViewName == "Store" then
-        TargetModule = UGCS.Target.ArcherDuel.Modules.StoreModule
-    elseif ViewName == "Tournament" then
-        TargetModule = UGCS.Target.ArcherDuel.Modules.TournamentModule
-    end
-    if TargetModule then
-        TargetModule:Open(self.PlayerData)
-        self.CurrentModule = TargetModule
-    end
 end
 
 --- 加载玩家数据
@@ -241,6 +176,69 @@ function LobbyModule:LoadData()
     --3、存储数据
     local Owned_Equipped_Table = MiscService:Table2JsonStr(AllEquipment)
     Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "Owned_Equipped_Table", Owned_Equipped_Table)
+end
+
+--- 初始化视图
+function LobbyModule:InitView()
+    --菜单栏
+    local TitleBar = UIConfig.MainView.TitleBar
+    --打开主菜单
+    UI:SetVisible({TitleBar.ID}, true)
+
+    --注册菜单事件
+    for ViewName, ViewData in pairs(TitleBar) do
+        if type(ViewData) == "table" and ViewData.Unselected then
+            UI:RegisterPressed(ViewData.Unselected, function()
+                self:SwitchView(ViewName, ViewData)
+            end)
+        end
+    end
+
+    --切换到主视图
+    self:SwitchView("Fight", TitleBar.Fight)
+end
+
+function LobbyModule:SwitchView(ViewName, ViewData)
+    --关闭上一页面
+    if self.CurrentViewData then
+        UI:SetVisible({self.CurrentViewData.Selected}, false)
+        UI:SetVisible(self.CurrentViewData.ViewItems, false)
+    end
+
+    --打开当前页面
+    if ViewData then
+        UI:SetVisible({ViewData.Selected},true)
+        UI:SetVisible(ViewData.ViewItems, true)
+    end
+
+    --记录当前视图数据
+    self.CurrentViewData = ViewData
+
+    --子类化操作
+    self:OnSwitchView(ViewName)
+end
+
+function LobbyModule:OnSwitchView(ViewName)
+    if self.CurrentModule then
+        self.CurrentModule:Close()
+        self.CurrentModule = nil
+    end
+    local TargetModule
+    if ViewName == "Task" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.TaskModule
+    elseif ViewName == "Equipment" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
+    elseif ViewName == "Fight" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.FightModule
+    elseif ViewName == "Store" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.StoreModule
+    elseif ViewName == "Tournament" then
+        TargetModule = UGCS.Target.ArcherDuel.Modules.TournamentModule
+    end
+    if TargetModule then
+        TargetModule:Open(self.PlayerData)
+        self.CurrentModule = TargetModule
+    end
 end
 
 ---------------------------------------以下是待整合代码---------------------------------------
