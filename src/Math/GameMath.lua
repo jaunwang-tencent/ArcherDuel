@@ -550,7 +550,7 @@ end
 -- 黄金赛匹配对手
 function GameMath:GoldMathRivals()
     local MathRivals, BattleRival = {}, {} --匹配对手,战斗对手
-    if self.isGoldFinalBattle then --非最后一局，进行其他表演选手匹配
+    if self.isGoldFinalBattle then --最后一局，进行其他表演选手匹配
         local rival1 = self.goldWinnerRivalInfo[1]
         local rival2 = self.goldFailerRivalInfo[1]
         if rival1.isSelf then
@@ -567,10 +567,6 @@ function GameMath:GoldMathRivals()
             while 2*battleIndex <= #RivalInfo do
                 local rival1 = RivalInfo[battleIndex*2-1]
                 local rival2 = RivalInfo[battleIndex*2]
-                -- if isFail and self.goldBattleRound == 2 then -- 败者组第二局比较特殊，1和3匹配，2和4匹配
-                --     rival1 = RivalInfo[battleIndex*2-1]
-                --     rival2 = RivalInfo[battleIndex*2+1]
-                -- end
                 if rival1.isSelf then
                     BattleRival = rival2
                 elseif rival2.isSelf then
@@ -600,7 +596,7 @@ function GameMath:OnGoldVictory()
         local top3Players = {}
         table.insert(top3Players, {isSelf = true}) -- 第一名自己
         table.insert(top3Players, self.goldBattleRival) -- 第二名本局对手
-        table.insert(top3Players, self:GetGoldBattleRivalInfo()) -- 第3名从剩下的人中取一个
+        table.insert(top3Players, self.lastDefeatRival) -- 第3名从剩下的人中取一个
 
         self:ShowGoldTop3(top3Players)
         System:FireGameEvent(_GAME.Events.GameEnd)
@@ -653,13 +649,13 @@ function GameMath:OnGoldFail()
             local top3Players = {}
             table.insert(top3Players, self.goldBattleRival) -- 第1名本局对手
             table.insert(top3Players, {isSelf = true}) -- 第2名自己
-            table.insert(top3Players, self:GetGoldBattleRivalInfo()) -- 第3名从剩下的人中取一个
+            table.insert(top3Players, self.lastDefeatRival) -- 第3名从剩下的人中取一个
 
             self:ShowGoldTop3(top3Players)
             System:FireGameEvent(_GAME.Events.GameEnd)
         else
             -- 公布排名
-            UI:SetVisible({110204},true)
+            UI:SetVisible({110204, 110718},true)
             UI:SetText({110206},"第"..rank.."名")
 
             System:FireGameEvent(_GAME.Events.GameEnd)
@@ -698,7 +694,7 @@ function GameMath:GoldRivalDefeat(name)
         if self.goldFailerRivalInfo[i].name == name then
             -- 淘汰
             self.goldFailerRivalInfo[i].failCount = 2
-            table.remove(self.goldFailerRivalInfo, i)
+            self.lastDefeatRival = table.remove(self.goldFailerRivalInfo, i)
             break
         end
     end
@@ -734,26 +730,24 @@ function GameMath:OnGoldBattleContinue()
                 end
             end
             self.isGoldFinalBattle = true
-            UI:SetVisible({110085,110082},true)
-            UI:SetVisible({110074,110078},false)
+            UI:SetVisible(MatchConfig.GoldWinner_UI,true)
+            UI:SetVisible(MatchConfig.GoldFailer_UI,false)
             UI:SetText({110081},"决赛")
         else
-            UI:SetVisible({110085,110082},true)
-            UI:SetVisible({110074,110078},false)
+            UI:SetVisible(MatchConfig.GoldWinner_UI,true)
+            UI:SetVisible(MatchConfig.GoldFailer_UI,false)
             UI:SetText({110081},"胜者组"..string.rep("丨", self.goldBattleRound ))
         end
     elseif self.goldFailCount == 1 then --失败过一次，在败者组
         if #self.goldFailerRivalInfo > 1 then --败者组有两人以上对手
-            UI:SetVisible({110074,110078},true)
-            UI:SetVisible({110085,110082},false)
+            UI:SetVisible(MatchConfig.GoldFailer_UI,true)
+            UI:SetVisible(MatchConfig.GoldWinner_UI,false)
             UI:SetText({110075},"败者组"..string.rep("丨", self.goldBattleRound ))
         else
-            UI:SetVisible({110085,110082},true)
-            UI:SetVisible({110074,110078},false)
+            UI:SetVisible(MatchConfig.GoldFailer_UI,true)
+            UI:SetVisible(MatchConfig.GoldWinner_UI,false)
             UI:SetText({110081},"决赛")
-            if #self.goldFailerRivalInfo == 0 then --败者组中已经没有对手，说明该和胜者组中最后一人进行决赛了
-                self.isGoldFinalBattle = true
-            end
+            self.isGoldFinalBattle = true
         end
     end
 
@@ -767,6 +761,13 @@ function GameMath:OnGoldBattleContinue()
     -- end
 
     UI:SetVisible(MatchConfig.MatchUI_Next,true)
+
+    -- 如果是败者组第二局，比较特殊，34为这一局新加入的对手，但是需要分别和12匹配，在这里手动调整一下顺位
+    if self.goldBattleRound == 2 then
+        local info = table.remove(self.goldFailerRivalInfo, 4)
+        table.insert(self.goldFailerRivalInfo, 1, info)
+    end
+
     self:UpdateGoldHead()
 end
 
@@ -792,6 +793,11 @@ function GameMath:ShowGoldTop3(top3Players)
             end
             FakeCharacter:ChangeCharacterBody(UID, bodyIds)
         end
+        if top == 1 then
+            TimerManager:AddTimer(1, function()
+                FakeCharacter:PlayAnim(UID, "ChooseMale")
+            end)
+        end
     end
 
     for i, v in ipairs(top3Players) do
@@ -806,11 +812,11 @@ function GameMath:ShowGoldTop3(top3Players)
     -- 移动相机
     local pos = Element:GetPosition(MatchConfig.GoldSceneConfig[self.mapId].Podium)
     Element:MoveTo(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(3000,0,1000),1,Element.CURVE.linear)
-    -- Element:SetForward(MatchConfig.GoldSceneConfig[self.mapId].Camera,UMath.Vector(1,0,0))
+    Element:SetForward(MatchConfig.GoldSceneConfig[self.mapId].Camera, -Element:GetForward(MatchConfig.GoldSceneConfig[self.mapId].Podium))
 
     TimerManager:AddTimer(2, function()
         -- 公布排名
-        UI:SetVisible({110204},true)
+        UI:SetVisible({110204, 110718},true)
         UI:SetText({110206},"")
     end)
 end
@@ -873,8 +879,8 @@ function GameMath:UpdateGoldHead()
                 end
                 UI:SetImageColor({UIs[index]}, self.goldBattleRound == 1 and "#FFFFFF" or "#0DEF0D")
             end
-            for i = self.goldBattleRound+1, #MatchConfig.GoldWinner_Head_UI do
-                UI:SetVisible(MatchConfig.GoldWinner_Head_UI[i], false)
+            for i = self.goldBattleRound+1, #Head_UI do
+                UI:SetVisible(Head_UI[i], false)
             end
         end
         UI:SetImageColor(self.goldHeadStates[1], "#0DEF0D")

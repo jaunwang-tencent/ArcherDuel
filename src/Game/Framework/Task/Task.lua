@@ -91,6 +91,59 @@ function CompositeCondition:new(operator, subConditions)
     return obj
 end
 
+
+-- 参加战斗
+local BattleCondition = setmetatable({}, {__index = Condition})
+
+function BattleCondition:new(params)
+    local obj = Condition.new(self, "Battle", params)
+    return obj
+end
+
+function BattleCondition:check(params)
+    if params.event == "Battle" then
+        self.currentAmount = self.currentAmount + 1
+        self.completed = self.currentAmount >= self.requiredAmount
+        return true, self.currentAmount
+    end
+    return false, self.currentAmount
+end
+
+
+-- 参加战斗
+local BattleWinCondition = setmetatable({}, {__index = Condition})
+
+function BattleWinCondition:new(params)
+    local obj = Condition.new(self, "BattleWin", params)
+    return obj
+end
+
+function BattleWinCondition:check(params)
+    if params.event == "BattleWin" then
+        self.currentAmount = self.currentAmount + 1
+        self.completed = self.currentAmount >= self.requiredAmount
+        return true, self.currentAmount
+    end
+    return false, self.currentAmount
+end
+
+
+local LoginGameCondition = setmetatable({}, {__index = Condition})
+
+function LoginGameCondition:new(params)
+    local obj = Condition.new(self, "Login", params)
+    return obj
+end
+
+function LoginGameCondition:check(params)
+    if params.event == "Login" then
+        self.currentAmount = self.currentAmount + 1
+        self.completed = true
+        return true, self.currentAmount
+    end
+    return false, self.currentAmount
+end
+
 function CompositeCondition:check(params)
     if self.operator == "AND" then
         local allCompleted = true
@@ -228,18 +281,25 @@ end
 -- 任务管理器类
 local TaskManager = {}
 TaskManager.__index = TaskManager
-
-function TaskManager:new()
+TaskManager.Instance = nil
+function TaskManager:GetInsatnce()
+    if  TaskManager.Instance then
+        return TaskManager.Instance
+    end
     local obj = {
         tasks = {},
         activeTasks = {},
         conditionFactories = {
             KILL = function(params) return KillCondition:new(params) end,
             COLLECT = function(params) return CollectCondition:new(params) end,
-            TALK = function(params) return TalkCondition:new(params) end
+            TALK = function(params) return TalkCondition:new(params) end,
+            Battle = function(params) return BattleCondition:new(params) end,
+            BattleWin = function(params) return BattleWinCondition:new(params) end,
+            LoginGame = function(params) return LoginGameCondition:new(params) end
         }
     }
     setmetatable(obj, self)
+    TaskManager.Instance = obj
     return obj
 end
 
@@ -309,11 +369,93 @@ function TaskManager:getActiveTasks()
     return tasks
 end
 
+function TaskManager:Init()
+    local manager = TaskManager:GetInsatnce()
+    local battleCondition = manager:createCondition("Battle", {
+            requiredAmount = 2
+        })
+
+    local battleWinCondition = manager:createCondition("BattleWin", {
+            requiredAmount = 1
+        })
+
+    local LoginGameCondition = manager:createCondition("LoginGame", {
+            requiredAmount = 1
+        })
+
+    local Quest_Battle = Task:new(
+            "Quest_Battle",
+            "战斗任务",
+            "参加2场次战斗",
+            {battleCondition},
+            {exp = 10}
+        )
+
+        Quest_Battle:addOnAcceptCallback(function()
+                Log:PrintLog("你接受了战斗任务!")
+            end)
+
+        Quest_Battle:addOnCompleteCallback(function()
+                Log:PrintLog("恭喜你完成了战斗任务!")
+            end)
+
+        -- 添加任务到管理器
+        manager:addTask(Quest_Battle)
+        -- 接受任务
+        manager:acceptTask("Quest_Battle")
+
+
+        local Quest_BattleWin = Task:new(
+            "Quest_BattleWin",
+            "战斗胜利任务",
+            "赢得1场次战斗",
+            {battleWinCondition},
+            {exp = 10}
+        )
+
+        Quest_BattleWin:addOnAcceptCallback(function()
+                Log:PrintLog("你接受了赢得一场战斗胜利任务!")
+            end)
+
+        Quest_BattleWin:addOnCompleteCallback(function()
+                Log:PrintLog("恭喜你完成了战斗胜利任务!")
+            end)
+
+        -- 添加任务到管理器
+        manager:addTask(Quest_BattleWin)
+        -- 接受任务
+        manager:acceptTask("Quest_BattleWin")
+ 
+        local Quest_Login = Task:new(
+            "Quest_Login",
+            "登录游戏",
+            "登录一次游戏",
+            {LoginGameCondition},
+            {exp = 5}
+        )
+
+        Quest_Login:addOnAcceptCallback(function()
+                Log:PrintLog("你接受了登录任务!")
+            end)
+
+        Quest_Login:addOnCompleteCallback(function()
+                Log:PrintLog("恭喜你完成了登录任务!")
+            end)
+
+        -- 添加任务到管理器
+        manager:addTask(Quest_Login)
+        -- 接受任务
+        manager:acceptTask("Quest_Login")
+        --manager:handleEvent("Battle")
+        --manager:handleEvent("LoginGame")
+end
+
+
 return TaskManager
 
 --[[
 -- 示例使用
-local manager = TaskManager:new()
+local manager = TaskManager:GetInsatnce()
 
 -- 创建条件
 local killCondition = manager:createCondition("KILL", {
