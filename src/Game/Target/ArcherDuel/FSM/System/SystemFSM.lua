@@ -100,10 +100,18 @@ function SystemFSM:OnCreate(Context)
         end
     end)
 
-    -- 开始进行匹配
-    TimerManager:AddFrame(1, function()
-        System:FireGameEvent(_GAME.Events.StartMatch)
-    end)
+    --根据元件脚本属性类型切换状态
+    local ElementID =  System:GetScriptParentID()
+    local IsLobby = CustomProperty:GetCustomProperty(ElementID, "IsLobby", CustomProperty.PROPERTY_TYPE.Bool)
+    if IsLobby then
+        -- 大厅场景进去外围
+        self:SwitchState(UGCS.Target.ArcherDuel.System.States.LobbyState)
+    else
+        -- 战斗场景开始进行匹配
+        TimerManager:AddFrame(1, function()
+            System:FireGameEvent(_GAME.Events.StartMatch)
+        end)
+    end
 end
 
 --- 销毁

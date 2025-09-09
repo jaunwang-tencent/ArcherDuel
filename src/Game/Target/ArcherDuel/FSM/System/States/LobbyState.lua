@@ -16,7 +16,7 @@ end
 ---@param Previous 上一状态
 ---@param Args 参数列表
 function LobbyState:OnEnter(Previous, Args)
-    
+    UGCS.Target.ArcherDuel.Modules.LobbyModule:Open()
 end
 
 --- 重置状态
@@ -28,13 +28,13 @@ end
 --- 更新状态
 ---@param DeltaTime 时间戳
 function LobbyState:OnUpdate(DeltaTime)
-    
+    UGCS.Target.ArcherDuel.Modules.LobbyModule:Update(DeltaTime)
 end
 
 --- 退出
 ---@param Next 下一状态
 function LobbyState:OnExit(Next)
-    
+    UGCS.Target.ArcherDuel.Modules.LobbyModule:Close()
 end
 
 return LobbyState
