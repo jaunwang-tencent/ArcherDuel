@@ -315,8 +315,8 @@ function Battle:OnGoldShow(showTime)
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
 
-		local startOffest = {X = 500, Y = 300, Z = 250} -- 起始偏移点
-		local endOffest = {X = 500, Y = -300, Z = 250} -- 结束偏移点
+		local startOffest = {X = 600, Y = 200, Z = 250} -- 起始偏移点
+		local endOffest = {X = 600, Y = -200, Z = 250} -- 结束偏移点
 		local Forward = UMath:RotatorToForward(LocalRotation)
 		local Up = Engine.Vector(0, 0, 1)
 		local Right = UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))

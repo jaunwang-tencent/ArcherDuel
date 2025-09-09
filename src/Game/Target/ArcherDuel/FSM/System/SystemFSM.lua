@@ -63,34 +63,27 @@ function SystemFSM:OnCreate(Context)
         Context.RivalInfo.WeaponId = MatchInfo.BattleRivalInfo.weaponId
         Context.RivalInfo.Equipments = MatchInfo.BattleRivalInfo.equipments
 
-        -- -- 是否为黄金赛
-        -- if SceneConfigTable[MatchInfo.MapId] and SceneConfigTable[MatchInfo.MapId].IsGold then
-        --     -- 打乱黄金赛场景排序
-        --     local sceneArr = shuffled_copy({1,2,3,4})
-        --     -- 第一个场景给主角
-        --     Context.Scene.Index = sceneArr[1]
+        -- 是否为黄金赛
+        if SceneConfigTable[MatchInfo.MapId] and SceneConfigTable[MatchInfo.MapId].IsGold then
+            -- 打乱黄金赛场景排序
+            local sceneArr = shuffled_copy({1,2,3,4})
+            -- 第一个场景给主角
+            Context.Scene.Index = sceneArr[1]
 
-        --     --黄金赛表演场景
-        --     local jsonStr = Archive:GetPlayerData(playerId, Archive.TYPE.String, "GoldShowBattleInfo")
-        --     Log:PrintLog("SystemFSM:OnCreate, Get GoldShowBattleInfo", jsonStr)
-
-        --     jsonStr = '[[{"failCount":0,"name":"幸运儿","weapons":[1,2,3],"equipments":{"Cloth":33,"Bottoms":42,"Part":13}},{"failCount":0,"name":"社牛本牛","weapons":[1,2,3],"equipments":{"Cloth":19,"Bottoms":53,"Part":14}}],[{"failCount":0,"name":"爱胡萝卜的兔","weapons":[1,2,3],"equipments":{"Cloth":32,"Bottoms":42,"Part":2}},{"failCount":0,"name":"厕所摸鱼","weapons":[1,2,3],"equipments":{"Cloth":21,"Bottoms":44,"Part":10}}],[{"failCount":0,"weapons":[1,2,3],"equipments":{"Cloth":24,"Bottoms":60,"Part":11}},{"failCount":0,"weapons":[1,2,3],"equipments":{"Cloth":20,"Bottoms":52,"Part":1}}]]'
-        --     local goldBattleRivals = MiscService:JsonStr2Table(jsonStr)
-
-        --     if goldBattleRivals and #goldBattleRivals > 0 then
-        --         Context.GoldInfos = {}
-        --         for i = 1, #goldBattleRivals do
-        --             local goldContext = {
-        --                 Player1 = goldBattleRivals[i][1],
-        --                 Player2 = goldBattleRivals[i][2],
-        --                 Situation = Context.Scene.Situation,
-        --                 SceneIndex = sceneArr[i+1],
-        --                 CharacterIndex = 1,
-        --             }
-        --             table.insert(Context.GoldInfos, goldContext)
-        --         end
-        --     end
-        -- end
+            if MatchInfo.GoldShowBattleRivals and #MatchInfo.GoldShowBattleRivals > 0 then
+                Context.GoldInfos = {}
+                for i = 1, #MatchInfo.GoldShowBattleRivals do
+                    local goldContext = {
+                        Player1 = MatchInfo.GoldShowBattleRivals[i][1],
+                        Player2 = MatchInfo.GoldShowBattleRivals[i][2],
+                        Situation = Context.Scene.Situation,
+                        SceneIndex = sceneArr[i+1],
+                        CharacterIndex = 1,
+                    }
+                    table.insert(Context.GoldInfos, goldContext)
+                end
+            end
+        end
 
         self:SwitchState(UGCS.Target.ArcherDuel.System.States.MatchState, Context)
     end)
