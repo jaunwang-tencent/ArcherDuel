@@ -51,7 +51,7 @@ function StoreModule:Open(PlayerData)
     --寄存玩家数据
     self.PlayerData = PlayerData
 
-    UI:RegisterClicked(110962, function ()
+    UI:RegisterClicked(110959, function ()
         self:CloseBox()
     end)
 end
@@ -83,12 +83,14 @@ function StoreModule:BuyGood(ButtonInfo)
     local Consumables = Item.Consumables
     local Goods = Item.Goods
     local BaseData = self.PlayerData.BaseData
-    if Consumables.GoldBox and BaseData.GoldBox > Consumables.GoldBox then
+    if Consumables.GoldBox and BaseData.GoldBox >= Consumables.GoldBox then
         --消耗金宝箱
         BaseData.GoldBox = BaseData.GoldBox - Consumables.GoldBox
-    elseif Consumables.SilverBox and BaseData.SilverBox > Consumables.SilverBox then
+        self:OpenBox(200003)
+    elseif Consumables.SilverBox and BaseData.SilverBox >= Consumables.SilverBox then
         --消耗银宝箱
         BaseData.SilverBox = BaseData.SilverBox - Consumables.SilverBox
+        self:OpenBox(200002)
     elseif Consumables.Diamond then
         --消耗砖石
         if BaseData.Diamond > Consumables.Diamond then
@@ -165,6 +167,7 @@ function StoreModule:OpenBox(boxId)
     end
 
     UI:SetVisible({110963},true) -- 打开宝箱UI
+
     UI:SetVisible({110962,110965,110959},false)
     TimerManager:AddTimer(2.3,function ()
         UI:SetVisible(equipIconUIs,true)
@@ -177,6 +180,20 @@ function StoreModule:OpenBox(boxId)
         UI:SetVisible({110962,110965,110959},true)
     end)
 
+    --获取装备
+    local AllEquipment = self.PlayerData.AllEquipment
+    for _, EquipmentID in pairs(rewards) do
+        local TargetEquipment = AllEquipment[EquipmentID]
+        if TargetEquipment.Unlock then
+            --累加碎片
+            TargetEquipment.Piece = TargetEquipment.Piece + 1
+        else
+            --解锁
+            TargetEquipment.Unlock = true
+        end
+    end
+    --刷新装备数据
+    System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     return rewards
 end
 

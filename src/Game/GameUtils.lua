@@ -61,6 +61,7 @@ function GameUtils.GetEquipmentMap()
         GameUtils.EquipmentMap[Grade] = GameUtils.EquipmentMap[Grade] or {}
         table.insert(GameUtils.EquipmentMap[Grade], i)
     end
+    return GameUtils.EquipmentMap
 end
 
 -- 开宝箱获取奖励物品
@@ -78,8 +79,8 @@ function GameUtils.OpenBoxReward(boxId)
         Weight = Weight + v.Weight
     end
 
+    math.randomseed(TimerManager:GetClock())
     local function getReward()
-        math.randomseed(TimerManager:GetClock())
         local random = math.random(1, Weight)
         for i, v in ipairs(BoxConfig) do
             Weight = Weight + v.Weight
