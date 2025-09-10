@@ -111,19 +111,19 @@ local UIConfig = {
         LeftView = {
             ID = 104495,
             --眼镜
-            Glasses = {
+            Character = {
                 Label = 104156,
                 Image = 100534,
                 Progress = 101868
             },
             --上衣
-            Coat = {
+            Top = {
                 Label = 104157,
                 Image = 100535,
                 Progress = 104028
             },
             --发型
-            Hair = {
+            Bottoms = {
                 Lable = 104158,
                 Image = 100536,
                 Progress = 104029
@@ -163,8 +163,8 @@ local UIConfig = {
                     --未命中
                     Unselected = 110756
                 },
-                --眼镜
-                Glasses = {
+                --角色
+                Character = {
                     Category = 1,
                     --命中
                     Selected = 104036,
@@ -172,7 +172,7 @@ local UIConfig = {
                     Unselected = 110757
                 },
                 --上衣
-                Coat = {
+                Top = {
                     Category = 2,
                     --命中
                     Selected = 104037,
@@ -180,7 +180,7 @@ local UIConfig = {
                     Unselected = 110758
                 },
                 --发型
-                Hair = {
+                Bottoms = {
                     Category = 3,
                     --命中
                     Selected = 104038,

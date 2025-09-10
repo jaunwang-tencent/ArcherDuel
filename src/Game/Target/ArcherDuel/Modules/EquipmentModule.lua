@@ -93,9 +93,9 @@ function EquipmentModule:RegreshBodyUI()
     local PlayerData = self.PlayerData
     --角色身上的装备
     local EquipmentSlotConfig = {
-        [1] = EquipmentView.LeftView.Glasses,
-        [2] = EquipmentView.LeftView.Coat,
-        [3] = EquipmentView.LeftView.Hair,
+        [1] = EquipmentView.LeftView.Character,
+        [2] = EquipmentView.LeftView.Top,
+        [3] = EquipmentView.LeftView.Bottoms,
         [4] = EquipmentView.RightView.Bow,
         [5] = EquipmentView.RightView.Axe,
         [6] = EquipmentView.RightView.Spear,

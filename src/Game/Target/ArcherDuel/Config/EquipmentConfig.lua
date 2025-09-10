@@ -1586,7 +1586,7 @@ local EquipmentConfig = {
     [44] = {
         --下装7
         TypeName = "Bottoms",
-        NickName = "星小递下装",    
+        NickName = "星小递下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1623,7 +1623,7 @@ local EquipmentConfig = {
     [45] = {
         --下装8
         TypeName = "Bottoms",
-        NickName = "芝士桃桃下装",    
+        NickName = "芝士桃桃下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1660,7 +1660,7 @@ local EquipmentConfig = {
     [46] = {
         --下装9
         TypeName = "Bottoms",
-        NickName = "三花摩卡下装",    
+        NickName = "三花摩卡下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1697,7 +1697,7 @@ local EquipmentConfig = {
     [47] = {
         --下装10
         TypeName = "Bottoms",
-        NickName = "专业态度下装",    
+        NickName = "专业态度下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1734,7 +1734,7 @@ local EquipmentConfig = {
     [48] = {
         --下装11
         TypeName = "Bottoms",
-        NickName = "活力绅士下装",    
+        NickName = "活力绅士下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1772,7 +1772,7 @@ local EquipmentConfig = {
     [49] = {
         --下装12
         TypeName = "Bottoms",
-        NickName = "春风探险下装",    
+        NickName = "春风探险下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1809,7 +1809,7 @@ local EquipmentConfig = {
     [50] = {
         --下装13
         TypeName = "Bottoms",
-        NickName = "彩虹旋律下装",    
+        NickName = "彩虹旋律下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1846,7 +1846,7 @@ local EquipmentConfig = {
     [51] = {
         --下装14
         TypeName = "Bottoms",
-        NickName = "烘焙甜心下装",    
+        NickName = "烘焙甜心下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1883,7 +1883,7 @@ local EquipmentConfig = {
     [52] = {
         --下装15
         TypeName = "Bottoms",
-        NickName = "灰色边缘下装",    
+        NickName = "灰色边缘下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1920,7 +1920,7 @@ local EquipmentConfig = {
     [53] = {
         --下装16
         TypeName = "Bottoms",
-        NickName = "蓝莓戚风下装",    
+        NickName = "蓝莓戚风下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1957,7 +1957,7 @@ local EquipmentConfig = {
     [54] = {
         --下装17
         TypeName = "Bottoms",
-        NickName = "红梅丝绒下装",    
+        NickName = "红梅丝绒下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -1994,7 +1994,7 @@ local EquipmentConfig = {
     [55] = {
         --下装18
         TypeName = "Bottoms",
-        NickName = "最佳员工下装",    
+        NickName = "最佳员工下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -2031,7 +2031,7 @@ local EquipmentConfig = {
     [56] = {
         --下装19
         TypeName = "Bottoms",
-        NickName = "绅士礼服下装",    
+        NickName = "绅士礼服下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -2101,7 +2101,7 @@ local EquipmentConfig = {
     [58] = {
         --下装21
         TypeName = "Bottoms",
-        NickName = "海岛一刻下装",    
+        NickName = "海岛一刻下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -2138,7 +2138,7 @@ local EquipmentConfig = {
     [59] = {
         --下装22
         TypeName = "Bottoms",
-        NickName = "春日校园下装",    
+        NickName = "春日校园下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
