@@ -210,16 +210,19 @@ function EquipmentModule:RefreshListUI(Category)
         local MaxLevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.MaxLevel)
         local LevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Level)
         local ProgressUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Progress)
+        local UpgradableUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Upgradable)
         if Equipment.Level == 5 then
             --满级
             table.insert(ShowItems, MaxLevelUI)
             table.insert(HideItems, LevelUI)
             table.insert(HideItems, ProgressUI)
+            table.insert(HideItems, UpgradableUI)
         else
             --升级
             table.insert(HideItems, MaxLevelUI)
             table.insert(ShowItems, LevelUI)
             table.insert(ShowItems, ProgressUI)
+            table.insert(ShowItems, UpgradableUI)
 
             --设置等级
             UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))

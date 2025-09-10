@@ -219,6 +219,8 @@ local UIConfig = {
                 --项
                 Item = {
                     ID = 109449,
+                    --可升级图标
+                    Upgradable = 110793,
                     --锁
                     Lock = 109579,
                     --等级
