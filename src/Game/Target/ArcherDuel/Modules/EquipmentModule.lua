@@ -60,7 +60,12 @@ function EquipmentModule:Close()
     --过滤栏
     local TableBar = ListView and ListView.TableBar
     if TableBar then
-        for _, Filter in pairs(TableBar) do
+        for Type, Filter in pairs(TableBar) do
+            if Filter.Selected and Type == "All" then
+                UI:SetVisible({Filter.Selected}, true)
+            else
+                UI:SetVisible({Filter.Selected}, false)
+            end
             if type(Filter) == "table" and Filter.Unselected then
                 UI:UnRegisterClicked(Filter.Unselected)
             end
@@ -201,16 +206,19 @@ function EquipmentModule:RefreshListUI(Category)
         local ShowItems, HideItems = {}, {}
         --解锁相关
         local LockUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Lock)
+        local UpgradableUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Upgradable)
+        local NeedUpgrade = true
         if Equipment.Unlock then
             table.insert(HideItems, LockUI)
         else
             table.insert(ShowItems, LockUI)
+            table.insert(HideItems, UpgradableUI)
+            NeedUpgrade = false
         end
         --等级相关
         local MaxLevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.MaxLevel)
         local LevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Level)
         local ProgressUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Progress)
-        local UpgradableUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Upgradable)
         if Equipment.Level == 5 then
             --满级
             table.insert(ShowItems, MaxLevelUI)
@@ -222,7 +230,9 @@ function EquipmentModule:RefreshListUI(Category)
             table.insert(HideItems, MaxLevelUI)
             table.insert(ShowItems, LevelUI)
             table.insert(ShowItems, ProgressUI)
-            table.insert(ShowItems, UpgradableUI)
+            if NeedUpgrade then
+                table.insert(ShowItems, UpgradableUI)
+            end
 
             --设置等级
             UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
