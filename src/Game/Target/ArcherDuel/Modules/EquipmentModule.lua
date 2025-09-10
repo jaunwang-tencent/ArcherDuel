@@ -125,9 +125,11 @@ function EquipmentModule:RegreshBodyUI()
             end
             --图标
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
+            UI:SetVisible({EquipmentSlot.EmptyImage}, false)
         else
             --没有装备则清空
             UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress, EquipmentSlot.Image}, false)
+            UI:SetVisible({EquipmentSlot.EmptyImage}, true)
         end
     end
 end
