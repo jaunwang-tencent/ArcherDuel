@@ -3,8 +3,10 @@
 local EquipmentConfig = {
     [1] = {
         --角色1
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "哈士奇",
+        AssetName = "Character",
+        AssetIndex = 1,
         EquipID = 400100,
         Category = 1,
         --属性参数
@@ -33,8 +35,10 @@ local EquipmentConfig = {
     },
     [2] = {
         --角色2
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "好好鸭",
+        AssetName = "Character",
+        AssetIndex = 2,
         EquipID = 400110,
         Category = 1,
         --属性参数
@@ -63,10 +67,12 @@ local EquipmentConfig = {
     },
     [3] = {
         --角色3
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "紫萝萝",
+        AssetName = "Character",
+        AssetIndex = 3,
         EquipID = 400380,
-        Category = 1,
+        Category = 3,
         --属性参数
         Attributes = {
             -- 生命值
@@ -93,8 +99,10 @@ local EquipmentConfig = {
     },
     [4] = {
         --角色4
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "巨鳄霸",
+        AssetName = "Character",
+        AssetIndex = 4,
         --角色
         EquipID = 400210,
         Category = 1,
@@ -124,8 +132,10 @@ local EquipmentConfig = {
     },
     [5] = {
         --角色5
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "羊小萌",
+        AssetName = "Character",
+        AssetIndex = 5,
         EquipID = 400480,
         Category = 1,
         --属性参数
@@ -154,8 +164,10 @@ local EquipmentConfig = {
     },
     [6] = {
         --角色6
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "小红狐",
+        AssetName = "Character",
+        AssetIndex = 6,
         EquipID = 400470,
         Category = 1,
         --属性参数
@@ -184,8 +196,10 @@ local EquipmentConfig = {
     },
     [7] = {
         --角色7
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "玫珊珊",
+        AssetName = "Character",
+        AssetIndex = 7,
         EquipID = 400390,
         Category = 1,
         --属性参数
@@ -214,8 +228,10 @@ local EquipmentConfig = {
     },
     [8] = {
         --角色8
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "哞哞牛",
+        AssetName = "Character",
+        AssetIndex = 8,
         EquipID = 400070,
         Category = 1,
         --属性参数
@@ -244,8 +260,10 @@ local EquipmentConfig = {
     },
     [9] = {
         --角色9
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "鼠朵朵",
+        AssetName = "Character",
+        AssetIndex = 9,
         EquipID = 402390,
         Category = 1,
         --属性参数
@@ -274,8 +292,10 @@ local EquipmentConfig = {
     },
     [10] = {
         --角色10
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "胖胖达",
+        AssetName = "Character",
+        AssetIndex = 10,
         EquipID = 400140,
         Category = 1,
         --属性参数
@@ -304,8 +324,10 @@ local EquipmentConfig = {
     },
     [11] = {
         --角色11
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "小青蛙",
+        AssetName = "Character",
+        AssetIndex = 11,
         EquipID = 402930,
         Category = 1,
         --属性参数
@@ -334,8 +356,10 @@ local EquipmentConfig = {
     },
     [12] = {
         --角色12
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "易斑斑",
+        AssetName = "Character",
+        AssetIndex = 12,
         EquipID = 400020,
         Category = 1,
         --属性极
@@ -364,8 +388,10 @@ local EquipmentConfig = {
     },
     [13] = {
         --角色13
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "卡皮巴拉",
+        AssetName = "Character",
+        AssetIndex = 13,
         EquipID = 401370,
         Category = 1,
         --属性参数
@@ -394,8 +420,10 @@ local EquipmentConfig = {
     },
     [14] = {
         --角色14
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "虎子哥",
+        AssetName = "Character",
+        AssetIndex = 14,
         EquipID = 400080,
         Category = 1,
         --属性参数
@@ -424,8 +452,10 @@ local EquipmentConfig = {
     },
     [15] = {
         --上衣1
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "少年时代上装",
+        AssetName = "Top",
+        AssetIndex = 1,
         --换装ID
         EquipID = 510080,
         Category = 2,
@@ -456,8 +486,10 @@ local EquipmentConfig = {
     },
     [16] = {
         --上衣2
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "沙滩旅客上装",
+        AssetName = "Top",
+        AssetIndex = 2,
         --换装ID
         EquipID = 510020,
         Category = 2,
@@ -488,8 +520,10 @@ local EquipmentConfig = {
     },
     [17] = {
         --上衣3
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "清爽运动上装",
+        AssetName = "Top",
+        AssetIndex = 3,
         --换装ID
         EquipID = 510008,
         Category = 2,
@@ -520,8 +554,10 @@ local EquipmentConfig = {
     },
     [18] = {
         --上衣4
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "邻家学妹上装",
+        AssetName = "Top",
+        AssetIndex = 4,
         --换装ID
         EquipID = 510133,
         Category = 2,
@@ -552,8 +588,10 @@ local EquipmentConfig = {
     },
     [19] = {
         --上衣5
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "蓝色童话上装",
+        AssetName = "Top",
+        AssetIndex = 5,
         --换装ID
         EquipID = 510045,
         Category = 2,
@@ -584,8 +622,10 @@ local EquipmentConfig = {
     },
     [20] = {
         --上衣6
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "白桃气泡上装",
+        AssetName = "Top",
+        AssetIndex = 6,
         --换装ID
         EquipID = 510044,
         Category = 2,
@@ -615,8 +655,10 @@ local EquipmentConfig = {
     },
     [21] = {
         --上衣7
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "星小递上装",
+        AssetName = "Top",
+        AssetIndex = 7,
         --换装ID
         EquipID = 510019,
         Category = 2,
@@ -646,8 +688,10 @@ local EquipmentConfig = {
     },
     [22] = {
         --上衣8
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "芝士桃桃上装",
+        AssetName = "Top",
+        AssetIndex = 8,
         --换装ID
         EquipID = 510041,
         Category = 2,
@@ -677,8 +721,10 @@ local EquipmentConfig = {
     },
     [23] = {
         --上衣9
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "三花摩卡上装",
+        AssetName = "Top",
+        AssetIndex = 9,
         --换装ID
         EquipID = 510043,
         Category = 2,
@@ -708,8 +754,10 @@ local EquipmentConfig = {
     },
     [24] = {
         --上衣10
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "专业态度上装",
+        AssetName = "Top",
+        AssetIndex = 10,
         --换装ID
         EquipID = 510216,
         Category = 2,
@@ -739,8 +787,10 @@ local EquipmentConfig = {
     },
     [25] = {
         --上衣11
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "活力绅士上装",
+        AssetName = "Top",
+        AssetIndex = 11,
         --换装ID
         EquipID = 510206,
         Category = 2,
@@ -765,13 +815,15 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 50 , 
+            Growth = 50, 
         },
     },
     [26] = {
         --上衣12
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "春风探险上装",
+        AssetName = "Top",
+        AssetIndex = 12,
         --换装ID
         EquipID = 510131,
         Category = 2,
@@ -801,8 +853,10 @@ local EquipmentConfig = {
     },
     [27] = {
         --上衣13
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "彩虹旋律上装",
+        AssetName = "Top",
+        AssetIndex = 13,
         --换装ID
         EquipID = 510028,
         Category = 2,
@@ -832,8 +886,10 @@ local EquipmentConfig = {
     },
     [28] = {
         --上衣14
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "烘焙甜心上装",
+        AssetName = "Top",
+        AssetIndex = 14,
         --换装ID
         EquipID = 510029,
         Category = 2,
@@ -863,8 +919,10 @@ local EquipmentConfig = {
     },
     [29] = {
         --上衣15
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "灰色边缘上装",
+        AssetName = "Top",
+        AssetIndex = 15,
         --换装ID
         EquipID = 510018,
         Category = 2,
@@ -894,8 +952,10 @@ local EquipmentConfig = {
     },
     [30] = {
         --上衣16
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "蓝莓戚风上装",
+        AssetName = "Top",
+        AssetIndex = 16,
         --换装ID
         EquipID = 510050,
         Category = 2,
@@ -925,8 +985,10 @@ local EquipmentConfig = {
     },
     [31] = {
         --上衣17
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "红梅丝绒上装",
+        AssetName = "Top",
+        AssetIndex = 17,
         --换装ID
         EquipID = 510032,
         Category = 2,
@@ -956,8 +1018,10 @@ local EquipmentConfig = {
     },
     [32] = {
         --上衣18
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "最佳员工上装",
+        AssetName = "Top",
+        AssetIndex = 18,
         --换装ID
         EquipID = 510005,
         Category = 2,
@@ -987,8 +1051,10 @@ local EquipmentConfig = {
     },
     [33] = {
         --上衣19
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "绅士礼服上装",
+        AssetName = "Top",
+        AssetIndex = 19,
         --换装ID
         EquipID = 510096,
         Category = 2,
@@ -1018,8 +1084,10 @@ local EquipmentConfig = {
     },
     [34] = {
         --上衣20
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "海岛风情上装",
+        AssetName = "Top",
+        AssetIndex = 20,
         --换装ID
         EquipID = 510350,
         Category = 2,
@@ -1049,8 +1117,10 @@ local EquipmentConfig = {
     },
     [35] = {
         --上衣21
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "海岛一刻上装",
+        AssetName = "Top",
+        AssetIndex = 21,
         --换装ID
         EquipID = 510157,
         Category = 2,
@@ -1080,8 +1150,10 @@ local EquipmentConfig = {
     },
     [36] = {
         --上衣22
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "春日校园上装",
+        AssetName = "Top",
+        AssetIndex = 22,
         --换装ID
         EquipID = 510130,
         Category = 2,
@@ -1111,8 +1183,10 @@ local EquipmentConfig = {
     },
     [37] = {
         --上衣23
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "青春筑梦上装",
+        AssetName = "Top",
+        AssetIndex = 23,
         --换装ID
         EquipID = 510170,
         Category = 2,
@@ -1144,6 +1218,8 @@ local EquipmentConfig = {
         --下装1
         TypeName = "Bottoms",
         NickName = "少年时代下装",
+        AssetName = "Bottoms",
+        AssetIndex = 1,
         --换装ID
         EquipID = 520052,
         Category = 3,
@@ -1175,6 +1251,8 @@ local EquipmentConfig = {
         --下装2
         TypeName = "Bottoms",
         NickName = "沙滩旅客下装",
+        AssetName = "Bottoms",
+        AssetIndex = 2,
         --换装ID
         EquipID = 520017,
         Category = 3,
@@ -1206,6 +1284,8 @@ local EquipmentConfig = {
         --下装3
         TypeName = "Bottoms",
         NickName = "清爽运动下装",
+        AssetName = "Bottoms",
+        AssetIndex = 3,
         --换装ID
         EquipID = 520008,
         Category = 3,
@@ -1237,6 +1317,8 @@ local EquipmentConfig = {
         --下装4
         TypeName = "Bottoms",
         NickName = "邻家学妹下装",
+        AssetName = "Bottoms",
+        AssetIndex = 4,
         --换装ID
         EquipID = 520088,
         Category = 3,
@@ -1268,6 +1350,8 @@ local EquipmentConfig = {
         --下装5
         TypeName = "Bottoms",
         NickName = "蓝色童话下装",
+        AssetName = "Bottoms",
+        AssetIndex = 5,
         --换装ID
         EquipID = 520035,
         Category = 3,
@@ -1299,6 +1383,8 @@ local EquipmentConfig = {
         --下装6
         TypeName = "Bottoms",
         NickName = "白桃气泡下装",
+        AssetName = "Bottoms",
+        AssetIndex = 6,
         --换装ID
         EquipID = 520034,
         Category = 3,
@@ -1330,6 +1416,8 @@ local EquipmentConfig = {
         --下装7
         TypeName = "Bottoms",
         NickName = "星小递下装",
+        AssetName = "Bottoms",
+        AssetIndex = 7,
         --换装ID
         EquipID = 520016,
         Category = 3,
@@ -1361,6 +1449,8 @@ local EquipmentConfig = {
         --下装8
         TypeName = "Bottoms",
         NickName = "芝士桃桃下装",
+        AssetName = "Bottoms",
+        AssetIndex = 8,
         --换装ID
         EquipID = 520031,
         Category = 3,
@@ -1392,6 +1482,8 @@ local EquipmentConfig = {
         --下装9
         TypeName = "Bottoms",
         NickName = "三花摩卡下装",
+        AssetName = "Bottoms",
+        AssetIndex = 9,
         --换装ID
         EquipID = 520033,
         Category = 3,
@@ -1423,6 +1515,8 @@ local EquipmentConfig = {
         --下装10
         TypeName = "Bottoms",
         NickName = "专业态度下装",
+        AssetName = "Bottoms",
+        AssetIndex = 10,
         --换装ID
         EquipID = 520153,
         Category = 3,
@@ -1454,6 +1548,8 @@ local EquipmentConfig = {
         --下装11
         TypeName = "Bottoms",
         NickName = "活力绅士下装",
+        AssetName = "Bottoms",
+        AssetIndex = 11,
         --换装ID
         EquipID = 520145,
         Category = 3,
@@ -1486,6 +1582,8 @@ local EquipmentConfig = {
         --下装12
         TypeName = "Bottoms",
         NickName = "春风探险下装",
+        AssetName = "Bottoms",
+        AssetIndex = 12,
         --换装ID
         EquipID = 520087,
         Category = 3,
@@ -1517,6 +1615,8 @@ local EquipmentConfig = {
         --下装13
         TypeName = "Bottoms",
         NickName = "彩虹旋律下装",
+        AssetName = "Bottoms",
+        AssetIndex = 13,
         --换装ID
         EquipID = 520026,
         Category = 3,
@@ -1548,6 +1648,8 @@ local EquipmentConfig = {
         --下装14
         TypeName = "Bottoms",
         NickName = "烘焙甜心下装",
+        AssetName = "Bottoms",
+        AssetIndex = 14,
         --换装ID
         EquipID = 520027,
         Category = 3,
@@ -1579,6 +1681,8 @@ local EquipmentConfig = {
         --下装15
         TypeName = "Bottoms",
         NickName = "灰色边缘下装",
+        AssetName = "Bottoms",
+        AssetIndex = 15,
         --换装ID
         EquipID = 520015,
         Category = 3,
@@ -1610,6 +1714,8 @@ local EquipmentConfig = {
         --下装16
         TypeName = "Bottoms",
         NickName = "蓝莓戚风下装",
+        AssetName = "Bottoms",
+        AssetIndex = 16,
         --换装ID
         EquipID = 520040,
         Category = 3,
@@ -1641,6 +1747,8 @@ local EquipmentConfig = {
         --下装17
         TypeName = "Bottoms",
         NickName = "红梅丝绒下装",
+        AssetName = "Bottoms",
+        AssetIndex = 17,
         --换装ID
         EquipID = 520030,
         Category = 3,
@@ -1672,6 +1780,8 @@ local EquipmentConfig = {
         --下装18
         TypeName = "Bottoms",
         NickName = "最佳员工下装",
+        AssetName = "Bottoms",
+        AssetIndex = 18,
         --换装ID
         EquipID = 520005,
         Category = 3,
@@ -1703,6 +1813,8 @@ local EquipmentConfig = {
         --下装19
         TypeName = "Bottoms",
         NickName = "绅士礼服下装",
+        AssetName = "Bottoms",
+        AssetIndex = 19,
         --换装ID
         EquipID = 520065,
         Category = 3,
@@ -1734,6 +1846,8 @@ local EquipmentConfig = {
         --下装20
         TypeName = "Bottoms",
         NickName = "海岛风情下装",
+        AssetName = "Bottoms",
+        AssetIndex = 20,
         --换装ID
         EquipID = 520233,
         Category = 3,
@@ -1765,6 +1879,8 @@ local EquipmentConfig = {
         --下装21
         TypeName = "Bottoms",
         NickName = "海岛一刻下装",
+        AssetName = "Bottoms",
+        AssetIndex = 21,
         --换装ID
         EquipID = 520108,
         Category = 3,
@@ -1796,6 +1912,8 @@ local EquipmentConfig = {
         --下装22
         TypeName = "Bottoms",
         NickName = "春日校园下装",
+        AssetName = "Bottoms",
+        AssetIndex = 22,
         --换装ID
         EquipID = 520086,
         Category = 3,
@@ -1827,6 +1945,8 @@ local EquipmentConfig = {
         --下装23
         TypeName = "Bottoms",
         NickName = "青春筑梦下装",
+        AssetName = "Bottoms",
+        AssetIndex = 23,
         --换装ID
         EquipID = 520118,
         Category = 3,
@@ -1858,6 +1978,8 @@ local EquipmentConfig = {
         --弓箭1
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 1,
         Category = 4,
         --属性参数
         Attributes = {
@@ -1887,6 +2009,8 @@ local EquipmentConfig = {
         --弓箭2
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 2,
         Category = 4,
         --属性参数
         Attributes = {
@@ -1916,6 +2040,8 @@ local EquipmentConfig = {
         --弓箭3
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 3,
         Category = 4,
         --属性参数
         Attributes = {
@@ -1945,6 +2071,8 @@ local EquipmentConfig = {
         --弓箭4
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 4,
         Category = 4,
         --属性参数
         Attributes = {
@@ -1974,6 +2102,8 @@ local EquipmentConfig = {
         --弓箭5
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 5,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2003,6 +2133,8 @@ local EquipmentConfig = {
         --弓箭6
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 6,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2032,6 +2164,8 @@ local EquipmentConfig = {
         --弓箭7
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 7,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2061,6 +2195,8 @@ local EquipmentConfig = {
         --弓箭8
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 8,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2090,6 +2226,8 @@ local EquipmentConfig = {
         --弓箭9
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 9,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2119,6 +2257,8 @@ local EquipmentConfig = {
         --弓箭10
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 10,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2148,6 +2288,8 @@ local EquipmentConfig = {
         --弓箭11
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 11,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2177,6 +2319,8 @@ local EquipmentConfig = {
         --弓箭12
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 12,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2206,6 +2350,8 @@ local EquipmentConfig = {
         --弓箭极3
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 13,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2235,6 +2381,8 @@ local EquipmentConfig = {
         --弓箭14
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 14,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2264,6 +2412,8 @@ local EquipmentConfig = {
         --弓箭15
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 15,
         Category = 4,
         --属性极
         Attributes = {
@@ -2293,6 +2443,8 @@ local EquipmentConfig = {
         --弓箭16
         TypeName = "Bow",
         NickName = "Hat",
+        AssetName = "weapon_icon",
+        AssetIndex = 16,
         Category = 4,
         --属性参数
         Attributes = {
@@ -2322,6 +2474,8 @@ local EquipmentConfig = {
         --手斧1
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 17,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2351,6 +2505,8 @@ local EquipmentConfig = {
         --手斧2
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 18,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2380,6 +2536,8 @@ local EquipmentConfig = {
         --手斧3
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 19,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2409,6 +2567,8 @@ local EquipmentConfig = {
         --手斧4
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 20,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2438,6 +2598,8 @@ local EquipmentConfig = {
         --手斧5
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 21,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2467,6 +2629,8 @@ local EquipmentConfig = {
         --手斧6
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 22,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2496,6 +2660,8 @@ local EquipmentConfig = {
         --手斧7
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 23,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2525,6 +2691,8 @@ local EquipmentConfig = {
         --手斧8
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 24,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2554,6 +2722,8 @@ local EquipmentConfig = {
         --手斧9
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 25,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2583,6 +2753,8 @@ local EquipmentConfig = {
         --手斧10
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 26,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2612,6 +2784,8 @@ local EquipmentConfig = {
         --手斧11
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 27,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2641,6 +2815,8 @@ local EquipmentConfig = {
         --手斧12
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 28,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2670,6 +2846,8 @@ local EquipmentConfig = {
         --手斧13
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 29,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2699,6 +2877,8 @@ local EquipmentConfig = {
         --手斧14
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 30,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2728,6 +2908,8 @@ local EquipmentConfig = {
         --手斧15
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 31,
         Category = 5,
         --属性极
         Attributes = {
@@ -2757,6 +2939,8 @@ local EquipmentConfig = {
         --手斧16
         TypeName = "Axe",
         NickName = "Glasses",
+        AssetName = "weapon_icon",
+        AssetIndex = 32,
         Category = 5,
         --属性参数
         Attributes = {
@@ -2785,7 +2969,9 @@ local EquipmentConfig = {
     [93] = {
         --长矛1
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 33,
         Category = 6,
         --属性参数
         Attributes = {
@@ -2815,7 +3001,9 @@ local EquipmentConfig = {
     [94] = {
         --长矛2
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 34,
         Category = 6,
         --属性参数
         Attributes = {
@@ -2844,7 +3032,9 @@ local EquipmentConfig = {
     [95] = {
         --长矛3
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 35,
         Category = 6,
         --属性参数
         Attributes = {
@@ -2873,7 +3063,9 @@ local EquipmentConfig = {
     [96] = {
         --长矛4
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 36,
         Category = 6,
         --属性参数
         Attributes = {
@@ -2902,7 +3094,9 @@ local EquipmentConfig = {
     [97] = {
         --长矛5
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 37,
         Category = 6,
         --属性参数
         Attributes = {
@@ -2931,7 +3125,9 @@ local EquipmentConfig = {
     [98] = {
         --长矛6
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 38,
         Category = 6,
         --属性参数
         Attributes = {
@@ -2960,7 +3156,9 @@ local EquipmentConfig = {
     [99] = {
         --长矛7
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 39,
         Category = 6,
         --属性参数
         Attributes = {
@@ -2989,7 +3187,9 @@ local EquipmentConfig = {
     [100] = {
         --长矛8
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 40,
         Category = 6,
         --属性参数
         Attributes = {
@@ -3018,7 +3218,9 @@ local EquipmentConfig = {
     [101] = {
         --长矛9
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 41,
         Category = 6,
         --属性参数
         Attributes = {
@@ -3047,7 +3249,9 @@ local EquipmentConfig = {
     [102] = {
         --长矛10
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 42,
         Category = 6,
         --属性参数
         Attributes = {
@@ -3076,7 +3280,9 @@ local EquipmentConfig = {
     [103] = {
         --长矛11
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 43,
         Category = 6,
         --属性参数
         Attributes = {
@@ -3105,7 +3311,9 @@ local EquipmentConfig = {
     [104] = {
         --长矛12
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 44,
         Category = 6,
         --属性参数
         Attributes = {
@@ -3134,7 +3342,9 @@ local EquipmentConfig = {
     [105] = {
         --长矛13
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 45,
         Category = 6,
         --属性参数
         Attributes = {
@@ -3163,7 +3373,9 @@ local EquipmentConfig = {
     [106] = {
         --长矛14
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 46,
         Category = 6,
         --属性参数
         Attributes = {
@@ -3192,7 +3404,9 @@ local EquipmentConfig = {
     [107] = {
         --长矛15
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 47,
         Category = 6,
         --属性极
         Attributes = {
@@ -3221,7 +3435,9 @@ local EquipmentConfig = {
     [108] = {
         --长矛16
         TypeName = "Spear",
-        NickName = "Cloth",
+        NickName = "Top",
+        AssetName = "weapon_icon",
+        AssetIndex = 48,
         Category = 6,
         --属性参数
         Attributes = {

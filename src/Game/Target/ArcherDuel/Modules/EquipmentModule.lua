@@ -101,9 +101,14 @@ end
 --- 刷新图标
 ---@param IconUI 图标资源
 ---@param Index 图标索引
-function EquipmentModule:RefreshIcon(IconUI, Index)
+function EquipmentModule:RefreshIcon(IconUI, Equipment)
+    local EquipmentData = EquipmentConfig[Equipment.ID]
+    local AssetName = EquipmentData.AssetName or "weapon_icon"
+    local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
     local ElementId = System:GetScriptParentID()
-    local IconId = CustomProperty:GetCustomProperty(ElementId, "1", CustomProperty.PROPERTY_TYPE.Image)
+
+    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+    local IconId = IconIdArray[AssetIndex]
     UI:SetImage({IconUI}, IconId, true)
 end
 
@@ -139,7 +144,7 @@ function EquipmentModule:RegreshBodyUI()
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
             end
             --图标
-            self:RefreshIcon(EquipmentSlot.Image)
+            self:RefreshIcon(EquipmentSlot.Image, Equipment)
         else
             --没有装备则清空
             UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress}, false)
@@ -258,8 +263,7 @@ function EquipmentModule:RefreshListUI(Category)
             table.insert(HideItems, EquippedUI)
         end
         --图标
-        self:RefreshIcon(IconUI)
-        
+        self:RefreshIcon(IconUI, Equipment)
         --UI显隐
         UI:SetTransparency(ShowItems, 1)
         UI:SetTransparency(HideItems, 0)
@@ -349,7 +353,7 @@ function EquipmentModule:OpenDetailView(Equipment)
 
     --武器图标
     UI:SetText({ DetailView.WeaponIcon.Level }, string.format("等级%d", Equipment.Level))
-    self:RefreshIcon(DetailView.WeaponIcon.Icon)
+    self:RefreshIcon(DetailView.WeaponIcon.Icon, Equipment)
 
     --装备属性信息
     UI:SetVisible({DetailView.AttributeIcon.ID},true)
