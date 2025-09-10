@@ -18,7 +18,6 @@ function TaskModule:LoadData()
 end
 
 function TaskModule:RefreshTaskUI()
-    Log:PrintDebug("TaskModule:LoadData")
     local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTask()
     local arr = {}
@@ -26,11 +25,6 @@ function TaskModule:RefreshTaskUI()
         table.insert(arr, v)
     end
     
-    Log:PrintDebug("排序前")
-    for k, v in pairs(arr) do
-        Log:PrintDebug("TaskModule:LoadData：" .. v.name)
-        Log:PrintDebug("TaskModule:LoadData:" .. v.state)
-    end
     -- 状态对应排序权重（数值越小越靠前）
     local state_sort_weight = {
         [taskMgr.Task.State.COMPLETED] = 1,
@@ -53,11 +47,6 @@ function TaskModule:RefreshTaskUI()
             return wa < wb
         end
     end)
-    Log:PrintDebug("排序后")
-    for k, v in pairs(arr) do
-        Log:PrintDebug("TaskModule:LoadData:" .. v.name)
-        Log:PrintDebug("TaskModule:LoadData:" .. v.state)
-    end
 
     local Task_Gap_All = {}
     for k, v in pairs(arr) do
