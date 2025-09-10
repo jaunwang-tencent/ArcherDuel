@@ -283,6 +283,8 @@ function LobbyModule:RefreshEquipmentData()
     local LockedEquipment = {}
     --已装备
     local HasUseEquipment = {}
+    --装备槽【六个部位】
+    local EquipmentSlot = {}
     --未装备
     local NotUseEquipment = {}
     --按类型分组且品质降序
@@ -302,8 +304,15 @@ function LobbyModule:RefreshEquipmentData()
             Equipment.Piece = Equipment.Piece - 1
         end
         if Equipment.Equipped then
+            --找到已装备的
+            local EquippedEquipment = EquipmentSlot[Equipment.Category]
+            if EquippedEquipment then
+                --卸下装备
+                EquippedEquipment.Equipped = false
+            end
             --已装备
             table.insert(HasUseEquipment, Equipment)
+            EquipmentSlot[Equipment.Category] = Equipment
         else
             --未装备
             if Equipment.Unlock then
@@ -327,6 +336,7 @@ function LobbyModule:RefreshEquipmentData()
     self.PlayerData.HasUseEquipment = HasUseEquipment
     self.PlayerData.NotUseEquipment = NotUseEquipment
     self.PlayerData.GroupByCategory = GroupByCategory
+    self.PlayerData.EquipmentSlot = EquipmentSlot
 end
 
 --- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】

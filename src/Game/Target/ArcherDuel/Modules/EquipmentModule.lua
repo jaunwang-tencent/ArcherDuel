@@ -36,6 +36,42 @@ local UpgradeConfig = {
 --- 打开
 ---@param PlayerData 玩家数据
 function EquipmentModule:Open(PlayerData)
+    --寄存玩家数据
+    self.PlayerData = PlayerData
+
+    --刷新UI
+    self:RefreshUI()
+
+    local EquipmentView = UIConfig.EquipmentView
+    --注册按钮事件
+    UI:RegisterPressed(EquipmentView.DetailView.Close, function()
+        self:CloseDetailView()
+    end)
+
+end
+
+--- 刷新
+---@param DeltaTime 时间戳
+function EquipmentModule:Update(DeltaTime)
+    
+end
+
+--- 关闭
+function EquipmentModule:Close()
+    --清空列表
+    local EquipmentView = UIConfig.EquipmentView
+    local ListView = EquipmentView and EquipmentView.ListView
+    UI:InitListView(ListView.TileView.ID, {})
+
+    --注销关闭按钮事件
+    UI:UnRegisterPressed(EquipmentView.DetailView.Close)
+
+    --清空玩家数据
+    self.PlayerData = nil
+end
+
+function EquipmentModule:RefreshUI()
+    local PlayerData = self.PlayerData
     local EquipmentView = UIConfig.EquipmentView
     local ListView = EquipmentView and EquipmentView.ListView
     --拿出全部装备
@@ -161,7 +197,6 @@ function EquipmentModule:Open(PlayerData)
         if Select then
             local ItemUI = UI:GetListViewItemUID(ListViewID, ItemIndex, TileView.Item.ID)
             if ItemData and ItemUI then
-                Log:PrintLog("11111111111111111111", ItemUI, ListViewID, ItemIndex)
                 --执行点击操作
                 self.SelectTarget = ItemData
                 --打开详情页面
@@ -170,33 +205,6 @@ function EquipmentModule:Open(PlayerData)
             UI:ClearListViewSelection(TileView.ID)
         end
     end)
-
-    --注册按钮事件
-    UI:RegisterPressed(EquipmentView.DetailView.Close, function()
-        self:CloseDetailView()
-    end)
-    --寄存玩家数据
-    self.PlayerData = PlayerData
-end
-
---- 刷新
----@param DeltaTime 时间戳
-function EquipmentModule:Update(DeltaTime)
-    
-end
-
---- 关闭
-function EquipmentModule:Close()
-    --清空列表
-    local EquipmentView = UIConfig.EquipmentView
-    local ListView = EquipmentView and EquipmentView.ListView
-    UI:InitListView(ListView.TileView.ID, {})
-
-    --注销关闭按钮事件
-    UI:UnRegisterPressed(EquipmentView.DetailView.Close)
-
-    --清空玩家数据
-    self.PlayerData = nil
 end
 
 --点击装备详情界面
@@ -317,27 +325,27 @@ function EquipmentModule:OpenDetailView(Equipment)
         if type(ItemView) == "table" then
             if ItemView.JumpButton then
                 --跳转按钮
-                UI:RegisterPressed(ItemView.JumpButton, function()
+                UI:RegisterClicked(ItemView.JumpButton, function()
                     self:OnObtain(Equipment)
                 end)
             end
             if ItemView.MaxLevelButton then
                 --已满级按钮，啥都不做，用于截获点击事件
-                UI:RegisterPressed(ItemView.MaxLevelButton, function() end)
+                UI:RegisterClicked(ItemView.MaxLevelButton, function() end)
             end
             if ItemView.EquippedButton then
                 --已装备按钮，啥都不做，用于截获点击事件
-                UI:RegisterPressed(ItemView.EquippedButton, function() end)
+                UI:RegisterClicked(ItemView.EquippedButton, function() end)
             end
             if ItemView.EquipableButton then
                 --可装备按钮
-                UI:RegisterPressed(ItemView.EquipableButton, function()
+                UI:RegisterClicked(ItemView.EquipableButton, function()
                     self:OnEquip(Equipment)
                 end)
             end
             if ItemView.UpgradeButton then
                 --可升级按钮
-                UI:RegisterPressed(ItemView.UpgradeButton, function()
+                UI:RegisterClicked(ItemView.UpgradeButton, function()
                     self:OnUpgrade(Equipment)
                 end)
             end
@@ -347,8 +355,6 @@ end
 
 --- 关闭详情页面
 function EquipmentModule:CloseDetailView()
-    Log:PrintLog("22222222222222222222")
-
     --关掉详情页面
     local EquipmentView = UIConfig.EquipmentView
     UI:SetVisible({EquipmentView.DetailView.ID}, false)
@@ -357,19 +363,19 @@ function EquipmentModule:CloseDetailView()
     for _, ItemView in pairs(EquipmentView.DetailView) do
         if type(ItemView) == "table" then
             if ItemView.JumpButton then
-                UI:UnRegisterPressed(ItemView.JumpButton)
+                UI:UnRegisterClicked(ItemView.JumpButton)
             end
             if ItemView.MaxLevelButton then
-                UI:UnRegisterPressed(ItemView.MaxLevelButton)
+                UI:UnRegisterClicked(ItemView.MaxLevelButton)
             end
             if ItemView.EquippedButton then
-                UI:UnRegisterPressed(ItemView.EquippedButton)
+                UI:UnRegisterClicked(ItemView.EquippedButton)
             end
             if ItemView.EquipableButton then
-                UI:UnRegisterPressed(ItemView.EquipableButton)
+                UI:UnRegisterClicked(ItemView.EquipableButton)
             end
             if ItemView.UpgradeButton then
-                UI:UnRegisterPressed(ItemView.UpgradeButton)
+                UI:UnRegisterClicked(ItemView.UpgradeButton)
             end
         end
     end
@@ -386,7 +392,20 @@ end
 --- 装备
 ---@param Equipment 装备
 function EquipmentModule:OnEquip(Equipment)
+    --装备
+    --拿到已装备
+    local EquipmentSlot = self.PlayerData.EquipmentSlot
+    local EquippedEquipment = EquipmentSlot[Equipment.Category]
+    if EquippedEquipment then
+        --卸下装备
+        EquippedEquipment.Equipped = false
+    end
+    Equipment.Equipped = true
+    --刷新数据
+    System:FireGameEvent(_GAME.Events.JumpModule, "EquipmentData")
     self:CloseDetailView()
+    --刷新UI
+    self:RefreshUI()
 end
 
 --- 升级
