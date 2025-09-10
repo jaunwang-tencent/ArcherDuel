@@ -233,9 +233,6 @@ function EquipmentModule:RefreshListUI(Category)
             if NeedUpgrade then
                 table.insert(ShowItems, UpgradableUI)
             end
-
-            --设置等级
-            UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
             --碎片相关
             local CurrentPiece = Equipment.Piece
             local Attributes = EquipmentConfig[Equipment.ID].Attributes
@@ -243,6 +240,8 @@ function EquipmentModule:RefreshListUI(Category)
             UI:SetProgressMaxValue({ProgressUI}, Upgrade.Piece)
             UI:SetProgressCurrentValue({ProgressUI}, CurrentPiece)
         end
+        --设置等级
+        UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
         --是否已装备
         local EquippedUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Equipped)
         if Equipment.Equipped then

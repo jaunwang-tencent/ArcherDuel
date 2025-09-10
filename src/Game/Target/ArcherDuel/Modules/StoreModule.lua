@@ -94,8 +94,8 @@ function StoreModule:BuyGood(ButtonInfo)
             Log:PrintLog("Last Diamond", BaseData.Diamond)
         else
             --看广告，在此弹出看广告弹窗【没有资源...】
+            Log:PrintLog("Last Diamond", BaseData.Diamond)
         end
-        Log:PrintLog("Last Diamond", BaseData.Diamond)
     elseif Consumables.Ad then
         --看广告
         Log:PrintLog("See Ad", Consumables.Ad)
