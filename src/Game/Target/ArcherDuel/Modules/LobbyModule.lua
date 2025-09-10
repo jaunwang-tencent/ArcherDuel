@@ -56,7 +56,7 @@ function LobbyModule:Close()
             UI:UnRegisterClicked(ViewData.Unselected)
         end
     end
-    
+
     --离开时保存数据
     self:SaveData()
 end
@@ -170,7 +170,6 @@ function LobbyModule:SaveData()
     local AllGoods = self.PlayerData.AllGoods
     local All_Goods_Table = MiscService:Table2JsonStr(AllGoods)
     Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table", All_Goods_Table)
-
 end
 
 --- 初始化视图

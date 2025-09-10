@@ -344,29 +344,41 @@ function EquipmentModule:OpenDetailView(Equipment)
     self:RefreshIcon(DetailView.WeaponIcon.Icon, Equipment)
 
     --装备属性信息
-    UI:SetVisible({DetailView.AttributeIcon.ID},true)
-    if Equipment.Category == 1 or Equipment.Category == 4 or Equipment.Category == 5 or Equipment.Category == 6 then
-        local num = Attributes.Attack + (Attributes.Growth*(Equipment.Level-1))
-        UI:SetText({EquipmentView.CurrentAttribute},tostring(num))--设置攻击力
-        UI:SetProgressCurrentValue({104178},(num/(Attributes.Attack + Attributes.Growth*(5 - Equipment.Level))*100))
-        UI:SetProgressCurrentValue({104177},(num/(Attributes.Attack + Attributes.Growth*(4 - Equipment.Level))*100))
-        UI:SetText({EquipmentView.EnhanceAttribute},tostring(num + Attributes.Growth))
-        UI:SetVisible({DetailView.AttributeIcon.AttackPower},true)
-    elseif Equipment.Category == 2 then
-        local num =Attributes.Heal+ (Attributes.Growth*(Equipment.Level-1))
-        UI:SetText({EquipmentView.CurrentAttribute},tostring(num))--设置生命值
-        UI:SetProgressCurrentValue({104178},(num/(Attributes.Heal + Attributes.Growth*(5 - Equipment.Level)))*100)
-        UI:SetProgressCurrentValue({104177},(num/(Attributes.Heal + Attributes.Growth*(4 - Equipment.Level)))*100)
-        UI:SetText({EquipmentView.EnhanceAttribute},tostring(num + Attributes.Growth))
-        UI:SetVisible({DetailView.AttributeIcon.AttributeIcon},true)
-    else
-        local num = Attributes.Accuracy+ (Attributes.Growth*(Equipment.Level-1))
-        UI:SetText({EquipmentView.CurrentAttribute},tostring(num))--设置准确度
-        UI:SetProgressCurrentValue({104178},(num/(Attributes.Accuracy + Attributes.Growth*(5 - Equipment.Level))*100))
-        UI:SetProgressCurrentValue({104177},(num/(Attributes.Accuracy + Attributes.Growth*(4 - Equipment.Level))*100))
-        UI:SetText({EquipmentView.EnhanceAttribute},tostring(num + Attributes.Growth))
-        UI:SetVisible({DetailView.AttributeIcon.Accuracy},true)
+    UI:SetVisible({DetailView.AttributeIcon.ID}, true)
+    UI:SetVisible({
+        DetailView.AttributeIcon.AttackPower,
+        DetailView.AttributeIcon.HealthPoints,
+        DetailView.AttributeIcon.Accuracy,
+    },false)
+    local AttributeValue, AttributeLabel
+    if Attributes.Attack > 0 then
+        --攻击
+        AttributeValue = Attributes.Attack
+        AttributeLabel = DetailView.AttributeIcon.AttackPower
+    elseif Attributes.Heal > 0 then
+        --防护
+        AttributeValue = Attributes.Heal
+        AttributeLabel = DetailView.AttributeIcon.HealthPoints
+    elseif Attributes.Accuracy > 0 then
+        --准度
+        AttributeValue = Attributes.Accuracy
+        AttributeLabel = DetailView.AttributeIcon.Accuracy
     end
+    if AttributeValue and AttributeLabel then
+        local Value = AttributeValue + (Attributes.Growth * (Equipment.Level - 1))
+        local CurrentProgress = Value / (AttributeValue + Attributes.Growth * (5 - Equipment.Level)) *100
+        local NextProgress = Value / (AttributeValue + Attributes.Growth* (4 - Equipment.Level)) * 100
+        --当前属性
+        UI:SetText({EquipmentView.CurrentAttribute}, tostring(Value))
+        --强化属性
+        UI:SetText({EquipmentView.EnhanceAttribute}, tostring(Value + Attributes.Growth))
+        --当前进度
+        UI:SetProgressCurrentValue({DetailView.UpgradeProgress.Current}, CurrentProgress)
+        --下一进度
+        UI:SetProgressCurrentValue({DetailView.UpgradeProgress.Next}, NextProgress)
+        UI:SetVisible({AttributeLabel},true)
+    end
+
     if Attributes.HeadShotIncrease ~= 0 then
         UI:SetVisible({DetailView.AttributeInfo.ID},true)
         UI:SetText({DetailView.AttributeInfo.Describe},"头部额外增伤")

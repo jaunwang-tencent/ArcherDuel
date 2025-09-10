@@ -258,6 +258,13 @@ local UIConfig = {
                 --攻击力
                 AttackPower = 101877
             },
+            --升级进度
+            UpgradeProgress = {
+                --当前进度
+                Current = 104178,
+                --下一进度
+                Next = 104177
+            },
             --武器图标
             WeaponIcon = {
                 ID = 104171,
