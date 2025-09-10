@@ -144,13 +144,15 @@ local UIConfig = {
             Axe = {
                 Label = 104679,
                 Image = 100538,
-                Progress = 104031
+                Progress = 104031,
+                EmptyImage = 110930
             },
             -- 长矛
             Spear = {
                 Label = 104680,
                 Image = 100537,
-                Progress = 104542
+                Progress = 104542,
+                EmptyImage = 110929
             }
         },
         --列表视图
@@ -480,11 +482,13 @@ local UIConfig = {
             Aex = {
                 Label = 104842,
                 Image = 100510,
+                EmptyImage = 110927
             },
             --投矛
             Spear = {
                 Label = 104841,
                 Image = 100511,
+                EmptyImage = 110928
             },
         },
         --居中视图
