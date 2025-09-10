@@ -165,6 +165,7 @@ local UIConfig = {
                 },
                 --眼镜
                 Glasses = {
+                    Category = 1,
                     --命中
                     Selected = 104036,
                     --未命中
@@ -172,6 +173,7 @@ local UIConfig = {
                 },
                 --上衣
                 Coat = {
+                    Category = 2,
                     --命中
                     Selected = 104037,
                     --未命中
@@ -179,6 +181,7 @@ local UIConfig = {
                 },
                 --发型
                 Hair = {
+                    Category = 3,
                     --命中
                     Selected = 104038,
                     --未命中
@@ -186,6 +189,7 @@ local UIConfig = {
                 },
                 --弓箭
                 Bow = {
+                    Category = 4,
                     --命中
                     Selected = 104039,
                     --未命中
@@ -193,6 +197,7 @@ local UIConfig = {
                 },
                 --手斧
                 Axe = {
+                    Category = 5,
                     --命中
                     Selected = 104040,
                     --未命中
@@ -200,6 +205,7 @@ local UIConfig = {
                 },
                 --长矛
                 Spear = {
+                    Category = 6,
                     --命中
                     Selected = 104041,
                     --未命中

@@ -39,15 +39,33 @@ function EquipmentModule:Open(PlayerData)
     --寄存玩家数据
     self.PlayerData = PlayerData
 
-    --刷新UI
-    self:RefreshUI()
-
     local EquipmentView = UIConfig.EquipmentView
     --注册按钮事件
     UI:RegisterPressed(EquipmentView.DetailView.Close, function()
         self:CloseDetailView()
     end)
+    --过滤栏
+    local ListView = EquipmentView and EquipmentView.ListView
+    local TableBar = ListView and ListView.TableBar
+    if TableBar then
+        for _, Filter in pairs(TableBar) do
+            if type(Filter) == "table" and Filter.Unselected then
+                UI:RegisterClicked(Filter.Unselected, function()
+                    if self.CurrentSelected then
+                        UI:SetVisible({self.CurrentSelected}, false)
+                    end
+                    UI:SetVisible({Filter.Selected}, true)
+                    self.CurrentSelected = Filter.Selected
+                    self:RefreshUI(Filter.Category)
+                end)
+            end
+        end
+    end
 
+    --刷新UI
+    local AllTableBar = TableBar.All
+    self.CurrentSelected = AllTableBar.Selected
+    self:RefreshUI(AllTableBar.Category)
 end
 
 --- 刷新
@@ -58,11 +76,21 @@ end
 
 --- 关闭
 function EquipmentModule:Close()
+    self.CurrentSelected = nil
     --清空列表
     local EquipmentView = UIConfig.EquipmentView
     local ListView = EquipmentView and EquipmentView.ListView
     UI:InitListView(ListView.TileView.ID, {})
 
+    --过滤栏
+    local TableBar = ListView and ListView.TableBar
+    if TableBar then
+        for _, Filter in pairs(TableBar) do
+            if type(Filter) == "table" and Filter.Unselected then
+                UI:UnRegisterClicked(Filter.Unselected)
+            end
+        end
+    end
     --注销关闭按钮事件
     UI:UnRegisterPressed(EquipmentView.DetailView.Close)
 
@@ -70,26 +98,10 @@ function EquipmentModule:Close()
     self.PlayerData = nil
 end
 
-function EquipmentModule:RefreshUI()
+function EquipmentModule:RefreshUI(Category)
     local EquipmentView = UIConfig.EquipmentView
     local ListView = EquipmentView and EquipmentView.ListView
     local PlayerData = self.PlayerData
-    --拿出全部装备
-    local AllEquipment = PlayerData.AllEquipment
-    local HasUseEquipment = PlayerData.HasUseEquipment
-    local HasUseCount = #HasUseEquipment
-    local NotUseEquipment = PlayerData.NotUseEquipment
-    local NotUseCount = #NotUseEquipment
-    local LockedEquipment = PlayerData.LockedEquipment
-
-    --装备数据
-    local ItemDataList = {}
-    local Index = 1
-    for _, _ in pairs(AllEquipment) do
-        ItemDataList[Index] = { Index = Index }
-        Index = Index + 1
-    end
-
     --角色身上的装备
     local EquipmentSlotConfig = {
         [1] = EquipmentView.LeftView.Glasses,
@@ -99,7 +111,8 @@ function EquipmentModule:RefreshUI()
         [5] = EquipmentView.RightView.Axe,
         [6] = EquipmentView.RightView.Spear,
     }
-    for _, Equipment in pairs(HasUseEquipment) do
+    local BodyEquipment = self.PlayerData.BodyEquipment
+    for _, Equipment in pairs(BodyEquipment) do
         local EquipmentSlot = EquipmentSlotConfig[Equipment.Category]
         --设置等级
         UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
@@ -119,6 +132,47 @@ function EquipmentModule:RefreshUI()
         local ElementId = System:GetScriptParentID()
         local IconId = CustomProperty:GetCustomProperty(ElementId, "1", CustomProperty.PROPERTY_TYPE.Image)
         UI:SetImage({EquipmentSlot.Image}, IconId, true)
+    end
+
+    --装备列表
+    --拿出全部装备
+    local EquipmentGroup
+    if Category then
+        EquipmentGroup = PlayerData.GroupByCategory[Category]
+    end
+    if not EquipmentGroup then
+        EquipmentGroup = PlayerData.AllEquipment
+    end
+    --未解锁装备
+    local LockedEquipment = {}
+    --已装备
+    local HasUseEquipment = {}
+    --未装备
+    local NotUseEquipment = {}
+    for _, Equipment in pairs(EquipmentGroup) do
+        if Equipment.Equipped then
+            --已装备
+            table.insert(HasUseEquipment, Equipment)
+        else
+            --未装备
+            if Equipment.Unlock then
+                --已解锁
+                table.insert(NotUseEquipment, Equipment)
+            else
+                --未解锁
+                table.insert(LockedEquipment, Equipment)
+            end
+        end
+    end
+    local HasUseCount = #HasUseEquipment
+    local NotUseCount = #NotUseEquipment
+
+    --装备数据
+    local ItemDataList = {}
+    local Index = 1
+    for _, _ in pairs(EquipmentGroup) do
+        ItemDataList[Index] = { Index = Index }
+        Index = Index + 1
     end
 
     --初始化列表
@@ -393,8 +447,8 @@ end
 ---@param Equipment 装备
 function EquipmentModule:OnEquip(Equipment)
     --拿到已装备
-    local EquipmentSlot = self.PlayerData.EquipmentSlot
-    local EquippedEquipment = EquipmentSlot[Equipment.Category]
+    local BodyEquipment = self.PlayerData.BodyEquipment
+    local EquippedEquipment = BodyEquipment[Equipment.Category]
     if EquippedEquipment then
         --卸下装备
         EquippedEquipment.Equipped = false

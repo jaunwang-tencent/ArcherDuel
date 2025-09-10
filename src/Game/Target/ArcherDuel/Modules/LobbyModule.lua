@@ -45,6 +45,18 @@ end
 
 --- 关闭
 function LobbyModule:Close()
+    --菜单栏
+    local TitleBar = UIConfig.MainView.TitleBar
+    --打开主菜单
+    UI:SetVisible({TitleBar.ID}, false)
+
+    --注册菜单事件
+    for _, ViewData in pairs(TitleBar) do
+        if type(ViewData) == "table" and ViewData.Unselected then
+            UI:UnRegisterClicked(ViewData.Unselected)
+        end
+    end
+    
     --离开时保存数据
     self:SaveData()
 end
@@ -171,7 +183,7 @@ function LobbyModule:InitView()
     --注册菜单事件
     for ViewName, ViewData in pairs(TitleBar) do
         if type(ViewData) == "table" and ViewData.Unselected then
-            UI:RegisterPressed(ViewData.Unselected, function()
+            UI:RegisterClicked(ViewData.Unselected, function()
                 self:SwitchView(ViewName)
             end)
         end
@@ -279,16 +291,10 @@ function LobbyModule:RefreshEquipmentData()
     Log:PrintLog("RefreshEquipmentData")
     local AllEquipment = self.PlayerData.AllEquipment
     --2.2、装备分类
-    --未解锁装备
-    local LockedEquipment = {}
-    --已装备
-    local HasUseEquipment = {}
-    --未装备
-    local NotUseEquipment = {}
     --按类型分组且品质降序
     local GroupByCategory = {}
     --装备槽【六个部位】
-    local EquipmentSlot = {}
+    local BodyEquipment = {}
     for _, Equipment in pairs(AllEquipment) do
         --按种类分类
         local Group = GroupByCategory[Equipment.Category]
@@ -303,25 +309,15 @@ function LobbyModule:RefreshEquipmentData()
             Equipment.Unlock = true
             Equipment.Piece = Equipment.Piece - 1
         end
+        --已装备数据
         if Equipment.Equipped then
             --找到已装备的
-            local EquippedEquipment = EquipmentSlot[Equipment.Category]
+            local EquippedEquipment = BodyEquipment[Equipment.Category]
             if EquippedEquipment then
                 --卸下装备
                 EquippedEquipment.Equipped = false
             end
-            --已装备
-            table.insert(HasUseEquipment, Equipment)
-            EquipmentSlot[Equipment.Category] = Equipment
-        else
-            --未装备
-            if Equipment.Unlock then
-                --已解锁
-                table.insert(NotUseEquipment, Equipment)
-            else
-                --未解锁
-                table.insert(LockedEquipment, Equipment)
-            end
+            BodyEquipment[Equipment.Category] = Equipment
         end
     end
     --按品质排序
@@ -332,11 +328,8 @@ function LobbyModule:RefreshEquipmentData()
             return LHSA.Grade < RHSA.Grade
         end)
     end
-    self.PlayerData.LockedEquipment = LockedEquipment
-    self.PlayerData.HasUseEquipment = HasUseEquipment
-    self.PlayerData.NotUseEquipment = NotUseEquipment
     self.PlayerData.GroupByCategory = GroupByCategory
-    self.PlayerData.EquipmentSlot = EquipmentSlot
+    self.PlayerData.BodyEquipment = BodyEquipment
 end
 
 --- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】
