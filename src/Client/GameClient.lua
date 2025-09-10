@@ -1,6 +1,7 @@
 ﻿local GameClient = {}
 --初始化目标游戏
 require "Game.Target.ArcherDuel.Init"
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
 function GameClient:Init()
     Log:PrintLog("[GameClient:Init]")
@@ -20,6 +21,8 @@ function GameClient:OnStart()
 
     local TaskManager = require "Game.Framework.Task.Task"
     TaskManager:Init()
+    
+    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.LoginGame)
 end
 
 -- 游戏更新

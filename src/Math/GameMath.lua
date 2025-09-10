@@ -6,8 +6,6 @@ math.randomseed(TimerManager:GetClock()) -- 设置随机数种子
 function GameMath:Init()
     Log:PrintLog("[GameMath:Init]")
 
-    local list = CustomProperty:GetCustomProperty(System:GetScriptParentID(), "Avatar", CustomProperty.PROPERTY_TYPE.Image)
-    
     -- 构造武器类型表
     self.weaponMap = {}
     for i, v in pairs(UGCS.Target.ArcherDuel.Config.WeaponConfig) do

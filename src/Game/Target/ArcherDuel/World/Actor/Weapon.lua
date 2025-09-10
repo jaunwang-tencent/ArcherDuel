@@ -1,3 +1,4 @@
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
 --武器
 local Weapon = UGCS.RTTI.Class("Weapon", UGCS.Framework.Actor)
 
@@ -629,6 +630,7 @@ function Weapon:HitTarget(ElementID, Result)
             if Result.HitBody == Character.SOCKET_NAME.Head and self.OwnerPlayer:IsControlled() then
                 --本人命中他人时，爆头提示
                 self.CurrentScene:HeadShot()
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.HeadShot)
             end
             local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
             if ElementID == NextTurnPlayer.UID then
