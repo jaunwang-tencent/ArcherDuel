@@ -1,4 +1,3 @@
-
 -- 装备配置
 local EquipmentConfig = {
     [1] = {
@@ -746,7 +745,7 @@ local EquipmentConfig = {
         --属性参数
         Attributes = {
             -- 生命值
-            Heal = 160 , --提高基础值
+            Heal = 160,--提高基础值
             -- 攻击力
             Attack = 0,
             -- 头部额外增伤
@@ -766,7 +765,7 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 30 , --提高成长值（310< 340 ,差值为30）
+            Growth = 30,--提高成长值（310< 340 ,差值为30）
         },
     },
     [22] = {
@@ -820,7 +819,7 @@ local EquipmentConfig = {
         --属性参数
         Attributes = {
             -- 生命值
-            Heal = 160 , --提高基础值
+            Heal = 160,--提高基础值
             -- 攻击力
             Attack = 0,
             -- 头部额外增伤
@@ -840,7 +839,7 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 30 , --提高成长值（310< 340 ,差值为30）
+            Growth = 30,--提高成长值（310< 340 ,差值为30）
         },
     },
     [24] = {
@@ -894,7 +893,7 @@ local EquipmentConfig = {
         --属性参数
         Attributes = {
             -- 生命值
-            Heal = 120 , 
+            Heal = 120,
             -- 攻击力
             Attack = 0,
             -- 头部额外增伤
@@ -914,7 +913,7 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 50 , 
+            Growth = 50,
         },
     },
     [26] = {
@@ -968,7 +967,7 @@ local EquipmentConfig = {
         --属性参数
         Attributes = {
             -- 生命值
-            Heal = 130 , --提高基础值
+            Heal = 130,--提高基础值
             -- 攻击力
             Attack = 0,
             -- 头部额外增伤
@@ -988,7 +987,7 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 45 , --提高成长值（310< 340 ,差值为30）
+            Growth = 45,--提高成长值（310< 340 ,差值为30）
         },
     },
     [28] = {
@@ -1042,7 +1041,7 @@ local EquipmentConfig = {
         --属性参数
         Attributes = {
             -- 生命值
-            Heal = 170 , --提高基础值
+            Heal = 170,--提高基础值
             -- 攻击力
             Attack = 0,
             -- 头部额外增伤
@@ -1062,7 +1061,7 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 25 , --提高成长值（310< 340 ,差值为30）
+            Growth = 25,--提高成长值（310< 340 ,差值为30）
         },
     },
     [30] = {
@@ -1116,7 +1115,7 @@ local EquipmentConfig = {
         --属性参数
         Attributes = {
             -- 生命值
-            Heal = 190 , --提高基础值
+            Heal = 190,--提高基础值
             -- 攻击力
             Attack =0,
             -- 头部额外增伤
@@ -2069,6 +2068,10 @@ local EquipmentConfig = {
         --下装20
         TypeName = "Bottoms",
         NickName = "海岛风情下装",
+        --资产名称
+        AssetName = "Bottoms",
+        --资产序列
+        AssetIndex = 20,
         --换装ID
         EquipID = 520233,
         Category = 3,
@@ -2175,7 +2178,7 @@ local EquipmentConfig = {
     [60] = {
         --下装23
         TypeName = "Bottoms",
-        NickName = "青春筑梦下装",  
+        NickName = "青春筑梦下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列
@@ -2209,1686 +2212,1686 @@ local EquipmentConfig = {
             Growth = 1,  -- 降低成长值 (105 < 110, 差值为5)
         },
     },
-        [61] = {
-            --弓1
-            TypeName = "Bow",
-            NickName = "木弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 1,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 43,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 1,
-                -- 成长值
-                Growth = 11,
-            },
+    [61] = {
+        --弓1
+        TypeName = "Bow",
+        NickName = "木弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 1,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 43,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 11,
         },
-        [62] = {
-            --弓2
-            TypeName = "Bow",
-            NickName = "铁弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 2,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [62] = {
+        --弓2
+        TypeName = "Bow",
+        NickName = "铁弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 2,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [63] = {
-            --弓3
-            TypeName = "Bow",
-            NickName = "合金弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 3,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [63] = {
+        --弓3
+        TypeName = "Bow",
+        NickName = "合金弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 3,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [64] = {
-            --弓4
-            TypeName = "Bow",
-            NickName = "黑铁弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 4,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 1,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [64] = {
+        --弓4
+        TypeName = "Bow",
+        NickName = "黑铁弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 4,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 1,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [65] = {
-            --弓5
-            TypeName = "Bow",
-            NickName = "钢骨弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 5,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 53,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [65] = {
+        --弓5
+        TypeName = "Bow",
+        NickName = "钢骨弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 5,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 53,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 12,
         },
-        [66] = {
-            --弓6
-            TypeName = "Bow",
-            NickName = "苍纹弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 6,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 49,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [66] = {
+        --弓6
+        TypeName = "Bow",
+        NickName = "苍纹弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 6,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 49,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 14,
         },
-        [67] = {
-            --弓7
-            TypeName = "Bow",
-            NickName = "青羽弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 7,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 51,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 1,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 13,
-            },
+    },
+    [67] = {
+        --弓7
+        TypeName = "Bow",
+        NickName = "青羽弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 7,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 51,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 1,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 13,
         },
-        [68] = {
-            --弓8
-            TypeName = "Bow",
-            NickName = "金翎弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 8,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 52,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 13,
-            },
+    },
+    [68] = {
+        --弓8
+        TypeName = "Bow",
+        NickName = "金翎弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 8,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 52,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 13,
         },
-        [69] = {
-            --弓9
-            TypeName = "Bow",
-            NickName = "穿云弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 9,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 59,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [69] = {
+        --弓9
+        TypeName = "Bow",
+        NickName = "穿云弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 9,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 59,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [70] = {
-            --弓10
-            TypeName = "Bow",
-            NickName = "落月弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 10,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 57,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [70] = {
+        --弓10
+        TypeName = "Bow",
+        NickName = "落月弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 10,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 57,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-        [71] = {
-            --弓11
-            TypeName = "Bow",
-            NickName = "裂空弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 11,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 55,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 2,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 16,
-            },
+    },
+    [71] = {
+        --弓11
+        TypeName = "Bow",
+        NickName = "裂空弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 11,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 55,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 2,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 16,
         },
-        [72] = {
-            --弓12
-            TypeName = "Bow",
-            NickName = "星羽弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 12,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 58,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [72] = {
+        --弓12
+        TypeName = "Bow",
+        NickName = "星羽弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 12,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 58,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [73] = {
-            --弓13
-            TypeName = "Bow",
-            NickName = "风吟弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 13,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 60,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [73] = {
+        --弓13
+        TypeName = "Bow",
+        NickName = "风吟弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 13,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 60,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [74] = {
-            --弓14
-            TypeName = "Bow",
-            NickName = "逐日弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 14,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 56,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 2,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [74] = {
+        --弓14
+        TypeName = "Bow",
+        NickName = "逐日弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 14,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 56,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 2,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-        [75] = {
-            --弓15
-            TypeName = "Bow",
-            NickName = "雷影弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 15,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 58,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [75] = {
+        --弓15
+        TypeName = "Bow",
+        NickName = "雷影弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 15,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 58,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [76] = {
-            --弓16
-            TypeName = "Bow",
-            NickName = "苍穹弓",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 16,
-            Category = 4,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 57,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [76] = {
+        --弓16
+        TypeName = "Bow",
+        NickName = "苍穹弓",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 16,
+        Category = 4,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 57,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-        
-        [77] = {
-            --斧头1
-            TypeName = "Axe",
-            NickName = "木斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 33,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 43,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 1,
-                -- 成长值
-                Growth = 11,
-            },
+    },
+    
+    [77] = {
+        --斧头1
+        TypeName = "Axe",
+        NickName = "木斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 33,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 43,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 11,
         },
-        [78] = {
-            --斧头2
-            TypeName = "Axe",
-            NickName = "铁斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 34,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [78] = {
+        --斧头2
+        TypeName = "Axe",
+        NickName = "铁斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 34,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [79] = {
-            --斧头3
-            TypeName = "Axe",
-            NickName = "钢斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 35,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [79] = {
+        --斧头3
+        TypeName = "Axe",
+        NickName = "钢斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 35,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [80] = {
-            --斧头4
-            TypeName = "Axe",
-            NickName = "精铁斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 36,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 1,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [80] = {
+        --斧头4
+        TypeName = "Axe",
+        NickName = "精铁斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 36,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 1,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [81] = {
-            --斧头5
-            TypeName = "Axe",
-            NickName = "玄铁斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 37,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 51,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 13,
-            },
+    },
+    [81] = {
+        --斧头5
+        TypeName = "Axe",
+        NickName = "玄铁斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 37,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 51,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 13,
         },
-        [82] = {
-            --斧头6
-            TypeName = "Axe",
-            NickName = "苍纹斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 38,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 49,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [82] = {
+        --斧头6
+        TypeName = "Axe",
+        NickName = "苍纹斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 38,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 49,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 14,
         },
-        [83] = {
-            --斧头7
-            TypeName = "Axe",
-            NickName = "赤焰斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 39,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 53,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 1,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [83] = {
+        --斧头7
+        TypeName = "Axe",
+        NickName = "赤焰斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 39,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 53,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 1,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 12,
         },
-        [84] = {
-            --斧头8
-            TypeName = "Axe",
-            NickName = "裂岩斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 40,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 52,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 13,
-            },
+    },
+    [84] = {
+        --斧头8
+        TypeName = "Axe",
+        NickName = "裂岩斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 40,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 52,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 13,
         },
-        [85] = {
-            --斧头9
-            TypeName = "Axe",
-            NickName = "雷纹斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 41,
-            Category = 5,   
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 55,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [85] = {
+        --斧头9
+        TypeName = "Axe",
+        NickName = "雷纹斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 41,
+        Category = 5,   
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 55,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-        [86] = {
-            --斧头10
-            TypeName = "Axe",
-            NickName = "金鳞斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 42,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 57,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [86] = {
+        --斧头10
+        TypeName = "Axe",
+        NickName = "金鳞斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 42,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 57,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [87] = {
-            --斧头11
-            TypeName = "Axe",
-            NickName = "苍穹斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 43,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 53,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 2,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 16,
-            },
+    },
+    [87] = {
+        --斧头11
+        TypeName = "Axe",
+        NickName = "苍穹斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 43,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 53,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 2,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 16,
         },
-        [88] = {
-            --斧头12
-            TypeName = "Axe",
-            NickName = "血刃斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 44,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 54,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [88] = {
+        --斧头12
+        TypeName = "Axe",
+        NickName = "血刃斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 44,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 54,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-        [89] = {
-            --斧头13
-            TypeName = "Axe",
-            NickName = "玄冰斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 45,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 56,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [89] = {
+        --斧头13
+        TypeName = "Axe",
+        NickName = "玄冰斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 45,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 56,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [90] = {
-            --斧头14
-            TypeName = "Axe",
-            NickName = "陨铁斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 46,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 52,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 2,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 16,
-            },
+    },
+    [90] = {
+        --斧头14
+        TypeName = "Axe",
+        NickName = "陨铁斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 46,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 52,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 2,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 16,
         },
-        [91] = {
-            --斧头15
-            TypeName = "Axe",
-            NickName = "金雷斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 47,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 55,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [91] = {
+        --斧头15
+        TypeName = "Axe",
+        NickName = "金雷斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 47,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 55,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-        [92] = {
-            --斧头16
-            TypeName = "Axe",
-            NickName = "裂地斧",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 48,
-            Category = 5,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 58,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 13,
-            },
+    },
+    [92] = {
+        --斧头16
+        TypeName = "Axe",
+        NickName = "裂地斧",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 48,
+        Category = 5,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 58,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 13,
         },
-        [93] = {
-            --长矛1
-            TypeName = "Spear",
-            NickName = "木矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 17,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 43,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 1,
-                -- 成长值
-                Growth = 11,
-            },
+    },
+    [93] = {
+        --长矛1
+        TypeName = "Spear",
+        NickName = "木矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 17,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 43,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 1,
+            -- 成长值
+            Growth = 11,
         },
-        [94] = {
-            --长矛2
-            TypeName = "Spear",
-            NickName = "精铁矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 18,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [94] = {
+        --长矛2
+        TypeName = "Spear",
+        NickName = "精铁矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 18,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [95] = {
-            --长矛3
-            TypeName = "Spear",
-            NickName = "合金矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 19,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [95] = {
+        --长矛3
+        TypeName = "Spear",
+        NickName = "合金矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 19,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [96] = {
-            --长矛4
-            TypeName = "Spear",
-            NickName = "苍纹矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 20,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 47,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 1,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 2,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [96] = {
+        --长矛4
+        TypeName = "Spear",
+        NickName = "苍纹矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 20,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 47,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 1,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 2,
+            -- 成长值
+            Growth = 12,
         },
-        [97] = {
-            --长矛5
-            TypeName = "Spear",
-            NickName = "金棱矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 21,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 53,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 12,
-            },
+    },
+    [97] = {
+        --长矛5
+        TypeName = "Spear",
+        NickName = "金棱矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 21,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 53,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 12,
         },
-        [98] = {
-            --长矛6
-            TypeName = "Spear",
-            NickName = "蓝锋矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 22,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 49,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [98] = {
+        --长矛6
+        TypeName = "Spear",
+        NickName = "蓝锋矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 22,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 49,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 14,
         },
-        [99] = {
-            --长矛7
-            TypeName = "Spear",
-            NickName = "赤晶战矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 23,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 51,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 1,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 13,
-            },
+    },
+    [99] = {
+        --长矛7
+        TypeName = "Spear",
+        NickName = "赤晶战矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 23,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 51,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 1,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 13,
         },
-        [100] = {
-            --长矛8
-            TypeName = "Spear",
-            NickName = "幻蓝晶矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 24,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 52,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 3,
-                -- 成长值
-                Growth = 13,
-            },
+    },
+    [100] = {
+        --长矛8
+        TypeName = "Spear",
+        NickName = "幻蓝晶矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 24,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 52,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 3,
+            -- 成长值
+            Growth = 13,
         },
-        [101] = {
-            --长矛9
-            TypeName = "Spear",
-            NickName = "惊涛裂穹矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 25,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 59,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [101] = {
+        --长矛9
+        TypeName = "Spear",
+        NickName = "惊涛裂穹矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 25,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 59,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [102] = {
-            --长矛10
-            TypeName = "Spear",
-            NickName = "金翎御灵矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 26,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 57,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [102] = {
+        --长矛10
+        TypeName = "Spear",
+        NickName = "金翎御灵矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 26,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 57,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-        [103] = {
-            --长矛11
-            TypeName = "Spear",
-            NickName = "赤焰焚天矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 27,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 55,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 2,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 16,
-            },
+    },
+    [103] = {
+        --长矛11
+        TypeName = "Spear",
+        NickName = "赤焰焚天矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 27,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 55,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 2,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 16,
         },
-        [104] = {
-            --长矛12
-            TypeName = "Spear",
-            NickName = "王权鎏金矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 28,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 58,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [104] = {
+        --长矛12
+        TypeName = "Spear",
+        NickName = "王权鎏金矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 28,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 58,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [105] = {
-            --长矛13
-            TypeName = "Spear",
-            NickName = "星语天穹矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 29,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 60,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [105] = {
+        --长矛13
+        TypeName = "Spear",
+        NickName = "星语天穹矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 29,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 60,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [106] = {
-            --长矛14
-            TypeName = "Spear",
-            NickName = "紫星裂空矛",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 30,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 56,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 2,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [106] = {
+        --长矛14
+        TypeName = "Spear",
+        NickName = "紫星裂空矛",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 30,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 56,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 2,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-        [107] = {
-            --长矛15
-            TypeName = "Spear",
-            NickName = "玄罡碎渊枪",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 31,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 58,
-                -- 头部额外增伤
-                HeadShotIncrease = 5,
-                -- 躯干额外增伤
-                BodyShotIncrease = 0,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 14,
-            },
+    },
+    [107] = {
+        --长矛15
+        TypeName = "Spear",
+        NickName = "玄罡碎渊枪",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 31,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 58,
+            -- 头部额外增伤
+            HeadShotIncrease = 5,
+            -- 躯干额外增伤
+            BodyShotIncrease = 0,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 14,
         },
-        [108] = {
-            --长矛16
-            TypeName = "Spear",
-            NickName = "星轨破界枪",
-            --资产名称
-            AssetName = "weapon_icon",
-            --资产序列
-            AssetIndex = 32,
-            Category = 6,
-            --属性参数
-            Attributes = {
-                -- 生命值
-                Heal = 0,
-                -- 攻击力
-                Attack = 57,
-                -- 头部额外增伤
-                HeadShotIncrease = 0,
-                -- 躯干额外增伤
-                BodyShotIncrease = 1,
-                --额外增伤
-                ShotIncrease = 0,
-                -- 头部额外减伤
-                HeadShotReduction = 0,
-                -- 躯干额外减伤
-                BodyShotReduction = 0,
-                -- 伤害减免
-                DamageReduction = 0,
-                -- 精准度
-                Accuracy = 0,
-                -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
-                Grade = 4,
-                -- 成长值
-                Growth = 15,
-            },
+    },
+    [108] = {
+        --长矛16
+        TypeName = "Spear",
+        NickName = "星轨破界枪",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 32,
+        Category = 6,
+        --属性参数
+        Attributes = {
+            -- 生命值
+            Heal = 0,
+            -- 攻击力
+            Attack = 57,
+            -- 头部额外增伤
+            HeadShotIncrease = 0,
+            -- 躯干额外增伤
+            BodyShotIncrease = 1,
+            --额外增伤
+            ShotIncrease = 0,
+            -- 头部额外减伤
+            HeadShotReduction = 0,
+            -- 躯干额外减伤
+            BodyShotReduction = 0,
+            -- 伤害减免
+            DamageReduction = 0,
+            -- 精准度
+            Accuracy = 0,
+            -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
+            Grade = 4,
+            -- 成长值
+            Growth = 15,
         },
-    }
+    },
+}
 return EquipmentConfig

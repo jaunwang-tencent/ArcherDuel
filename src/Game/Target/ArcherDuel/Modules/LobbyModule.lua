@@ -23,8 +23,11 @@ local ArchiveConfig = {
     "Rank",                     --段位
     "GoldBox",                  --金宝箱
     "SilverBox",                --银宝箱
+    "NormalBox",                --普通宝箱
     "Daily_Progress",
     "Player_BattlePoints_Num",  --门票
+    "Player_TaskExp_Num",       --每日任务经验
+    "Player_CollectTask_Num",   --每日领取任务，按位来标记任务是否已领取
 }
 
 --- 打开
@@ -56,7 +59,7 @@ function LobbyModule:Close()
             UI:UnRegisterClicked(ViewData.Unselected)
         end
     end
-    
+
     --离开时保存数据
     self:SaveData()
 end
@@ -107,7 +110,7 @@ function LobbyModule:LoadData()
         if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey) then
             Data = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey)
         else
-            if Index == 2 or Index == 3 or Index == 8 or Index == 9 then
+            if Index == 2 or Index == 3 or Index == 8 or Index == 9 or Index == 20 or Index == 21 then
                 Data = 0
             else
                 Data = 1
@@ -118,7 +121,7 @@ function LobbyModule:LoadData()
         BaseData[ArchiveKey] = Data
     end
     --测试【砖石，用来购买商品】
-    BaseData.Diamond = 555555
+    --BaseData.Diamond = 555555
     self.PlayerData.BaseData = BaseData
 
     --2、装备数据
@@ -170,7 +173,6 @@ function LobbyModule:SaveData()
     local AllGoods = self.PlayerData.AllGoods
     local All_Goods_Table = MiscService:Table2JsonStr(AllGoods)
     Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table", All_Goods_Table)
-
 end
 
 --- 初始化视图
@@ -278,7 +280,7 @@ function LobbyModule:DefaultEquipmentData()
             Equipped = HasInit,             --是否装备
         }
         if HasInit then
-            Equipment.Piece = 10000
+            Equipment.Piece = 50
             Equipment.Level = 3
         end
         AllEquipment[ID] = Equipment
@@ -488,7 +490,7 @@ function LobbyModule:DefaultStoreData()
             --商品
             Goods = {
                 --获得砖石
-                Diamond = 60
+                Diamond = 600
             }
         }
     }
@@ -536,12 +538,28 @@ function LobbyModule:RefreshStoreData()
     
 end
 
+--- 刷新图标
+---@param IconUI 图标资源
+---@param AssetName 资产名称
+---@param AssetIndex 资产索引
+function LobbyModule:RefreshIcon(IconUI, AssetName, AssetIndex)
+    local ElementId = System:GetScriptParentID()
+
+    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+    local IconId = IconIdArray[AssetIndex]
+    UI:SetImage({IconUI}, IconId, true)
+end
+
+
 --- 刷新通用资源栏
 function LobbyModule:RefreshGeneralResourceBar()
     local MainView = UIConfig.MainView
     local GeneralResourceBar = MainView and MainView.GeneralResourceBar
     if GeneralResourceBar then
         local BaseData = self.PlayerData.BaseData
+        --玩家图标
+        --目前API侧无法读取玩家图标，暂时使用这个
+        self:RefreshIcon(GeneralResourceBar.PlayerIcon, "avatar", 1)
         UI:SetText({GeneralResourceBar.Rank.Label}, tostring(BaseData.Rank))
         UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(BaseData.Coin))
         UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))

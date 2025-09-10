@@ -45,26 +45,11 @@ function FightModule:Open(PlayerData)
         self:OnRank()
     end)
 
-    local function getLevelByScore(levels, score)
-        -- 假设 levels 已按照 base_score 升序排列
-        local prev_level = levels[1]
-        for i = 2, #levels do
-            local level = levels[i]
-            if score < level.base_score then
-                -- 之前的等级就是当前等级
-                return prev_level
-            end
-            prev_level = level
-        end
-        -- 积分超过所有等级基础积分，返回最高等级
-        return levels[#levels]
-    end
-
     local Rank = CenterView and CenterView.Rank
     if Rank then
         local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "RankIconList", CustomProperty.PROPERTY_TYPE.Image)
         local BattlePoints = PlayerData.BaseData["Player_BattlePoints_Num"]
-        local level = getLevelByScore(RankInfoConfig, BattlePoints)
+        local level = _GAME.GameUtils.GetRankLevelByScore(BattlePoints)
         if level.icon and list[level.icon] then
             UI:SetImage({Rank.Image}, list[level.icon], true)
         end
@@ -131,16 +116,18 @@ function FightModule:RegreshBodyUI()
         [6] = HomeView.RightView.Spear,
     }
     local BodyEquipment = PlayerData.BodyEquipment
-    for Category, EquipmentSlot in pairs(EquipmentSlotConfig) do
+    for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
         local Equipment = BodyEquipment[Category]
         if Equipment then
             --设置等级
             UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
             --图标
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
+            UI:SetVisible({EquipmentSlot.EmptyImage}, false)
         else
             --没有装备则清空
-            UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress, EquipmentSlot.Image}, false)
+            UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Image}, false)
+            UI:SetVisible({EquipmentSlot.EmptyImage}, true)
         end
     end
 end

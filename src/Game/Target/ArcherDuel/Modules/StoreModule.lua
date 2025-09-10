@@ -50,6 +50,10 @@ function StoreModule:Open(PlayerData)
 
     --寄存玩家数据
     self.PlayerData = PlayerData
+
+    UI:RegisterClicked(110962, function ()
+        self:CloseBox()
+    end)
 end
 
 --- 刷新
@@ -65,6 +69,7 @@ function StoreModule:Close()
     for _, ButtonInfo in pairs(self.ButtonInfos) do
         UI:UnRegisterPressed(ButtonInfo.ButtonID)
     end
+    UI:UnRegisterClicked(110962)
     --清除玩家数据
     self.ScrollItems = nil
     self.ButtonInfos = nil
@@ -94,11 +99,13 @@ function StoreModule:BuyGood(ButtonInfo)
             Log:PrintLog("Last Diamond", BaseData.Diamond)
         else
             --看广告，在此弹出看广告弹窗【没有资源...】
+            Log:PrintLog("Last Diamond", BaseData.Diamond)
         end
-        Log:PrintLog("Last Diamond", BaseData.Diamond)
     elseif Consumables.Ad then
         --看广告
         Log:PrintLog("See Ad", Consumables.Ad)
+        --不看广告了，直接获得物品
+        self:GainGoods(Goods)
     else
         --不可购买
         Log:PrintLog("Cant Buy", ButtonInfo.ButtonID)
@@ -136,6 +143,45 @@ function StoreModule:GainGoods(Goods)
         BaseData.Diamond = BaseData.Diamond + Goods.Diamond
         System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
     end
+end
+
+--- 打开宝箱
+---@param boxId 宝箱Id
+function StoreModule:OpenBox(boxId)
+    local ElementId = System:GetScriptParentID()
+
+    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+    local equipIconUIs = {110966,110957,110956}
+    local rewards = _GAME.GameUtils.OpenBoxReward(boxId)
+    for i, v in ipairs(rewards) do
+        local EquipmentData = EquipmentConfig[v]
+        local AssetName = EquipmentData.AssetName or "weapon_icon"
+        local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
+        local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+        local IconId = IconIdArray[AssetIndex]
+        UI:SetImage({equipIconUIs[i]}, IconId, true)
+        -- local IconBGArray = CustomProperty:GetCustomPropertyArray(ElementId, "", CustomProperty.PROPERTY_TYPE.Image)
+        -- UI:SetImage({IconUI}, IconBGArray[EquipmentData.Attributes.Grade], true)
+    end
+
+    UI:SetVisible({110963},true) -- 打开宝箱UI
+    UI:SetVisible({110962,110965,110959},false)
+    TimerManager:AddTimer(2.3,function ()
+        UI:SetVisible(equipIconUIs,true)
+        for i, v in ipairs(equipIconUIs) do
+            UI:PlayUIAnimation(v,1,0)
+        end
+    end)
+    TimerManager:AddTimer(3,function ()
+        UI:EffectPausePlay(110964)
+        UI:SetVisible({110962,110965,110959},true)
+    end)
+
+    return rewards
+end
+
+function StoreModule:CloseBox()
+    UI:SetVisible({110963},false)
 end
 
 return StoreModule

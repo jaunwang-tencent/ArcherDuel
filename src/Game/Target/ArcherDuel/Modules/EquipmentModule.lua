@@ -60,7 +60,12 @@ function EquipmentModule:Close()
     --过滤栏
     local TableBar = ListView and ListView.TableBar
     if TableBar then
-        for _, Filter in pairs(TableBar) do
+        for Type, Filter in pairs(TableBar) do
+            if Filter.Selected and Type == "All" then
+                UI:SetVisible({Filter.Selected}, true)
+            else
+                UI:SetVisible({Filter.Selected}, false)
+            end
             if type(Filter) == "table" and Filter.Unselected then
                 UI:UnRegisterClicked(Filter.Unselected)
             end
@@ -101,7 +106,7 @@ function EquipmentModule:RegreshBodyUI()
         [6] = EquipmentView.RightView.Spear,
     }
     local BodyEquipment = PlayerData.BodyEquipment
-    for Category, EquipmentSlot in pairs(EquipmentSlotConfig) do
+    for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
         local Equipment = BodyEquipment[Category]
         if Equipment then
             --设置等级
@@ -120,9 +125,11 @@ function EquipmentModule:RegreshBodyUI()
             end
             --图标
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
+            UI:SetVisible({EquipmentSlot.EmptyImage}, false)
         else
             --没有装备则清空
             UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress, EquipmentSlot.Image}, false)
+            UI:SetVisible({EquipmentSlot.EmptyImage}, true)
         end
     end
 end
@@ -201,16 +208,19 @@ function EquipmentModule:RefreshListUI(Category)
         local ShowItems, HideItems = {}, {}
         --解锁相关
         local LockUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Lock)
+        local UpgradableUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Upgradable)
+        local NeedUpgrade = true
         if Equipment.Unlock then
             table.insert(HideItems, LockUI)
         else
             table.insert(ShowItems, LockUI)
+            table.insert(HideItems, UpgradableUI)
+            NeedUpgrade = false
         end
         --等级相关
         local MaxLevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.MaxLevel)
         local LevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Level)
         local ProgressUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Progress)
-        local UpgradableUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Upgradable)
         if Equipment.Level == 5 then
             --满级
             table.insert(ShowItems, MaxLevelUI)
@@ -222,10 +232,9 @@ function EquipmentModule:RefreshListUI(Category)
             table.insert(HideItems, MaxLevelUI)
             table.insert(ShowItems, LevelUI)
             table.insert(ShowItems, ProgressUI)
-            table.insert(ShowItems, UpgradableUI)
-
-            --设置等级
-            UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
+            if NeedUpgrade then
+                table.insert(ShowItems, UpgradableUI)
+            end
             --碎片相关
             local CurrentPiece = Equipment.Piece
             local Attributes = EquipmentConfig[Equipment.ID].Attributes
@@ -233,6 +242,8 @@ function EquipmentModule:RefreshListUI(Category)
             UI:SetProgressMaxValue({ProgressUI}, Upgrade.Piece)
             UI:SetProgressCurrentValue({ProgressUI}, CurrentPiece)
         end
+        --设置等级
+        UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
         --是否已装备
         local EquippedUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Equipped)
         if Equipment.Equipped then
@@ -294,6 +305,8 @@ function EquipmentModule:OpenDetailView(Equipment)
         DetailView.UpgradableTip.ID,
     }, false)
     --弹窗类型
+    --升级
+    local BaseData = self.PlayerData.BaseData
     if Equipment.Unlock then
         --解锁
         if Equipment.Equipped then
@@ -301,7 +314,7 @@ function EquipmentModule:OpenDetailView(Equipment)
             if Equipment.Level == 5 then
                 --已装备已满级
                 UI:SetVisible({DetailView.EquippedAndMaxLevel.ID},true)
-            elseif CurrentPiece >= Upgrade.Piece  then
+            elseif CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin then
                 --已装备可升级
                 UI:SetVisible({DetailView.EquippedAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
                 UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
@@ -314,7 +327,7 @@ function EquipmentModule:OpenDetailView(Equipment)
             if Equipment.Level == 5 then
                 --可装备已满级
                 UI:SetVisible({DetailView.EquipableAndMaxLevel.ID},true)
-            elseif CurrentPiece >= Upgrade.Piece  then
+            elseif CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin  then
                 --可装备可升级
                 UI:SetVisible({DetailView.EquipableAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
                 UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
@@ -334,29 +347,48 @@ function EquipmentModule:OpenDetailView(Equipment)
     self:RefreshIcon(DetailView.WeaponIcon.Icon, Equipment)
 
     --装备属性信息
-    UI:SetVisible({DetailView.AttributeIcon.ID},true)
-    if Equipment.Category == 1 or Equipment.Category == 4 or Equipment.Category == 5 or Equipment.Category == 6 then
-        local num = Attributes.Attack + (Attributes.Growth*(Equipment.Level-1))
-        UI:SetText({EquipmentView.CurrentAttribute},tostring(num))--设置攻击力
-        UI:SetProgressCurrentValue({104178},(num/(Attributes.Attack + Attributes.Growth*(5 - Equipment.Level))*100))
-        UI:SetProgressCurrentValue({104177},(num/(Attributes.Attack + Attributes.Growth*(4 - Equipment.Level))*100))
-        UI:SetText({EquipmentView.EnhanceAttribute},tostring(num + Attributes.Growth))
-        UI:SetVisible({DetailView.AttributeIcon.AttackPower},true)
-    elseif Equipment.Category == 2 then
-        local num =Attributes.Heal+ (Attributes.Growth*(Equipment.Level-1))
-        UI:SetText({EquipmentView.CurrentAttribute},tostring(num))--设置生命值
-        UI:SetProgressCurrentValue({104178},(num/(Attributes.Heal + Attributes.Growth*(5 - Equipment.Level)))*100)
-        UI:SetProgressCurrentValue({104177},(num/(Attributes.Heal + Attributes.Growth*(4 - Equipment.Level)))*100)
-        UI:SetText({EquipmentView.EnhanceAttribute},tostring(num + Attributes.Growth))
-        UI:SetVisible({DetailView.AttributeIcon.AttributeIcon},true)
-    else
-        local num = Attributes.Accuracy+ (Attributes.Growth*(Equipment.Level-1))
-        UI:SetText({EquipmentView.CurrentAttribute},tostring(num))--设置准确度
-        UI:SetProgressCurrentValue({104178},(num/(Attributes.Accuracy + Attributes.Growth*(5 - Equipment.Level))*100))
-        UI:SetProgressCurrentValue({104177},(num/(Attributes.Accuracy + Attributes.Growth*(4 - Equipment.Level))*100))
-        UI:SetText({EquipmentView.EnhanceAttribute},tostring(num + Attributes.Growth))
-        UI:SetVisible({DetailView.AttributeIcon.Accuracy},true)
+    UI:SetVisible({DetailView.AttributeIcon.ID}, true)
+    UI:SetVisible({
+        DetailView.AttributeIcon.AttackPower,
+        DetailView.AttributeIcon.HealthPoints,
+        DetailView.AttributeIcon.Accuracy,
+    },false)
+    local AttributeValue, AttributeLabel
+    if Attributes.Attack > 0 then
+        --攻击
+        AttributeValue = Attributes.Attack
+        AttributeLabel = DetailView.AttributeIcon.AttackPower
+    elseif Attributes.Heal > 0 then
+        --防护
+        AttributeValue = Attributes.Heal
+        AttributeLabel = DetailView.AttributeIcon.HealthPoints
+    elseif Attributes.Accuracy > 0 then
+        --准度
+        AttributeValue = Attributes.Accuracy
+        AttributeLabel = DetailView.AttributeIcon.Accuracy
     end
+    if AttributeValue and AttributeLabel then
+        --当前数值
+        local Value = AttributeValue + (Attributes.Growth * (Equipment.Level - 1))
+        --总数值
+        local TotalValue = AttributeValue + 4 * Attributes.Growth
+        local CurrentProgress = Value / TotalValue * 100
+        local Growth = 0
+        if Equipment.Level < 5 then
+            Growth = Attributes.Growth
+        end
+        local NextProgress = (Value + Growth) / TotalValue * 100
+        --当前属性
+        UI:SetText({DetailView.CurrentAttribute}, tostring(Value))
+        --强化属性
+        UI:SetText({DetailView.EnhanceAttribute}, tostring(Value + Growth))
+        --当前进度
+        UI:SetProgressCurrentValue({DetailView.UpgradeProgress.Current}, CurrentProgress)
+        --下一进度
+        UI:SetProgressCurrentValue({DetailView.UpgradeProgress.Next}, NextProgress)
+        UI:SetVisible({AttributeLabel},true)
+    end
+
     if Attributes.HeadShotIncrease ~= 0 then
         UI:SetVisible({DetailView.AttributeInfo.ID},true)
         UI:SetText({DetailView.AttributeInfo.Describe},"头部额外增伤")
@@ -479,12 +511,12 @@ function EquipmentModule:OnUpgrade(Equipment)
     Equipment.Level = Equipment.Level + 1
     --扣除资产
     local BaseData = self.PlayerData.BaseData
-    BaseData.Diamond = BaseData.Diamond - Upgrade.Diamond
+    BaseData.Coin = BaseData.Coin - Upgrade.Coin
     System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
 
     --刷新数据
     System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
-    self:CloseDetailView()
+    self:OpenDetailView(Equipment)
     --刷新UI
     self:RefreshUI()
 end

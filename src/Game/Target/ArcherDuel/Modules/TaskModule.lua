@@ -1,10 +1,12 @@
 --任务模块
 local TaskModule = {}
 
-
+--UI配置
+local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --- 打开
 ---@param PlayerData 玩家数据
 function TaskModule:Open(PlayerData)
+    self.PlayerData = PlayerData
     self:LoadData()
 end
 
@@ -17,7 +19,47 @@ function TaskModule:LoadData()
     UI:SetVisible(Task, false)
 end
 
+function TaskModule:RefreshTaskProcesUI()
+    local TaskExp = self.PlayerData.BaseData.Player_TaskExp_Num
+    local CollectTask = self.PlayerData.BaseData.Player_CollectTask_Num
+    local winningPoints = {20, 70, 120, 170, 220, 240}
+    local TaskProcesID  = UIConfig.TaskView.TaskProcesView.TaskProces
+    for index = 1, 6, 1 do
+        local lockID = UIConfig.TaskView.TaskProcesView.Lock[index]
+        local LightID = UIConfig.TaskView.TaskProcesView.Light[index]
+        local CrossID = UIConfig.TaskView.TaskProcesView.Cross[index]
+        local ButtonID = UIConfig.TaskView.TaskProcesView.Button[index]
+        if TaskExp >= winningPoints[index] then
+            UI:SetVisible({lockID}, false)
+            if (CollectTask & (1 << (index - 1))) ~= 0 then
+                --已经领取奖品
+                UI:SetVisible({LightID}, false)
+                UI:SetVisible({CrossID}, true)
+                UI:SetVisible({ButtonID}, false)
+            else
+                UI:SetVisible({LightID}, true)
+                UI:SetVisible({CrossID}, false)
+                UI:SetVisible({ButtonID}, true)
+                UI:UnRegisterClicked(ButtonID)
+                UI:RegisterClicked(ButtonID, function (ButtonID)
+                    self.PlayerData.BaseData.Player_CollectTask_Num = self.PlayerData.BaseData.Player_CollectTask_Num | (1 << (index - 1))
+                    self:RefreshTaskProcesUI()
+                end)
+            end
+        else
+            UI:SetVisible({lockID}, true)
+            UI:SetVisible({LightID}, false)
+            UI:SetVisible({CrossID}, false)
+            UI:SetVisible({ButtonID}, true)
+        end 
+    end
+    UI:SetText({UIConfig.TaskView.TaskProcesView.Text},tostring(TaskExp))
+    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp)
+    UI:SetProgressMaxValue({TaskProcesID}, 240)
+end
+
 function TaskModule:RefreshTaskUI()
+    self:RefreshTaskProcesUI()
     local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTask()
     local arr = {}
@@ -79,11 +121,17 @@ function TaskModule:RefreshTaskUI()
         end
 
         UI:SetText({TextID}, v.name)
+        UI:UnRegisterClicked(BtnID1)
         UI:RegisterClicked(BtnID1,function (ItemUID)
         end)
+        UI:UnRegisterClicked(BtnID2)
         UI:RegisterClicked(BtnID2,function (ItemUID)
             local finishTaskRet = taskMgr:finishTask(v.id)
             if finishTaskRet == true then
+                local taskExp = self.PlayerData.BaseData.Player_TaskExp_Num
+                if v.rewards and v.rewards.exp then
+                    self.PlayerData.BaseData.Player_TaskExp_Num = taskExp + v.rewards.exp
+                end
                 UI:SetVisible({ItemUID}, false)
                 table.remove(Task_Gap_All,k)
                 table.insert(Task_Gap_All, NewUI)
