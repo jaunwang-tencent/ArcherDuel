@@ -1,4 +1,5 @@
 local TaskEvents = require("Game.Framework.Task.TaskEvents")
+local TaskPool = require("Game.Framework.Task.TaskPool")
 
 -- 条件基类
 local Condition = {}
@@ -98,12 +99,12 @@ end
 local BattleCondition = setmetatable({}, {__index = Condition})
 
 function BattleCondition:new(params)
-    local obj = Condition.new(self, "Battle", params)
+    local obj = Condition.new(self, TaskEvents.Battle, params)
     return obj
 end
 
 function BattleCondition:check(params)
-    if params.event == "Battle" then
+    if params.event == TaskEvents.Battle then
         self.currentAmount = self.currentAmount + 1
         self.completed = self.currentAmount >= self.requiredAmount
         return true, self.currentAmount
@@ -116,12 +117,12 @@ end
 local BattleWinCondition = setmetatable({}, {__index = Condition})
 
 function BattleWinCondition:new(params)
-    local obj = Condition.new(self, "BattleWin", params)
+    local obj = Condition.new(self, TaskEvents.BattleWin, params)
     return obj
 end
 
 function BattleWinCondition:check(params)
-    if params.event == "BattleWin" then
+    if params.event == TaskEvents.BattleWin then
         self.currentAmount = self.currentAmount + 1
         self.completed = self.currentAmount >= self.requiredAmount
         return true, self.currentAmount
@@ -145,6 +146,24 @@ function LoginGameCondition:check(params)
     end
     return false, self.currentAmount
 end
+
+
+local HeadShotCondition = setmetatable({}, {__index = Condition})
+
+function HeadShotCondition:new(params)
+    local obj = Condition.new(self, TaskEvents.HeadShot, params)
+    return obj
+end
+
+function HeadShotCondition:check(params)
+    if params.event == TaskEvents.HeadShot then
+        self.currentAmount = self.currentAmount + 1
+        self.completed = true
+        return true, self.currentAmount
+    end
+    return false, self.currentAmount
+end
+
 
 function CompositeCondition:check(params)
     if self.operator == "AND" then
@@ -286,6 +305,7 @@ local TaskManager = {}
 TaskManager.__index = TaskManager
 TaskManager.Instance = nil
 TaskManager.Task = Task
+TaskManager.Condition = Condition
 function TaskManager:GetInsatnce()
     if  TaskManager.Instance then
         return TaskManager.Instance
@@ -293,17 +313,25 @@ function TaskManager:GetInsatnce()
     local obj = {
         tasks = {},
         activeTasks = {},
-        conditionFactories = {
-            KILL = function(params) return KillCondition:new(params) end,
-            COLLECT = function(params) return CollectCondition:new(params) end,
-            TALK = function(params) return TalkCondition:new(params) end,
-            Battle = function(params) return BattleCondition:new(params) end,
-            BattleWin = function(params) return BattleWinCondition:new(params) end,
-            LoginGame = function(params) return LoginGameCondition:new(params) end
-        }
+        conditionFactories = {},
     }
+
+    obj.conditionFactories[TaskEvents.Battle] = function(params) return BattleCondition:new(params) end
+    obj.conditionFactories[TaskEvents.BattleWin] = function(params) return BattleWinCondition:new(params) end
+    obj.conditionFactories[TaskEvents.LoginGame] = function(params) return LoginGameCondition:new(params) end
+
     setmetatable(obj, self)
     TaskManager.Instance = obj
+    System:RegisterGameEvent(_GAME.Events.ExecuteTask, function(EventName, params)
+        TaskManager.Instance:handleEvent(EventName, params)
+    end)
+
+    local _time = MiscService:DateYMDHMSToTime(MiscService:GetServerTimeToTime())
+
+    obj.TaskIintTime = _time
+    local day = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.day) --2023
+    obj.TaskIintTimeDay = day
+
     return obj
 end
 
@@ -373,11 +401,17 @@ function TaskManager:handleEvent(eventType, params)
     params = params or {}
     params.event = eventType
 
+    local needsave = false
     for taskId, _ in pairs(self.activeTasks) do
         local task = self.tasks[taskId]
         if task then
-            task:checkCompletion(params)
+            if task:checkCompletion(params) then
+                needsave = true
+            end
         end
+    end
+    if needsave then
+        self:SaveTaskData()
     end
 end
 
@@ -389,94 +423,75 @@ function TaskManager:getActiveTasks()
     return tasks
 end
 
+function TaskManager:IsTaskTimeOut()
+    local day = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.day)
+    if day == self.TaskIintTimeDay then
+        local _time = MiscService:DateYMDHMSToTime(MiscService:GetServerTimeToTime())
+        return  _time - self.TaskIintTime > 24 * 60 * 60
+    end
+    return true
+end
+
+function TaskManager:LoadSavedTaskData()
+    if not Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable") then
+        return
+    end
+   
+    local str = Archive:GetplayerData(self.PlayerID, Archive.TYpE.String, "TaskDataTable"
+    Log:PrintLog("LoadData",str)
+    
+    local savedData = MiscService:JsonStr2Table(str)
+    if savedData == nil then
+       return 
+    end
+    local  TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    for i, v in pairs (savedData) do
+        local task = TaskManagerInstance:getTask(i)
+        if task then
+            task.state = v.state
+            local conditions = v.conditions
+            for k, condition in ipairs(task.conditions) do
+                if condition and conditions and conditions[k] then
+                    condition.currentAmount = conditions[k].currentAmount
+                    condition.completed = conditions[k].completed
+                end
+            end
+        end
+    end
+end
+
+function TaskManager:SaveTaskData()
+    local saveData = {}
+    local  TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local tasks = TaskManagerInstance:getActiveTasks()
+    for i, v in pairs (tasks) do
+        local data = {}
+        data.state = v.state 
+        data.conditions = {}
+        for k, condition in ipairs(v.conditions) do
+            local cond = {}
+            cond.currentAmount = cond.currentAmount
+            cond.completed = cond.completed
+            table.insert( data.conditions, cond)
+        end
+        table.insert( saveData.conditions, data)
+    end
+    local str = MiscService:Table2JsonStr(saveData)
+    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYpE.String, "TaskDataTable", str)
+
+end
+
 function TaskManager:Init()
-    System:RegisterGameEvent(_GAME.Events.ExecuteTask, function(EventName, params)
-        local manager = TaskManager:GetInsatnce()
-        manager:handleEvent(EventName, params)
-    end)
 
-    local manager = TaskManager:GetInsatnce()
-    local battleCondition = manager:createCondition(TaskEvents.BattleFinish, {
-            requiredAmount = 2
-        })
+    local  TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    if TaskManagerInstance:IsTaskTimeOut() then
+        TaskManager.Instance = nil
+        TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    end
 
-    local battleWinCondition = manager:createCondition(TaskEvents.BattleWin, {
-            requiredAmount = 1
-        })
-
-    local LoginGameCondition = manager:createCondition(TaskEvents.LoginGame, {
-            requiredAmount = 1
-        })
-
-    local Quest_Battle = Task:new(
-            "Quest_Battle",
-            "战斗任务",
-            "参加2场次战斗",
-            {battleCondition},
-            {exp = 10}
-        )
-
-        Quest_Battle:addOnAcceptCallback(function()
-                Log:PrintLog("你接受了战斗任务!")
-            end)
-
-        Quest_Battle:addOnCompleteCallback(function()
-                Log:PrintLog("恭喜你完成了战斗任务!")
-            end)
-
-        -- 添加任务到管理器
-        manager:addTask(Quest_Battle)
-        -- 接受任务
-        manager:acceptTask("Quest_Battle")
-
-
-        local Quest_BattleWin = Task:new(
-            "Quest_BattleWin",
-            "战斗胜利任务",
-            "赢得1场次战斗",
-            {battleWinCondition},
-            {exp = 10}
-        )
-
-        Quest_BattleWin:addOnAcceptCallback(function()
-                Log:PrintLog("你接受了赢得一场战斗胜利任务!")
-            end)
-
-        Quest_BattleWin:addOnCompleteCallback(function()
-                Log:PrintLog("恭喜你完成了战斗胜利任务!")
-            end)
-
-        -- 添加任务到管理器
-        manager:addTask(Quest_BattleWin)
-        -- 接受任务
-        manager:acceptTask("Quest_BattleWin")
- 
-        local Quest_Login = Task:new(
-            "Quest_Login",
-            "登录游戏",
-            "登录一次游戏",
-            {LoginGameCondition},
-            {exp = 5}
-        )
-
-        Quest_Login.State = Task.State.COMPLETED
-
-        Quest_Login:addOnAcceptCallback(function()
-                Log:PrintLog("你接受了登录任务!")
-            end)
-
-        Quest_Login:addOnCompleteCallback(function()
-                Log:PrintLog("恭喜你完成了登录任务!")
-            end)
-
-        -- 添加任务到管理器
-        manager:addTask(Quest_Login)
-        -- 接受任务
-        manager:acceptTask("Quest_Login")
-        --manager:handleEvent("Battle")
-        --manager:handleEvent("LoginGame")
-
-        return manager
+    TaskManagerInstance = TaskPool.BuildTask()
+    
+    return TaskManagerInstance
 end
 
 
