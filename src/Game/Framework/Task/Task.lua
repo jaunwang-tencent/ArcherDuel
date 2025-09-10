@@ -133,12 +133,12 @@ end
 local LoginGameCondition = setmetatable({}, {__index = Condition})
 
 function LoginGameCondition:new(params)
-    local obj = Condition.new(self, "Login", params)
+    local obj = Condition.new(self, TaskEvents.LoginGame, params)
     return obj
 end
 
 function LoginGameCondition:check(params)
-    if params.event == "Login" then
+    if params.event == TaskEvents.LoginGame then
         self.currentAmount = self.currentAmount + 1
         self.completed = true
         return true, self.currentAmount
@@ -298,6 +298,26 @@ function Task:getProgress()
 
     return total > 0 and (completed / total) or 0
 end
+
+
+function Task:getProgressNumer()
+    local total = 0
+    local completed = 0
+    for _, condition in ipairs(self.conditions) do
+        local current, required = condition:getProgress()
+        total = total + (required or 1)
+        completed = completed + (current or 0)
+    end
+
+    if self.state == Task.State.COMPLETED then
+        return 1.0, completed, total
+    elseif self.state == Task.State.NOT_ACCEPTED then
+        return 0.0, completed, total
+    end
+ 
+    return total > 0 and (completed / total) or 0, completed, total
+end
+
 
 -- 任务管理器类
 local TaskManager = {}
