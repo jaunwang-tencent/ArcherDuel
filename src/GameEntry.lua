@@ -34,7 +34,7 @@ _GAME.Events = {
     --跳转模块
     JumpModule = "JumpModule",
     --刷新数据
-    RefreshData = "RefreshData"
+    RefreshData = "RefreshData",
     --任务事件
     ExecuteTask = "ExecuteTask",
 }
