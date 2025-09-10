@@ -250,7 +250,15 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                 --Log:PrintLog(string.format("GenerateCurve(PitchDegree=%f, CenterOffset = %f, Curvature = %f, Amplitude = %f)", PitchDegree, CenterOffset, Curvature, Amplitude))
                 local Segment = LimitDistance and HitSpline.AimTrackSegment or HitSpline.Segment
                 local ExtraRate = nil
-                local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, EndPoint, Segment, Curvature, ExtraRate)
+                local NewEndPoint = EndPoint
+                if EndPoint.Z > StartPoint.Z then
+                    local tmepDis = EndPoint.Z - StartPoint.Z
+                    if EndPoint.X - StartPoint.X < 0 then
+                        tmepDis = -tmepDis
+                    end
+                    NewEndPoint = Engine.Vector(EndPoint.X + tmepDis, 0, StartPoint.Z)
+                end
+                local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, NewEndPoint, Segment, Curvature, ExtraRate)
 
                 if CurvePoints then
                     local PointCount = #CurvePoints
@@ -269,9 +277,10 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                         for Index = 0, 50 do
                             local Time = Index * 0.1
                             local X = VX * Time
-                            local Z = VZ * Time - 500 * Time * Time
+                            -- local Z = VZ * Time - 500 * Time * Time
+                            local Z = VZ * Time
                             local Offset = Engine.Vector(X, 0, Z)
-                            table.insert(CurvePoints, EndPoint + Offset)
+                            table.insert(CurvePoints, NewEndPoint + Offset)
                         end
                         PointCount = #CurvePoints
                     end

@@ -90,9 +90,9 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.55,
+            Curvature = 0.35,
             --中点振幅【单位：米】
-            Amplitude = 3,
+            Amplitude = 5,
         }
     },
     --雪地
@@ -137,9 +137,9 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.55,
+            Curvature = 0.35,
             --中点振幅【单位：米】
-            Amplitude = 3,
+            Amplitude = 5,
         }
     },
     --城市
@@ -200,9 +200,9 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.55,
+            Curvature = 0.35,
             --中点振幅【单位：米】
-            Amplitude = 3,
+            Amplitude = 5,
         }
     },
     --天空遗迹
@@ -295,9 +295,9 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.55,
+            Curvature = 0.35,
             --中点振幅【单位：米】
-            Amplitude = 3,
+            Amplitude = 5,
         }
     },
     --沙漠
@@ -374,9 +374,9 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.55,
+            Curvature = 0.35,
             --中点振幅【单位：米】
-            Amplitude = 3,
+            Amplitude = 5,
         }
     },
     --太空
@@ -469,9 +469,9 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.55,
+            Curvature = 0.35,
             --中点振幅【单位：米】
-            Amplitude = 3,
+            Amplitude = 5,
         }
     },
     --室外
@@ -638,9 +638,9 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.55,
+            Curvature = 0.35,
             --中点振幅【单位：米】
-            Amplitude = 3,
+            Amplitude = 5,
         }
     },
     --室内
@@ -731,9 +731,9 @@ local SceneConfig = {
         --样条设置
         SplineSetting = {
             --样条曲率【单位：1】
-            Curvature = 0.55,
+            Curvature = 0.35,
             --中点振幅【单位：米】
-            Amplitude = 3,
+            Amplitude = 5,
         }
     },
 }
