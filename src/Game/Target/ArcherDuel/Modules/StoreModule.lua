@@ -19,7 +19,7 @@ function StoreModule:Open(PlayerData)
         [3] = AllGoods.DiamondItem,
         [4] = AllGoods.CoinItem,
     }
-    for ActivityIndex, Activity in pairs(Activities) do
+    for ActivityIndex, Activity in ipairs(Activities) do
         --插入活动页签
         table.insert(self.ScrollItems, Activity.ID)
         --插入分隔条
@@ -30,7 +30,7 @@ function StoreModule:Open(PlayerData)
         local Buttons = Activity.Buttons
         local Items = GoodsMap[ActivityIndex]
         if Buttons and Items then
-            for ButtonIndex, Button in pairs(Buttons) do
+            for ButtonIndex, Button in ipairs(Buttons) do
                 local Item = Items[ButtonIndex]
                 if Item then
                     local ButtonInfo = {
