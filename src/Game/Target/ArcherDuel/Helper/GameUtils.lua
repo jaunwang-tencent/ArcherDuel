@@ -166,7 +166,8 @@ function GameUtils.SetPlayerBaseData(DataName, DataValue)
         local BaseData = PlayerData and PlayerData.BaseData
         if BaseData then
             BaseData[DataName] = DataValue
-            Archive:GetPlayerData(LobbyModule.PlayerID, Archive.TYPE.String, DataName)
+            --及时存档
+            Archive:SetPlayerData(LobbyModule.PlayerID, Archive.TYPE.String, DataName, DataValue)
         end
     end
 end
@@ -181,7 +182,6 @@ function GameUtils.GetPlayerBaseData(DataName)
         local BaseData = PlayerData and PlayerData.BaseData
         if BaseData then
             local DataValue = BaseData[DataName]
-            Archive:SetPlayerData(LobbyModule.PlayerID, Archive.TYPE.String, DataName, DataValue)
             return DataValue
         end
     end
