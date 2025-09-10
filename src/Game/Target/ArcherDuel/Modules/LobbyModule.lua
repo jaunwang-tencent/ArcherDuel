@@ -717,12 +717,12 @@ local function Storage()
             table.insert(Task_Gap, NewUI)
         end
         for i, v in ipairs(Task) do
-        table.insert(Task_Gap_All, v)
-        if Task_Gap[i] ~= nil then
-            table.insert(Task_Gap_All, Task_Gap[i])
+            table.insert(Task_Gap_All, v)
+            if Task_Gap[i] ~= nil then
+                table.insert(Task_Gap_All, Task_Gap[i])
+            end
         end
-        end
-        UI:AddToScrollView(110467,Shop_Gap_All)
+        UI:AddToScrollView(110467,Task_Gap_All)
         UI:SetVisible({100599},false)
     end)
 

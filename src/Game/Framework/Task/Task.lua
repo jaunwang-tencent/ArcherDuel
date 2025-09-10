@@ -181,6 +181,7 @@ Task.State = {
     NOT_ACCEPTED = "NOT_ACCEPTED",
     IN_PROGRESS = "IN_PROGRESS",
     COMPLETED = "COMPLETED",
+    FINISH = "FINISH",
     FAILED = "FAILED"
 }
 
@@ -284,6 +285,7 @@ end
 local TaskManager = {}
 TaskManager.__index = TaskManager
 TaskManager.Instance = nil
+TaskManager.Task = Task
 function TaskManager:GetInsatnce()
     if  TaskManager.Instance then
         return TaskManager.Instance
@@ -329,6 +331,10 @@ function TaskManager:getTask(taskId)
     return self.tasks[taskId]
 end
 
+function TaskManager:getAllTask()
+    return self.tasks
+end
+
 function TaskManager:acceptTask(taskId)
     local task = self.tasks[taskId]
     if not task then return false end
@@ -338,6 +344,18 @@ function TaskManager:acceptTask(taskId)
         return true
     end
     return false
+end
+
+function TaskManager:finishTask(taskId)
+    local task = self.tasks[taskId]
+    if not task then return false end
+
+    if not task.State == Task.State.COMPLETED then
+        return false
+    end
+    
+    task.State = Task.State.FINISH
+    return true
 end
 
 function TaskManager:abandonTask(taskId)
@@ -441,6 +459,8 @@ function TaskManager:Init()
             {exp = 5}
         )
 
+        Quest_Login.State = Task.State.COMPLETED
+
         Quest_Login:addOnAcceptCallback(function()
                 Log:PrintLog("你接受了登录任务!")
             end)
@@ -455,6 +475,8 @@ function TaskManager:Init()
         manager:acceptTask("Quest_Login")
         --manager:handleEvent("Battle")
         --manager:handleEvent("LoginGame")
+
+        return manager
 end
 
 
