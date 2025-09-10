@@ -2068,6 +2068,10 @@ local EquipmentConfig = {
         --下装20
         TypeName = "Bottoms",
         NickName = "海岛风情下装",
+        --资产名称
+        AssetName = "Bottoms",
+        --资产序列
+        AssetIndex = 20,
         --换装ID
         EquipID = 520233,
         Category = 3,
@@ -2174,7 +2178,7 @@ local EquipmentConfig = {
     [60] = {
         --下装23
         TypeName = "Bottoms",
-        NickName = "青春筑梦下装",  
+        NickName = "青春筑梦下装",
         --资产名称
         AssetName = "Bottoms",
         --资产序列

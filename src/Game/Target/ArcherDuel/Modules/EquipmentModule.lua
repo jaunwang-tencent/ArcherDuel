@@ -106,7 +106,7 @@ function EquipmentModule:RegreshBodyUI()
         [6] = EquipmentView.RightView.Spear,
     }
     local BodyEquipment = PlayerData.BodyEquipment
-    for Category, EquipmentSlot in pairs(EquipmentSlotConfig) do
+    for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
         local Equipment = BodyEquipment[Category]
         if Equipment then
             --设置等级
@@ -233,9 +233,6 @@ function EquipmentModule:RefreshListUI(Category)
             if NeedUpgrade then
                 table.insert(ShowItems, UpgradableUI)
             end
-
-            --设置等级
-            UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
             --碎片相关
             local CurrentPiece = Equipment.Piece
             local Attributes = EquipmentConfig[Equipment.ID].Attributes
@@ -243,6 +240,8 @@ function EquipmentModule:RefreshListUI(Category)
             UI:SetProgressMaxValue({ProgressUI}, Upgrade.Piece)
             UI:SetProgressCurrentValue({ProgressUI}, CurrentPiece)
         end
+        --设置等级
+        UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
         --是否已装备
         local EquippedUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Equipped)
         if Equipment.Equipped then
@@ -304,6 +303,8 @@ function EquipmentModule:OpenDetailView(Equipment)
         DetailView.UpgradableTip.ID,
     }, false)
     --弹窗类型
+    --升级
+    local BaseData = self.PlayerData.BaseData
     if Equipment.Unlock then
         --解锁
         if Equipment.Equipped then
@@ -311,7 +312,7 @@ function EquipmentModule:OpenDetailView(Equipment)
             if Equipment.Level == 5 then
                 --已装备已满级
                 UI:SetVisible({DetailView.EquippedAndMaxLevel.ID},true)
-            elseif CurrentPiece >= Upgrade.Piece  then
+            elseif CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin then
                 --已装备可升级
                 UI:SetVisible({DetailView.EquippedAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
                 UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
@@ -324,7 +325,7 @@ function EquipmentModule:OpenDetailView(Equipment)
             if Equipment.Level == 5 then
                 --可装备已满级
                 UI:SetVisible({DetailView.EquipableAndMaxLevel.ID},true)
-            elseif CurrentPiece >= Upgrade.Piece  then
+            elseif CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin  then
                 --可装备可升级
                 UI:SetVisible({DetailView.EquipableAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
                 UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
@@ -365,13 +366,20 @@ function EquipmentModule:OpenDetailView(Equipment)
         AttributeLabel = DetailView.AttributeIcon.Accuracy
     end
     if AttributeValue and AttributeLabel then
+        --当前数值
         local Value = AttributeValue + (Attributes.Growth * (Equipment.Level - 1))
-        local CurrentProgress = Value / (AttributeValue + Attributes.Growth * (5 - Equipment.Level)) *100
-        local NextProgress = Value / (AttributeValue + Attributes.Growth* (4 - Equipment.Level)) * 100
+        --总数值
+        local TotalValue = AttributeValue + 4 * Attributes.Growth
+        local CurrentProgress = Value / TotalValue * 100
+        local Growth = 0
+        if Equipment.Level < 5 then
+            Growth = Attributes.Growth
+        end
+        local NextProgress = (Value + Growth) / TotalValue * 100
         --当前属性
-        UI:SetText({EquipmentView.CurrentAttribute}, tostring(Value))
+        UI:SetText({DetailView.CurrentAttribute}, tostring(Value))
         --强化属性
-        UI:SetText({EquipmentView.EnhanceAttribute}, tostring(Value + Attributes.Growth))
+        UI:SetText({DetailView.EnhanceAttribute}, tostring(Value + Growth))
         --当前进度
         UI:SetProgressCurrentValue({DetailView.UpgradeProgress.Current}, CurrentProgress)
         --下一进度
@@ -501,12 +509,12 @@ function EquipmentModule:OnUpgrade(Equipment)
     Equipment.Level = Equipment.Level + 1
     --扣除资产
     local BaseData = self.PlayerData.BaseData
-    BaseData.Diamond = BaseData.Diamond - Upgrade.Diamond
+    BaseData.Coin = BaseData.Coin - Upgrade.Coin
     System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
 
     --刷新数据
     System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
-    self:CloseDetailView()
+    self:OpenDetailView(Equipment)
     --刷新UI
     self:RefreshUI()
 end
