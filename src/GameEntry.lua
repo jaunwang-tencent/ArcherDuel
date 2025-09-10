@@ -35,8 +35,9 @@ _GAME.Events = {
     JumpModule = "JumpModule",
     --刷新数据
     RefreshData = "RefreshData"
+    --任务事件
+    ExecuteTask = "ExecuteTask",
 }
-
 -- 网络协议
 _GAME.NetMsg = {
     SeverLog = 1000, -- 服务端日志输出

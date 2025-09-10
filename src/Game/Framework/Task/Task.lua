@@ -1,3 +1,5 @@
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
+
 -- 条件基类
 local Condition = {}
 Condition.__index = Condition
@@ -370,16 +372,21 @@ function TaskManager:getActiveTasks()
 end
 
 function TaskManager:Init()
+    System:RegisterGameEvent(_GAME.Events.ExecuteTask, function(EventName, params)
+        local manager = TaskManager:GetInsatnce()
+        manager:handleEvent(EventName, params)
+    end)
+
     local manager = TaskManager:GetInsatnce()
-    local battleCondition = manager:createCondition("Battle", {
+    local battleCondition = manager:createCondition(TaskEvents.BattleFinish, {
             requiredAmount = 2
         })
 
-    local battleWinCondition = manager:createCondition("BattleWin", {
+    local battleWinCondition = manager:createCondition(TaskEvents.BattleWin, {
             requiredAmount = 1
         })
 
-    local LoginGameCondition = manager:createCondition("LoginGame", {
+    local LoginGameCondition = manager:createCondition(TaskEvents.LoginGame, {
             requiredAmount = 1
         })
 
