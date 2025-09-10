@@ -1,3 +1,5 @@
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
+
 --玩家角色
 local Player = UGCS.RTTI.Class("Player", UGCS.Framework.Actor)
 
@@ -451,6 +453,16 @@ function Player:Death()
         -- 发送游戏结果信号
         local EventName = self:IsControlled() and _GAME.Events.BattleFail or _GAME.Events.BattleVictory
         System:FireGameEvent(EventName)
+
+        if EventName == _GAME.Events.BattleVictory then -- 对局胜利
+            if self.WeaponConfig.TypeName == "Bow" then -- 使用弓获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseBow)
+            elseif self.WeaponConfig.TypeName == "Axe" then -- 使用斧获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseAxe)
+            elseif self.WeaponConfig.TypeName == "Spear" then -- 使用矛获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseSpear)
+            end
+        end
     end
 end
 
