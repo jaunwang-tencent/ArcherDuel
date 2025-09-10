@@ -64,6 +64,8 @@ local UIConfig = {
         --通用-资源栏
         GeneralResourceBar = {
             ID = 100528,
+            --玩家图标
+            PlayerIcon = 100470,
             --段位
             Rank = {
                 ID = 101854,
@@ -146,7 +148,7 @@ local UIConfig = {
             },
             -- 长矛
             Spear = {
-                Lable = 104680,
+                Label = 104680,
                 Image = 100537,
                 Progress = 104542
             }

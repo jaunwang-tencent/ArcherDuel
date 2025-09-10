@@ -537,12 +537,28 @@ function LobbyModule:RefreshStoreData()
     
 end
 
+--- 刷新图标
+---@param IconUI 图标资源
+---@param AssetName 资产名称
+---@param AssetIndex 资产索引
+function LobbyModule:RefreshIcon(IconUI, AssetName, AssetIndex)
+    local ElementId = System:GetScriptParentID()
+
+    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+    local IconId = IconIdArray[AssetIndex]
+    UI:SetImage({IconUI}, IconId, true)
+end
+
+
 --- 刷新通用资源栏
 function LobbyModule:RefreshGeneralResourceBar()
     local MainView = UIConfig.MainView
     local GeneralResourceBar = MainView and MainView.GeneralResourceBar
     if GeneralResourceBar then
         local BaseData = self.PlayerData.BaseData
+        --玩家图标
+        --目前API侧无法读取玩家图标，暂时使用这个
+        self:RefreshIcon(GeneralResourceBar.PlayerIcon, "avatar", 1)
         UI:SetText({GeneralResourceBar.Rank.Label}, tostring(BaseData.Rank))
         UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(BaseData.Coin))
         UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))

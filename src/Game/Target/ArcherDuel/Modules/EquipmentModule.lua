@@ -106,7 +106,7 @@ function EquipmentModule:RegreshBodyUI()
         [6] = EquipmentView.RightView.Spear,
     }
     local BodyEquipment = PlayerData.BodyEquipment
-    for Category, EquipmentSlot in pairs(EquipmentSlotConfig) do
+    for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
         local Equipment = BodyEquipment[Category]
         if Equipment then
             --设置等级
@@ -127,6 +127,7 @@ function EquipmentModule:RegreshBodyUI()
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
         else
             --没有装备则清空
+            Log:PrintLog("111111111111111", Category,EquipmentSlot.Label, EquipmentSlot.Progress, EquipmentSlot.Image)
             UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress, EquipmentSlot.Image}, false)
         end
     end
