@@ -10,7 +10,6 @@ UGCS.Target.ArcherDuel.Config.CharacterConfig = require "Game.Target.ArcherDuel.
 UGCS.Target.ArcherDuel.Config.SceneConfig = require "Game.Target.ArcherDuel.Config.SceneConfig"
 UGCS.Target.ArcherDuel.Config.WeaponConfig = require "Game.Target.ArcherDuel.Config.WeaponConfig"
 UGCS.Target.ArcherDuel.Config.EquipmentConfig = require "Game.Target.ArcherDuel.Config.EquipmentConfig"
-UGCS.Target.ArcherDuel.Config.GearConfig = require "Game.Target.ArcherDuel.Config.GearConfig"
 UGCS.Target.ArcherDuel.Config.GameConfig = require "Game.Target.ArcherDuel.Config.GameConfig"
 UGCS.Target.ArcherDuel.Config.UIConfig = require "Game.Target.ArcherDuel.Config.UIConfig"
 UGCS.Target.ArcherDuel.Config.ImpulseConfig = require "Game.Target.ArcherDuel.Config.ImpulseConfig"

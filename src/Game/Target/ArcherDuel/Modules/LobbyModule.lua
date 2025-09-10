@@ -3,7 +3,7 @@ local LobbyModule = {}
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
-local GearConfig = UGCS.Target.ArcherDuel.Config.GearConfig
+local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 --存档配置
 local ArchiveConfig = {
     "Equipped_Bow_Num",
@@ -255,7 +255,7 @@ function LobbyModule:DefaultEquipmentData()
     --没有则初始化
     local AllEquipment = {}
     local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true, [77] = true, [93] = true }
-    for ID, Data in pairs(GearConfig) do
+    for ID, Data in pairs(EquipmentConfig) do
         local HasInit = InitEquippedID[ID]
         local Equipment = {
             ID = ID,                        --装备编号ID
@@ -327,8 +327,8 @@ function LobbyModule:RefreshEquipmentData()
     --按品质排序
     for _, Group in pairs(GroupByCategory) do
         table.sort(Group, function(lhs, rhs)
-            local LHSA = GearConfig[lhs.ID].Attributes
-            local RHSA = GearConfig[rhs.ID].Attributes
+            local LHSA = EquipmentConfig[lhs.ID].Attributes
+            local RHSA = EquipmentConfig[rhs.ID].Attributes
             return LHSA.Grade < RHSA.Grade
         end)
     end

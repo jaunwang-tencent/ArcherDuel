@@ -3,7 +3,7 @@ local EquipmentModule = {}
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
-local GearConfig = UGCS.Target.ArcherDuel.Config.GearConfig
+local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 
 --升级配置
 local UpgradeConfig = {
@@ -110,7 +110,7 @@ function EquipmentModule:RefreshUI()
             UI:SetVisible({EquipmentSlot.Progress}, true)
             --碎片相关
             local CurrentPiece = Equipment.Piece
-            local Attributes = GearConfig[Equipment.ID].Attributes
+            local Attributes = EquipmentConfig[Equipment.ID].Attributes
             local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
             UI:SetProgressMaxValue({EquipmentSlot.Progress}, UpgradePiece)
             UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
@@ -171,7 +171,7 @@ function EquipmentModule:RefreshUI()
             UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
             --碎片相关
             local CurrentPiece = Equipment.Piece
-            local Attributes = GearConfig[Equipment.ID].Attributes
+            local Attributes = EquipmentConfig[Equipment.ID].Attributes
             local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
             UI:SetProgressMaxValue({ProgressUI}, UpgradePiece)
             UI:SetProgressCurrentValue({ProgressUI}, CurrentPiece)
@@ -215,11 +215,11 @@ function EquipmentModule:OpenDetailView(Equipment)
     UI:SetVisible({DetailView.ID}, true)
 
      --修改名字
-     local EquipmentData = GearConfig[Equipment.ID]
-     UI:SetText({100558}, EquipmentData.TypeName)
+     local EquipmentData = EquipmentConfig[Equipment.ID]
+     UI:SetText({100558}, EquipmentData.NickName)
 
      local CurrentPiece = Equipment.Piece
-     local Attributes = GearConfig[Equipment.ID].Attributes
+     local Attributes = EquipmentConfig[Equipment.ID].Attributes
      local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
      UI:SetVisible({
         DetailView.EquippedAndMaxLevel.ID,
