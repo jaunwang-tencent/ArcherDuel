@@ -47,6 +47,7 @@ _GAME.NetMsg = {
 }
 
 ------------------------------------------------- Game Require ------------------------------------------------------
+_GAME.GameUtils = require "Game.GameUtils"
 local GameServer = require "Server.GameServer"
 local GameClient = require "Client.GameClient"
 local GameMath = require "Math.GameMath"

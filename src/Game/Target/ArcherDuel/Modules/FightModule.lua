@@ -45,26 +45,11 @@ function FightModule:Open(PlayerData)
         self:OnRank()
     end)
 
-    local function getLevelByScore(levels, score)
-        -- 假设 levels 已按照 base_score 升序排列
-        local prev_level = levels[1]
-        for i = 2, #levels do
-            local level = levels[i]
-            if score < level.base_score then
-                -- 之前的等级就是当前等级
-                return prev_level
-            end
-            prev_level = level
-        end
-        -- 积分超过所有等级基础积分，返回最高等级
-        return levels[#levels]
-    end
-
     local Rank = CenterView and CenterView.Rank
     if Rank then
         local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "RankIconList", CustomProperty.PROPERTY_TYPE.Image)
         local BattlePoints = PlayerData.BaseData["Player_BattlePoints_Num"]
-        local level = getLevelByScore(RankInfoConfig, BattlePoints)
+        local level = _GAME.GameUtils.GetRankLevelByScore(BattlePoints)
         if level.icon and list[level.icon] then
             UI:SetImage({Rank.Image}, list[level.icon], true)
         end

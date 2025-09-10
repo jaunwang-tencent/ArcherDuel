@@ -1,6 +1,8 @@
-﻿local GameMath = {}
+﻿local MatchConfig = require("Math.MatchConfig")
+local GoldRewardConfig = require("Math.GoldRewardConfig")
 
-local MatchConfig = require("Math.MatchConfig")
+local GameMath = {}
+
 math.randomseed(TimerManager:GetClock()) -- 设置随机数种子
 
 function GameMath:Init()
@@ -104,6 +106,35 @@ function GameMath:OnEnd()
 end
 
 ------------------------------ 匹配 ------------------------------
+
+local function GetRankIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "RankIconList", CustomProperty.PROPERTY_TYPE.Image)
+end
+
+local function GetHeadIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "avatar", CustomProperty.PROPERTY_TYPE.Image)
+end
+
+local function GetWeaponIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "weapon_icon", CustomProperty.PROPERTY_TYPE.Image)
+end
+
+local function GetBodyIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Character", CustomProperty.PROPERTY_TYPE.Image)
+end
+
+local function GetClothIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Top", CustomProperty.PROPERTY_TYPE.Image)
+end
+
+local function GetBottomsIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Bottoms", CustomProperty.PROPERTY_TYPE.Image)
+end
+
+local function GetCurrencyIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Currency", CustomProperty.PROPERTY_TYPE.Image)
+end
+
 -- 绑定事件
 function GameMath:BindEvents()
     -- 收到开始匹配的事件
@@ -258,6 +289,12 @@ function GameMath:StartMatch()
     BattleRivalInfo.name = MatchConfig.PlayerName[math.random(1, #MatchConfig.PlayerName)]
     -- 随机装备
     BattleRivalInfo.equipments = self:GetRandomEquipments()
+    -- 积分
+    local curScore = _GAME.GameUtils.GetPlayerRankScore()
+    BattleRivalInfo.score = curScore + math.random(0, 200)
+    -- 头像
+    local headIcons = GetHeadIconList()
+    BattleRivalInfo.headIcon = headIcons[math.random(1, #headIcons)]
     MatchInfo.BattleRivalInfo = BattleRivalInfo
 
     Log:PrintDebug("zzzzzzz StartMatch zzzzzzz")
@@ -281,23 +318,68 @@ function GameMath:MathCountDown(MatchInfo)
     -- UI:SetVisible(zhuye,false)
     UI:SetVisible({105664,105670,105671,105674,105675},true)
     TimerManager:AddTimer(0.1,function ()
-        -- 对战双方名字和头像
+        local RankIconList = GetRankIconList()
+        local WeaponIconList = GetWeaponIconList()
+        local BodyIconList = GetBodyIconList()
+        local ClothIconList = GetClothIconList()
+        local BottomsIconList = GetBottomsIconList()
+        local WeaponConfig = UGCS.Target.ArcherDuel.Config.WeaponConfig
+        local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+        -- 自己对战信息
         UI:SetImage({105676},Chat:GetCustomHeadIcon(self.localPlayerId), true)
-        UI:SetText({105685}, Chat:GetCustomName(self.localPlayerId))
-        UI:SetText({105680}, MatchInfo.BattleRivalInfo.name)
-        -- 对战双方装备图标
-        -- 武器Id
-        -- RivalInfo.weaponId
-        -- myWeaponId
-        -- 身体Id
-        -- RivalInfo.equipments.Part
-        -- Part_Num
-        -- 上衣Id
-        -- RivalInfo.equipments.Cloth
-        -- Cloth_Num
-        -- 下衣Id
-        -- RivalInfo.equipments.Bottoms
-        -- Bottoms_Num
+        UI:SetText({105680}, Chat:GetCustomName(self.localPlayerId))
+        local curScore = _GAME.GameUtils.GetPlayerRankScore()
+        local curLevel = _GAME.GameUtils.GetRankLevelByScore(curScore)
+        if curLevel then
+            if curLevel.icon and RankIconList[curLevel.icon] then
+                UI:SetImage({105682}, RankIconList[curLevel.icon], true)
+            end
+            UI:SetText({105681}, curLevel.name)
+        end
+        local weaponIconIndex, bodyIconIndex, clothIconIndex, bottomIconIndex
+        if WeaponConfig[MatchInfo.BattleWeapon.weaponId] then
+            weaponIconIndex = MatchInfo.BattleWeapon.weaponId
+        end
+        if self.localEquipments["Part"] and EquipmentConfig[self.localEquipments["Part"]] then
+            bodyIconIndex = EquipmentConfig[self.localEquipments["Part"]].AssetIndex
+        end
+        if self.localEquipments["Cloth"] and EquipmentConfig[self.localEquipments["Cloth"]] then
+            clothIconIndex = EquipmentConfig[self.localEquipments["Cloth"]].AssetIndex
+        end
+        if self.localEquipments["Bottoms"] and EquipmentConfig[self.localEquipments["Bottoms"]] then
+            bottomIconIndex = EquipmentConfig[self.localEquipments["Bottoms"]].AssetIndex
+        end
+        UI:SetImage({105686}, WeaponIconList[weaponIconIndex],true) -- 武器
+        UI:SetImage({105687},BodyIconList[bodyIconIndex],true) -- body
+        UI:SetImage({105688},ClothIconList[clothIconIndex],true) -- cloth
+        UI:SetImage({105689},BottomsIconList[bottomIconIndex],true) -- Bottoms
+
+        -- 对方信息
+        UI:SetImage({105677}, MatchInfo.BattleRivalInfo.headIcon, true)
+        UI:SetText({105685}, MatchInfo.BattleRivalInfo.name)
+        curLevel = _GAME.GameUtils.GetRankLevelByScore(MatchInfo.BattleRivalInfo.score)
+        if curLevel then
+            if curLevel.icon and RankIconList[curLevel.icon] then
+                UI:SetImage({105684}, RankIconList[curLevel.icon], true)
+            end
+            UI:SetText({105683}, curLevel.name)
+        end
+        if WeaponConfig[MatchInfo.BattleRivalInfo.weaponId] then
+            weaponIconIndex = MatchInfo.BattleWeapon.weaponId
+        end
+        if MatchInfo.BattleRivalInfo.equipments["Character"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]] then
+            bodyIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].AssetIndex
+        end
+        if MatchInfo.BattleRivalInfo.equipments["Top"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]] then
+            clothIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]].AssetIndex
+        end
+        if MatchInfo.BattleRivalInfo.equipments["Bottoms"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]] then
+            bottomIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]].AssetIndex
+        end
+        UI:SetImage({105691},WeaponIconList[weaponIconIndex],true) -- 武器
+        UI:SetImage({105694},BodyIconList[bodyIconIndex],true) -- body
+        UI:SetImage({105692},ClothIconList[clothIconIndex],true) -- cloth
+        UI:SetImage({105693},BottomsIconList[bottomIconIndex],true) -- Bottoms
     end)
 
     -- 动画效果
@@ -351,45 +433,87 @@ function GameMath:MathCountDown(MatchInfo)
     end)
 end
 
+-- 展示排位进度
+local function ShowRankProgress(curScore, newScore)
+    local stepCount = 50
+    local step = (newScore - curScore)/stepCount
+
+    local RankIconList = GetRankIconList()
+    local function SetCurRank(level)
+        if level.icon and RankIconList[level.icon] then
+            UI:SetImage({108300}, RankIconList[level.icon], true)
+        end
+        UI:SetText({108299}, level.name)
+    end
+
+    local curLevel, nextLevel = _GAME.GameUtils.GetRankLevelByScore(curScore)
+    if curLevel and nextLevel then
+        UI:SetVisible({108302},true)
+        SetCurRank(curLevel)
+
+        -- 该排名中的分段总积分
+        local maxProgress = nextLevel.base_score - curLevel.base_score
+        UI:SetProgressMaxValue({108302}, maxProgress)
+        -- 当前进度中的分段积分
+        local score = curScore
+        local curProgress = score - curLevel.base_score
+        UI:SetProgressCurrentValue({108302}, curProgress)
+
+        local animation, count = nil, 0
+        animation =  TimerManager:AddLoopTimer(1/stepCount,function ()
+            count = count + 1
+            score = score + step
+
+            if score >= nextLevel.base_score then
+                -- 切换到下一个等级图标
+                SetCurRank(nextLevel)
+                curLevel, nextLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+                if curLevel and nextLevel then
+                    maxProgress = nextLevel.base_score - curLevel.base_score
+                    UI:SetProgressMaxValue({108302}, maxProgress)
+                else
+                    UI:SetProgressCurrentValue({108302}, maxProgress)
+                    TimerManager:RemoveTimer(animation)
+                    return
+                end
+            end
+
+            curProgress = score - curLevel.base_score
+            UI:SetProgressCurrentValue({108302}, curProgress)
+
+            if count == stepCount then
+                TimerManager:RemoveTimer(animation)
+            end
+        end)
+    else
+        UI:SetVisible({108302},false)
+    end
+end
+
 -- 普通赛胜利
 function GameMath:OnVictory()
     --加积分
-    local Player_BattlePoints_Num = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Player_BattlePoints_Num")
-    if Player_BattlePoints_Num then
-        Player_BattlePoints_Num = Player_BattlePoints_Num + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
-    else
-        Player_BattlePoints_Num = 50
-    end
-    Log:PrintLog("[GameMath:OnVictory] Player_BattlePoints_Num" .. Player_BattlePoints_Num)
-    Archive:SetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Player_BattlePoints_Num", Player_BattlePoints_Num)
+    local score = _GAME.GameUtils.GetPlayerRankScore()
+    local newScore = score + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
+    Log:PrintLog("[GameMath:OnVictory] Player_BattlePoints_Num" .. newScore)
+    _GAME.GameUtils.SetPlayerRankScore(newScore)
+
     UI:SetVisible({108298},true)
-    local progress = 0
-    local animation = nil
-    animation =  TimerManager:AddLoopTimer(1/20,function ()
-        progress = progress + 1
-        UI:SetProgressCurrentValue({108302},progress)
-        if progress == 20 then
-            TimerManager:RemoveTimer(animation)
-        end
-    end)
+    UI:SetText({108301}, "+"..UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore)
+    ShowRankProgress(score, newScore)
+
     System:FireGameEvent(_GAME.Events.GameEnd)
 end
 
 -- 普通赛失败
 function GameMath:OnFail()
     --减积分
-    local Player_BattlePoints_Num = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Player_BattlePoints_Num")
-    if Player_BattlePoints_Num then
-        Player_BattlePoints_Num = Player_BattlePoints_Num + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
-        if Player_BattlePoints_Num < 0 then
-            Player_BattlePoints_Num = 0
-        end
-    else
-        Player_BattlePoints_Num = 0
-    end
-    Log:PrintLog("[GameMath:OnFail] Player_BattlePoints_Num" .. Player_BattlePoints_Num)
-    Archive:SetPlayerData(self.localPlayerId,Archive.TYPE.Number , "Player_BattlePoints_Num", Player_BattlePoints_Num)
+    local score = _GAME.GameUtils.GetPlayerRankScore()
+    Log:PrintLog("[GameMath:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
+    _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
+
     UI:SetVisible({106509}, true)
+    UI:SetText({109444}, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore.." 积分")
     System:FireGameEvent(_GAME.Events.GameEnd)
 end
 
@@ -416,8 +540,9 @@ function GameMath:InitGoldMatch()
         return res
     end
 
-    local headIcons = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(),"Avatar",CustomProperty.PROPERTY_TYPE.Image)
-
+    local headIcons = GetHeadIconList()
+    local curScore = _GAME.GameUtils.GetPlayerRankScore()
+    
     table.insert(self.goldWinnerRivalInfo, {isSelf = true})
     -- 取 7 个不重复的整数
     local picks = sample_unique(#MatchConfig.PlayerName, 7)
@@ -429,6 +554,7 @@ function GameMath:InitGoldMatch()
             equipments = self:GetRandomEquipments(), -- 所有装备
             name = MatchConfig.PlayerName[picks[i]], -- 名字
             headIcon = headIcons[math.random(1, #headIcons)], -- 头像
+            score = curScore+math.random(0, 200), -- 积分
         })
     end
     self:UpdateGoldHead()
@@ -493,7 +619,12 @@ function GameMath:StartGoldMatch()
     self.goldBattleRival.name = goldRivalInfo.name
     -- 装备
     self.goldBattleRival.equipments = goldRivalInfo.equipments
+    -- 积分
+    self.goldBattleRival.score = goldRivalInfo.score
+    -- 头像
+    self.goldBattleRival.headIcon = goldRivalInfo.headIcon
     MatchInfo.BattleRivalInfo = self.goldBattleRival
+
     -- 剩余的匹配队伍
     self.goldShowBattleRivals = mathRivals
     MatchInfo.GoldShowBattleRivals = {}
@@ -655,6 +786,17 @@ function GameMath:OnGoldFail()
             -- 公布排名
             UI:SetVisible({110204, 110718},true)
             UI:SetText({110206},"第"..rank.."名")
+            local CurrencyIconList = GetCurrencyIconList()
+            for i, v in ipairs(MatchConfig.GoldEnd_Reward_UI) do
+                local reward = GoldRewardConfig[rank][i]
+                if reward then
+                    local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
+                    if cfg and cfg.iconIndex then
+                        UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
+                    end    
+                    UI:SetText({v.text}, tostring(reward.count))
+                end
+            end
 
             System:FireGameEvent(_GAME.Events.GameEnd)
         end
@@ -749,16 +891,21 @@ function GameMath:OnGoldBattleContinue()
         end
     end
 
-    -- Log:PrintDebug("self.goldWinnerRivalInfo:")
-    -- for i, v in pairs(self.goldWinnerRivalInfo) do
-    --     Log:PrintDebug("self.goldWinnerRivalInfo["..i.."] = "..v.name.." "..v.failCount)
-    -- end
-    -- Log:PrintDebug("self.goldFailerRivalInfo:")
-    -- for i, v in pairs(self.goldFailerRivalInfo) do
-    --     Log:PrintDebug("self.goldFailerRivalInfo["..i.."] = "..v.name.." "..v.failCount)
-    -- end
-
     UI:SetVisible(MatchConfig.MatchUI_Next,true)
+
+    -- 下一局奖励
+    
+    -- local CurrencyIconList = GetCurrencyIconList()
+    -- for i, v in ipairs(MatchConfig.GoldEnd_Reward_UI) do
+    --     local reward = GoldRewardConfig[rank][i]
+    --     if reward then
+    --         local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
+    --         if cfg and cfg.iconIndex then
+    --             UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
+    --         end    
+    --         UI:SetText({v.text}, tostring(reward.count))
+    --     end
+    -- end
 
     -- 如果是败者组第二局，比较特殊，34为这一局新加入的对手，但是需要分别和12匹配，在这里手动调整一下顺位
     if self.goldBattleRound == 2 then
