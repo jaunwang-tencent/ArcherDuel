@@ -442,12 +442,12 @@ local UIConfig = {
         LeftView = {
             ID = 104220,
             --角色
-            Part = {
+            Character = {
                 Label = 104839,
                 Image = 100506,
             },
             --上衣
-            Coat = {
+            Top = {
                 Label = 104838,
                 Image = 100507,
             },
@@ -461,12 +461,12 @@ local UIConfig = {
         RightView = {
             ID = 104219,
             --弓箭
-            Weapon = {
+            Bow = {
                 Label = 104843,
                 Image = 100509,
             },
             --投斧
-            Equip = {
+            Aex = {
                 Label = 104842,
                 Image = 100510,
             },

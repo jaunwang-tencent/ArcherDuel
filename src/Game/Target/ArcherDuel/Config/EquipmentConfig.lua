@@ -3,7 +3,7 @@
 local EquipmentConfig = {
     [1] = {
         --角色1
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "哈士奇",
         --资产名称
         AssetName = "Character",
@@ -39,7 +39,7 @@ local EquipmentConfig = {
     },
     [2] = {
         --角色2
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "好好鸭",
         --资产名称
         AssetName = "Character",
@@ -75,7 +75,7 @@ local EquipmentConfig = {
     },
     [3] = {
         --角色3
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "紫萝萝",
         --资产名称
         AssetName = "Character",
@@ -111,7 +111,7 @@ local EquipmentConfig = {
     },
     [4] = {
         --角色4
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "巨鳄霸",
         --资产名称
         AssetName = "Character",
@@ -147,7 +147,7 @@ local EquipmentConfig = {
     },
     [5] = {
         --角色5
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "羊小萌",
         --资产名称
         AssetName = "Character",
@@ -183,7 +183,7 @@ local EquipmentConfig = {
     },
     [6] = {
         --角色6
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "小红狐",
         --资产名称
         AssetName = "Character",
@@ -219,7 +219,7 @@ local EquipmentConfig = {
     },
     [7] = {
         --角色7
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "玫珊珊",
         --资产名称
         AssetName = "Character",
@@ -255,7 +255,7 @@ local EquipmentConfig = {
     },
     [8] = {
         --角色8
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "哞哞牛",
         --资产名称
         AssetName = "Character",
@@ -291,7 +291,7 @@ local EquipmentConfig = {
     },
     [9] = {
         --角色9
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "鼠朵朵",
         --资产名称
         AssetName = "Character",
@@ -327,7 +327,7 @@ local EquipmentConfig = {
     },
     [10] = {
         --角色10
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "胖胖达",
         --资产名称
         AssetName = "Character",
@@ -363,7 +363,7 @@ local EquipmentConfig = {
     },
     [11] = {
         --角色11
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "小青蛙",
         --资产名称
         AssetName = "Character",
@@ -399,7 +399,7 @@ local EquipmentConfig = {
     },
     [12] = {
         --角色12
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "易斑斑",
         --资产名称
         AssetName = "Character",
@@ -435,7 +435,7 @@ local EquipmentConfig = {
     },
     [13] = {
         --角色13
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "卡皮巴拉",
         --资产名称
         AssetName = "Character",
@@ -471,7 +471,7 @@ local EquipmentConfig = {
     },
     [14] = {
         --角色14
-        TypeName = "Part",
+        TypeName = "Character",
         NickName = "虎子哥",
         --资产名称
         AssetName = "Character",
@@ -507,7 +507,7 @@ local EquipmentConfig = {
     },
     [15] = {
         --上衣1
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "少年时代上装",
         --资产名称
         AssetName = "Top",
@@ -545,7 +545,7 @@ local EquipmentConfig = {
     },
     [16] = {
         --上衣2
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "沙滩旅客上装",
         --资产名称
         AssetName = "Top",
@@ -583,7 +583,7 @@ local EquipmentConfig = {
     },
     [17] = {
         --上衣3
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "清爽运动上装",
         --资产名称
         AssetName = "Top",
@@ -621,7 +621,7 @@ local EquipmentConfig = {
     },
     [18] = {
         --上衣4
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "邻家学妹上装",  
         --资产名称
         AssetName = "Top",
@@ -659,7 +659,7 @@ local EquipmentConfig = {
     },
     [19] = {
         --上衣5
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "蓝色童话上装",
         --资产名称
         AssetName = "Top",
@@ -697,7 +697,7 @@ local EquipmentConfig = {
     },
     [20] = {
         --上衣6
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "白桃气泡上装",
         --资产名称
         AssetName = "Top",
@@ -734,7 +734,7 @@ local EquipmentConfig = {
     },
     [21] = {
         --上衣7
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "星小递上装",
         --资产名称
         AssetName = "Top",
@@ -771,7 +771,7 @@ local EquipmentConfig = {
     },
     [22] = {
         --上衣8
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "芝士桃桃上装",
         --资产名称
         AssetName = "Top",
@@ -808,7 +808,7 @@ local EquipmentConfig = {
     },
     [23] = {
         --上衣9
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "三花摩卡上装",
         --资产名称
         AssetName = "Top",
@@ -845,7 +845,7 @@ local EquipmentConfig = {
     },
     [24] = {
         --上衣10
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "专业态度上装",
         --资产名称
         AssetName = "Top",
@@ -882,7 +882,7 @@ local EquipmentConfig = {
     },
     [25] = {
         --上衣11
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "活力绅士上装",
         --资产名称
         AssetName = "Top",
@@ -919,7 +919,7 @@ local EquipmentConfig = {
     },
     [26] = {
         --上衣12
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "春风探险上装",
         --资产名称
         AssetName = "Top",
@@ -956,7 +956,7 @@ local EquipmentConfig = {
     },
     [27] = {
         --上衣13
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "彩虹旋律上装",
         --资产名称
         AssetName = "Top",
@@ -993,7 +993,7 @@ local EquipmentConfig = {
     },
     [28] = {
         --上衣14
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "烘焙甜心上装",
         --资产名称
         AssetName = "Top",
@@ -1030,7 +1030,7 @@ local EquipmentConfig = {
     },
     [29] = {
         --上衣15
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "灰色边缘上装",  
         --资产名称
         AssetName = "Top",
@@ -1067,7 +1067,7 @@ local EquipmentConfig = {
     },
     [30] = {
         --上衣16
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "蓝莓戚风上装",  
         --资产名称
         AssetName = "Top",
@@ -1104,7 +1104,7 @@ local EquipmentConfig = {
     },
     [31] = {
         --上衣17
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "红梅丝绒上装",  
         --资产名称
         AssetName = "Top",
@@ -1141,7 +1141,7 @@ local EquipmentConfig = {
     },
     [32] = {
         --上衣18
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "最佳员工上装",  
         --资产名称
         AssetName = "Top",
@@ -1178,7 +1178,7 @@ local EquipmentConfig = {
     },
     [33] = {
         --上衣19
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "绅士礼服上装",  
         --资产名称
         AssetName = "Top",
@@ -1215,7 +1215,7 @@ local EquipmentConfig = {
     },
     [34] = {
         --上衣20
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "海岛风情上装",  
         --资产名称
         AssetName = "Top",
@@ -1252,7 +1252,7 @@ local EquipmentConfig = {
     },
     [35] = {
         --上衣21
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "海岛一刻上装",  
         --资产名称
         AssetName = "Top",
@@ -1289,7 +1289,7 @@ local EquipmentConfig = {
     },
     [36] = {
         --上衣22
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "春日校园上装",  
         --资产名称
         AssetName = "Top",
@@ -1326,7 +1326,7 @@ local EquipmentConfig = {
     },
     [37] = {
         --上衣23
-        TypeName = "Cloth",
+        TypeName = "Top",
         NickName = "青春筑梦上装",  
         --资产名称
         AssetName = "Top",

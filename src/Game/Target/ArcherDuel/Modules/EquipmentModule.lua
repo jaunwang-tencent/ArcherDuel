@@ -6,32 +6,7 @@ local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 
 --升级配置
-local UpgradeConfig = {
-    [1] = {
-        [1] = 375,
-        [2] = 845,
-        [3] = 1435,
-        [4] = 3875,
-    },
-    [2] = {
-        [1] = 625,
-        [2] = 1150,
-        [3] = 2150,
-        [4] = 4250,
-    },
-    [3] = {
-        [1] = 1500,
-        [2] = 3000,
-        [3] = 5875,
-        [4] = 7050,
-    },
-    [4] = {
-        [1] = 2000,
-        [2] = 4000,
-        [3] = 6250,
-        [4] = 8935,
-    },
-}
+local UpgradeConfig = UGCS.Target.ArcherDuel.Config.UpgradeConfig
 
 --- 打开
 ---@param PlayerData 玩家数据
@@ -147,7 +122,7 @@ function EquipmentModule:RegreshBodyUI()
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
         else
             --没有装备则清空
-            UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress}, false)
+            UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress, EquipmentSlot.Image}, false)
         end
     end
 end

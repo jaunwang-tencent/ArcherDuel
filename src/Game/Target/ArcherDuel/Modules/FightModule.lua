@@ -4,10 +4,16 @@ local FightModule = {}
 local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+--装备配置
+local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 
 --- 打开
 ---@param PlayerData 玩家数据
 function FightModule:Open(PlayerData)
+    --寄存玩家数据
+    self.PlayerData = PlayerData
+
+    self:RegreshBodyUI()
     local HomeView = UIConfig.HomeView
     local CenterView = HomeView and HomeView.CenterView
 
@@ -23,7 +29,6 @@ function FightModule:Open(PlayerData)
     UI:RegisterPressed(CenterView.Golden.ID, function() --跳转黄金联赛按钮
         self:OnGolden()
     end)
-
 
     UI:RegisterPressed(CenterView.Diamond.ID, function() --跳转钻石联赛按钮
         self:OnDiamond()
@@ -74,8 +79,7 @@ function FightModule:Open(PlayerData)
         end
     end
 
-    --寄存玩家数据
-    self.PlayerData = PlayerData
+
 end
 
 --- 刷新
@@ -97,6 +101,48 @@ function FightModule:Close()
     UI:UnRegisterPressed(CenterView.Match.Button)
     UI:UnRegisterPressed(CenterView.Rank.Button)
     self.PlayerData = nil
+end
+
+--- 刷新图标
+---@param IconUI 图标资源
+---@param Index 图标索引
+function FightModule:RefreshIcon(IconUI, Equipment)
+    local EquipmentData = EquipmentConfig[Equipment.ID]
+    local AssetName = EquipmentData.AssetName or "weapon_icon"
+    local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
+    local ElementId = System:GetScriptParentID()
+
+    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+    local IconId = IconIdArray[AssetIndex]
+    UI:SetImage({IconUI}, IconId, true)
+end
+
+--- 刷新身体上的数据
+function FightModule:RegreshBodyUI()
+    local HomeView = UIConfig.HomeView
+    local PlayerData = self.PlayerData
+    --角色身上的装备
+    local EquipmentSlotConfig = {
+        [1] = HomeView.LeftView.Character,
+        [2] = HomeView.LeftView.Top,
+        [3] = HomeView.LeftView.Bottoms,
+        [4] = HomeView.RightView.Bow,
+        [5] = HomeView.RightView.Aex,
+        [6] = HomeView.RightView.Spear,
+    }
+    local BodyEquipment = PlayerData.BodyEquipment
+    for Category, EquipmentSlot in pairs(EquipmentSlotConfig) do
+        local Equipment = BodyEquipment[Category]
+        if Equipment then
+            --设置等级
+            UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
+            --图标
+            self:RefreshIcon(EquipmentSlot.Image, Equipment)
+        else
+            --没有装备则清空
+            UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress, EquipmentSlot.Image}, false)
+        end
+    end
 end
 
 function FightModule:OnClickAd1()
