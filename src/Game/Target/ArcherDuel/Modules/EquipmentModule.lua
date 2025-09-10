@@ -365,13 +365,16 @@ function EquipmentModule:OpenDetailView(Equipment)
         AttributeLabel = DetailView.AttributeIcon.Accuracy
     end
     if AttributeValue and AttributeLabel then
+        --当前数值
         local Value = AttributeValue + (Attributes.Growth * (Equipment.Level - 1))
-        local CurrentProgress = Value / (AttributeValue + Attributes.Growth * (5 - Equipment.Level)) *100
-        local NextProgress = Value / (AttributeValue + Attributes.Growth* (4 - Equipment.Level)) * 100
+        --总数值
+        local TotalValue = AttributeValue + 5 * Attributes.Growth
+        local CurrentProgress = Value / TotalValue * 100
+        local NextProgress = (Value + Attributes.Growth) / TotalValue * 100
         --当前属性
-        UI:SetText({EquipmentView.CurrentAttribute}, tostring(Value))
+        UI:SetText({DetailView.CurrentAttribute}, tostring(Value))
         --强化属性
-        UI:SetText({EquipmentView.EnhanceAttribute}, tostring(Value + Attributes.Growth))
+        UI:SetText({DetailView.EnhanceAttribute}, tostring(Value + Attributes.Growth))
         --当前进度
         UI:SetProgressCurrentValue({DetailView.UpgradeProgress.Current}, CurrentProgress)
         --下一进度
