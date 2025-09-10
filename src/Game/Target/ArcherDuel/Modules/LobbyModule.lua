@@ -121,24 +121,7 @@ function LobbyModule:LoadData()
         AllEquipment = MiscService:JsonStr2Table(All_Equipment_Table)
     else
         --没有则初始化
-        AllEquipment = {}
-        local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true }
-        for ID, Data in pairs(GearConfig) do
-            local HasInit = InitEquippedID[ID]
-            local Equipment = {
-                ID = ID,                        --装备编号ID
-                Level = 1,                      --装备等级
-                Piece = 0,                      --碎片数量
-                Category = Data.Category,       --装备类别
-                Unlock = HasInit,               --是否解锁
-                Equipped = HasInit,             --是否装备
-            }
-            if HasInit then
-                Equipment.Piece = 35
-                Equipment.Level = 3
-            end
-            AllEquipment[ID] = Equipment
-        end
+        AllEquipment = self:DefaultEquipmentData()
     end
     self.PlayerData.AllEquipment = AllEquipment
     self:RefreshEquipmentData()
@@ -151,200 +134,7 @@ function LobbyModule:LoadData()
         --文字转为组
         AllGoods = MiscService:JsonStr2Table(All_Goods_Table)
     else
-        --没有则初始化
-        AllGoods = {}
-        --3.1、限定奖池
-        AllGoods.LimitItem = {
-            [1] = {
-                --消耗品【约定：关系或】
-                Consumables = {
-                    --消耗一个黄金宝箱
-                    GoldBox = 1,
-                    --或者600个砖石
-                    Diamond = 600,
-                },
-                --商品
-                Goods = {
-                    Equipments = {
-                        [1] = { ID = 1, Piece = 10 },
-                        [2] = { ID = 15, Piece = 15 },
-                        [3] = { ID = 38, Piece = 20 },
-                        [4] = { ID = 61, Piece = 25 },
-                        [5] = { ID = 77, Piece = 30 },
-                        [6] = { ID = 93, Piece = 30 },
-                    }
-                }
-            },
-            [2] = {
-                --消耗品【约定：关系或】
-                Consumables = {
-                    --广告资源
-                    Ad = "test_ad_tag",
-                    --广告冷却时间
-                    AdCoolTime = 24 * 3600
-                },
-                --商品
-                Goods = {
-                    Equipments = {
-                        [1] = { ID = 1, Piece = 10 },
-                        [2] = { ID = 15, Piece = 15 },
-                        [3] = { ID = 38, Piece = 20 },
-                        [4] = { ID = 61, Piece = 25 },
-                        [5] = { ID = 77, Piece = 30 },
-                        [6] = { ID = 93, Piece = 30 },
-                    }
-                }
-            },
-            [3] = {
-                --消耗品
-                Consumables = {
-                    --消耗一个白银宝箱
-                    SilverBox = 1,
-                    --或者600个砖石
-                    Diamond = 180,
-                },
-                --商品
-                Goods = {
-                    Equipments = {
-                        [1] = { ID = 2, Piece = 10 },
-                        [2] = { ID = 16, Piece = 15 },
-                        [3] = { ID = 39, Piece = 20 },
-                        [4] = { ID = 62, Piece = 25 },
-                        [5] = { ID = 78, Piece = 30 },
-                        [6] = { ID = 94, Piece = 30 },
-                    }
-                }
-            },
-            [4] = {
-                --消耗品
-                Consumables = {
-                    --广告资源
-                    Ad = "test_ad_tag",
-                    --广告冷却时间
-                    AdCoolTime = 24 * 3600
-                },
-                --商品
-                Goods = {
-                    Equipments = {
-                        [1] = { ID = 2, Piece = 10 },
-                        [2] = { ID = 16, Piece = 15 },
-                        [3] = { ID = 39, Piece = 20 },
-                        [4] = { ID = 62, Piece = 25 },
-                        [5] = { ID = 78, Piece = 30 },
-                        [6] = { ID = 94, Piece = 30 },
-                    }
-                }
-            }
-        }
-        --3.2、每日限购
-        AllGoods.DailyItem = {
-            [1] = {
-                --消耗品
-                Consumables = {
-                    --消耗100个砖石
-                    Diamond = 100,
-                    --最大收集次数
-                    MaxCollect = 2,
-                    --已收集次数
-                    HasCollect = 0
-                },
-                --商品
-                Goods = {
-                    Equipments = {
-                        [1] = { ID = 3, Piece = 10 }
-                    }
-                }
-            },
-            [2] = {
-                --消耗品
-                Consumables = {
-                    --消耗50个砖石
-                    Diamond = 50,
-                    --最大收集次数
-                    MaxCollect = 3,
-                    --已收集次数
-                    HasCollect = 0
-                },
-                --商品
-                Goods = {
-                    Equipments = {
-                        [1] = { ID = 4, Piece = 10 }
-                    }
-                }
-            },
-            [3] = {
-                --消耗品
-                Consumables = {
-                    --消耗100个砖石
-                    Diamond = 600,
-                    --最大收集次数
-                    MaxCollect = 1,
-                    --已收集次数
-                    HasCollect = 0
-                },
-                --商品
-                Goods = {
-                    Equipments = {
-                        [1] = { ID = 5, Piece = 10 }
-                    }
-                }
-            }
-        }
-        --3.3、宝石
-        AllGoods.DiamondItem = {
-            [1] = {
-                --消耗品
-                Consumables = {
-                    --广告资源
-                    Ad = "test_ad_tag",
-                    --最大收集次数
-                    MaxCollect = 5,
-                    --已收集次数
-                    HasCollect = 0
-                },
-                --商品
-                Goods = {
-                    --获得砖石
-                    Diamond = 60
-                }
-            }
-        }
-        --3.4、金币
-        AllGoods.CoinItem = {
-            [1] = {
-                --消耗品
-                Consumables = {
-                    --消耗100个砖石
-                    Diamond = 150,
-                },
-                --商品
-                Goods = {
-                    Coin = 1500,
-                }
-            },
-            [2] = {
-                --消耗品
-                Consumables = {
-                    --消耗100个砖石
-                    Diamond = 1000,
-                },
-                --商品
-                Goods = {
-                    Coin = 12000,
-                }
-            },
-            [3] = {
-                --消耗品
-                Consumables = {
-                    --消耗100个砖石
-                    Diamond = 4200,
-                },
-                --商品
-                Goods = {
-                    Coin = 37000,
-                }
-            }
-        }
+        AllGoods = self:DefaultStoreData()
     end
     self.PlayerData.AllGoods = AllGoods
     self:RefreshStoreData()
@@ -460,6 +250,30 @@ function LobbyModule:RegisterGameEvent()
     end)
 end
 
+--- 初始化一套缺省装备信息
+function LobbyModule:DefaultEquipmentData()
+    --没有则初始化
+    local AllEquipment = {}
+    local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true }
+    for ID, Data in pairs(GearConfig) do
+        local HasInit = InitEquippedID[ID]
+        local Equipment = {
+            ID = ID,                        --装备编号ID
+            Level = 1,                      --装备等级
+            Piece = 0,                      --碎片数量
+            Category = Data.Category,       --装备类别
+            Unlock = HasInit,               --是否解锁
+            Equipped = HasInit,             --是否装备
+        }
+        if HasInit then
+            Equipment.Piece = 35
+            Equipment.Level = 3
+        end
+        AllEquipment[ID] = Equipment
+    end
+    return AllEquipment
+end
+
 --- 刷新装备
 function LobbyModule:RefreshEquipmentData()
     Log:PrintLog("RefreshEquipmentData")
@@ -513,6 +327,205 @@ function LobbyModule:RefreshEquipmentData()
     self.PlayerData.HasUseEquipment = HasUseEquipment
     self.PlayerData.UnUseEquipment = UnUseEquipment
     self.PlayerData.GroupByCategory = GroupByCategory
+end
+
+--- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】
+function LobbyModule:DefaultStoreData()
+    --没有则初始化
+    AllGoods = {}
+    --3.1、限定奖池
+    AllGoods.LimitItem = {
+        [1] = {
+            --消耗品【约定：关系或】
+            Consumables = {
+                --消耗一个黄金宝箱
+                GoldBox = 1,
+                --或者600个砖石
+                Diamond = 600,
+            },
+            --商品
+            Goods = {
+                Equipments = {
+                    [1] = { ID = 1, Piece = 10 },
+                    [2] = { ID = 15, Piece = 15 },
+                    [3] = { ID = 38, Piece = 20 },
+                    [4] = { ID = 61, Piece = 25 },
+                    [5] = { ID = 77, Piece = 30 },
+                    [6] = { ID = 93, Piece = 30 },
+                }
+            }
+        },
+        [2] = {
+            --消耗品【约定：关系或】
+            Consumables = {
+                --广告资源
+                Ad = "test_ad_tag",
+                --广告冷却时间
+                AdCoolTime = 24 * 3600
+            },
+            --商品
+            Goods = {
+                Equipments = {
+                    [1] = { ID = 1, Piece = 10 },
+                    [2] = { ID = 15, Piece = 15 },
+                    [3] = { ID = 38, Piece = 20 },
+                    [4] = { ID = 61, Piece = 25 },
+                    [5] = { ID = 77, Piece = 30 },
+                    [6] = { ID = 93, Piece = 30 },
+                }
+            }
+        },
+        [3] = {
+            --消耗品
+            Consumables = {
+                --消耗一个白银宝箱
+                SilverBox = 1,
+                --或者600个砖石
+                Diamond = 180,
+            },
+            --商品
+            Goods = {
+                Equipments = {
+                    [1] = { ID = 2, Piece = 10 },
+                    [2] = { ID = 16, Piece = 15 },
+                    [3] = { ID = 39, Piece = 20 },
+                    [4] = { ID = 62, Piece = 25 },
+                    [5] = { ID = 78, Piece = 30 },
+                    [6] = { ID = 94, Piece = 30 },
+                }
+            }
+        },
+        [4] = {
+            --消耗品
+            Consumables = {
+                --广告资源
+                Ad = "test_ad_tag",
+                --广告冷却时间
+                AdCoolTime = 24 * 3600
+            },
+            --商品
+            Goods = {
+                Equipments = {
+                    [1] = { ID = 2, Piece = 10 },
+                    [2] = { ID = 16, Piece = 15 },
+                    [3] = { ID = 39, Piece = 20 },
+                    [4] = { ID = 62, Piece = 25 },
+                    [5] = { ID = 78, Piece = 30 },
+                    [6] = { ID = 94, Piece = 30 },
+                }
+            }
+        }
+    }
+    --3.2、每日限购
+    AllGoods.DailyItem = {
+        [1] = {
+            --消耗品
+            Consumables = {
+                --消耗100个砖石
+                Diamond = 100,
+                --最大收集次数
+                MaxCollect = 2,
+                --已收集次数
+                HasCollect = 0
+            },
+            --商品
+            Goods = {
+                Equipments = {
+                    [1] = { ID = 3, Piece = 10 }
+                }
+            }
+        },
+        [2] = {
+            --消耗品
+            Consumables = {
+                --消耗50个砖石
+                Diamond = 50,
+                --最大收集次数
+                MaxCollect = 3,
+                --已收集次数
+                HasCollect = 0
+            },
+            --商品
+            Goods = {
+                Equipments = {
+                    [1] = { ID = 4, Piece = 10 }
+                }
+            }
+        },
+        [3] = {
+            --消耗品
+            Consumables = {
+                --消耗100个砖石
+                Diamond = 600,
+                --最大收集次数
+                MaxCollect = 1,
+                --已收集次数
+                HasCollect = 0
+            },
+            --商品
+            Goods = {
+                Equipments = {
+                    [1] = { ID = 5, Piece = 10 }
+                }
+            }
+        }
+    }
+    --3.3、宝石
+    AllGoods.DiamondItem = {
+        [1] = {
+            --消耗品
+            Consumables = {
+                --广告资源
+                Ad = "test_ad_tag",
+                --最大收集次数
+                MaxCollect = 5,
+                --已收集次数
+                HasCollect = 0
+            },
+            --商品
+            Goods = {
+                --获得砖石
+                Diamond = 60
+            }
+        }
+    }
+    --3.4、金币
+    AllGoods.CoinItem = {
+        [1] = {
+            --消耗品
+            Consumables = {
+                --消耗100个砖石
+                Diamond = 150,
+            },
+            --商品
+            Goods = {
+                Coin = 1500,
+            }
+        },
+        [2] = {
+            --消耗品
+            Consumables = {
+                --消耗100个砖石
+                Diamond = 1000,
+            },
+            --商品
+            Goods = {
+                Coin = 12000,
+            }
+        },
+        [3] = {
+            --消耗品
+            Consumables = {
+                --消耗100个砖石
+                Diamond = 4200,
+            },
+            --商品
+            Goods = {
+                Coin = 37000,
+            }
+        }
+    }
+    return AllGoods
 end
 
 --- 刷新商店
