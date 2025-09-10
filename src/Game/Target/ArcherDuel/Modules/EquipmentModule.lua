@@ -114,8 +114,8 @@ function EquipmentModule:RegreshBodyUI()
                 --碎片相关
                 local CurrentPiece = Equipment.Piece
                 local Attributes = EquipmentConfig[Equipment.ID].Attributes
-                local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
-                UI:SetProgressMaxValue({EquipmentSlot.Progress}, UpgradePiece)
+                local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
+                UI:SetProgressMaxValue({EquipmentSlot.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
             end
             --图标
@@ -226,8 +226,8 @@ function EquipmentModule:RefreshListUI(Category)
             --碎片相关
             local CurrentPiece = Equipment.Piece
             local Attributes = EquipmentConfig[Equipment.ID].Attributes
-            local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
-            UI:SetProgressMaxValue({ProgressUI}, UpgradePiece)
+            local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
+            UI:SetProgressMaxValue({ProgressUI}, Upgrade.Piece)
             UI:SetProgressCurrentValue({ProgressUI}, CurrentPiece)
         end
         --是否已装备
@@ -279,7 +279,7 @@ function EquipmentModule:OpenDetailView(Equipment)
 
      local CurrentPiece = Equipment.Piece
      local Attributes = EquipmentConfig[Equipment.ID].Attributes
-     local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
+     local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
      UI:SetVisible({
         DetailView.EquippedAndMaxLevel.ID,
         DetailView.EquippedAndUpgradable.ID,
@@ -298,10 +298,10 @@ function EquipmentModule:OpenDetailView(Equipment)
             if Equipment.Level == 5 then
                 --已装备已满级
                 UI:SetVisible({DetailView.EquippedAndMaxLevel.ID},true)
-            elseif CurrentPiece >= UpgradePiece  then
+            elseif CurrentPiece >= Upgrade.Piece  then
                 --已装备可升级
                 UI:SetVisible({DetailView.EquippedAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
-                UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, UpgradePiece)
+                UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({DetailView.UpgradableTip.Progress}, CurrentPiece)
             else
                 --已装备不可升级
@@ -311,10 +311,10 @@ function EquipmentModule:OpenDetailView(Equipment)
             if Equipment.Level == 5 then
                 --可装备已满级
                 UI:SetVisible({DetailView.EquipableAndMaxLevel.ID},true)
-            elseif CurrentPiece >= UpgradePiece  then
+            elseif CurrentPiece >= Upgrade.Piece  then
                 --可装备可升级
                 UI:SetVisible({DetailView.EquipableAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
-                UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, UpgradePiece)
+                UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({DetailView.UpgradableTip.Progress}, CurrentPiece)
             else
                 --可装备不可升级
@@ -469,14 +469,14 @@ end
 ---@param Equipment 装备
 function EquipmentModule:OnUpgrade(Equipment)
     local Attributes = EquipmentConfig[Equipment.ID].Attributes
-    local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
+    local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
     --扣除碎片
-    Equipment.Piece = Equipment.Piece - UpgradePiece
+    Equipment.Piece = Equipment.Piece - Upgrade.Piece
     --升级
     Equipment.Level = Equipment.Level + 1
     --扣除资产
     local BaseData = self.PlayerData.BaseData
-    BaseData.Diamond = BaseData.Diamond - 800
+    BaseData.Diamond = BaseData.Diamond - Upgrade.Diamond
     System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
 
     --刷新数据
