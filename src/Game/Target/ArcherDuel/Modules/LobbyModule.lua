@@ -120,7 +120,7 @@ function LobbyModule:LoadData()
         BaseData[ArchiveKey] = Data
     end
     --测试【砖石，用来购买商品】
-    BaseData.Diamond = 555555
+    --BaseData.Diamond = 555555
     self.PlayerData.BaseData = BaseData
 
     --2、装备数据
