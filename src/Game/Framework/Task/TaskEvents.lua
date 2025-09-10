@@ -1,6 +1,8 @@
 local TaskEvents = {
     -- 登录游戏
     LoginGame = "LoginGame",
+    --对局
+    Battle = "Battle",
     --对局胜利
     BattleWin = "BattleWin",
     --对局完赛

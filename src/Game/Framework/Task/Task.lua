@@ -1,5 +1,4 @@
 local TaskEvents = require("Game.Framework.Task.TaskEvents")
-local TaskPool = require("Game.Framework.Task.TaskPool")
 
 -- 条件基类
 local Condition = {}
@@ -410,9 +409,7 @@ function TaskManager:handleEvent(eventType, params)
             end
         end
     end
-    if needsave then
-        self:SaveTaskData()
-    end
+    self:SaveTaskData()
 end
 
 function TaskManager:getActiveTasks()
@@ -437,7 +434,7 @@ function TaskManager:LoadSavedTaskData()
         return
     end
    
-    local str = Archive:GetplayerData(self.PlayerID, Archive.TYpE.String, "TaskDataTable"
+    local str = Archive:GetplayerData(self.PlayerID, Archive.TYpE.String, "TaskDataTable")
     Log:PrintLog("LoadData",str)
     
     local savedData = MiscService:JsonStr2Table(str)
@@ -489,6 +486,7 @@ function TaskManager:Init()
         TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
     end
 
+    local TaskPool = require("Game.Framework.Task.TaskPool")
     TaskManagerInstance = TaskPool.BuildTask()
     
     return TaskManagerInstance

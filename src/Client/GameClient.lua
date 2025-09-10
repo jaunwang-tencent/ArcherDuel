@@ -17,6 +17,9 @@ function GameClient:OnStart()
     UI:SetImage({100470},Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()))
 
     self.ArcherDuelApp = UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.App)
+
+    local TaskManager = require "Game.Framework.Task.Task"
+    TaskManager:Init()
 end
 
 -- 游戏更新

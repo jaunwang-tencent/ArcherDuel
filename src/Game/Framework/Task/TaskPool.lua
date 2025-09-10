@@ -1,7 +1,7 @@
 
 local TaskPool = {}
 
-local  TaskClass = UGCS.Framework.TaskManager.Task
+local TaskClass = require("Game.Framework.Task.Task").Task
 
 local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
