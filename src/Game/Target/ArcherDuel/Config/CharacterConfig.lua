@@ -97,7 +97,7 @@ local CharacterConfig = {
             --结束透明度
             EndAlpha = 0.1,
             --Y轴上的摆浮【策划需求，单位：米】
-            Swing = 0.1,
+            Swing = 0.2,
         },
         --伤害倍率
         DamageRateList = {
