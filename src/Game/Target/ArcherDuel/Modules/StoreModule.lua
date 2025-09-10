@@ -50,6 +50,10 @@ function StoreModule:Open(PlayerData)
 
     --寄存玩家数据
     self.PlayerData = PlayerData
+
+    UI:RegisterClicked(110962, function ()
+        self:CloseBox()
+    end)
 end
 
 --- 刷新
@@ -65,6 +69,7 @@ function StoreModule:Close()
     for _, ButtonInfo in pairs(self.ButtonInfos) do
         UI:UnRegisterPressed(ButtonInfo.ButtonID)
     end
+    UI:UnRegisterClicked(110962)
     --清除玩家数据
     self.ScrollItems = nil
     self.ButtonInfos = nil
@@ -146,6 +151,7 @@ function StoreModule:OpenBox(boxId)
     local ElementId = System:GetScriptParentID()
 
     local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+    local equipIconUIs = {110966,110957,110956}
     local rewards = _GAME.GameUtils.OpenBoxReward(boxId)
     for i, v in ipairs(rewards) do
         local EquipmentData = EquipmentConfig[v]
@@ -153,29 +159,27 @@ function StoreModule:OpenBox(boxId)
         local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
         local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
         local IconId = IconIdArray[AssetIndex]
-        UI:SetImage({IconUI}, IconId, true)
-        local IconBGArray = CustomProperty:GetCustomPropertyArray(ElementId, "", CustomProperty.PROPERTY_TYPE.Image)
-        UI:SetImage({IconUI}, IconBGArray[EquipmentData.Attributes.Grade], true)
+        UI:SetImage({equipIconUIs[i]}, IconId, true)
+        -- local IconBGArray = CustomProperty:GetCustomPropertyArray(ElementId, "", CustomProperty.PROPERTY_TYPE.Image)
+        -- UI:SetImage({IconUI}, IconBGArray[EquipmentData.Attributes.Grade], true)
     end
 
     UI:SetVisible({110963},true) -- 打开宝箱UI
+    UI:SetVisible({110962,110965,110959},false)
     TimerManager:AddTimer(2.3,function ()
-        UI:SetVisible({108053},true)
-        UI:PlayUIAnimation(108053,1,0)
-        UI:SetVisible({108052,108050},true)
-        UI:PlayUIAnimation(108050,1,0)
-        UI:PlayUIAnimation(108052,1,0)
+        UI:SetVisible(equipIconUIs,true)
+        for i, v in ipairs(equipIconUIs) do
+            UI:PlayUIAnimation(v,1,0)
+        end
     end)
     TimerManager:AddTimer(3,function ()
-        UI:EffectPausePlay(108056)
-        TimerManager:AddTimer(1.3,function ()
-            UI:SetVisible({108057},true)
-            UI:PlayUIAnimation(108058,1,0)
-            TimerManager:AddTimer(2,function ()
-                UI:SetVisible({108480},true)
-            end)
-        end)
+        UI:EffectPausePlay(110964)
+        UI:SetVisible({110962,110965,110959},true)
     end)
+end
+
+function StoreModule:CloseBox()
+    UI:SetVisible({110963},false)
 end
 
 return StoreModule
