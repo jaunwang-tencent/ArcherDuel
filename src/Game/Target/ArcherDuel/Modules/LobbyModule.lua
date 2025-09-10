@@ -283,12 +283,12 @@ function LobbyModule:RefreshEquipmentData()
     local LockedEquipment = {}
     --已装备
     local HasUseEquipment = {}
-    --装备槽【六个部位】
-    local EquipmentSlot = {}
     --未装备
     local NotUseEquipment = {}
     --按类型分组且品质降序
     local GroupByCategory = {}
+    --装备槽【六个部位】
+    local EquipmentSlot = {}
     for _, Equipment in pairs(AllEquipment) do
         --按种类分类
         local Group = GroupByCategory[Equipment.Category]

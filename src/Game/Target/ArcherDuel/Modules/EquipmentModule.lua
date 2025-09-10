@@ -71,9 +71,9 @@ function EquipmentModule:Close()
 end
 
 function EquipmentModule:RefreshUI()
-    local PlayerData = self.PlayerData
     local EquipmentView = UIConfig.EquipmentView
     local ListView = EquipmentView and EquipmentView.ListView
+    local PlayerData = self.PlayerData
     --拿出全部装备
     local AllEquipment = PlayerData.AllEquipment
     local HasUseEquipment = PlayerData.HasUseEquipment
@@ -392,7 +392,6 @@ end
 --- 装备
 ---@param Equipment 装备
 function EquipmentModule:OnEquip(Equipment)
-    --装备
     --拿到已装备
     local EquipmentSlot = self.PlayerData.EquipmentSlot
     local EquippedEquipment = EquipmentSlot[Equipment.Category]
@@ -402,7 +401,7 @@ function EquipmentModule:OnEquip(Equipment)
     end
     Equipment.Equipped = true
     --刷新数据
-    System:FireGameEvent(_GAME.Events.JumpModule, "EquipmentData")
+    System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     self:CloseDetailView()
     --刷新UI
     self:RefreshUI()
