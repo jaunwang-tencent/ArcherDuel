@@ -368,13 +368,17 @@ function EquipmentModule:OpenDetailView(Equipment)
         --当前数值
         local Value = AttributeValue + (Attributes.Growth * (Equipment.Level - 1))
         --总数值
-        local TotalValue = AttributeValue + 5 * Attributes.Growth
+        local TotalValue = AttributeValue + 4 * Attributes.Growth
         local CurrentProgress = Value / TotalValue * 100
-        local NextProgress = (Value + Attributes.Growth) / TotalValue * 100
+        local Growth = 0
+        if Equipment.Level < 5 then
+            Growth = Attributes.Growth
+        end
+        local NextProgress = (Value + Growth) / TotalValue * 100
         --当前属性
         UI:SetText({DetailView.CurrentAttribute}, tostring(Value))
         --强化属性
-        UI:SetText({DetailView.EnhanceAttribute}, tostring(Value + Attributes.Growth))
+        UI:SetText({DetailView.EnhanceAttribute}, tostring(Value + Growth))
         --当前进度
         UI:SetProgressCurrentValue({DetailView.UpgradeProgress.Current}, CurrentProgress)
         --下一进度
