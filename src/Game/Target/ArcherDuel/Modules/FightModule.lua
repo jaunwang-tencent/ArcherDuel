@@ -125,7 +125,6 @@ function FightModule:RegreshBodyUI()
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
         else
             --没有装备则清空
-            Log:PrintLog("222222222222222", Category,EquipmentSlot.Label, EquipmentSlot.Image)
             UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Image}, false)
         end
     end

@@ -126,7 +126,7 @@ local UIConfig = {
             },
             --发型
             Bottoms = {
-                Lable = 104158,
+                Label = 104158,
                 Image = 100536,
                 Progress = 104029
             }
@@ -464,7 +464,7 @@ local UIConfig = {
             },
             --下装
             Bottoms = {
-                Lable = 104837,
+                Label = 104837,
                 Image = 100508,
             }
         },
