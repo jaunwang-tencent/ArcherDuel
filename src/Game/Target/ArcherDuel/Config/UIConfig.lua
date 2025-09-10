@@ -280,39 +280,51 @@ local UIConfig = {
                 --获取跳转按钮
                 JumpButton = 100576
             },
-            --已装备
-            Equipped = {
+            --已装备不可升级
+            EquippedAndNotUpgradable = {
                 ID = 104184,
+                --已装备按钮
+                EquippedButton = 104182,
                 --获取跳转按钮
-                JumpButton = 104183
+                JumpButton = 104183,
             },
             --已装备可升级
             EquippedAndUpgradable = {
                 ID = 104194,
-                --获取跳转按钮
-                JumpButton = 104191
+                --已装备按钮
+                EquippedButton = 104190,
+                --升级按钮
+                UpgradeButton = 104191,
             },
-            --可升级
-            Upgradable = {
+            --可装备可升级
+            EquipableAndUpgradable = {
                 ID = 104187,
-                --获取跳转按钮
-                JumpButton = 104186
+                --可装备按钮
+                EquipableButton = 104185,
+                --升级按钮
+                UpgradeButton = 104186,
             },
             --已装备已满级
             EquippedAndMaxLevel = {
                 ID = 104204,
-                --获取跳转按钮
-                JumpButton = 104202
+                --已装备按钮
+                EquippedButton = 104201,
+                --已满级按钮
+                MaxLevelButton = 104202
             },
-            --已有装备已满级
-            OwnedAndMaxLevel = {
+            --可装备已满级
+            EquipableAndMaxLevel = {
                 ID = 104198,
-                --获取跳转按钮
-                JumpButton = 104197
+                --可装备按钮
+                EquipableButton = 104196,
+                --已满级按钮
+                MaxLevelButton = 104197
             },
-            --已有装备
-            Owned = {
+            --可装备不可升级
+            EquipableAndNotUpgradable = {
                 ID = 100573,
+                --可装备按钮
+                EquipableButton = 1100567,
                 --获取跳转按钮
                 JumpButton = 100568
             },

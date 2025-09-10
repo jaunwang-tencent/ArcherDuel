@@ -42,8 +42,8 @@ function EquipmentModule:Open(PlayerData)
     local AllEquipment = PlayerData.AllEquipment
     local HasUseEquipment = PlayerData.HasUseEquipment
     local HasUseCount = #HasUseEquipment
-    local UnUseEquipment = PlayerData.UnUseEquipment
-    local UnUseCount = #UnUseEquipment
+    local NotUseEquipment = PlayerData.NotUseEquipment
+    local NotUseCount = #NotUseEquipment
     local LockedEquipment = PlayerData.LockedEquipment
 
     --装备数据
@@ -97,12 +97,12 @@ function EquipmentModule:Open(PlayerData)
         if ItemDataIndex <= HasUseCount then
             --已用的
             Equipment = HasUseEquipment[ItemDataIndex]
-        elseif ItemDataIndex <= HasUseCount + UnUseCount then
+        elseif ItemDataIndex <= HasUseCount + NotUseCount then
             --未用的
-            Equipment = UnUseEquipment[ItemDataIndex - HasUseCount]
+            Equipment = NotUseEquipment[ItemDataIndex - HasUseCount]
         else
             --锁定的
-            Equipment = LockedEquipment[ItemDataIndex - HasUseCount - UnUseCount]
+            Equipment = LockedEquipment[ItemDataIndex - HasUseCount - NotUseCount]
             UI:SetImageColor({IconUI},"#595959")
         end
         --寄存到数据相
@@ -159,11 +159,13 @@ function EquipmentModule:Open(PlayerData)
     UI:SetListViewItemSelectionChangeCall(TileView.ID, function(ListViewID, ItemIndex, ItemData, Select)
         -- 进行模拟点击
         if Select then
-            if ItemData then
-                -- 执行点击操作
+            local ItemUI = UI:GetListViewItemUID(ListViewID, ItemIndex, TileView.Item.ID)
+            if ItemData and ItemUI then
+                Log:PrintLog("11111111111111111111", ItemUI, ListViewID, ItemIndex)
+                --执行点击操作
                 self.SelectTarget = ItemData
-                --触发点击事件
-                self:SelectEquipment(ItemData.Equipment)
+                --打开详情页面
+                self:OpenDetailView(ItemData.Equipment)
             end
             UI:ClearListViewSelection(TileView.ID)
         end
@@ -171,19 +173,8 @@ function EquipmentModule:Open(PlayerData)
 
     --注册按钮事件
     UI:RegisterPressed(EquipmentView.DetailView.Close, function()
-        UI:SetVisible({EquipmentView.DetailView.ID}, false)
+        self:CloseDetailView()
     end)
-    for _, ItemView in pairs(EquipmentView.DetailView) do
-        if type(ItemView) == "table" and ItemView.JumpButton then
-            UI:RegisterPressed(ItemView.JumpButton, function()
-                --跳转到商城
-                System:FireGameEvent(_GAME.Events.JumpModule, "Store")
-                --关掉详情页面
-                UI:SetVisible({EquipmentView.DetailView.ID}, false)
-            end)
-        end
-    end
-
     --寄存玩家数据
     self.PlayerData = PlayerData
 end
@@ -201,20 +192,15 @@ function EquipmentModule:Close()
     local ListView = EquipmentView and EquipmentView.ListView
     UI:InitListView(ListView.TileView.ID, {})
 
-    --注销事件
+    --注销关闭按钮事件
     UI:UnRegisterPressed(EquipmentView.DetailView.Close)
-    for _, ItemView in pairs(EquipmentView.DetailView) do
-        if type(ItemView) == "table" and ItemView.JumpButton then
-            UI:UnRegisterPressed(ItemView.JumpButton)
-        end
-    end
 
     --清空玩家数据
     self.PlayerData = nil
 end
 
 --点击装备详情界面
-function EquipmentModule:SelectEquipment(Equipment)
+function EquipmentModule:OpenDetailView(Equipment)
     local EquipmentView = UIConfig.EquipmentView
     local DetailView = EquipmentView and EquipmentView.DetailView
     --显示详情界面
@@ -223,14 +209,24 @@ function EquipmentModule:SelectEquipment(Equipment)
      --修改名字
      local EquipmentData = GearConfig[Equipment.ID]
      UI:SetText({100558}, EquipmentData.TypeName)
-     
+
      local CurrentPiece = Equipment.Piece
      local Attributes = GearConfig[Equipment.ID].Attributes
      local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
+     UI:SetVisible({
+        DetailView.EquippedAndMaxLevel.ID,
+        DetailView.EquippedAndUpgradable.ID,
+        DetailView.EquippedAndNotUpgradable.ID,
+        DetailView.EquipableAndMaxLevel.ID,
+        DetailView.EquipableAndUpgradable.ID,
+        DetailView.EquipableAndNotUpgradable.ID,
+        DetailView.NotEquipped.ID,
+        DetailView.UpgradableTip.ID,
+    }, false)
     --弹窗类型
-    if Equipment.Unlock == 1 then
+    if Equipment.Unlock then
         --解锁
-        if Equipment.Equipped == 1 then
+        if Equipment.Equipped then
             --已装备
             if Equipment.Level == 5 then
                 --已装备已满级
@@ -241,21 +237,21 @@ function EquipmentModule:SelectEquipment(Equipment)
                 UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, UpgradePiece)
                 UI:SetProgressCurrentValue({DetailView.UpgradableTip.Progress}, CurrentPiece)
             else
-                --已装备
-                UI:SetVisible({DetailView.Equipped.ID},true)
+                --已装备不可升级
+                UI:SetVisible({DetailView.EquippedAndNotUpgradable.ID},true)
             end
         else
             if Equipment.Level == 5 then
-                --已有装备已满级
-                UI:SetVisible({DetailView.OwnedAndMaxLevel.ID},true)
+                --可装备已满级
+                UI:SetVisible({DetailView.EquipableAndMaxLevel.ID},true)
             elseif CurrentPiece >= UpgradePiece  then
-                --已有装备可升级
-                UI:SetVisible({DetailView.Upgradable.ID, DetailView.UpgradableTip.ID},true)
+                --可装备可升级
+                UI:SetVisible({DetailView.EquipableAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
                 UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, UpgradePiece)
                 UI:SetProgressCurrentValue({DetailView.UpgradableTip.Progress}, CurrentPiece)
             else
-                --已有装备
-                UI:SetVisible({DetailView.Owned.ID},true)
+                --可装备不可升级
+                UI:SetVisible({DetailView.EquipableAndNotUpgradable.ID},true)
             end
         end
     else
@@ -315,6 +311,88 @@ function EquipmentModule:SelectEquipment(Equipment)
     end
 
     --【其它信息，待填充】
+
+    --注册详情页面上的按钮事件
+    for _, ItemView in pairs(EquipmentView.DetailView) do
+        if type(ItemView) == "table" then
+            if ItemView.JumpButton then
+                --跳转按钮
+                UI:RegisterPressed(ItemView.JumpButton, function()
+                    self:OnObtain(Equipment)
+                end)
+            end
+            if ItemView.MaxLevelButton then
+                --已满级按钮，啥都不做，用于截获点击事件
+                UI:RegisterPressed(ItemView.MaxLevelButton, function() end)
+            end
+            if ItemView.EquippedButton then
+                --已装备按钮，啥都不做，用于截获点击事件
+                UI:RegisterPressed(ItemView.EquippedButton, function() end)
+            end
+            if ItemView.EquipableButton then
+                --可装备按钮
+                UI:RegisterPressed(ItemView.EquipableButton, function()
+                    self:OnEquip(Equipment)
+                end)
+            end
+            if ItemView.UpgradeButton then
+                --可升级按钮
+                UI:RegisterPressed(ItemView.UpgradeButton, function()
+                    self:OnUpgrade(Equipment)
+                end)
+            end
+        end
+    end
+end
+
+--- 关闭详情页面
+function EquipmentModule:CloseDetailView()
+    Log:PrintLog("22222222222222222222")
+
+    --关掉详情页面
+    local EquipmentView = UIConfig.EquipmentView
+    UI:SetVisible({EquipmentView.DetailView.ID}, false)
+
+    --注销详情页面上的按钮事件
+    for _, ItemView in pairs(EquipmentView.DetailView) do
+        if type(ItemView) == "table" then
+            if ItemView.JumpButton then
+                UI:UnRegisterPressed(ItemView.JumpButton)
+            end
+            if ItemView.MaxLevelButton then
+                UI:UnRegisterPressed(ItemView.MaxLevelButton)
+            end
+            if ItemView.EquippedButton then
+                UI:UnRegisterPressed(ItemView.EquippedButton)
+            end
+            if ItemView.EquipableButton then
+                UI:UnRegisterPressed(ItemView.EquipableButton)
+            end
+            if ItemView.UpgradeButton then
+                UI:UnRegisterPressed(ItemView.UpgradeButton)
+            end
+        end
+    end
+end
+
+--- 获取
+---@param Equipment 装备
+function EquipmentModule:OnObtain(Equipment)
+    --跳转到商城
+    System:FireGameEvent(_GAME.Events.JumpModule, "Store", Equipment)
+    self:CloseDetailView()
+end
+
+--- 装备
+---@param Equipment 装备
+function EquipmentModule:OnEquip(Equipment)
+    self:CloseDetailView()
+end
+
+--- 升级
+---@param Equipment 装备
+function EquipmentModule:OnUpgrade(Equipment)
+    self:CloseDetailView()
 end
 
 return EquipmentModule
