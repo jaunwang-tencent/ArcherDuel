@@ -176,6 +176,8 @@ function StoreModule:OpenBox(boxId)
         UI:EffectPausePlay(110964)
         UI:SetVisible({110962,110965,110959},true)
     end)
+
+    return rewards
 end
 
 function StoreModule:CloseBox()
