@@ -138,4 +138,42 @@ function StoreModule:GainGoods(Goods)
     end
 end
 
+--- 打开宝箱
+---@param boxId 宝箱Id
+function StoreModule:OpenBox(boxId)
+    local ElementId = System:GetScriptParentID()
+
+    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+    local rewards = _GAME.GameUtils.OpenBoxReward(boxId)
+    for i, v in ipairs(rewards) do
+        local EquipmentData = EquipmentConfig[v]
+        local AssetName = EquipmentData.AssetName or "weapon_icon"
+        local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
+        local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+        local IconId = IconIdArray[AssetIndex]
+        UI:SetImage({IconUI}, IconId, true)
+        local IconBGArray = CustomProperty:GetCustomPropertyArray(ElementId, "", CustomProperty.PROPERTY_TYPE.Image)
+        UI:SetImage({IconUI}, IconBGArray[EquipmentData.Attributes.Grade], true)
+    end
+
+    UI:SetVisible({110963},true) -- 打开宝箱UI
+    TimerManager:AddTimer(2.3,function ()
+        UI:SetVisible({108053},true)
+        UI:PlayUIAnimation(108053,1,0)
+        UI:SetVisible({108052,108050},true)
+        UI:PlayUIAnimation(108050,1,0)
+        UI:PlayUIAnimation(108052,1,0)
+    end)
+    TimerManager:AddTimer(3,function ()
+        UI:EffectPausePlay(108056)
+        TimerManager:AddTimer(1.3,function ()
+            UI:SetVisible({108057},true)
+            UI:PlayUIAnimation(108058,1,0)
+            TimerManager:AddTimer(2,function ()
+                UI:SetVisible({108480},true)
+            end)
+        end)
+    end)
+end
+
 return StoreModule
