@@ -278,7 +278,7 @@ function LobbyModule:DefaultEquipmentData()
             Equipped = HasInit,             --是否装备
         }
         if HasInit then
-            Equipment.Piece = 35
+            Equipment.Piece = 10000
             Equipment.Level = 3
         end
         AllEquipment[ID] = Equipment

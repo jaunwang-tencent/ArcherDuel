@@ -98,9 +98,18 @@ function EquipmentModule:Close()
     self.PlayerData = nil
 end
 
-function EquipmentModule:RefreshUI(Category)
+--- 刷新图标
+---@param IconUI 图标资源
+---@param Index 图标索引
+function EquipmentModule:RefreshIcon(IconUI, Index)
+    local ElementId = System:GetScriptParentID()
+    local IconId = CustomProperty:GetCustomProperty(ElementId, "1", CustomProperty.PROPERTY_TYPE.Image)
+    UI:SetImage({IconUI}, IconId, true)
+end
+
+--- 刷新身体上的数据
+function EquipmentModule:RegreshBodyUI()
     local EquipmentView = UIConfig.EquipmentView
-    local ListView = EquipmentView and EquipmentView.ListView
     local PlayerData = self.PlayerData
     --角色身上的装备
     local EquipmentSlotConfig = {
@@ -111,28 +120,39 @@ function EquipmentModule:RefreshUI(Category)
         [5] = EquipmentView.RightView.Axe,
         [6] = EquipmentView.RightView.Spear,
     }
-    local BodyEquipment = self.PlayerData.BodyEquipment
-    for _, Equipment in pairs(BodyEquipment) do
-        local EquipmentSlot = EquipmentSlotConfig[Equipment.Category]
-        --设置等级
-        UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
-        if Equipment.Level == 5 then
-            --满级
-            UI:SetVisible({EquipmentSlot.Progress}, false)
+    local BodyEquipment = PlayerData.BodyEquipment
+    for Category, EquipmentSlot in pairs(EquipmentSlotConfig) do
+        local Equipment = BodyEquipment[Category]
+        if Equipment then
+            --设置等级
+            UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
+            if Equipment.Level == 5 then
+                --满级
+                UI:SetVisible({EquipmentSlot.Progress}, false)
+            else
+                UI:SetVisible({EquipmentSlot.Progress}, true)
+                --碎片相关
+                local CurrentPiece = Equipment.Piece
+                local Attributes = EquipmentConfig[Equipment.ID].Attributes
+                local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
+                UI:SetProgressMaxValue({EquipmentSlot.Progress}, UpgradePiece)
+                UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
+            end
+            --图标
+            self:RefreshIcon(EquipmentSlot.Image)
         else
-            UI:SetVisible({EquipmentSlot.Progress}, true)
-            --碎片相关
-            local CurrentPiece = Equipment.Piece
-            local Attributes = EquipmentConfig[Equipment.ID].Attributes
-            local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
-            UI:SetProgressMaxValue({EquipmentSlot.Progress}, UpgradePiece)
-            UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
+            --没有装备则清空
+            UI:SetVisible({EquipmentSlot.Label, EquipmentSlot.Progress}, false)
         end
-        --图标
-        local ElementId = System:GetScriptParentID()
-        local IconId = CustomProperty:GetCustomProperty(ElementId, "1", CustomProperty.PROPERTY_TYPE.Image)
-        UI:SetImage({EquipmentSlot.Image}, IconId, true)
     end
+end
+
+--- 刷新列表UI
+---@param Category 装备种类
+function EquipmentModule:RefreshListUI(Category)
+    local EquipmentView = UIConfig.EquipmentView
+    local ListView = EquipmentView and EquipmentView.ListView
+    local PlayerData = self.PlayerData
 
     --装备列表
     --拿出全部装备
@@ -238,9 +258,8 @@ function EquipmentModule:RefreshUI(Category)
             table.insert(HideItems, EquippedUI)
         end
         --图标
-        local ElementId = System:GetScriptParentID()
-        local IconId = CustomProperty:GetCustomProperty(ElementId, "1", CustomProperty.PROPERTY_TYPE.Image)
-        UI:SetImage({IconUI}, IconId, true)
+        self:RefreshIcon(IconUI)
+        
         --UI显隐
         UI:SetTransparency(ShowItems, 1)
         UI:SetTransparency(HideItems, 0)
@@ -259,6 +278,13 @@ function EquipmentModule:RefreshUI(Category)
             UI:ClearListViewSelection(TileView.ID)
         end
     end)
+end
+
+--- 刷新全部
+---@param Category 装备种类
+function EquipmentModule:RefreshUI(Category)
+    self:RegreshBodyUI()
+    self:RefreshListUI(Category)
 end
 
 --点击装备详情界面
@@ -323,8 +349,7 @@ function EquipmentModule:OpenDetailView(Equipment)
 
     --武器图标
     UI:SetText({ DetailView.WeaponIcon.Level }, string.format("等级%d", Equipment.Level))
-    local ElementId = System:GetScriptParentID()
-    UI:SetImage({DetailView.WeaponIcon.Icon},CustomProperty:GetCustomProperty(ElementId, "1", CustomProperty.PROPERTY_TYPE.Image),true)
+    self:RefreshIcon(DetailView.WeaponIcon.Icon)
 
     --装备属性信息
     UI:SetVisible({DetailView.AttributeIcon.ID},true)
@@ -464,7 +489,18 @@ end
 --- 升级
 ---@param Equipment 装备
 function EquipmentModule:OnUpgrade(Equipment)
+    local Attributes = EquipmentConfig[Equipment.ID].Attributes
+    local UpgradePiece = UpgradeConfig[Attributes.Grade][Equipment.Level]
+    --扣除碎片
+    Equipment.Piece = Equipment.Piece - UpgradePiece
+    --升级
+    Equipment.Level = Equipment.Level + 1
+
+    --刷新数据
+    System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     self:CloseDetailView()
+    --刷新UI
+    self:RefreshUI()
 end
 
 return EquipmentModule
