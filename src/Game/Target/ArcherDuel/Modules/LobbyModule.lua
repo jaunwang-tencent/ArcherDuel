@@ -279,7 +279,7 @@ function LobbyModule:DefaultEquipmentData()
             Equipped = HasInit,             --是否装备
         }
         if HasInit then
-            Equipment.Piece = 10000
+            Equipment.Piece = 50
             Equipment.Level = 3
         end
         AllEquipment[ID] = Equipment
@@ -489,7 +489,7 @@ function LobbyModule:DefaultStoreData()
             --商品
             Goods = {
                 --获得砖石
-                Diamond = 60
+                Diamond = 600
             }
         }
     }

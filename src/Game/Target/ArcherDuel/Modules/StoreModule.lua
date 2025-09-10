@@ -99,6 +99,8 @@ function StoreModule:BuyGood(ButtonInfo)
     elseif Consumables.Ad then
         --看广告
         Log:PrintLog("See Ad", Consumables.Ad)
+        --不看广告了，直接获得物品
+        self:GainGoods(Goods)
     else
         --不可购买
         Log:PrintLog("Cant Buy", ButtonInfo.ButtonID)

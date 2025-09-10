@@ -74,7 +74,7 @@ local UIConfig = {
             --金币
             GoldCoins = {
                 ID = 100478,
-                Label = 100474
+                Label = 103872
             },
             --砖石
             Diamonds = {
@@ -84,7 +84,7 @@ local UIConfig = {
             --点券
             Securities = {
                 ID = 103873,
-                Label = 103872
+                Label = 100474
             }
         },
         --商店-资源栏
