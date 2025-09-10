@@ -30,6 +30,7 @@ end
 
 -- 击杀条件
 local KillCondition = setmetatable({}, {__index = Condition})
+KillCondition.__index = KillCondition
 
 function KillCondition:new(params)
     local obj = Condition.new(self, "KILL", params)
@@ -47,6 +48,7 @@ end
 
 -- 收集条件
 local CollectCondition = setmetatable({}, {__index = Condition})
+CollectCondition.__index = CollectCondition
 
 function CollectCondition:new(params)
     local obj = Condition.new(self, "COLLECT", params)
@@ -64,6 +66,7 @@ end
 
 -- 对话条件
 local TalkCondition = setmetatable({}, {__index = Condition})
+TalkCondition.__index = TalkCondition
 
 function TalkCondition:new(params)
     local obj = Condition.new(self, "TALK", params)
@@ -81,6 +84,7 @@ end
 
 -- 复合条件
 local CompositeCondition = setmetatable({}, {__index = Condition})
+CompositeCondition.__index = CompositeCondition
 
 function CompositeCondition:new(operator, subConditions)
     local obj = {
@@ -96,6 +100,7 @@ end
 
 -- 参加战斗
 local BattleCondition = setmetatable({}, {__index = Condition})
+BattleCondition.__index = BattleCondition
 
 function BattleCondition:new(params)
     local obj = Condition.new(self, TaskEvents.Battle, params)
@@ -114,6 +119,8 @@ end
 
 -- 参加战斗
 local BattleWinCondition = setmetatable({}, {__index = Condition})
+BattleWinCondition.__index = BattleWinCondition
+
 
 function BattleWinCondition:new(params)
     local obj = Condition.new(self, TaskEvents.BattleWin, params)
@@ -131,6 +138,7 @@ end
 
 
 local LoginGameCondition = setmetatable({}, {__index = Condition})
+LoginGameCondition.__index = LoginGameCondition
 
 function LoginGameCondition:new(params)
     local obj = Condition.new(self, TaskEvents.LoginGame, params)
@@ -148,6 +156,7 @@ end
 
 
 local HeadShotCondition = setmetatable({}, {__index = Condition})
+HeadShotCondition.__index = HeadShotCondition
 
 function HeadShotCondition:new(params)
     local obj = Condition.new(self, TaskEvents.HeadShot, params)
@@ -338,10 +347,12 @@ function TaskManager:GetInsatnce()
     obj.conditionFactories[TaskEvents.Battle] = function(params) return BattleCondition:new(params) end
     obj.conditionFactories[TaskEvents.BattleWin] = function(params) return BattleWinCondition:new(params) end
     obj.conditionFactories[TaskEvents.LoginGame] = function(params) return LoginGameCondition:new(params) end
+    obj.conditionFactories[TaskEvents.HeadShot] = function(params) return HeadShotCondition:new(params) end
 
     setmetatable(obj, self)
     TaskManager.Instance = obj
     System:RegisterGameEvent(_GAME.Events.ExecuteTask, function(EventName, params)
+        Log:PrintDebug("eventType:", EventName)
         TaskManager.Instance:handleEvent(EventName, params)
     end)
 
@@ -397,11 +408,11 @@ function TaskManager:finishTask(taskId)
     local task = self.tasks[taskId]
     if not task then return false end
 
-    if not task.State == Task.State.COMPLETED then
+    if not task.state == Task.State.COMPLETED then
         return false
     end
     
-    task.State = Task.State.FINISH
+    task.state = Task.State.FINISH
     return true
 end
 
@@ -454,7 +465,7 @@ function TaskManager:LoadSavedTaskData()
         return
     end
    
-    local str = Archive:GetplayerData(self.PlayerID, Archive.TYpE.String, "TaskDataTable")
+    local str = Archive:GetplayerData(self.PlayerID, Archive.TYPE.String, "TaskDataTable")
     Log:PrintLog("LoadData",str)
     
     local savedData = MiscService:JsonStr2Table(str)
@@ -491,10 +502,10 @@ function TaskManager:SaveTaskData()
             cond.completed = cond.completed
             table.insert( data.conditions, cond)
         end
-        table.insert( saveData.conditions, data)
+        table.insert( saveData, data)
     end
     local str = MiscService:Table2JsonStr(saveData)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYpE.String, "TaskDataTable", str)
+    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable", str)
 
 end
 
