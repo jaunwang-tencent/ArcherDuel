@@ -80,6 +80,12 @@ MatchConfig.MatchUI_Next = {109965,110108,110079,110069,110109,110070}
 MatchConfig.Victory_UI = {108053,108052,108050,108057,108048,108480}
 MatchConfig.Fail_UI = {106509}
 MatchConfig.BlackScreen_UI = {109970,110054}
+
+MatchConfig.GoldTop3_Show_UI = {110786,110792,110827,110826,110822,110823,110824,110825}
+MatchConfig.GoldTop3_Reward_UI = {
+    {icon = 110822, text = 110824},
+    {icon = 110823, text = 110825},
+}
 MatchConfig.GoldEnd_Reward_UI = {
     {icon = 110713, text = 110715},
     {icon = 110714, text = 110716},
@@ -87,14 +93,14 @@ MatchConfig.GoldEnd_Reward_UI = {
 
 MatchConfig.GoldWinner_UI = {110085,110082,110648,110615,110626}
 MatchConfig.GoldWinner_Reward_UI = {
-    {icon = 110622, text = 110680},
-    {icon = 110679, text = 110681},
+    {icon = 110622, text = 110624},
+    {icon = 110623, text = 110625},
 }
 
 MatchConfig.GoldFailer_UI = {110074,110078,110683,110652,110682}
 MatchConfig.GoldFailer_Reward_UI = {
-    {icon = 110678, text = 110624},
-    {icon = 110623, text = 110625},
+    {icon = 110678, text = 110680},
+    {icon = 110679, text = 110681},
 }
 MatchConfig.Gold_Head_UI = {110768,110769,110770,110771,110763,110765,110766,110767} -- 黄金赛分组赛头像，从左到右，从下到上
 MatchConfig.GoldWinner_Head_UI = {

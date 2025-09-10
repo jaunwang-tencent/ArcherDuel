@@ -50,13 +50,13 @@ _GAME.NetMsg = {
 _GAME.GameUtils = require "Game.GameUtils"
 local GameServer = require "Server.GameServer"
 local GameClient = require "Client.GameClient"
-local GameMath = require "Math.GameMath"
+local GameMatch = require "Match.GameMatch"
 
 ------------------------------------------------- Game Life ---------------------------------------------------------
 -- 初始化
 GameServer:Init()
 GameClient:Init()
-GameMath:Init()
+GameMatch:Init()
 
 -- 客户端游戏更新
 local function UpdateClient()
@@ -90,7 +90,7 @@ local function OnBeginPlay()
         TimerManager:AddLoopFrame(1, UpdateClient)
     end
 
-    GameMath:OnStart()
+    GameMatch:OnStart()
 end
 
 -- 脚本结束时调用
@@ -103,7 +103,7 @@ local function OnEndPlay()
         GameClient:OnEnd()
     end
 
-    GameMath:OnEnd()
+    GameMatch:OnEnd()
 end
 
 -- 监听脚本启动事件

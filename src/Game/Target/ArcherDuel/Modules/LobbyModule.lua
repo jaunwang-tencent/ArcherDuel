@@ -23,6 +23,7 @@ local ArchiveConfig = {
     "Rank",                     --段位
     "GoldBox",                  --金宝箱
     "SilverBox",                --银宝箱
+    "NormalBox",                --普通宝箱
     "Daily_Progress",
     "Player_BattlePoints_Num",  --门票
     "Player_TaskExp_Num",       --每日任务经验

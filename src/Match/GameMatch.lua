@@ -1,12 +1,12 @@
-﻿local MatchConfig = require("Math.MatchConfig")
-local GoldRewardConfig = require("Math.GoldRewardConfig")
+﻿local MatchConfig = require("Match.MatchConfig")
+local GoldRewardConfig = require("Match.GoldRewardConfig")
 
-local GameMath = {}
+local GameMatch = {}
 
 math.randomseed(TimerManager:GetClock()) -- 设置随机数种子
 
-function GameMath:Init()
-    Log:PrintLog("[GameMath:Init]")
+function GameMatch:Init()
+    Log:PrintLog("[GameMatch:Init]")
 
     -- 构造武器类型表
     self.weaponMap = {}
@@ -96,13 +96,13 @@ function GameMath:Init()
     self:BindEvents()
 end
 
-function GameMath:OnStart()
-    Log:PrintLog("[GameMath:OnStart]")
+function GameMatch:OnStart()
+    Log:PrintLog("[GameMatch:OnStart]")
 end
 
 -- 游戏结束
-function GameMath:OnEnd()
-    Log:PrintLog("[GameMath:OnEnd]")
+function GameMatch:OnEnd()
+    Log:PrintLog("[GameMatch:OnEnd]")
 end
 
 ------------------------------ 匹配 ------------------------------
@@ -136,7 +136,7 @@ local function GetCurrencyIconList()
 end
 
 -- 绑定事件
-function GameMath:BindEvents()
+function GameMatch:BindEvents()
     -- 收到开始匹配的事件
     System:RegisterGameEvent(_GAME.Events.StartMatch, function()
         if self.isGold then
@@ -224,8 +224,8 @@ function GameMath:BindEvents()
 
     --- 黄金赛点击下一局
     UI:RegisterClicked(110079,function ()
-        UI:SetVisible({110085,110082},false)
-        UI:SetVisible({110074,110078},false)
+        UI:SetVisible(MatchConfig.GoldWinner_UI,false)
+        UI:SetVisible(MatchConfig.GoldFailer_UI,false)
         UI:SetVisible(MatchConfig.MatchUI_Next,false)
 
         System:FireGameEvent(_GAME.Events.StartMatch)
@@ -237,12 +237,36 @@ function GameMath:BindEvents()
     -- 黄金赛结束
     UI:RegisterClicked(110205,function ()
         UI:SetVisible({110204},false)
+        UI:SetVisible(MatchConfig.GoldWinner_UI,false)
+        UI:SetVisible(MatchConfig.GoldFailer_UI,false)
+        UI:SetVisible(MatchConfig.MatchUI_Next,false)
+        UI:SetVisible(MatchConfig.MatchUI_Start,false)
+        System:FireSignEvent("GoHome")
+    end)
+    -- 黄金赛结算前往开启
+    UI:RegisterClicked(110785,function ()
+        UI:SetVisible(MatchConfig.GoldTop3_Show_UI,false)
+        System:FireSignEvent("GoHome")
+    end)
+    -- 黄金赛结算退出
+    UI:RegisterClicked(110788,function ()
+        UI:SetVisible(MatchConfig.GoldTop3_Show_UI,false)
+        System:FireSignEvent("GoHome")
+    end)
+    -- 黄金赛中途退出
+    UI:RegisterClicked(110720,function ()
+        UI:SetVisible({109965},false)
+        UI:SetVisible(MatchConfig.GoldWinner_UI,false)
+        UI:SetVisible(MatchConfig.GoldFailer_UI,false)
+        UI:SetVisible(MatchConfig.MatchUI_Next,false)
+        UI:SetVisible(MatchConfig.MatchUI_Start,false)
+        self:GoldExist()
         System:FireSignEvent("GoHome")
     end)
 end
 
 -- 随机获取一套装备
-function GameMath:GetRandomEquipments()
+function GameMatch:GetRandomEquipments()
     local equipments = {}
     for i, v in pairs(self.equipmentMap) do
         local index = math.random(1, #v)
@@ -252,7 +276,7 @@ function GameMath:GetRandomEquipments()
 end
 
 -- 随机获取一套武器
-function GameMath:GetRandomWeapons()
+function GameMatch:GetRandomWeapons()
     local weapons = {}
     for i, v in pairs(self.weaponMap) do
         local index = math.random(1, #v)
@@ -262,7 +286,7 @@ function GameMath:GetRandomWeapons()
 end
 
 -- 开始匹配
-function GameMath:StartMatch()
+function GameMatch:StartMatch()
     local MatchInfo = {}
 
     MatchInfo.MapId = self.mapId
@@ -308,7 +332,7 @@ function GameMath:StartMatch()
 end
 
 -- 匹配倒计时
-function GameMath:MathCountDown(MatchInfo)
+function GameMatch:MathCountDown(MatchInfo)
     UI:SetVisible(MatchConfig.MatchUI_Next,false)
     -- 地图名称
     UI:SetText({105665}, MatchConfig.Map[self.mapId])
@@ -491,11 +515,11 @@ local function ShowRankProgress(curScore, newScore)
 end
 
 -- 普通赛胜利
-function GameMath:OnVictory()
+function GameMatch:OnVictory()
     --加积分
     local score = _GAME.GameUtils.GetPlayerRankScore()
     local newScore = score + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
-    Log:PrintLog("[GameMath:OnVictory] Player_BattlePoints_Num" .. newScore)
+    Log:PrintLog("[GameMatch:OnVictory] Player_BattlePoints_Num" .. newScore)
     _GAME.GameUtils.SetPlayerRankScore(newScore)
 
     UI:SetVisible({108298},true)
@@ -506,10 +530,10 @@ function GameMath:OnVictory()
 end
 
 -- 普通赛失败
-function GameMath:OnFail()
+function GameMatch:OnFail()
     --减积分
     local score = _GAME.GameUtils.GetPlayerRankScore()
-    Log:PrintLog("[GameMath:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
+    Log:PrintLog("[GameMatch:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
     _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
 
     UI:SetVisible({106509}, true)
@@ -519,8 +543,17 @@ end
 
 ---------------------------------------- 黄金赛 ----------------------------------------
 
+local GoldBattleStep = {
+    [1] = { 1, 1, 1, 1, 0, 0, 0, 0 }, --第一局结束，1为胜者组，0为失败组
+    [2] = { 1, 1, 0, 0, 0, 0 }, --第2局结束，1为胜者组，0为失败组，败者组中继续失败则被淘汰
+    [3] = { 1, 0, 0, 0 },
+    [4] = { 1, 0, 0 },
+    [5] = { 1, 0 },
+    [6] = { 1 },
+}
+
 -- 黄金赛在一开始就随机好保存所有对手信息
-function GameMath:InitGoldMatch()
+function GameMatch:InitGoldMatch()
     --隐藏领奖台
     TimerManager:AddFrame(10, function()
         Element:SetVisibility(MatchConfig.GoldSceneConfig[self.mapId].Podium, false)
@@ -561,7 +594,7 @@ function GameMath:InitGoldMatch()
 end
 
 -- 取一个黄金赛的对手出来
-function GameMath:GetGoldBattleRivalInfo()
+function GameMatch:GetGoldBattleRivalInfo()
     if self.goldFailCount == 0 then
         if self.isGoldFinalBattle then
             return self.goldFailerRivalInfo[1] -- 决赛，取出最后一位
@@ -590,7 +623,7 @@ function GameMath:GetGoldBattleRivalInfo()
 end
 
 -- 开始黄金赛匹配
-function GameMath:StartGoldMatch()
+function GameMatch:StartGoldMatch()
     local MatchInfo = {}
 
     MatchInfo.MapId = self.mapId
@@ -677,7 +710,7 @@ function GameMath:StartGoldMatch()
 end
 
 -- 黄金赛匹配对手
-function GameMath:GoldMathRivals()
+function GameMatch:GoldMathRivals()
     local MathRivals, BattleRival = {}, {} --匹配对手,战斗对手
     if self.isGoldFinalBattle then --最后一局，进行其他表演选手匹配
         local rival1 = self.goldWinnerRivalInfo[1]
@@ -717,7 +750,7 @@ function GameMath:GoldMathRivals()
 end
 
 -- 黄金赛胜利
-function GameMath:OnGoldVictory()
+function GameMatch:OnGoldVictory()
     self.goldBattleResult = true
 
     if self.isGoldFinalBattle then --决赛胜出
@@ -727,6 +760,7 @@ function GameMath:OnGoldVictory()
         table.insert(top3Players, self.goldBattleRival) -- 第二名本局对手
         table.insert(top3Players, self.lastDefeatRival) -- 第3名从剩下的人中取一个
 
+        self:SaveGoldReward(1)
         self:ShowGoldTop3(top3Players)
         System:FireGameEvent(_GAME.Events.GameEnd)
         return
@@ -768,18 +802,19 @@ function GameMath:OnGoldVictory()
 end
 
 -- 黄金赛失败
-function GameMath:OnGoldFail()
+function GameMatch:OnGoldFail()
     self.goldBattleResult = false
     self.goldFailCount = self.goldFailCount + 1
 
     if self.goldFailCount == 2 then -- 失败2次，黄金赛结束
-        local rank = #self.goldFailerRivalInfo + #self.goldWinnerRivalInfo + 1
+        local rank = #GoldBattleStep[self.goldBattleRound]
         if rank <= 3 then -- 3名以内，进行展示
             local top3Players = {}
             table.insert(top3Players, self.goldBattleRival) -- 第1名本局对手
             table.insert(top3Players, {isSelf = true}) -- 第2名自己
             table.insert(top3Players, self.lastDefeatRival) -- 第3名从剩下的人中取一个
 
+            self:SaveGoldReward(2)
             self:ShowGoldTop3(top3Players)
             System:FireGameEvent(_GAME.Events.GameEnd)
         else
@@ -798,6 +833,7 @@ function GameMath:OnGoldFail()
                 end
             end
 
+            self:SaveGoldReward(rank)
             System:FireGameEvent(_GAME.Events.GameEnd)
         end
         return
@@ -829,7 +865,7 @@ function GameMath:OnGoldFail()
 end
 
 -- 黄金赛某个人判负
-function GameMath:GoldRivalDefeat(name)
+function GameMatch:GoldRivalDefeat(name)
     for i = #self.goldFailerRivalInfo, 1, -1 do
         if self.goldFailerRivalInfo[i].name == name then
             -- 淘汰
@@ -856,7 +892,7 @@ end
 --依次类推，在第3局结束后，胜者组还会剩下最后一人，败者组还会剩下3人
 --第四局和第五局为败者组中3人，依次进行比赛，决出败者组最后一人
 --第6局为胜者组最后一人和败者组最后一人进行决赛
-function GameMath:OnGoldBattleContinue()
+function GameMatch:OnGoldBattleContinue()
     self.goldBattleRound = self.goldBattleRound + 1
     self.isGoldFinalBattle = false
     if self.goldFailCount == 0 then --没有失败过，在胜者组
@@ -893,19 +929,21 @@ function GameMath:OnGoldBattleContinue()
 
     UI:SetVisible(MatchConfig.MatchUI_Next,true)
 
-    -- 下一局奖励
-    
-    -- local CurrencyIconList = GetCurrencyIconList()
-    -- for i, v in ipairs(MatchConfig.GoldEnd_Reward_UI) do
-    --     local reward = GoldRewardConfig[rank][i]
-    --     if reward then
-    --         local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
-    --         if cfg and cfg.iconIndex then
-    --             UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
-    --         end    
-    --         UI:SetText({v.text}, tostring(reward.count))
-    --     end
-    -- end
+    -- 下一局奖励，按照下一局赢之后全输的情况来计算
+    local step = GoldBattleStep[self.goldBattleRound-1 + 2-self.goldFailCount] -- 按照后两局全输来决定排名奖励
+    local rank = #step
+    local CurrencyIconList = GetCurrencyIconList()
+    local rewardUI = self.goldFailCount == 0 and MatchConfig.GoldWinner_Reward_UI or MatchConfig.GoldFailer_Reward_UI
+    for i, v in ipairs(rewardUI) do
+        local reward = GoldRewardConfig[rank][i]
+        if reward then
+            local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
+            if cfg and cfg.iconIndex then
+                UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
+            end    
+            UI:SetText({v.text}, tostring(reward.count))
+        end
+    end
 
     -- 如果是败者组第二局，比较特殊，34为这一局新加入的对手，但是需要分别和12匹配，在这里手动调整一下顺位
     if self.goldBattleRound == 2 then
@@ -917,12 +955,12 @@ function GameMath:OnGoldBattleContinue()
 end
 
 -- 黄金赛Top3展示
-function GameMath:ShowGoldTop3(top3Players)
+function GameMatch:ShowGoldTop3(top3Players)
     Element:SetVisibility(MatchConfig.GoldSceneConfig[self.mapId].Podium, true) --显示领奖台
 
     local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 
-    local function CreateFakePlayer(top, Equipments)
+    local function CreateFakePlayer(top, Equipments, isSelf)
         local PosElemnt = MatchConfig.GoldSceneConfig[self.mapId]["Top"..top]
         Element:SetVisibility(PosElemnt, false)
         local pos = Element:GetPosition(PosElemnt)
@@ -936,7 +974,11 @@ function GameMath:ShowGoldTop3(top3Players)
                     table.insert(bodyIds, EquipmentConfig[v].EquipID)
                 end
             end
-            FakeCharacter:ChangeCharacterBody(UID, bodyIds)
+            if isSelf then
+                FakeCharacter:ChangeBodyFromPlayer(UID, self.localPlayerId)
+            else
+                FakeCharacter:ChangeCharacterBody(UID, bodyIds)
+            end
         end
         if top == 1 then
             TimerManager:AddTimer(1, function()
@@ -945,12 +987,14 @@ function GameMath:ShowGoldTop3(top3Players)
         end
     end
 
+    local rank = 1
     for i, v in ipairs(top3Players) do
         local equipments = v.equipments
         if v.isSelf then
+            rank = i
             equipments = self.localEquipments
         end
-        CreateFakePlayer(i, equipments)
+        CreateFakePlayer(i, equipments, v.isSelf)
     end
 
     Camera:MovieCameraStart(MatchConfig.GoldSceneConfig[self.mapId].Camera)
@@ -959,14 +1003,28 @@ function GameMath:ShowGoldTop3(top3Players)
     Element:MoveTo(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(3000,0,1000),1,Element.CURVE.linear)
     Element:SetForward(MatchConfig.GoldSceneConfig[self.mapId].Camera, -Element:GetForward(MatchConfig.GoldSceneConfig[self.mapId].Podium))
 
-    TimerManager:AddTimer(2, function()
+    TimerManager:AddTimer(1, function()
         -- 公布排名
-        UI:SetVisible({110204, 110718},true)
-        UI:SetText({110206},"")
+        UI:SetVisible(MatchConfig.GoldTop3_Show_UI,true)
+        UI:SetText({110787}, "第"..rank.."名")
+
+        local CurrencyIconList = GetCurrencyIconList()
+        for i, v in ipairs(MatchConfig.GoldTop3_Reward_UI) do
+            local reward = GoldRewardConfig[rank][i]
+            if reward then
+                local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
+                if cfg and cfg.iconIndex then
+                    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzzz 111 ", v.icon, cfg.iconIndex)
+                    UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
+                end    
+                    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzzz 222 ", v.text, reward.count)
+                UI:SetText({v.text}, tostring(reward.count))
+            end
+        end
     end)
 end
 
-function GameMath:SetGoldHeadState(bWiner, victory, name, isSelf)
+function GameMatch:SetGoldHeadState(bWiner, victory, name, isSelf)
     local Head_UI, RivalInfo
     if bWiner then --在胜者组
         Head_UI = MatchConfig.GoldWinner_Head_UI
@@ -988,12 +1046,11 @@ function GameMath:SetGoldHeadState(bWiner, victory, name, isSelf)
     if UIs and UIs[index] then
         local state = victory and 1 or 2 --1:胜利，2:失败
         self.goldHeadStates[state] = self.goldHeadStates[state] or {}
-        Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzzz ", bWiner, victory, index, UIs[index])
         table.insert(self.goldHeadStates[state], UIs[index])
     end
 end
 
-function GameMath:UpdateGoldHead()
+function GameMatch:UpdateGoldHead()
     if self.goldBattleRound == 0 then -- 分组赛
         for i, v in ipairs(self.goldWinnerRivalInfo) do
             if v.isSelf then
@@ -1033,4 +1090,24 @@ function GameMath:UpdateGoldHead()
     end
 end
 
-return GameMath
+-- 黄金赛中途退出
+function GameMatch:GoldExist()
+    if self.goldBattleRound == 0 then return end
+
+    local step = GoldBattleStep[self.goldBattleRound-1 + 2-self.goldFailCount] -- 按照后两局全输来决定排名奖励
+    local rank = #step
+    self:SaveGoldReward(rank)
+end
+
+-- 保存黄金赛奖励
+function GameMatch:SaveGoldReward(rank)
+    local GoldReward = GoldRewardConfig[rank]
+    for i, v in pairs(GoldReward) do
+        local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[v.id]
+        if cfg then
+            _GAME.GameUtils.AddPlayerReward(cfg.archive, v.count)
+        end
+    end
+end
+
+return GameMatch
