@@ -499,6 +499,10 @@ function EquipmentModule:OnUpgrade(Equipment)
     Equipment.Piece = Equipment.Piece - UpgradePiece
     --升级
     Equipment.Level = Equipment.Level + 1
+    --扣除资产
+    local BaseData = self.PlayerData.BaseData
+    BaseData.Diamond = BaseData.Diamond - 800
+    System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
 
     --刷新数据
     System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
