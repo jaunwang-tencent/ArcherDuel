@@ -47,7 +47,7 @@ function FightModule:Open(PlayerData)
 
     local Rank = CenterView and CenterView.Rank
     if Rank then
-        local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "RankIconList", CustomProperty.PROPERTY_TYPE.Image)
+        local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Rank", CustomProperty.PROPERTY_TYPE.Image)
         local BattlePoints = PlayerData.BaseData["Player_BattlePoints_Num"]
         local level = _GAME.GameUtils.GetRankLevelByScore(BattlePoints)
         if level.icon and list[level.icon] then

@@ -108,7 +108,7 @@ end
 ------------------------------ 匹配 ------------------------------
 
 local function GetRankIconList()
-    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "RankIconList", CustomProperty.PROPERTY_TYPE.Image)
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Rank", CustomProperty.PROPERTY_TYPE.Image)
 end
 
 local function GetHeadIconList()

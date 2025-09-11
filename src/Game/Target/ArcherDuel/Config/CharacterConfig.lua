@@ -116,7 +116,7 @@ local CharacterConfig = {
         --角色属性参数
         Attributes = {
             --健康值
-            Health = 400,
+            Health = 0,
         },
     }
 }

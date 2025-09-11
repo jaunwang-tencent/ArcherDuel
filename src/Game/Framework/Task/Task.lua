@@ -465,7 +465,7 @@ function TaskManager:LoadSavedTaskData()
         return
     end
    
-    local str = Archive:GetplayerData(self.PlayerID, Archive.TYPE.String, "TaskDataTable")
+    local str = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "TaskDataTable")
     Log:PrintLog("LoadData",str)
     
     local savedData = MiscService:JsonStr2Table(str)
