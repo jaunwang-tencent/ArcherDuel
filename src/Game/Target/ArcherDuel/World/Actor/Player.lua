@@ -339,16 +339,24 @@ function Player:GetEquipData(ForceUpdate)
         -- Log:PrintLog("self.WeaponConfig.TypeName", self.WeaponConfig.TypeName)
 
         local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
-        -- 基础伤害
-        local damage = 20 -- self.WeaponConfig.Attributes.Attack + self.WeaponConfig.Attributes.Growth * Weapon_Lv + EquipmentConfig[Part_Num].Attributes.Attack + EquipmentConfig[Part_Num].Attributes.Growth * Part_Lv
-        -- 头部伤害倍率
-        local head_damageRate = 1 -- self.WeaponConfig.Attributes.HeadShotIncrease
-        -- 身体伤害倍率
-        local body_damageRate = 1 -- self.WeaponConfig.Attributes.BodyShotIncrease
-
         local ClothConfig = EquipmentConfig and EquipmentConfig[Cloth_Num]
         local PartConfig = EquipmentConfig and EquipmentConfig[Part_Num]
         local BottomsConfig = EquipmentConfig and EquipmentConfig[Bottoms_Num]
+
+        -- 基础伤害
+        local damage = 20
+        -- 头部伤害倍率
+        local head_damageRate = 1
+        -- 身体伤害倍率
+        local body_damageRate = 1
+        if self.WeaponConfig ~= nil then
+            head_damageRate = self.WeaponConfig.Attributes.HeadShotIncrease
+            body_damageRate = self.WeaponConfig.Attributes.BodyShotIncrease
+            if PartConfig ~= nil then
+                damage = self.WeaponConfig.Attributes.Attack + self.WeaponConfig.Attributes.Growth * Weapon_Lv
+                            + PartConfig.Attributes.Attack + PartConfig.Attributes.Growth * Part_Lv
+            end
+        end
 
         -- 血量加成
         local hp = 100
