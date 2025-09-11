@@ -375,6 +375,8 @@ local UIConfig = {
             NickName = 105652,
             --血条
             HPValue = 105650,
+            --伤害
+            DamageText = 111284,
         },
         --敌方玩家
         EnemyPlayer = {
@@ -384,6 +386,8 @@ local UIConfig = {
             NickName = 105653,
             --血条
             HPValue = 105649,
+            --伤害
+            DamageText = 111273,
         },
         --瞄准角度
         AimPitch = {

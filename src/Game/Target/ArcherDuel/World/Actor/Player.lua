@@ -98,6 +98,7 @@ function Player:OnDestroy()
     --清空属性
     self.Attributes = nil
     self.UI_HP = nil
+    self.UI_Damage = nil
 
     --销毁角色状态机
     self.FSM:Destroy()
@@ -132,6 +133,15 @@ end
 ---@return Health 血量
 function Player:GetHealth()
     return self.Attributes.Health
+end
+
+function Player:ShowDamage(Damage)
+    if self.OnlyShow then return end
+    if self.UI_Damage ~= nil then
+        UI:SetVisible({self.UI_Damage}, true)
+        UI:SetText({self.UI_Damage}, string.format("-%d", math.floor(Damage)))
+        UI:PlayUIAnimation(self.UI_Damage, 1, 0)
+    end
 end
 
 --- 设置血量
@@ -300,6 +310,7 @@ function Player:SetPlayerHP()
             local HUD_HPList = {self.UI_HP}
             UI:SetProgressMaxValue(HUD_HPList, self.Attributes.Health)
             UI:SetProgressCurrentValue(HUD_HPList, self.Attributes.Health)
+            self.UI_Damage = PlayerView.DamageText
         end
     end
 end
@@ -575,6 +586,10 @@ function Player:HandleDamage(Attacker, BodyType)
     --4、扣血计算
     local Health = self:GetHealth()
     Health = Health - Damage
+
+    --5、伤害UI跳字
+    self:ShowDamage(Damage)
+
     self:SetHealth(Health)
 end
 
