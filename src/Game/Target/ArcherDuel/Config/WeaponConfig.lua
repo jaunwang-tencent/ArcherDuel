@@ -256,6 +256,8 @@ local WeaponConfig = {
             Accuracy = 0,
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
+            -- 成长值
+            Growth = 11,
         },
     },
     [2] = {
@@ -465,6 +467,8 @@ local WeaponConfig = {
             Accuracy = 0,
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
+            -- 成长值
+            Growth = 11,
         },
     },
     [3] = {
@@ -658,6 +662,8 @@ local WeaponConfig = {
             Accuracy = 0,
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
+            -- 成长值
+            Growth = 11,
         },
     },
 }
