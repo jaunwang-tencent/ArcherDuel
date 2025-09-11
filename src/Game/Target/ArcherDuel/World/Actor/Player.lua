@@ -304,47 +304,71 @@ function Player:SetPlayerHP()
     end
 end
 
+function Player:GetDefaultData(PlayerID, KeyStr, DefaultValue)
+    local data = Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, KeyStr)
+    if not data or data == 0 then
+        data = DefaultValue
+    end
+    return data
+end
+
 -- 获取玩家装备数据
 function Player:GetEquipData(ForceUpdate)
     if ForceUpdate or not self.EquipData then
         local PlayerID = Character:GetLocalPlayerId()
-        local Bow_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bow_Num")
-        local Spear_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Spear_Num")
-        local Axe_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Axe_Num")
-        local Part_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Part_Num")
-        local Bottoms_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bottoms_Num")
-        local Cloth_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Num")
-        local Bow_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bow_Lv")
-        local Spear_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Spear_Lv")
-        local Axe_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Axe_Lv")
-        local Part_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Part_Lv")
-        local Bottoms_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bottoms_Lv")
-        local Cloth_Lv = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Lv")
+        local Part_Num = self:GetDefaultData(PlayerID, "Equipped_Part_Num", 1)
+        local Bottoms_Num = self:GetDefaultData(PlayerID, "Equipped_Bottoms_Num", 38)
+        local Cloth_Num = self:GetDefaultData(PlayerID, "Equipped_Cloth_Num", 15)
+        local Bow_Lv = self:GetDefaultData(PlayerID, "Equipped_Bow_Lv", 1)
+        local Spear_Lv = self:GetDefaultData(PlayerID, "Equipped_Spear_Lv", 1)
+        local Axe_Lv = self:GetDefaultData(PlayerID, "Equipped_Axe_Lv", 1)
+        local Part_Lv = self:GetDefaultData(PlayerID, "Equipped_Part_Lv", 1)
+        local Bottoms_Lv = self:GetDefaultData(PlayerID, "Equipped_Bottoms_Lv", 1)
+        local Cloth_Lv = self:GetDefaultData(PlayerID, "Equipped_Cloth_Lv", 1)
 
-        local Weapon_Num , Weapon_Lv
+        local Weapon_Lv
+        -- todo self.WeaponType is nil
         if self.WeaponType == 1 then
-            Weapon_Num = Bow_Num
             Weapon_Lv = Bow_Lv
         elseif self.WeaponType == 2 then
-            Weapon_Num = Spear_Num
             Weapon_Lv = Spear_Lv
         else
-            Weapon_Num = Axe_Num
             Weapon_Lv = Axe_Lv
         end
-         -- 基础伤害
-        local damage = 20-- self.WeaponConfig[Weapon_Num].Attributes.Attack + self.WeaponConfig[Weapon_Num].Attributes.Growth * Weapon_Lv + self.WeaponConfig[Part_Num].Attributes.Attack + self.WeaponConfig[Part_Num].Attributes.Growth * Part_Lv
-        -- 头部伤害倍率
-        local head_damageRate = 1-- self.WeaponConfig[Weapon_Num].Attributes.HeadShotIncrease
-        -- 身体伤害倍率
-        local body_damageRate = 1-- self.WeaponConfig[Weapon_Num].Attributes.BodyShotIncrease
-        -- 血量加成
+
+        -- Log:PrintLog("self.WeaponConfig.TypeName", self.WeaponConfig.TypeName)
+
         local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
-        local hp = 100-- EquipmentConfig[Cloth_Num].Attributes.Heal + self.WeaponConfig[Cloth_Num].Attributes.Growth * Cloth_Lv
+        -- 基础伤害
+        local damage = 20 -- self.WeaponConfig.Attributes.Attack + self.WeaponConfig.Attributes.Growth * Weapon_Lv + EquipmentConfig[Part_Num].Attributes.Attack + EquipmentConfig[Part_Num].Attributes.Growth * Part_Lv
+        -- 头部伤害倍率
+        local head_damageRate = 1 -- self.WeaponConfig.Attributes.HeadShotIncrease
+        -- 身体伤害倍率
+        local body_damageRate = 1 -- self.WeaponConfig.Attributes.BodyShotIncrease
+
+        local ClothConfig = EquipmentConfig and EquipmentConfig[Cloth_Num]
+        local PartConfig = EquipmentConfig and EquipmentConfig[Part_Num]
+        local BottomsConfig = EquipmentConfig and EquipmentConfig[Bottoms_Num]
+
+        -- 血量加成
+        local hp = 100
+        if ClothConfig ~= nil then
+            hp = ClothConfig.Attributes.Heal + ClothConfig.Attributes.Growth * Cloth_Lv
+        end
+
         -- 头部保护
-        local head_protection = 0-- EquipmentConfig[Part_Num].Attributes.HeadShotReduction + EquipmentConfig[Cloth_Num].Attributes.DamageReduction + EquipmentConfig[Bottoms_Num].Attributes.DamageReduction
+        local head_protection = 0
+        if ClothConfig ~= nil and PartConfig ~= nil and BottomsConfig ~= nil then
+            head_protection = PartConfig.Attributes.HeadShotReduction + ClothConfig.Attributes.DamageReduction
+                                + BottomsConfig.Attributes.DamageReduction
+        end
+
         -- 身体保护
-        local body_protection = 0-- EquipmentConfig[Cloth_Num].Attributes.BodyShotReduction + EquipmentConfig[Bottoms_Num].Attributes.BodyShotReduction + EquipmentConfig[Cloth_Num].Attributes.DamageReduction + EquipmentConfig[Bottoms_Num].Attributes.DamageReduction
+        local body_protection = 0
+        if ClothConfig ~= nil and BottomsConfig ~= nil then
+            body_protection = ClothConfig.Attributes.BodyShotReduction + BottomsConfig.Attributes.BodyShotReduction
+                                + ClothConfig.Attributes.DamageReduction + BottomsConfig.Attributes.DamageReduction
+        end
 
         if self:IsControlled() then -- 玩家自身的属性
             self.EquipData = {
