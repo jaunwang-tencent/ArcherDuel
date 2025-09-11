@@ -28,6 +28,7 @@ local ArchiveConfig = {
     "Player_BattlePoints_Num",  --门票
     "Player_TaskExp_Num",       --每日任务经验
     "Player_CollectTask_Num",   --每日领取任务，按位来标记任务是否已领取
+    "Rank_DiamondScore_Num",    --钻石联赛中的积分
 }
 
 --- 打开
