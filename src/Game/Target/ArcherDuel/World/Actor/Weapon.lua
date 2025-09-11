@@ -256,7 +256,7 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                     if EndPoint.X - StartPoint.X < 0 then
                         tmepDis = -tmepDis
                     end
-                    NewEndPoint = Engine.Vector(EndPoint.X + tmepDis, 0, StartPoint.Z)
+                    NewEndPoint = Engine.Vector(EndPoint.X + tmepDis, EndPoint.Y, StartPoint.Z)
                 end
                 local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, NewEndPoint, Segment, Curvature, ExtraRate)
 
