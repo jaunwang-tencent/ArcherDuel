@@ -178,6 +178,21 @@ function GameMatch:BindEvents()
 
     -- 开箱表演动画
     UI:RegisterPressed(108303,function ()
+        if self.VictoryRewards ~= nil then
+            local ElementId = System:GetScriptParentID()
+            local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+            local equipIconUIs = {108054, 108055}
+            for i, v in ipairs(self.VictoryRewards) do
+                local EquipmentData = EquipmentConfig[v]
+                local AssetName = EquipmentData.AssetName or "weapon_icon"
+                local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
+                local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+                local IconId = IconIdArray[AssetIndex]
+                UI:SetImage({equipIconUIs[i]}, IconId, true)
+            end
+            self.VictoryRewards = nil
+        end
+
         UI:SetVisible({108298},false)
         UI:SetVisible({108048,108056},true)
         TimerManager:AddTimer(2.3,function ()
@@ -527,6 +542,34 @@ function GameMatch:OnVictory()
     UI:SetVisible({108298},true)
     UI:SetText({108301}, "+"..UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore)
     ShowRankProgress(score, newScore)
+
+    --发奖励
+    local rewards = _GAME.GameUtils.GetRewardsByWin()
+    local AllEquipment
+    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table") then
+        --这里读取玩家的装备 --并进行排序
+        local All_Equipment_Table = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.String, "All_Equipment_Table")
+        --文字转为组
+        AllEquipment = MiscService:JsonStr2Table(All_Equipment_Table)
+    else
+        --没有则初始化
+        AllEquipment = _GAME.GameUtils.DefaultEquipmentData()
+    end
+    for _, EquipmentID in pairs(rewards) do
+        local TargetEquipment = AllEquipment[EquipmentID]
+        if TargetEquipment.Unlock then
+            --累加碎片
+            TargetEquipment.Piece = TargetEquipment.Piece + 1
+        else
+            --解锁
+            TargetEquipment.Unlock = true
+        end
+    end
+    local All_Equipment_Table = MiscService:Table2JsonStr(AllEquipment)
+    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table", All_Equipment_Table)
+
+    self.VictoryRewards = rewards
+    Log:PrintLog("VictoryRewards, End: ", self.VictoryRewards[1], self.VictoryRewards[2])
 
     System:FireGameEvent(_GAME.Events.GameEnd)
 end
