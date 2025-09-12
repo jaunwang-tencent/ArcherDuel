@@ -413,6 +413,7 @@ function TaskManager:finishTask(taskId)
     end
     
     task.state = Task.State.FINISH
+    self:SaveTaskData()
     return true
 end
 
@@ -470,9 +471,9 @@ function TaskManager:LoadSavedTaskData()
     
     local savedData = MiscService:JsonStr2Table(str)
     if savedData == nil then
-       return 
+       return
     end
-    local  TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
     for i, v in pairs (savedData) do
         local task = TaskManagerInstance:getTask(i)
         if task then

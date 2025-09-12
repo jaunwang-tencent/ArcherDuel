@@ -11,7 +11,7 @@ function TaskModule:Open(PlayerData)
 end
 
 function TaskModule:LoadData()
-    local Task = {110369,110375,110381,110387,110393,110399,110405,110411,110417,110423,110429,110435,110441,110447,110453,110459,110465}
+    local Task = {110369}
     UI:SetVisible(Task, true)
 
     self:RefreshTaskUI()
@@ -54,8 +54,8 @@ function TaskModule:RefreshTaskProcesUI()
         end 
     end
     UI:SetText({UIConfig.TaskView.TaskProcesView.Text},tostring(TaskExp))
-    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp)
-    UI:SetProgressMaxValue({TaskProcesID}, 240)
+    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp / 240 * 100)
+    UI:SetProgressMaxValue({TaskProcesID}, 100)
 end
 
 function TaskModule:RefreshTaskUI()
@@ -99,11 +99,15 @@ function TaskModule:RefreshTaskUI()
             NewUI =  UI:DuplicateWidget(110369, 0, 0)
         end
 
-        local TextID = UI:FindChildWithIndex(NewUI, 2)
-        local BtnID1 = UI:FindChildWithIndex(NewUI, 3) -- 前往按钮
-        local BtnID2 = UI:FindChildWithIndex(NewUI, 4) -- 领取按钮
-        local Progress = UI:FindChildWithIndex(NewUI, 5) -- 进度条
-        local Icon = UI:FindChildWithIndex(NewUI, 1) -- 已完成图标
+        local Icon = UI:FindChildWithIndex(NewUI, 2) -- 已完成图标
+        local TextID = UI:FindChildWithIndex(NewUI, 3)
+        local BtnID1 = UI:FindChildWithIndex(NewUI, 4) -- 前往按钮
+        local BtnID2 = UI:FindChildWithIndex(NewUI, 5) -- 领取按钮
+        local ProgressText = UI:FindChildWithIndex(NewUI, 6) -- 进度文本
+        local Progress = UI:FindChildWithIndex(NewUI, 7) -- 进度条
+        local ExpText = UI:FindChildWithIndex(NewUI, 8) -- 奖励活跃文本
+        UI:SetText({ProgressText}, math.floor(v:getProgress()) .. "/" .. math.floor(v:getProgressNumer()))
+        UI:SetText({ExpText}, tostring(v.rewards.exp))
         UI:SetProgressCurrentValue({Progress}, v:getProgress())
         UI:SetProgressMaxValue({Progress}, v:getProgressNumer())
         if v.state == taskMgr.Task.State.COMPLETED then
