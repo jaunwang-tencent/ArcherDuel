@@ -265,6 +265,14 @@ function Player:UpdateMovementState()
             if MovementState == EMovement.Idle then
                 --只有在待机态时才刷新位置
                 self:SyncLocation()
+                --延迟初始化时设置镜头的时机
+                if self.LookAtFlag == true and self.OwnerScene ~= nil then
+                    local CurrentTurnPlayer = self.OwnerScene:GetCurrentTurnPlayer()
+                    if CurrentTurnPlayer == self then
+                        self.OwnerScene:LookPlayer(CurrentTurnPlayer)
+                    end
+                    self.LookAtFlag = false
+                end
             end
         end
 
@@ -897,6 +905,10 @@ function Player:ChangeCharacterBody(Equipments)
         end
         FakeCharacter:ChangeCharacterBody(self.UID, bodyIds)
     end
+end
+
+function Player:SetLookAt()
+    self.LookAtFlag = true
 end
 
 return Player

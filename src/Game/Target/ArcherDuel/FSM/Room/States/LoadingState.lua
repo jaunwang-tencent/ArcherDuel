@@ -16,7 +16,7 @@ function LoadingState:OnEnter(Previous, Args)
     --在此显示加载界面，可以在这里加载场景等相关事务
     UGCS.Target.ArcherDuel.Modules.LoadingModule:Open(Args)
     --分配定时刷新Buff
-    self.UpdatorID = UGCS.Framework.Updator.Alloc(1, function()
+    self.UpdatorID = UGCS.Framework.Updator.Alloc(2, function()
     end, function(Progress)
         if Progress < 1 then
             -- 更新加载进度
