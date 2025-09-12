@@ -26,9 +26,10 @@ local ArchiveConfig = {
     "NormalBox",                --普通宝箱
     "Daily_Progress",
     "Player_BattlePoints_Num",  --门票
-    "Player_TaskExp_Num",       --每日任务经验
+    "Player_TaskDailyExp_Num",  --每日任务经验
     "Player_CollectTask_Num",   --每日领取任务，按位来标记任务是否已领取
     "Rank_DiamondScore_Num",    --钻石联赛中的积分
+    "Player_TaskWeeklyExp_Num", --每周任务经验
 }
 
 --- 打开
@@ -111,7 +112,7 @@ function LobbyModule:LoadData()
         if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey) then
             Data = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey)
         else
-            if Index == 2 or Index == 3 or Index == 8 or Index == 9 or Index == 20 or Index == 21 or Index == 22 or Index == 23 then
+            if Index == 2 or Index == 3 or Index == 8 or Index == 9 or Index == 20 or Index == 21 or Index == 22 or Index == 23 or Index == 24 then
                 Data = 0
             else
                 Data = 1

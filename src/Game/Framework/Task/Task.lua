@@ -212,9 +212,17 @@ Task.State = {
     FAILED = "FAILED"
 }
 
-function Task:new(id, name, description, conditions, rewards)
+Task.TaskType = {
+    -- 每日任务
+    Daily = "Daily",
+    -- 每周任务
+    Weekly = "Weekly",
+}
+
+function Task:new(id, type, name, description, conditions, rewards)
     local obj = {
         id = id,
+        type = type,
         name = name,
         description = description,
         conditions = conditions,
@@ -345,7 +353,7 @@ function TaskManager:GetInsatnce()
     }
 
     obj.conditionFactories[TaskEvents.Battle] = function(params) return BattleCondition:new(params) end
-    obj.conditionFactories[TaskEvents.BattleWin] = function(params) return BattleWinCondition:new(params) end
+    obj.conditionFactories[TaskEvents.BattleWinUseBow] = function(params) return BattleWinCondition:new(params) end
     obj.conditionFactories[TaskEvents.LoginGame] = function(params) return LoginGameCondition:new(params) end
     obj.conditionFactories[TaskEvents.HeadShot] = function(params) return HeadShotCondition:new(params) end
 
@@ -387,6 +395,30 @@ end
 
 function TaskManager:getTask(taskId)
     return self.tasks[taskId]
+end
+
+function TaskManager:getAllTaskByDaily()
+    local daily = {}
+    if self.tasks then
+        for _, task in pairs(self.tasks) do
+            if task.type == Task.TaskType.Daily then
+                daily[task.id] = task
+            end
+        end
+    end
+    return daily
+end
+
+function TaskManager:getAllTaskByWeekly()
+    local weekly = {}
+    if self.tasks then
+        for _, task in pairs(self.tasks) do
+            if task.type == Task.TaskType.Weekly then
+                weekly[task.id] = task
+            end
+        end
+    end
+    return weekly
 end
 
 function TaskManager:getAllTask()
@@ -512,7 +544,7 @@ end
 
 function TaskManager:Init()
 
-    local  TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
     if TaskManagerInstance:IsTaskTimeOut() then
         TaskManager.Instance = nil
         TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()

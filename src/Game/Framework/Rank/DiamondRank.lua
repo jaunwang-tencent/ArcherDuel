@@ -155,7 +155,6 @@ function DiamondRankManager.GetDiamondRank(PlayerID)
     local DiamondRank_Table
     if Archive:HasPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table") then
         local DiamondRank_Table_Str = Archive:GetPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table")
-        Log:PrintLog("LoadData", DiamondRank_Table_Str)
         DiamondRank_Table = MiscService:JsonStr2Table(DiamondRank_Table_Str)
     else
         DiamondRank_Table = DiamondRankManager.BuildDiamondRank()
@@ -207,8 +206,8 @@ function DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
 
     table.sort(DiamondRankData, function(a,b) return a.DiamondScore > b.DiamondScore end)
 
-    local DiamondRank_Table = MiscService:Table2JsonStr(DiamondRankData)
-    Archive:SetPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table", DiamondRank_Table)
+    local DiamondRank_Table_Str = MiscService:Table2JsonStr(DiamondRankData)
+    Archive:SetPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table", DiamondRank_Table_Str)
     Archive:SetPlayerData(PlayerID, Archive.TYPE.Number, "DiamondRank_LastUpdate", nowTs)
 
     return DiamondRankData

@@ -20,7 +20,7 @@ function TaskModule:LoadData()
 end
 
 function TaskModule:RefreshTaskProcesUI()
-    local TaskExp = self.PlayerData.BaseData.Player_TaskExp_Num
+    local TaskExp = self.PlayerData.BaseData.Player_TaskDailyExp_Num
     local CollectTask = self.PlayerData.BaseData.Player_CollectTask_Num
     local winningPoints = {20, 70, 120, 170, 220, 240}
     local TaskProcesID  = UIConfig.TaskView.TaskProcesView.TaskProces
@@ -61,7 +61,7 @@ end
 function TaskModule:RefreshTaskUI()
     self:RefreshTaskProcesUI()
     local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
-    local ret = taskMgr:getAllTask()
+    local ret = taskMgr:getAllTaskByDaily()
     local arr = {}
     for _, v in pairs(ret) do
         table.insert(arr, v)
@@ -98,7 +98,7 @@ function TaskModule:RefreshTaskUI()
         else
             NewUI =  UI:DuplicateWidget(110369, 0, 0)
         end
-
+        local _, current, max = v:getProgressNumer()
         local Icon = UI:FindChildWithIndex(NewUI, 2) -- 已完成图标
         local TextID = UI:FindChildWithIndex(NewUI, 3)
         local BtnID1 = UI:FindChildWithIndex(NewUI, 4) -- 前往按钮
@@ -106,10 +106,10 @@ function TaskModule:RefreshTaskUI()
         local ProgressText = UI:FindChildWithIndex(NewUI, 6) -- 进度文本
         local Progress = UI:FindChildWithIndex(NewUI, 7) -- 进度条
         local ExpText = UI:FindChildWithIndex(NewUI, 8) -- 奖励活跃文本
-        UI:SetText({ProgressText}, math.floor(v:getProgress()) .. "/" .. math.floor(v:getProgressNumer()))
-        UI:SetText({ExpText}, tostring(v.rewards.exp))
-        UI:SetProgressCurrentValue({Progress}, v:getProgress())
-        UI:SetProgressMaxValue({Progress}, v:getProgressNumer())
+        UI:SetText({ProgressText}, math.floor(current) .. "/" .. math.floor(max))
+        UI:SetText({ExpText}, tostring(v.rewards.DailyExp))
+        UI:SetProgressCurrentValue({Progress}, current)
+        UI:SetProgressMaxValue({Progress}, max)
         if v.state == taskMgr.Task.State.COMPLETED then
             UI:SetVisible({BtnID1}, false)
             UI:SetVisible({BtnID2}, true)
@@ -132,9 +132,9 @@ function TaskModule:RefreshTaskUI()
         UI:RegisterClicked(BtnID2,function (ItemUID)
             local finishTaskRet = taskMgr:finishTask(v.id)
             if finishTaskRet == true then
-                local taskExp = self.PlayerData.BaseData.Player_TaskExp_Num
-                if v.rewards and v.rewards.exp then
-                    self.PlayerData.BaseData.Player_TaskExp_Num = taskExp + v.rewards.exp
+                local taskExp = self.PlayerData.BaseData.Player_TaskDailyExp_Num
+                if v.rewards and v.rewards.DailyExp then
+                    self.PlayerData.BaseData.Player_TaskDailyExp_Num = taskExp + v.rewards.DailyExp
                 end
                 UI:SetVisible({ItemUID}, false)
                 table.remove(Task_Gap_All,k)
