@@ -14,34 +14,43 @@ function FightModule:Open(PlayerData)
     self.PlayerData = PlayerData
 
     self:RegreshBodyUI()
+
     local FightView = UIConfig.FightView
     local CenterView = FightView and FightView.CenterView
 
-    --广告按钮监听
+    --广告1按钮监听
     UI:RegisterPressed(CenterView.Ad_1.ID, function()
         self:OnClickAd1()
     end)
 
+    --广告2按钮监听
     UI:RegisterPressed(CenterView.Ad_2.ID, function()
         self:OnClickAd2()
     end)
 
-    UI:RegisterPressed(CenterView.Golden.ID, function() --跳转黄金联赛按钮
+    --跳转黄金联赛按钮
+    UI:RegisterPressed(CenterView.Golden.ID, function()
         self:OnGolden()
     end)
 
-    UI:RegisterPressed(CenterView.Diamond.ID, function() --跳转钻石联赛按钮
+    --跳转钻石联赛按钮
+    UI:RegisterPressed(CenterView.Diamond.ID, function() 
         self:OnDiamond()
     end)
 
-    UI:RegisterPressed(CenterView.SevenDays.Button, function()  --七日挑战
+    --七日挑战
+    UI:RegisterPressed(CenterView.SevenDays.Button, function()
         self:OnSevenDays()
     end)
 
-    UI:RegisterPressed(CenterView.Match.Button, function()  -- 寻找对局
+    --寻找对局
+    UI:SetText({CenterView.Match.Text}, string.format("%d", PlayerData.BaseData.Coin))
+    UI:RegisterPressed(CenterView.Match.Button, function()
         self:OnMatch()
     end)
-    UI:RegisterPressed(CenterView.Rank.Button, function() --段位奖励
+
+    --段位奖励
+    UI:RegisterPressed(CenterView.Rank.Button, function()
         self:OnRank()
     end)
     UI:RegisterClicked(101102,function()
@@ -66,8 +75,6 @@ function FightModule:Open(PlayerData)
             UI:SetProgressMaxValue({Rank.Progress}, BattlePoints)
         end
     end
-
-
 end
 
 --- 刷新
