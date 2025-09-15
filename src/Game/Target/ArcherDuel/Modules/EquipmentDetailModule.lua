@@ -23,7 +23,7 @@ function EquipmentDetailModule:Open(Equipment)
 
      --修改名字
      local EquipmentData = EquipmentConfig[Equipment.ID]
-     UI:SetText({100558}, EquipmentData.NickName)
+     UI:SetText({DetailView.Title}, EquipmentData.NickName)
 
      local CurrentPiece = Equipment.Piece
      local Attributes = EquipmentConfig[Equipment.ID].Attributes
@@ -40,20 +40,22 @@ function EquipmentDetailModule:Open(Equipment)
     }, false)
     --弹窗类型
     --升级
-    local LobbyModule = UGCS.Target.ArcherDuel.Modules.LobbyModule
-    local BaseData = LobbyModule.PlayerData.BaseData
     if Equipment.Unlock then
+        --升级提示
+        local UpgradableTip = DetailView.UpgradableTip
         --解锁
+        UI:SetVisible({DetailView.EquippedAndUpgradable.ID, UpgradableTip.ID}, false)
         if Equipment.Equipped then
             --已装备
             if Equipment.Level == 5 then
                 --已装备已满级
                 UI:SetVisible({DetailView.EquippedAndMaxLevel.ID},true)
-            elseif CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin then
+            elseif CurrentPiece >= Upgrade.Piece then
                 --已装备可升级
-                UI:SetVisible({DetailView.EquippedAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
-                UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
-                UI:SetProgressCurrentValue({DetailView.UpgradableTip.Progress}, CurrentPiece)
+                UI:SetVisible({DetailView.EquippedAndUpgradable.ID, UpgradableTip.ID, UpgradableTip.Icon, UpgradableTip.ProgressText},true)
+                UI:SetProgressMaxValue({UpgradableTip.Progress}, Upgrade.Piece)
+                UI:SetProgressCurrentValue({UpgradableTip.Progress}, CurrentPiece)
+                UI:SetText({UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
             else
                 --已装备不可升级
                 UI:SetVisible({DetailView.EquippedAndNotUpgradable.ID},true)
@@ -62,12 +64,12 @@ function EquipmentDetailModule:Open(Equipment)
             if Equipment.Level == 5 then
                 --可装备已满级
                 UI:SetVisible({DetailView.EquipableAndMaxLevel.ID},true)
-            elseif CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin  then
+            elseif CurrentPiece >= Upgrade.Piece then
                 --可装备可升级
-                UI:SetVisible({DetailView.EquipableAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
-                UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
-                UI:SetProgressCurrentValue({DetailView.UpgradableTip.Progress}, CurrentPiece)
-                UI:SetText({DetailView.UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
+                UI:SetVisible({DetailView.EquipableAndUpgradable.ID, UpgradableTip.ID, UpgradableTip.Icon, UpgradableTip.ProgressText},true)
+                UI:SetProgressMaxValue({UpgradableTip.Progress}, Upgrade.Piece)
+                UI:SetProgressCurrentValue({UpgradableTip.Progress}, CurrentPiece)
+                UI:SetText({UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
             else
                 --可装备不可升级
                 UI:SetVisible({DetailView.EquipableAndNotUpgradable.ID},true)
@@ -88,7 +90,7 @@ function EquipmentDetailModule:Open(Equipment)
         DetailView.AttributeIcon.AttackPower,
         DetailView.AttributeIcon.HealthPoints,
         DetailView.AttributeIcon.Accuracy,
-    },false)
+    }, false)
     local AttributeValue, AttributeLabel
     if Attributes.Attack > 0 then
         --攻击
@@ -225,7 +227,8 @@ end
 ---@param Equipment 装备
 function EquipmentDetailModule:OnEquip(Equipment)
     --拿到已装备
-    local BodyEquipment = self.PlayerData.BodyEquipment
+    local LobbyModule = UGCS.Target.ArcherDuel.Modules.LobbyModule
+    local BodyEquipment = LobbyModule.PlayerData.BodyEquipment
     local EquippedEquipment = BodyEquipment[Equipment.Category]
     if EquippedEquipment then
         --卸下装备
@@ -236,7 +239,8 @@ function EquipmentDetailModule:OnEquip(Equipment)
     System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     self:Close()
     --刷新UI
-    self:RefreshUI(self.CurrentCategory)
+    local EquipmentModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
+    EquipmentModule:RefreshUI(self.CurrentCategory)
 end
 
 --- 升级
@@ -244,20 +248,32 @@ end
 function EquipmentDetailModule:OnUpgrade(Equipment)
     local Attributes = EquipmentConfig[Equipment.ID].Attributes
     local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
-    --扣除碎片
-    Equipment.Piece = Equipment.Piece - Upgrade.Piece
-    --升级
-    Equipment.Level = Equipment.Level + 1
-    --扣除资产
-    local BaseData = self.PlayerData.BaseData
-    BaseData.Coin = BaseData.Coin - Upgrade.Coin
-    System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
+    if Upgrade then
+        --扣除资产
+        local LobbyModule = UGCS.Target.ArcherDuel.Modules.LobbyModule
+        local BaseData = LobbyModule.PlayerData.BaseData
+        if BaseData.Coin >= Upgrade.Coin then
+            --扣除碎片
+            Equipment.Piece = Equipment.Piece - Upgrade.Piece
+            --升级
+            Equipment.Level = Equipment.Level + 1
+            BaseData.Coin = BaseData.Coin - Upgrade.Coin
+            System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
 
-    --刷新数据
-    System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
-    self:OpenDetailView(Equipment)
-    --刷新UI
-    self:RefreshUI(self.CurrentCategory)
+            --刷新数据
+            System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
+            self:Open(Equipment)
+            --刷新UI
+            local EquipmentModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
+            EquipmentModule:RefreshUI(self.CurrentCategory)
+        else
+            --弹金币不够Tips，并跳转
+            UI:ShowMessageTip("金币不够")
+            self:OnObtain(Equipment)
+        end
+    else
+        Log:PrintLog("xxxxxxxxxxxxxxx", Equipment.ID, Attributes.Grade, Equipment.Level)
+    end
 end
 
 

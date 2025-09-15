@@ -136,7 +136,7 @@ function EquipmentModule:RegreshBodyUI()
                 local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
                 UI:SetProgressMaxValue({EquipmentSlot.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
-                UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
+                UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
             end
             --图标
             GameUtils.RefreshIconWithEquipment(EquipmentSlot.Image, Equipment)
@@ -250,10 +250,9 @@ function EquipmentModule:RefreshListUI(Category)
             table.insert(ShowItems, ProgressUI)
             table.insert(ShowItems, ProgressTextUI)
 
-            local BaseData = self.PlayerData.BaseData
             local CurrentPiece = Equipment.Piece
             local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
-            if Equipment.Unlock and CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin then
+            if Equipment.Unlock and CurrentPiece >= Upgrade.Piece then
                 table.insert(ShowItems, UpgradableUI)
             else
                 table.insert(HideItems, UpgradableUI)
@@ -261,10 +260,9 @@ function EquipmentModule:RefreshListUI(Category)
             --碎片相关
             UI:SetProgressMaxValue({ProgressUI}, Upgrade.Piece)
             UI:SetProgressCurrentValue({ProgressUI}, CurrentPiece)
-            UI:SetText({ProgressTextUI}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
+            UI:SetText({ProgressTextUI}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
         end
         --设置品质
-        local BackgroundUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Background)
         GameUtils.RefreshIconWithAsset(BackgroundUI, "EquipmentImage", Attributes.Grade)
         --设置等级
         UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
@@ -303,8 +301,10 @@ end
 --- 刷新全部
 ---@param Category 装备种类
 function EquipmentModule:RefreshUI(Category)
-    self:RegreshBodyUI()
-    self:RefreshListUI(Category)
+    if self.PlayerData then
+        self:RegreshBodyUI()
+        self:RefreshListUI(Category)
+    end
 end
 
 return EquipmentModule
