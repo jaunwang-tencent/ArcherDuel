@@ -21,7 +21,7 @@ end
 
 function TaskModule:RefreshTaskProcesUI()
     local TaskExp = self.PlayerData.BaseData.Player_TaskDailyExp_Num
-    local CollectTask = self.PlayerData.BaseData.Player_CollectTask_Num
+    local CollectTask = self.PlayerData.BaseData.Player_CollectTaskDaily_Num
     local winningPoints = {20, 70, 120, 170, 220, 240}
     local TaskProcesID  = UIConfig.TaskView.TaskProcesView.TaskProces
     for index = 1, 6, 1 do
@@ -42,7 +42,7 @@ function TaskModule:RefreshTaskProcesUI()
                 UI:SetVisible({ButtonID}, true)
                 UI:UnRegisterClicked(ButtonID)
                 UI:RegisterClicked(ButtonID, function (ButtonID)
-                    self.PlayerData.BaseData.Player_CollectTask_Num = self.PlayerData.BaseData.Player_CollectTask_Num | (1 << (index - 1))
+                    self.PlayerData.BaseData.Player_CollectTaskDaily_Num = self.PlayerData.BaseData.Player_CollectTaskDaily_Num | (1 << (index - 1))
                     self:RefreshTaskProcesUI()
                 end)
             end
@@ -157,7 +157,19 @@ end
 
 --- 关闭
 function TaskModule:Close()
+    for index = 1, 6, 1 do
+        local ButtonID = UIConfig.TaskView.TaskProcesView.Button[index]
+        UI:UnRegisterClicked(ButtonID)
+    end
+
     if self.Task_Gap_All then
+        for k, v in pairs(self.Task_Gap_All) do
+            local NewUI = k
+            local BtnID1 = UI:FindChildWithIndex(NewUI, 4) -- 前往按钮
+            local BtnID2 = UI:FindChildWithIndex(NewUI, 5) -- 领取按钮
+            UI:UnRegisterClicked(BtnID1)
+            UI:UnRegisterClicked(BtnID2)
+        end
         UI:SetVisible(self.Task_Gap_All, false)
         self.Task_Gap_All = nil
     end
