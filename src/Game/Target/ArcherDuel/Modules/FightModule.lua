@@ -44,6 +44,9 @@ function FightModule:Open(PlayerData)
     UI:RegisterPressed(CenterView.Rank.Button, function() --段位奖励
         self:OnRank()
     end)
+    UI:RegisterClicked(101102,function()
+        UI:SetVisible({UIConfig.SevenDays.ID}, false)
+    end) 
 
     local Rank = CenterView and CenterView.Rank
     if Rank then
@@ -152,7 +155,68 @@ function FightModule:OnDiamond()  --跳转钻石联赛按钮
 end
 
 function FightModule:OnSevenDays()  --七日挑战
-  --这里打开七日挑战页面
+    --这里打开七日挑战页面
+    local TaskExp = self.PlayerData.BaseData.Player_TaskWeeklyExp_Num
+    local CollectTask = self.PlayerData.BaseData.Player_CollectTask_Num
+    --local TaskExp = 5
+    --local CollectTask = 1
+    local winningPoints = {5, 10, 15, 20}
+    local TaskProcesID  = UIConfig.SevenDays.TaskProgress.Progress
+    for index = 1, 4, 1 do
+        local NodeID = UIConfig.SevenDays.TaskProgress.Node[index]
+        local LockID = UIConfig.SevenDays.TaskProgress.Lock[index]
+        local CheckID = UIConfig.SevenDays.TaskProgress.Check[index]
+        local ButtonID = UIConfig.SevenDays.TaskProgress.Button[index]
+        local MaskID = UIConfig.SevenDays.TaskProgress.Mask[index]
+        if TaskExp >= winningPoints[index] then
+            UI:SetVisible({NodeID}, true)
+            UI:SetVisible({LockID}, false)
+            if (CollectTask & (1 << (index - 1))) ~= 0 then
+                --已经领取奖品
+                UI:SetVisible({CheckID}, true)
+                UI:SetVisible({MaskID}, true)
+                UI:SetVisible({ButtonID}, false)
+            else
+                UI:SetVisible({CheckID}, false)
+                UI:SetVisible({MaskID}, false)
+                UI:SetVisible({ButtonID}, true)
+                UI:UnRegisterClicked(ButtonID)
+                UI:RegisterClicked(ButtonID, function (ButtonID)
+                    --self.PlayerData.BaseData.Player_CollectTask_Num = self.PlayerData.BaseData.Player_CollectTask_Num | (1 << (index - 1))
+                    --self:RefreshTaskProcesUI()
+                end)
+            end
+        else
+            UI:SetVisible({NodeID}, false)
+            UI:SetVisible({LockID}, true)
+            UI:SetVisible({CheckID}, false)
+            UI:SetVisible({MaskID}, false)
+            UI:SetVisible({ButtonID}, true)
+        end 
+    end
+    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp / 20 * 100)
+    UI:SetProgressMaxValue({TaskProcesID}, 100)
+    UI:SetText({UIConfig.SevenDays.Progress}, "进度:" .. TaskExp .. "/" .. 20)
+
+    UI:SetVisible({UIConfig.SevenDays.ID}, true)
+    UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)    
+    local WeeklyTaskUIID = {105077, 105084, 105091}
+    local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
+    local ret = taskMgr:getAllTaskByWeekly()
+    local i = 1
+    for _, v in pairs(ret) do
+        local UIID = WeeklyTaskUIID[i]
+        UI:SetVisible({UIID}, true)
+        local ExpText = UI:FindChildWithIndex(UIID,1) -- 活跃值
+        local Name = UI:FindChildWithIndex(UIID,2) -- 名字
+        local Progress = UI:FindChildWithIndex(UIID,7) -- 进度
+        UI:SetText({ExpText}, tostring(v.rewards.WeeklyExp))
+        UI:SetText({Name}, v.name)
+        local _, current, max = v:getProgressNumer()
+        UI:SetProgressCurrentValue({Progress}, current)
+        UI:SetProgressMaxValue({Progress}, max)
+        i = i + 1
+    end
 end
 
 function FightModule:OnMatch()
