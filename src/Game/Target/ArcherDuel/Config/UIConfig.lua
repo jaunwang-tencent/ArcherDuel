@@ -831,8 +831,8 @@ local UIConfig = {
             },
         },
     },
-    --段位页面
-    RankView = {
+    --联赛页面
+    TournamentView = {
         --切换TAB按钮
         TabButton = {
             --根节点页面ID

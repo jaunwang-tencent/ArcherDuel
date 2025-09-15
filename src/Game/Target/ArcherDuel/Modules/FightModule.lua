@@ -21,38 +21,38 @@ function FightModule:Open(PlayerData)
     local CenterView = FightView and FightView.CenterView
 
     --广告1按钮监听
-    UI:RegisterPressed(CenterView.Ad_1.ID, function()
+    UI:RegisterClicked(CenterView.Ad_1.ID, function()
         self:OnClickAd1()
     end)
 
     --广告2按钮监听
-    UI:RegisterPressed(CenterView.Ad_2.ID, function()
+    UI:RegisterClicked(CenterView.Ad_2.ID, function()
         self:OnClickAd2()
     end)
 
     --跳转黄金联赛按钮
-    UI:RegisterPressed(CenterView.Golden.ID, function()
+    UI:RegisterClicked(CenterView.Golden.ID, function()
         self:OnGolden()
     end)
 
     --跳转钻石联赛按钮
-    UI:RegisterPressed(CenterView.Diamond.ID, function() 
+    UI:RegisterClicked(CenterView.Diamond.ID, function() 
         self:OnDiamond()
     end)
 
     --七日挑战
-    UI:RegisterPressed(CenterView.SevenDays.Button, function()
+    UI:RegisterClicked(CenterView.SevenDays.Button, function()
         self:OnSevenDays()
     end)
 
     --寻找对局
     UI:SetText({CenterView.Match.Text}, string.format("%d", PlayerData.BaseData.Coin))
-    UI:RegisterPressed(CenterView.Match.Button, function()
+    UI:RegisterClicked(CenterView.Match.Button, function()
         self:OnMatch()
     end)
 
     --段位奖励
-    UI:RegisterPressed(CenterView.Rank.Button, function()
+    UI:RegisterClicked(CenterView.Rank.Button, function()
         self:OnRank()
     end)
     UI:RegisterClicked(101102,function()
@@ -89,14 +89,14 @@ end
 function FightModule:Close()
     local FightView = UIConfig.FightView
     local CenterView = FightView and FightView.CenterView
-    UI:UnRegisterPressed(CenterView.Ad_1.ID)
-    UI:UnRegisterPressed(CenterView.Ad_2.ID)
-    UI:UnRegisterPressed(CenterView.Golden.ID)
-    UI:UnRegisterPressed(CenterView.Diamond.ID)
-    UI:UnRegisterPressed(CenterView.SevenDays.Button)
-    UI:UnRegisterPressed(CenterView.SevenDays.Text)
-    UI:UnRegisterPressed(CenterView.Match.Button)
-    UI:UnRegisterPressed(CenterView.Rank.Button)
+    UI:UnRegisterClicked(CenterView.Ad_1.ID)
+    UI:UnRegisterClicked(CenterView.Ad_2.ID)
+    UI:UnRegisterClicked(CenterView.Golden.ID)
+    UI:UnRegisterClicked(CenterView.Diamond.ID)
+    UI:UnRegisterClicked(CenterView.SevenDays.Button)
+    UI:UnRegisterClicked(CenterView.SevenDays.Text)
+    UI:UnRegisterClicked(CenterView.Match.Button)
+    UI:UnRegisterClicked(CenterView.Rank.Button)
 
     --注销装备槽的点击事件
     local EquipmentSlotConfig = {
