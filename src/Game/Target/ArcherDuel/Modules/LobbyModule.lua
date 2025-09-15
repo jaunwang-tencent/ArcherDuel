@@ -121,7 +121,7 @@ function LobbyModule:LoadData()
         BaseData[ArchiveKey] = Data
     end
     --测试【砖石，用来购买商品】
-    --BaseData.Diamond = 555555
+    --BaseData.Coin = 555555
     self.PlayerData.BaseData = BaseData
 
     --2、装备数据
@@ -280,7 +280,7 @@ function LobbyModule:DefaultEquipmentData()
             Equipped = HasInit,             --是否装备
         }
         if HasInit then
-            Equipment.Piece = 50
+            Equipment.Piece = 1
             Equipment.Level = 3
         end
         AllEquipment[ID] = Equipment

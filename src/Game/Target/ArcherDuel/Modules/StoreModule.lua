@@ -221,13 +221,13 @@ function StoreModule:OpenBox(boxId)
         end
         --刷新装备数据
         System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
+        --隐藏组
+        UI:SetVisible({ThreeItem.ItemGroupID}, false)
         --恢复动画播放
         UI:ResumeUIAnimation(ThreeItem.ItemGroupID)
-        --UI则关闭可见性
-        if TargetBoxID then
-            UI:SetVisible({TargetBoxID},false)
-        end
-        UI:SetVisible({ThreeItem.ID},false)
+        --隐藏组
+        UI:SetVisible({ThreeItem.ID}, false)
+        --注销事件
         UI:UnRegisterClicked(ThreeItem.Button.ID)
     end)
     return BoxRewards

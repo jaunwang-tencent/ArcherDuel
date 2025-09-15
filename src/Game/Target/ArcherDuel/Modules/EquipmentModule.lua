@@ -123,7 +123,7 @@ function EquipmentModule:RegreshBodyUI()
                 local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
                 UI:SetProgressMaxValue({EquipmentSlot.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
-                UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
+                UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
             end
             --图标
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
@@ -342,7 +342,7 @@ function EquipmentModule:OpenDetailView(Equipment)
                 UI:SetVisible({DetailView.EquipableAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
                 UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({DetailView.UpgradableTip.Progress}, CurrentPiece)
-                UI:SetText({DetailView.UpgradableTip.ProgressText}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
+                UI:SetText({DetailView.UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
             else
                 --可装备不可升级
                 UI:SetVisible({DetailView.EquipableAndNotUpgradable.ID},true)
