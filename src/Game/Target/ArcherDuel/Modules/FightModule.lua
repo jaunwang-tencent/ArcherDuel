@@ -14,8 +14,8 @@ function FightModule:Open(PlayerData)
     self.PlayerData = PlayerData
 
     self:RegreshBodyUI()
-    local HomeView = UIConfig.HomeView
-    local CenterView = HomeView and HomeView.CenterView
+    local FightView = UIConfig.FightView
+    local CenterView = FightView and FightView.CenterView
 
     --广告按钮监听
     UI:RegisterPressed(CenterView.Ad_1.ID, function()
@@ -78,8 +78,8 @@ end
 
 --- 关闭
 function FightModule:Close()
-    local HomeView = UIConfig.HomeView
-    local CenterView = HomeView and HomeView.CenterView
+    local FightView = UIConfig.FightView
+    local CenterView = FightView and FightView.CenterView
     UI:UnRegisterPressed(CenterView.Ad_1.ID)
     UI:UnRegisterPressed(CenterView.Ad_2.ID)
     UI:UnRegisterPressed(CenterView.Golden.ID)
@@ -107,16 +107,16 @@ end
 
 --- 刷新身体上的数据
 function FightModule:RegreshBodyUI()
-    local HomeView = UIConfig.HomeView
+    local FightView = UIConfig.FightView
     local PlayerData = self.PlayerData
     --角色身上的装备
     local EquipmentSlotConfig = {
-        [1] = HomeView.LeftView.Character,
-        [2] = HomeView.LeftView.Top,
-        [3] = HomeView.LeftView.Bottoms,
-        [4] = HomeView.RightView.Bow,
-        [5] = HomeView.RightView.Aex,
-        [6] = HomeView.RightView.Spear,
+        [1] = FightView.LeftView.Character,
+        [2] = FightView.LeftView.Top,
+        [3] = FightView.LeftView.Bottoms,
+        [4] = FightView.RightView.Bow,
+        [5] = FightView.RightView.Aex,
+        [6] = FightView.RightView.Spear,
     }
     local BodyEquipment = PlayerData.BodyEquipment
     for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
@@ -146,7 +146,7 @@ function FightModule:OnClickAd2()
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
-   System:FireGameEvent(_GAME.Events.JumpModule, "Tournament")
+    System:FireGameEvent(_GAME.Events.JumpModule, "Tournament")
 end
 
 
@@ -199,7 +199,7 @@ function FightModule:OnSevenDays()  --七日挑战
     UI:SetText({UIConfig.SevenDays.Progress}, "进度:" .. TaskExp .. "/" .. 20)
 
     UI:SetVisible({UIConfig.SevenDays.ID}, true)
-    UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)    
+    UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)
     local WeeklyTaskUIID = {105077, 105084, 105091}
     local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTaskByWeekly()
@@ -220,16 +220,22 @@ function FightModule:OnSevenDays()  --七日挑战
 end
 
 function FightModule:OnMatch()
-  --这里打开寻找对局页面
-  -- 生成 1 到 7 的随机数字
-  local randomNumber = math.random(1, 7)  --随机海岛和天空
-  if randomNumber == 7 then
-      randomNumber = 8
-  end
-  --这里要关闭所有页面
-  UI:SetVisible({UIConfig.MainView.TitleBar.ID,UIConfig.MainView.StoreResourceBar.ID,UIConfig.MainView.GeneralResourceBar.ID,UIConfig.HomeView.CenterView.ID,UIConfig.HomeView.LeftView.ID,UIConfig.HomeView.RightView.ID}, false)
-  System:FireSignEvent(tostring(randomNumber))
-  Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", randomNumber)
+    --这里打开寻找对局页面
+    --生成1到7的随机数字
+    local RandomNumber = math.random(1, 7)  --随机海岛和天空
+    if RandomNumber == 7 then
+        RandomNumber = 8
+    end
+    --这里要关闭所有页面
+    UI:SetVisible({UIConfig.MainView.TitleBar.ID,
+        UIConfig.MainView.StoreResourceBar.ID,
+        UIConfig.MainView.GeneralResourceBar.ID,
+        UIConfig.FightView.CenterView.ID,
+        UIConfig.FightView.LeftView.ID,
+        UIConfig.FightView.RightView.ID
+    }, false)
+    System:FireSignEvent(tostring(RandomNumber))
+    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
 end
 
 function FightModule:OnRank()

@@ -52,6 +52,7 @@ end
 --- 关闭
 function EquipmentModule:Close()
     self.CurrentSelected = nil
+    self.CurrentCategory = nil
     --清空列表
     local EquipmentView = UIConfig.EquipmentView
     local ListView = EquipmentView and EquipmentView.ListView
@@ -122,6 +123,7 @@ function EquipmentModule:RegreshBodyUI()
                 local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
                 UI:SetProgressMaxValue({EquipmentSlot.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
+                UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
             end
             --图标
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
@@ -209,38 +211,43 @@ function EquipmentModule:RefreshListUI(Category)
         --解锁相关
         local LockUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Lock)
         local UpgradableUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Upgradable)
-        local NeedUpgrade = true
         if Equipment.Unlock then
             table.insert(HideItems, LockUI)
         else
             table.insert(ShowItems, LockUI)
-            table.insert(HideItems, UpgradableUI)
-            NeedUpgrade = false
         end
         --等级相关
         local MaxLevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.MaxLevel)
         local LevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Level)
         local ProgressUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Progress)
+        local ProgressTextUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.ProgressText)
         if Equipment.Level == 5 then
             --满级
             table.insert(ShowItems, MaxLevelUI)
             table.insert(HideItems, LevelUI)
             table.insert(HideItems, ProgressUI)
+            table.insert(HideItems, ProgressTextUI)
             table.insert(HideItems, UpgradableUI)
         else
             --升级
             table.insert(HideItems, MaxLevelUI)
             table.insert(ShowItems, LevelUI)
             table.insert(ShowItems, ProgressUI)
-            if NeedUpgrade then
-                table.insert(ShowItems, UpgradableUI)
-            end
-            --碎片相关
+            table.insert(ShowItems, ProgressTextUI)
+
+            local BaseData = self.PlayerData.BaseData
             local CurrentPiece = Equipment.Piece
             local Attributes = EquipmentConfig[Equipment.ID].Attributes
             local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
+            if Equipment.Unlock and CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin then
+                table.insert(ShowItems, UpgradableUI)
+            else
+                table.insert(HideItems, UpgradableUI)
+            end
+            --碎片相关
             UI:SetProgressMaxValue({ProgressUI}, Upgrade.Piece)
             UI:SetProgressCurrentValue({ProgressUI}, CurrentPiece)
+            UI:SetText({ProgressTextUI}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
         end
         --设置等级
         UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
@@ -271,6 +278,9 @@ function EquipmentModule:RefreshListUI(Category)
             UI:ClearListViewSelection(TileView.ID)
         end
     end)
+
+    --记录当前种类
+    self.CurrentCategory = Category
 end
 
 --- 刷新全部
@@ -332,6 +342,7 @@ function EquipmentModule:OpenDetailView(Equipment)
                 UI:SetVisible({DetailView.EquipableAndUpgradable.ID, DetailView.UpgradableTip.ID},true)
                 UI:SetProgressMaxValue({DetailView.UpgradableTip.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({DetailView.UpgradableTip.Progress}, CurrentPiece)
+                UI:SetText({DetailView.UpgradableTip.ProgressText}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
             else
                 --可装备不可升级
                 UI:SetVisible({DetailView.EquipableAndNotUpgradable.ID},true)
@@ -497,7 +508,7 @@ function EquipmentModule:OnEquip(Equipment)
     System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     self:CloseDetailView()
     --刷新UI
-    self:RefreshUI()
+    self:RefreshUI(self.CurrentCategory)
 end
 
 --- 升级
@@ -518,7 +529,7 @@ function EquipmentModule:OnUpgrade(Equipment)
     System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     self:OpenDetailView(Equipment)
     --刷新UI
-    self:RefreshUI()
+    self:RefreshUI(self.CurrentCategory)
 end
 
 return EquipmentModule

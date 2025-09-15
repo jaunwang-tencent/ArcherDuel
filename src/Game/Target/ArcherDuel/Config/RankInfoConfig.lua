@@ -1,5 +1,5 @@
 -- 段位信息
-local levels = {
+local RankInfoConfig = {
     {id=1, name="青铜3", icon=1, base_score=0, cost=50},
     {id=2, name="青铜2", icon=1, base_score=50, cost=50},
     {id=3, name="青铜1", icon=1, base_score=100, cost=50},
@@ -24,4 +24,4 @@ local levels = {
     {id=22, name="王者", icon=6, base_score=4450, cost=450},
 }
 
-return levels
+return RankInfoConfig

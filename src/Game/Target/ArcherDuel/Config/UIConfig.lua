@@ -1,5 +1,64 @@
 --UI配置，将各个业务模块的UI页面ID按照如下格式配置，并提供好注释
 local UIConfig = {
+    ---------------以下是局内UI----------------------
+    --战斗页面
+    BattleView = {
+        --暴击奖励
+        CriticalHitReward = {
+            --根节点页面ID
+            ID = 105662,
+            --奖励宝箱【常驻】
+            RewardBox= 105661,
+            --爆头提示【动效播放】
+            HeadShotUI = 105660,
+        },
+        --本地玩家
+        LocalPlayer = {
+            --根节点页面ID
+            ID = 105654,
+            --昵称
+            NickName = 105652,
+            --血条
+            HPValue = 105650,
+            --血条扣除血量
+            DeductHP = 111284,
+        },
+        --敌方玩家
+        EnemyPlayer = {
+            --根节点页面ID
+            ID = 105659,
+            --昵称
+            NickName = 105653,
+            --血条
+            HPValue = 105649,
+            --血条扣除血量
+            DeductHP = 111273,
+        },
+        --瞄准角度
+        AimPitch = {
+            --根节点页面ID
+            ID = 105656,
+            --俯仰角刻度尺
+            Ruler = 109693,
+            --俯仰角刻度游标
+            Cursor = 106037,
+            --俯仰角刻度游标文本
+            Text = 105658,
+        }
+    },
+    --结算页面
+    ResultView = {
+        ID = 106509
+    },
+    ---------------以上是局内UI----------------------
+    --加载页面
+    LoadingView = {
+        --根节点页面ID
+        ID = 106412,
+        --加载进度条
+        LoadProcess = 106413
+    },
+    ---------------以下是局外UI----------------------
     --主视图
     MainView = {
         --主题栏
@@ -116,19 +175,25 @@ local UIConfig = {
             Character = {
                 Label = 104156,
                 Image = 100534,
-                Progress = 101868
+                Progress = 101868,
+                --进度条文本
+                ProgressText = 111287
             },
             --上衣
             Top = {
                 Label = 104157,
                 Image = 100535,
-                Progress = 104028
+                Progress = 104028,
+                --进度条文本
+                ProgressText = 111288
             },
             --发型
             Bottoms = {
                 Label = 104158,
                 Image = 100536,
-                Progress = 104029
+                Progress = 104029,
+                --进度条文本
+                ProgressText = 111290
             }
         },
         --右视图
@@ -138,21 +203,27 @@ local UIConfig = {
             Bow = {
                 Label = 104159,
                 Image = 100539,
-                Progress = 104030
+                Progress = 104030,
+                --进度条文本
+                ProgressText = 111291
             },
             -- 手斧
             Axe = {
                 Label = 104679,
                 Image = 100538,
                 Progress = 104031,
-                EmptyImage = 110930
+                EmptyImage = 110930,
+                --进度条文本
+                ProgressText = 111292
             },
             -- 长矛
             Spear = {
                 Label = 104680,
                 Image = 100537,
                 Progress = 104542,
-                EmptyImage = 110929
+                EmptyImage = 110929,
+                --进度条文本
+                ProgressText = 111293
             }
         },
         --列表视图
@@ -237,6 +308,8 @@ local UIConfig = {
                     Equipped = 109451,
                     --图标
                     Icon = 109448,
+                    --进度条文本
+                    ProgressText = 111285,
                 }
             }
         },
@@ -291,7 +364,10 @@ local UIConfig = {
                 --可升级图标
                 Icon = 104175,
                 --升级进度
-                Progress = 100562
+                Progress = 100562,
+                --进度条文本
+                ProgressText = 111286
+
             },
             --未有装备
             NotEquipped = {
@@ -349,62 +425,6 @@ local UIConfig = {
             },
         }
     },
-    --加载页面
-    LoadingView = {
-        --根节点页面ID
-        ID = 106412,
-        --加载进度条
-        LoadProcess = 106413
-    },
-    --战斗页面
-    BattleView = {
-        --暴击奖励
-        CriticalHitReward = {
-            --根节点页面ID
-            ID = 105662,
-            --奖励宝箱【常驻】
-            RewardBox= 105661,
-            --爆头提示【动效播放】
-            HeadShotUI = 105660,
-        },
-        --本地玩家
-        LocalPlayer = {
-            --根节点页面ID
-            ID = 105654,
-            --昵称
-            NickName = 105652,
-            --血条
-            HPValue = 105650,
-            --伤害
-            DamageText = 111284,
-        },
-        --敌方玩家
-        EnemyPlayer = {
-            --根节点页面ID
-            ID = 105659,
-            --昵称
-            NickName = 105653,
-            --血条
-            HPValue = 105649,
-            --伤害
-            DamageText = 111273,
-        },
-        --瞄准角度
-        AimPitch = {
-            --根节点页面ID
-            ID = 105656,
-            --俯仰角刻度尺
-            Ruler = 109693,
-            --俯仰角刻度游标
-            Cursor = 106037,
-            --俯仰角刻度游标文本
-            Text = 105658,
-        }
-    },
-    --结算页面
-    ResultView = {
-        ID = 106509
-    },
     --任务页面
     TaskView = {
         --根节点页面ID
@@ -460,32 +480,31 @@ local UIConfig = {
             ID = 110369,
             --组中的内容
             TaskRich =  {  --按照组中顺序排列  即 列表第一个为 Black  第二个为 Icon 
-            --遮罩
-            Black = 111151,
-            -- 已完成图标
-            Icon = 110486,
-            --任务说明
-            TaskText = 110370,
-            --前往按钮
-            BtnID1 = 110368 ,
-            -- 领取按钮
-            BtnID2 = 110367,
-            -- 进度条上方的文字
-            ProgressText = 111105,
-            -- 进度条
-            Progress = 110366,
-            --完成任务的活跃值
-            TextXP = 111101,
-            --XP背景
-            XPBG = 111100,
-            --背景
-            TaskBG = 110364,
-        }
+                --遮罩
+                Black = 111151,
+                -- 已完成图标
+                Icon = 110486,
+                --任务说明
+                TaskText = 110370,
+                --前往按钮
+                BtnID1 = 110368 ,
+                -- 领取按钮
+                BtnID2 = 110367,
+                -- 进度条上方的文字
+                ProgressText = 111105,
+                -- 进度条
+                Progress = 110366,
+                --完成任务的活跃值
+                TextXP = 111101,
+                --XP背景
+                XPBG = 111100,
+                --背景
+                TaskBG = 110364,
+            }
         },
-        
     },
-    --主页页面
-    HomeView = {
+    --对决页面
+    FightView = {
         --左视图
         LeftView = {
             ID = 104220,
@@ -564,7 +583,10 @@ local UIConfig = {
             Match = {
                 --按钮 
                 Button = 100504,
+                --进入需要金币数量
+                Text = 113565,
             },
+            --段位
             Rank = {
                 --段位图片
                 Image =  100492,
@@ -574,6 +596,16 @@ local UIConfig = {
                 Progress = 100495,
                 --奖励按钮
                 Button = 100496,
+                --奖励背光
+                Image_1 = 113112,
+                --奖励背光动画 可领取时打开可见并打开动画1
+                Image_2 = 104216,
+                --积分减少 文本
+                Text_1 = 113098,
+                --积分增加文本
+                Text_2 = 113106,
+                --需要金币数量文本
+                Text_3 = 113108,
             }
         }
     },
@@ -585,6 +617,38 @@ local UIConfig = {
         Scrollable = 110361,
         --分割条
         SplitItem = 110362,
+        --商店购买弹窗
+        PurchasePopup = {
+            --根节点id
+            ID = 111046,
+            --关闭按钮 --透明度为0的全屏按钮，
+            Button = 111043,
+            --背景动画  开启需打开动画
+            AnimIcon  = 111228,
+            --装备图标
+            Icon = 111051,
+            --装备背景
+            BGIcon = 111040,
+        },
+        --商店看广告获得钻石弹窗
+        AdPopup = {
+            --根节点id
+            ID = 111047,
+            --关闭按钮 
+            Button = 111028,
+            --道具图标  即为购买展示图标
+            Icon = 111032,
+            --道具顶上文本  即为道具二级弹窗上的道具名称
+            Text = 111031,
+            --道具数量文本  即为购买展示图标下的数量
+            Text_1 = 111033,
+            --道具说明文本
+            Text_2 = 111025,
+            --道具获取次数文本
+            Text_3 = 111030,
+            --道具获取按钮
+            Button_1 = 111026,
+        },
         --商城活动
         Activities = {
             --限定奖池
@@ -598,6 +662,10 @@ local UIConfig = {
                     [1] = {
                         --按钮  注释：判定是否拥有金色箱子，如果有则跳转到开箱页面
                         ID = 110331,
+                        --替换的图标  --检查是否有宝箱后，替换这个图标
+                        Image = 111323,
+                        --替换的道具数量
+                        Text = 111325, --宝箱没有时，钻石为600
                         --黄金宝箱按钮
                         Type1 = "GoldBox",
                         --替代类型
@@ -609,10 +677,22 @@ local UIConfig = {
                         ID = 110330,
                         --广告按钮
                         Type = "Ad",
+                        --需要替换的颜色 看完广告后，需要将按钮颜色转为灰色，不可继续观看广告，并开启倒计时24小时
+                        Color = "#505050",
+                        --需要替换颜色2，倒计时结束后，需要将颜色替换成原来的颜色，可继续点击
+                        Color_1 = "#FFFFFF",
+                        --获取图标
+                        Image = 111352,
+                        --倒计时
+                        Text = 111351,
                     },
                     [3] = {
-                        --按钮  注释：判定是否拥有金色箱子，如果有则跳转到开箱页面
+                        --按钮  注释：判定是否拥有紫色箱子，如果有则跳转到开箱页面
                         ID = 110335,
+                        --替换的图标  --检查是否有宝箱后，替换这个图标
+                        Image = 111329,
+                        --替换的道具数量
+                        Text = 111330, --宝箱没用时，钻石为180
                         --白银宝箱按钮
                         Type1 = "SilverBox",
                         --替代类型
@@ -624,6 +704,14 @@ local UIConfig = {
                         ID = 110334,
                         --广告按钮
                         Type = "Ad",
+                        --需要替换的颜色 看完广告后，需要将按钮颜色转为灰色，不可继续观看广告，并开启倒计时24小时
+                        Color = "#505050",
+                        --需要替换颜色2，倒计时结束后，需要将颜色替换成原来的颜色，可继续点击
+                        Color_1 = "#FFFFFF",
+                        --获取图标
+                        Image = 111353,
+                        --倒计时
+                        Text = 111354,
                     },
                 }
             },
@@ -656,6 +744,8 @@ local UIConfig = {
                         Text = 110346,
                         --需要更换的图片
                         Image = 110343,
+                        --钻石图标
+                        Image_1 = 110347,
                     },
                     [3] = {
                         --按钮  注释点击购买按钮
@@ -668,6 +758,8 @@ local UIConfig = {
                         Text = 110352,
                         --需要更换的图片
                         Image = 110349,
+                        --钻石图标
+                        Image_1 = 110353,
                     }
                 }
             },
@@ -717,6 +809,8 @@ local UIConfig = {
                         Text = 110305,
                         --需要更换的图片
                         Image = 110302,
+                        --钻石图标
+                        Image_1 = 110347,
                     },
                     [3] = {
                         ID = 110310,
@@ -728,6 +822,8 @@ local UIConfig = {
                         Text = 110311,
                         --需要更换的图片
                         Image = 110308,
+                        --钻石图标
+                        Image_1 = 110353,
                     }
                 }
             },
@@ -937,6 +1033,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111213,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
 
@@ -952,6 +1050,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111214,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
@@ -966,6 +1066,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111215,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
@@ -980,6 +1082,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111218,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
@@ -994,6 +1098,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111216,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
@@ -1008,12 +1114,13 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111219,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
 
         },
-
         DayTask = {
             --根节点页面ID
             ID  = 105092 ,
@@ -1056,8 +1163,8 @@ local UIConfig = {
         TaskProgress = {
             --进度条
             Progress = 101118,
-            --节点 -- 当进度到达3, 9 ,15,21时打开对应的节点
-            Node = {105026,105027,105028,105029},
+            --达到光效 -- 当进度到达5，10，15，20时打开对应的动画和可见性  领取后隐藏
+            Image = {111387,111386,111382,111368},
             --锁图标  --当解锁后隐藏图标
             Lock = {105021,105022,105023,105024},
             --礼包按钮  
@@ -1068,21 +1175,7 @@ local UIConfig = {
             Mask = {111242,111243,111244,111245},
         }
     },
-    --商店购买弹窗
-    StoreView_Popup = {
-        --根节点id
-        ID = 111046,
-        --关闭按钮 --透明度为0的全屏按钮，
-        Button = 111043,
-        --背景动画  开启需打开动画
-        AnimIcon  = 111228,
-        --装备图标
-        Icon = 111051,
-        --装备背景
-        BGIcon = 111040,
-
-    }
-    
+    ---------------以上是局外UI----------------------
 }
 
 return UIConfig

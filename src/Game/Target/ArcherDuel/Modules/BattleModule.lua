@@ -179,7 +179,6 @@ function BattleModule:OnTouchReleased(_, Y)
             self.PitchDegree = self:GetPitchDegree(Y)
             self:AdjustPitchCursor(self.PitchDegree)
             Player:Fire(self.PitchDegree)
-            
             if not self.AimCDExecutorID then
                 Player:DrawCurrentTrack()
             end

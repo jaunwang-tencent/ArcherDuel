@@ -251,7 +251,7 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                 local Segment = LimitDistance and HitSpline.AimTrackSegment or HitSpline.Segment
                 local ExtraRate = nil
                 local NewEndPoint = EndPoint
-                if EndPoint.Z > StartPoint.Z then
+                if HeightOffset > AimSetting.CharacterHeight then
                     local tmepDis = HeightOffset
                     if EndPoint.X - StartPoint.X < 0 then
                         tmepDis = -tmepDis
