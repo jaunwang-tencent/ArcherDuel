@@ -146,7 +146,7 @@ function FightModule:OnClickAd2()
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
-   System:FireGameEvent(_GAME.Events.JumpModule, "Tournament")
+    System:FireGameEvent(_GAME.Events.JumpModule, "Tournament")
 end
 
 
@@ -220,16 +220,22 @@ function FightModule:OnSevenDays()  --七日挑战
 end
 
 function FightModule:OnMatch()
-  --这里打开寻找对局页面
-  -- 生成 1 到 7 的随机数字
-  local randomNumber = math.random(1, 7)  --随机海岛和天空
-  if randomNumber == 7 then
-      randomNumber = 8
-  end
-  --这里要关闭所有页面
-  UI:SetVisible({UIConfig.MainView.TitleBar.ID,UIConfig.MainView.StoreResourceBar.ID,UIConfig.MainView.GeneralResourceBar.ID,UIConfig.FightView.CenterView.ID,UIConfig.FightView.LeftView.ID,UIConfig.FightView.RightView.ID}, false)
-  System:FireSignEvent(tostring(randomNumber))
-  Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", randomNumber)
+    --这里打开寻找对局页面
+    --生成1到7的随机数字
+    local RandomNumber = math.random(1, 7)  --随机海岛和天空
+    if RandomNumber == 7 then
+        RandomNumber = 8
+    end
+    --这里要关闭所有页面
+    UI:SetVisible({UIConfig.MainView.TitleBar.ID,
+        UIConfig.MainView.StoreResourceBar.ID,
+        UIConfig.MainView.GeneralResourceBar.ID,
+        UIConfig.FightView.CenterView.ID,
+        UIConfig.FightView.LeftView.ID,
+        UIConfig.FightView.RightView.ID
+    }, false)
+    System:FireSignEvent(tostring(RandomNumber))
+    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
 end
 
 function FightModule:OnRank()

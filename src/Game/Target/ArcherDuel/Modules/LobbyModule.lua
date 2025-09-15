@@ -4,32 +4,34 @@ local LobbyModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
---存档配置
-local ArchiveConfig = {
-    "Equipped_Bow_Num",
-    "Equipped_Spear_Num",
-    "Equipped_Axe_Num",
-    "Equipped_Hat_Num",
-    "Equipped_Glasses_Num",
-    "Equipped_Cloth_Num",
-    "Equipped_Bow_Lv",
-    "Equipped_Spear_Lv",
-    "Equipped_Axe_Lv",
-    "Equipped_Hat_Lv",
-    "Equipped_Glasses_Lv",
-    "Equipped_Cloth_Lv",
-    "Coin",                     --金币
-    "Diamond",                  --砖石
-    "Rank",                     --段位
-    "GoldBox",                  --金宝箱
-    "SilverBox",                --银宝箱
-    "NormalBox",                --普通宝箱
-    "Daily_Progress",
-    "Player_BattlePoints_Num",  --门票
-    "Player_TaskDailyExp_Num",  --每日任务经验
-    "Player_CollectTask_Num",   --每日领取任务，按位来标记任务是否已领取
-    "Rank_DiamondScore_Num",    --钻石联赛中的积分
-    "Player_TaskWeeklyExp_Num", --每周任务经验
+
+--缺省基础数值
+local DefaultBaseData =
+{
+    Equipped_Bow_Num = 1,
+    Equipped_Spear_Num = 0,
+    Equipped_Axe_Num = 0,
+    Equipped_Hat_Num = 1,
+    Equipped_Glasses_Num = 1,
+    Equipped_Cloth_Num = 1,
+    Equipped_Bow_Lv = 1,
+    Equipped_Spear_Lv = 0,
+    Equipped_Axe_Lv = 0,
+    Equipped_Hat_Lv = 1,
+    Equipped_Glasses_Lv = 1,
+    Equipped_Cloth_Lv = 1,
+    Coin = 1,                     --金币
+    Diamond = 1,                  --砖石
+    Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
+    GoldBox = 1,                  --金宝箱
+    SilverBox = 1,                --银宝箱
+    NormalBox = 1,                --普通宝箱
+    Daily_Progress = 1,
+    Player_BattlePoints_Num = 0,  --门票
+    Player_TaskDailyExp_Num = 0,  --每日任务经验
+    Player_CollectTask_Num = 0,   --每日领取任务，按位来标记任务是否已领取
+    Rank_DiamondScore_Num = 0,    --钻石联赛中的积分
+    Player_TaskWeeklyExp_Num = 0, --每周任务经验
 }
 
 --- 打开
@@ -107,16 +109,12 @@ function LobbyModule:LoadData()
     self.PlayerData = { }
     local BaseData = {}
     --加载基础数据
-    for Index, ArchiveKey in ipairs(ArchiveConfig) do
+    for ArchiveKey, ArchiveValue in pairs(DefaultBaseData) do
         local Data
         if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey) then
             Data = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey)
         else
-            if Index == 2 or Index == 3 or Index == 8 or Index == 9 or Index == 20 or Index == 21 or Index == 22 or Index == 23 or Index == 24 then
-                Data = 0
-            else
-                Data = 1
-            end
+            Data = ArchiveValue
         end
 
         --写入数据
@@ -160,7 +158,7 @@ end
 --- 保存玩家数据
 function LobbyModule:SaveData()
     --1、基础数据
-    for _, ArchiveKey in ipairs(ArchiveConfig) do
+    for ArchiveKey, _ in pairs(DefaultBaseData) do
         local Data = self.PlayerData.BaseData[ArchiveKey]
         Archive:SetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey, Data)
     end
