@@ -105,4 +105,65 @@ function GameUtils.OpenBoxReward(boxId)
     return rewards
 end
 
+
+function GameUtils.DefaultEquipmentData()
+    --没有则初始化
+    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+    local AllEquipment = {}
+    local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true, [77] = true, [93] = true }
+    for ID, Data in pairs(EquipmentConfig) do
+        local HasInit = InitEquippedID[ID]
+        local Equipment = {
+            ID = ID,                        --装备编号ID
+            Level = 1,                      --装备等级
+            Piece = 0,                      --碎片数量
+            Category = Data.Category,       --装备类别
+            Unlock = HasInit,               --是否解锁
+            Equipped = HasInit,             --是否装备
+        }
+        if HasInit then
+            Equipment.Piece = 50
+            Equipment.Level = 3
+        end
+        AllEquipment[ID] = Equipment
+    end
+    return AllEquipment
+end
+
+-- 战斗胜利时获取奖励
+function GameUtils.GetRewardsByWin()
+    local OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
+    local Weight = 0
+    for i, v in ipairs(OpenBoxConfig.BattleBox) do
+        Weight = Weight + v.Weight
+    end
+
+    math.randomseed(TimerManager:GetClock())
+
+    local function GetOneReward()
+        -- 先随品阶
+        -- 再随装备
+        local random = math.random(1, Weight)
+        local tempWeight = 0
+        for i, v in ipairs(OpenBoxConfig.BattleBox) do
+            tempWeight = tempWeight + v.Weight
+            if random <= tempWeight then
+                local equipmap = GameUtils.GetEquipmentMap()
+                local equipIds = equipmap[v.Grade]
+                if equipIds then
+                    return equipIds[math.random(1, #equipIds)]
+                end
+            end
+        end
+    end
+
+    local rewards = {}
+    for i = 1, 2 do -- 取2次
+        table.insert(rewards, GetOneReward())
+    end
+    return rewards
+end
+
+
+
 return GameUtils

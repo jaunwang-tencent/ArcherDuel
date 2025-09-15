@@ -691,7 +691,6 @@ function Player:PerformFallback()
         Log:PrintLog("TXPerform(BodyRotation, BodyForword)", BodyForword)
         local BodyRotation = UMath:ForwardToRotator(BodyForword)
         Log:PrintLog("TXPerform(BodyRotation, 1)", BodyRotation)
-        Log:PrintDebug("1111111111111111111111111")
         BodyRotation = BodyRotation - self:GetRotation()
         if FaceRotation.X <= 0 then
             Log:PrintLog("TXPerform(BodyRotation, 2)", BodyRotation)
