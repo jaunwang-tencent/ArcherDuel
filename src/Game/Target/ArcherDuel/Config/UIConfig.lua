@@ -294,6 +294,8 @@ local UIConfig = {
                 --项
                 Item = {
                     ID = 109449,
+                    --背景图
+                    Background = 110794,
                     --可升级图标
                     Upgradable = 110793,
                     --锁

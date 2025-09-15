@@ -148,16 +148,11 @@ end
 --- 刷新图标
 ---@param IconUI 图标资源
 ---@param EquipmentData 装备数据
-function StoreModule:RefreshIcon(IconUI, EquipmentData)
-    if EquipmentData then
-        local AssetName = EquipmentData.AssetName or "weapon_icon"
-        local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
-        local ElementId = System:GetScriptParentID()
-
-        local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
-        local IconId = IconIdArray[AssetIndex]
-        UI:SetImage({IconUI}, IconId, true)
-    end
+function StoreModule:RefreshIcon(IconUI, AssetName, AssetIndex)
+    local ElementId = System:GetScriptParentID()
+    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+    local IconId = IconIdArray[AssetIndex]
+    UI:SetImage({IconUI}, IconId, true)
 end
 
 --- 打开宝箱
@@ -190,7 +185,8 @@ function StoreModule:OpenBox(boxId)
             local EquipmentData = EquipmentConfig[EquipmentID]
             local BoxItem = ThreeItem.ItemGroup[RewardIndex]
             UI:SetVisible({BoxItem.Icon, BoxItem.Background}, true)
-            self:RefreshIcon(BoxItem.Icon, EquipmentData)
+            self:RefreshIcon(BoxItem.Icon, EquipmentData.AssetName, EquipmentData.AssetIndex)
+            self:RefreshIcon(BoxItem.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
         end
         UI:PlayUIAnimation(ThreeItem.ItemGroupID, 1, 0)
         --播到1.6秒暂停播放

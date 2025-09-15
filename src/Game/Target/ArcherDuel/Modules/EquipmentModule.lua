@@ -93,6 +93,16 @@ function EquipmentModule:RefreshIcon(IconUI, Equipment)
     UI:SetImage({IconUI}, IconId, true)
 end
 
+--- 刷新图标
+---@param IconUI 图标资源
+---@param EquipmentData 装备数据
+function EquipmentModule:RefreshIcon2(IconUI, AssetName, AssetIndex)
+    local ElementId = System:GetScriptParentID()
+    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+    local IconId = IconIdArray[AssetIndex]
+    UI:SetImage({IconUI}, IconId, true)
+end
+
 --- 刷新身体上的数据
 function EquipmentModule:RegreshBodyUI()
     local EquipmentView = UIConfig.EquipmentView
@@ -221,6 +231,7 @@ function EquipmentModule:RefreshListUI(Category)
         local LevelUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Level)
         local ProgressUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Progress)
         local ProgressTextUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.ProgressText)
+        local Attributes = EquipmentConfig[Equipment.ID].Attributes
         if Equipment.Level == 5 then
             --满级
             table.insert(ShowItems, MaxLevelUI)
@@ -237,7 +248,6 @@ function EquipmentModule:RefreshListUI(Category)
 
             local BaseData = self.PlayerData.BaseData
             local CurrentPiece = Equipment.Piece
-            local Attributes = EquipmentConfig[Equipment.ID].Attributes
             local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
             if Equipment.Unlock and CurrentPiece >= Upgrade.Piece and BaseData.Coin >= Upgrade.Coin then
                 table.insert(ShowItems, UpgradableUI)
@@ -249,6 +259,9 @@ function EquipmentModule:RefreshListUI(Category)
             UI:SetProgressCurrentValue({ProgressUI}, CurrentPiece)
             UI:SetText({ProgressTextUI}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
         end
+        --设置品质
+        local BackgroundUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Background)
+        self:RefreshIcon2(BackgroundUI, "EquipmentImage", Attributes.Grade)
         --设置等级
         UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
         --是否已装备
