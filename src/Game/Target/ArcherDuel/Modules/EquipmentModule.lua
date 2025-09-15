@@ -133,7 +133,7 @@ function EquipmentModule:RegreshBodyUI()
                 local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
                 UI:SetProgressMaxValue({EquipmentSlot.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
-                UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
+                UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", Upgrade.Piece, CurrentPiece))
             end
             --图标
             self:RefreshIcon(EquipmentSlot.Image, Equipment)
