@@ -576,7 +576,7 @@ local UIConfig = {
             },
             --七日挑战
             SevenDays = {
-                --按钮 
+                --按钮
                 Button = 100488,
             },
             --寻找对局
@@ -1175,6 +1175,99 @@ local UIConfig = {
             Mask = {111242,111243,111244,111245},
         }
     },
+    --宝箱视图
+    BoxView = {
+        --两个道具
+        TwoItem = {
+            ID = 108048,
+            --按钮组
+            ButtonGroup = {
+                --再开一个【播放广告】
+                OnceMore = 108058,
+                --延迟显示部分
+                Later = {
+                    ID = 108480,
+                    --返回主页
+                    GoBack = 108059,
+                    --再来一局
+                    PlayAgain = 108060
+                }
+            },
+            --开箱表演
+            PerformGroup = {
+                --蓝宝箱
+                [1] = {
+                    --标识
+                    ID = 108056,
+                    --资源ID【参见配表：ResourceConfig】
+                    ResourceID = 200001
+                }
+            },
+            --装备组
+            ItemGroupID = 111057,
+            ItemGroup = {
+                [1] = {
+                    Icon = 108054,
+                    Background = 111058
+                },
+                [2] = {
+                    Icon = 108055,
+                    Background = 111059
+                }
+            }
+        },
+        --三个道具
+        ThreeItem = {
+            --宝箱根节点
+            ID = 110963,
+            --按钮组【领取】
+            Button = {
+                ID = 110959,
+                Icon = 110962,
+                Text = 110965
+            },
+            --开箱表演
+            PerformGroup = {
+                --蓝宝箱
+                [1] = {
+                    --标识
+                    ID = 111098,
+                    --资源ID【参见配表：ResourceConfig】
+                    ResourceID = 200001
+                },
+                --红宝箱
+                [2] = {
+                    --标识
+                    ID = 110964,
+                    --资源ID【参见配表：ResourceConfig】
+                    ResourceID = 200002
+                },
+                --紫宝箱
+                [3] = {
+                    --标识
+                    ID = 111099,
+                    --资源ID【参见配表：ResourceConfig】
+                    ResourceID = 200003
+                }
+            },
+            --装备组
+            ItemGroupID = 111095,
+            ItemGroup = {
+                [1] = {
+                    Icon = 111094,
+                    Background = 111092
+                },
+                [2] = {
+                    Icon = 111093,
+                    Background = 111091
+                },
+                [3] = {
+                    Icon = 111096,
+                    Background = 111097
+                }
+            }
+        },
+    }
     ---------------以上是局外UI----------------------
 }
 

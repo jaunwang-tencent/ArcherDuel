@@ -2,6 +2,8 @@
 local StoreModule = {}
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+--装备配置
+local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 
 --- 打开
 ---@param PlayerData 玩家数据
@@ -50,10 +52,6 @@ function StoreModule:Open(PlayerData)
 
     --寄存玩家数据
     self.PlayerData = PlayerData
-
-    UI:RegisterClicked(110959, function ()
-        self:CloseBox()
-    end)
 end
 
 --- 刷新
@@ -147,58 +145,91 @@ function StoreModule:GainGoods(Goods)
     end
 end
 
+--- 刷新图标
+---@param IconUI 图标资源
+---@param EquipmentData 装备数据
+function StoreModule:RefreshIcon(IconUI, EquipmentData)
+    if EquipmentData then
+        local AssetName = EquipmentData.AssetName or "weapon_icon"
+        local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
+        local ElementId = System:GetScriptParentID()
+
+        local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+        local IconId = IconIdArray[AssetIndex]
+        UI:SetImage({IconUI}, IconId, true)
+    end
+end
+
 --- 打开宝箱
 ---@param boxId 宝箱Id
 function StoreModule:OpenBox(boxId)
-    local ElementId = System:GetScriptParentID()
+    local ThreeItem = UIConfig.BoxView.ThreeItem
+    --显示装备按钮
+    UI:SetVisible({ThreeItem.ID, ThreeItem.ItemGroupID}, true)
 
-    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
-    local equipIconUIs = {110966,110957,110956}
-    local rewards = _GAME.GameUtils.OpenBoxReward(boxId)
-    for i, v in ipairs(rewards) do
-        local EquipmentData = EquipmentConfig[v]
-        local AssetName = EquipmentData.AssetName or "weapon_icon"
-        local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
-        local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
-        local IconId = IconIdArray[AssetIndex]
-        UI:SetImage({equipIconUIs[i]}, IconId, true)
-        -- local IconBGArray = CustomProperty:GetCustomPropertyArray(ElementId, "", CustomProperty.PROPERTY_TYPE.Image)
-        -- UI:SetImage({IconUI}, IconBGArray[EquipmentData.Attributes.Grade], true)
-    end
-
-    UI:SetVisible({110963},true) -- 打开宝箱UI
-
-    UI:SetVisible({110962,110965,110959},false)
-    TimerManager:AddTimer(2.3,function ()
-        UI:SetVisible(equipIconUIs,true)
-        for i, v in ipairs(equipIconUIs) do
-            UI:PlayUIAnimation(v,1,0)
-        end
-    end)
-    TimerManager:AddTimer(3,function ()
-        UI:EffectPausePlay(110964)
-        UI:SetVisible({110962,110965,110959},true)
-    end)
-
-    --获取装备
-    local AllEquipment = self.PlayerData.AllEquipment
-    for _, EquipmentID in pairs(rewards) do
-        local TargetEquipment = AllEquipment[EquipmentID]
-        if TargetEquipment.Unlock then
-            --累加碎片
-            TargetEquipment.Piece = TargetEquipment.Piece + 1
+    --开宝箱表演
+    local TargetBoxID
+    for _, Perform in ipairs(ThreeItem.PerformGroup) do
+        if boxId == Perform.ResourceID then
+            UI:SetVisible({Perform.ID}, true)
+            TargetBoxID = Perform.ID
         else
-            --解锁
-            TargetEquipment.Unlock = true
+            UI:SetVisible({Perform.ID}, false)
         end
     end
-    --刷新装备数据
-    System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
-    return rewards
-end
 
-function StoreModule:CloseBox()
-    UI:SetVisible({110963},false)
-end
+    --装备展示
+    for _, Item in ipairs(ThreeItem.ItemGroup) do
+        UI:SetVisible({Item.Icon, Item.Background}, false)
+    end
+    local BoxRewards = _GAME.GameUtils.OpenBoxReward(boxId)
+    UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
 
+    UGCS.Framework.Executor.Delay(2.3, function ()
+        for RewardIndex, EquipmentID in ipairs(BoxRewards) do
+            local EquipmentData = EquipmentConfig[EquipmentID]
+            local BoxItem = ThreeItem.ItemGroup[RewardIndex]
+            UI:SetVisible({BoxItem.Icon, BoxItem.Background}, true)
+            self:RefreshIcon(BoxItem.Icon, EquipmentData)
+        end
+        UI:PlayUIAnimation(ThreeItem.ItemGroupID, 1, 0)
+        --播到1.6秒暂停播放
+        UGCS.Framework.Executor.Delay(1.6, function()
+            UI:PauseUIAnimation(ThreeItem.ItemGroupID, 1)
+        end)
+    end)
+    UGCS.Framework.Executor.Delay(3,function ()
+        if TargetBoxID then
+            UI:EffectPausePlay(TargetBoxID)
+        end
+        UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},true)
+    end)
+
+    --注册领取事件
+    UI:RegisterClicked(ThreeItem.Button.ID, function ()
+        --获取装备
+        local AllEquipment = self.PlayerData.AllEquipment
+        for _, EquipmentID in pairs(BoxRewards) do
+            local TargetEquipment = AllEquipment[EquipmentID]
+            if TargetEquipment.Unlock then
+                --累加碎片
+                TargetEquipment.Piece = TargetEquipment.Piece + 1
+            else
+                --解锁
+                TargetEquipment.Unlock = true
+            end
+        end
+        --刷新装备数据
+        System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
+        --恢复动画播放
+        UI:ResumeUIAnimation(ThreeItem.ItemGroupID)
+        --UI则关闭可见性
+        if TargetBoxID then
+            UI:SetVisible({TargetBoxID},false)
+        end
+        UI:SetVisible({ThreeItem.ID},false)
+        UI:UnRegisterClicked(ThreeItem.Button.ID)
+    end)
+    return BoxRewards
+end
 return StoreModule
