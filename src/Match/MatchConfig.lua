@@ -66,10 +66,10 @@ MatchConfig.Map = { -- 黄金赛场景配置
 
 MatchConfig.GoldSceneConfig = { -- 黄金赛场景配置
     [7] = {
-        Podium = 632, -- 领奖台
-        Top1 = 619, -- 第一名
-        Top2 = 621, -- 第二名
-        Top3 = 623, -- 第三名
+        Podium = 2056, -- 领奖台
+        Top1 = 2085, -- 第一名
+        Top2 = 2086, -- 第二名
+        Top3 = 2088, -- 第三名
         Camera = 475, -- 相机
     }
 }
@@ -102,7 +102,12 @@ MatchConfig.GoldFailer_Reward_UI = {
     {icon = 110678, text = 110680},
     {icon = 110679, text = 110681},
 }
-MatchConfig.Gold_Head_UI = {110768,110769,110770,110771,110763,110765,110766,110767} -- 黄金赛分组赛头像，从左到右，从下到上
+
+MatchConfig.GoldWinner_Move_Head_UI = {111951,111952,111953,111954}
+MatchConfig.GoldTeam_Head_UI = {
+    [0] = {110763,110765,110766,110767,110768,110769,110770,110771},
+    [1] = {111944, 111942, 111940, 111938},
+} -- 黄金赛分组赛头像，从左到右，从上到下
 MatchConfig.GoldWinner_Head_UI = {
     [1] = {110525,110522,110519,110516},
     [2] = {110510,110513},
