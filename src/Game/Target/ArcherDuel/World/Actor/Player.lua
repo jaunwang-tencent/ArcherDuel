@@ -318,7 +318,7 @@ function Player:SetPlayerHP()
             local HUD_HPList = {self.UI_HP}
             UI:SetProgressMaxValue(HUD_HPList, self.Attributes.Health)
             UI:SetProgressCurrentValue(HUD_HPList, self.Attributes.Health)
-            self.UI_Damage = PlayerView.DamageText
+            self.UI_Damage = PlayerView.DeductHP
         end
     end
 end
@@ -372,8 +372,8 @@ function Player:GetEquipData(ForceUpdate)
             head_damageRate = self.WeaponConfig.Attributes.HeadShotIncrease
             body_damageRate = self.WeaponConfig.Attributes.BodyShotIncrease
             if PartConfig ~= nil then
-                damage = self.WeaponConfig.Attributes.Attack + self.WeaponConfig.Attributes.Growth * Weapon_Lv
-                            + PartConfig.Attributes.Attack + PartConfig.Attributes.Growth * Part_Lv
+                damage = self.WeaponConfig.Attributes.Attack + self.WeaponConfig.Attributes.Growth * ( Weapon_Lv - 1)
+                            + PartConfig.Attributes.Attack + PartConfig.Attributes.Growth * ( Part_Lv - 1)
             end
         end
 
@@ -411,11 +411,11 @@ function Player:GetEquipData(ForceUpdate)
             rate = rate / 10
             self.EquipData = {
                 damage = damage * rate,
-                head_damageRate = head_damageRate * rate,
-                body_damageRate = body_damageRate * rate,
+                head_damageRate = head_damageRate,
+                body_damageRate = body_damageRate,
                 hp = hp * rate,
-                head_protection = head_protection * rate,
-                body_protection = body_protection * rate,
+                head_protection = head_protection,
+                body_protection = body_protection,
             }
         end
     end

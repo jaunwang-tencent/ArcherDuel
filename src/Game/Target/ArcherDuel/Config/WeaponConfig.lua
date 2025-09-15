@@ -243,7 +243,7 @@ local WeaponConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 50,
+            Attack = 41,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -257,7 +257,7 @@ local WeaponConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
             -- 成长值
-            Growth = 11,
+            Growth = 8,
         },
     },
     [2] = {
@@ -454,7 +454,7 @@ local WeaponConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 50,
+            Attack = 41,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -468,7 +468,7 @@ local WeaponConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
             -- 成长值
-            Growth = 11,
+            Growth = 8,
         },
     },
     [3] = {
@@ -649,7 +649,7 @@ local WeaponConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 50,
+            Attack = 41,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -663,7 +663,7 @@ local WeaponConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
             -- 成长值
-            Growth = 11,
+            Growth = 8,
         },
     },
 }
