@@ -206,6 +206,7 @@ function EquipmentModule:RefreshListUI(Category)
         local IconUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Icon)
         local Equipment
         local ItemDataIndex = ItemData.Index
+        local BackgroundUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Background)
         if ItemDataIndex <= HasUseCount then
             --已用的
             Equipment = HasUseEquipment[ItemDataIndex]
@@ -215,7 +216,7 @@ function EquipmentModule:RefreshListUI(Category)
         else
             --锁定的
             Equipment = LockedEquipment[ItemDataIndex - HasUseCount - NotUseCount]
-            UI:SetImageColor({IconUI},"#595959")
+            UI:SetImageColor({IconUI, BackgroundUI},"#595959")
         end
         --寄存到数据相
         ItemData.Equipment = Equipment
