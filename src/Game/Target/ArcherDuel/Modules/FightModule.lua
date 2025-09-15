@@ -6,6 +6,8 @@ local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+--装备详情模块
+local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
 
 --- 打开
 ---@param PlayerData 玩家数据
@@ -95,6 +97,20 @@ function FightModule:Close()
     UI:UnRegisterPressed(CenterView.SevenDays.Text)
     UI:UnRegisterPressed(CenterView.Match.Button)
     UI:UnRegisterPressed(CenterView.Rank.Button)
+
+    --注销装备槽的点击事件
+    local EquipmentSlotConfig = {
+        [1] = FightView.LeftView.Character,
+        [2] = FightView.LeftView.Top,
+        [3] = FightView.LeftView.Bottoms,
+        [4] = FightView.RightView.Bow,
+        [5] = FightView.RightView.Aex,
+        [6] = FightView.RightView.Spear,
+    }
+    for _, EquipmentSlot in ipairs(EquipmentSlotConfig) do
+         --先注销点击事件
+         UI:UnRegisterClicked(EquipmentSlot.Image)
+    end
     self.PlayerData = nil
 end
 
@@ -113,8 +129,14 @@ function FightModule:RegreshBodyUI()
     }
     local BodyEquipment = PlayerData.BodyEquipment
     for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
+         --先注销点击事件
+         UI:UnRegisterClicked(EquipmentSlot.Image)
         local Equipment = BodyEquipment[Category]
         if Equipment then
+             --点击装备事件
+             UI:RegisterClicked(EquipmentSlot.Image, function()
+                EquipmentDetailModule:Open(Equipment)
+            end)
             --设置等级
             UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
             --图标

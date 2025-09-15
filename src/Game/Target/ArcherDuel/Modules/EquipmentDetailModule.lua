@@ -16,6 +16,11 @@ function EquipmentDetailModule:Open(Equipment)
     --显示详情界面
     UI:SetVisible({DetailView.ID}, true)
 
+    --注册按钮事件
+    UI:RegisterPressed(EquipmentView.DetailView.Close, function()
+        EquipmentDetailModule:Close()
+    end)
+
      --修改名字
      local EquipmentData = EquipmentConfig[Equipment.ID]
      UI:SetText({100558}, EquipmentData.NickName)
@@ -203,6 +208,9 @@ function EquipmentDetailModule:Close()
             end
         end
     end
+
+    --注销关闭按钮事件
+    UI:UnRegisterPressed(EquipmentView.DetailView.Close)
 end
 
 --- 获取

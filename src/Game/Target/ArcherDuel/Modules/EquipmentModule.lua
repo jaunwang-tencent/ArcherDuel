@@ -18,10 +18,6 @@ function EquipmentModule:Open(PlayerData)
     self.PlayerData = PlayerData
 
     local EquipmentView = UIConfig.EquipmentView
-    --注册按钮事件
-    UI:RegisterPressed(EquipmentView.DetailView.Close, function()
-        EquipmentDetailModule:Close()
-    end)
     --过滤栏
     local ListView = EquipmentView and EquipmentView.ListView
     local TableBar = ListView and ListView.TableBar
@@ -75,8 +71,20 @@ function EquipmentModule:Close()
             end
         end
     end
-    --注销关闭按钮事件
-    UI:UnRegisterPressed(EquipmentView.DetailView.Close)
+
+     --注销装备槽的点击事件
+     local EquipmentSlotConfig = {
+        [1] = EquipmentView.LeftView.Character,
+        [2] = EquipmentView.LeftView.Top,
+        [3] = EquipmentView.LeftView.Bottoms,
+        [4] = EquipmentView.RightView.Bow,
+        [5] = EquipmentView.RightView.Axe,
+        [6] = EquipmentView.RightView.Spear,
+    }
+    for _, EquipmentSlot in ipairs(EquipmentSlotConfig) do
+        --先注销点击事件
+        UI:UnRegisterClicked(EquipmentSlot.Image)
+    end
 
     --清空玩家数据
     self.PlayerData = nil
@@ -107,8 +115,14 @@ function EquipmentModule:RegreshBodyUI()
     }
     local BodyEquipment = PlayerData.BodyEquipment
     for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
+        --先注销点击事件
+        UI:UnRegisterClicked(EquipmentSlot.Image)
         local Equipment = BodyEquipment[Category]
         if Equipment then
+            --点击装备事件
+            UI:RegisterClicked(EquipmentSlot.Image, function()
+                EquipmentDetailModule:Open(Equipment)
+            end)
             --设置等级
             UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
             if Equipment.Level == 5 then
