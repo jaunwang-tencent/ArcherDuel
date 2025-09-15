@@ -4,8 +4,8 @@ local FightModule = {}
 local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
---装备配置
-local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --- 打开
 ---@param PlayerData 玩家数据
@@ -98,20 +98,6 @@ function FightModule:Close()
     self.PlayerData = nil
 end
 
---- 刷新图标
----@param IconUI 图标资源
----@param Index 图标索引
-function FightModule:RefreshIcon(IconUI, Equipment)
-    local EquipmentData = EquipmentConfig[Equipment.ID]
-    local AssetName = EquipmentData.AssetName or "weapon_icon"
-    local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
-    local ElementId = System:GetScriptParentID()
-
-    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
-    local IconId = IconIdArray[AssetIndex]
-    UI:SetImage({IconUI}, IconId, true)
-end
-
 --- 刷新身体上的数据
 function FightModule:RegreshBodyUI()
     local FightView = UIConfig.FightView
@@ -132,7 +118,7 @@ function FightModule:RegreshBodyUI()
             --设置等级
             UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
             --图标
-            self:RefreshIcon(EquipmentSlot.Image, Equipment)
+            GameUtils.RefreshIconWithEquipment(EquipmentSlot.Image, Equipment)
             UI:SetVisible({EquipmentSlot.EmptyImage}, false)
         else
             --没有装备则清空

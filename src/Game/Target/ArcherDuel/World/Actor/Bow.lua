@@ -1,5 +1,7 @@
 --弓
 local Bow = UGCS.RTTI.Class("Bow", UGCS.Target.ArcherDuel.World.Actor.Weapon)
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 function Bow:OnCreate(Context)
     Bow.super.OnCreate(self, Context)
@@ -34,7 +36,7 @@ function Bow:OnLoadAppearanceCompleted(ElementID)
     local WeaponResource = self:GetResource()
     local HeldItemConfig = WeaponResource and WeaponResource.HeldItem
     self.Dummys = {}
-    UGCS.Target.ArcherDuel.Helper.GameUtils.TraversalChildrenFromElement(ElementID, function(ChildElement)
+    GameUtils.TraversalChildrenFromElement(ElementID, function(ChildElement)
         local Increment = ChildElement & IncrementMask
         if HeldItemConfig.Root == Increment then
             self.Dummys.Root = ChildElement

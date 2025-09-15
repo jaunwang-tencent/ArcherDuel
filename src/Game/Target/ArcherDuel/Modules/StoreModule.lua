@@ -4,6 +4,8 @@ local StoreModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --- 打开
 ---@param PlayerData 玩家数据
@@ -145,16 +147,6 @@ function StoreModule:GainGoods(Goods)
     end
 end
 
---- 刷新图标
----@param IconUI 图标资源
----@param EquipmentData 装备数据
-function StoreModule:RefreshIcon(IconUI, AssetName, AssetIndex)
-    local ElementId = System:GetScriptParentID()
-    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
-    local IconId = IconIdArray[AssetIndex]
-    UI:SetImage({IconUI}, IconId, true)
-end
-
 --- 打开宝箱
 ---@param boxId 宝箱Id
 function StoreModule:OpenBox(boxId)
@@ -185,8 +177,8 @@ function StoreModule:OpenBox(boxId)
             local EquipmentData = EquipmentConfig[EquipmentID]
             local BoxItem = ThreeItem.ItemGroup[RewardIndex]
             UI:SetVisible({BoxItem.Icon, BoxItem.Background}, true)
-            self:RefreshIcon(BoxItem.Icon, EquipmentData.AssetName, EquipmentData.AssetIndex)
-            self:RefreshIcon(BoxItem.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+            GameUtils.RefreshIconWithAsset(BoxItem.Icon, EquipmentData.AssetName, EquipmentData.AssetIndex)
+            GameUtils.RefreshIconWithAsset(BoxItem.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
         end
         UI:PlayUIAnimation(ThreeItem.ItemGroupID, 1, 0)
         --播到1.6秒暂停播放
