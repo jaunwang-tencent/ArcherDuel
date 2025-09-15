@@ -52,6 +52,7 @@ end
 --- 关闭
 function EquipmentModule:Close()
     self.CurrentSelected = nil
+    self.CurrentCategory = nil
     --清空列表
     local EquipmentView = UIConfig.EquipmentView
     local ListView = EquipmentView and EquipmentView.ListView
@@ -271,6 +272,9 @@ function EquipmentModule:RefreshListUI(Category)
             UI:ClearListViewSelection(TileView.ID)
         end
     end)
+
+    --记录当前种类
+    self.CurrentCategory = Category
 end
 
 --- 刷新全部
@@ -497,7 +501,7 @@ function EquipmentModule:OnEquip(Equipment)
     System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     self:CloseDetailView()
     --刷新UI
-    self:RefreshUI()
+    self:RefreshUI(self.CurrentCategory)
 end
 
 --- 升级
@@ -518,7 +522,7 @@ function EquipmentModule:OnUpgrade(Equipment)
     System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     self:OpenDetailView(Equipment)
     --刷新UI
-    self:RefreshUI()
+    self:RefreshUI(self.CurrentCategory)
 end
 
 return EquipmentModule

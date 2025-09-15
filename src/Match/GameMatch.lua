@@ -335,7 +335,11 @@ function GameMatch:StartMatch()
     BattleRivalInfo.score = curScore + math.random(0, 200)
     -- 头像
     local headIcons = GetHeadIconList()
-    BattleRivalInfo.headIcon = headIcons[math.random(1, #headIcons)]
+    local HeadIconCount = #headIcons
+    if HeadIconCount > 0 then
+        --只有存在头像时才随机
+        BattleRivalInfo.headIcon = headIcons[math.random(1, HeadIconCount)]
+    end
     MatchInfo.BattleRivalInfo = BattleRivalInfo
 
     Log:PrintDebug("zzzzzzz StartMatch zzzzzzz")
