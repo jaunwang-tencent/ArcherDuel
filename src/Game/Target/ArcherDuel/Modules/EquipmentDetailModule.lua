@@ -39,12 +39,13 @@ function EquipmentDetailModule:Open(Equipment)
         DetailView.UpgradableTip.ID,
     }, false)
     --弹窗类型
+    --升级提示
+    local UpgradableTip = DetailView.UpgradableTip
+    UI:SetVisible({UpgradableTip.ID, UpgradableTip.ProgressText}, true)
+    UI:SetVisible({UpgradableTip.Icon}, false)
     --升级
     if Equipment.Unlock then
-        --升级提示
-        local UpgradableTip = DetailView.UpgradableTip
         --解锁
-        UI:SetVisible({DetailView.EquippedAndUpgradable.ID, UpgradableTip.ID}, false)
         if Equipment.Equipped then
             --已装备
             if Equipment.Level == 5 then
@@ -52,10 +53,7 @@ function EquipmentDetailModule:Open(Equipment)
                 UI:SetVisible({DetailView.EquippedAndMaxLevel.ID},true)
             elseif CurrentPiece >= Upgrade.Piece then
                 --已装备可升级
-                UI:SetVisible({DetailView.EquippedAndUpgradable.ID, UpgradableTip.ID, UpgradableTip.Icon, UpgradableTip.ProgressText},true)
-                UI:SetProgressMaxValue({UpgradableTip.Progress}, Upgrade.Piece)
-                UI:SetProgressCurrentValue({UpgradableTip.Progress}, CurrentPiece)
-                UI:SetText({UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
+                UI:SetVisible({DetailView.EquippedAndUpgradable.ID, UpgradableTip.Icon},true)
             else
                 --已装备不可升级
                 UI:SetVisible({DetailView.EquippedAndNotUpgradable.ID},true)
@@ -66,19 +64,20 @@ function EquipmentDetailModule:Open(Equipment)
                 UI:SetVisible({DetailView.EquipableAndMaxLevel.ID},true)
             elseif CurrentPiece >= Upgrade.Piece then
                 --可装备可升级
-                UI:SetVisible({DetailView.EquipableAndUpgradable.ID, UpgradableTip.ID, UpgradableTip.Icon, UpgradableTip.ProgressText},true)
-                UI:SetProgressMaxValue({UpgradableTip.Progress}, Upgrade.Piece)
-                UI:SetProgressCurrentValue({UpgradableTip.Progress}, CurrentPiece)
-                UI:SetText({UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
+                UI:SetVisible({DetailView.EquipableAndUpgradable.ID, UpgradableTip.Icon},true)
             else
                 --可装备不可升级
                 UI:SetVisible({DetailView.EquipableAndNotUpgradable.ID},true)
             end
         end
+
     else
         --未解锁
         UI:SetVisible({ DetailView.NotEquipped.ID }, true)
     end
+    UI:SetProgressMaxValue({UpgradableTip.Progress}, Upgrade.Piece)
+    UI:SetProgressCurrentValue({UpgradableTip.Progress}, CurrentPiece)
+    UI:SetText({UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
 
     --武器图标
     UI:SetText({ DetailView.WeaponIcon.Level }, string.format("等级%d", Equipment.Level))
@@ -266,13 +265,13 @@ function EquipmentDetailModule:OnUpgrade(Equipment)
             --刷新UI
             local EquipmentModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
             EquipmentModule:RefreshUI(self.CurrentCategory)
+            --播放升级特效
+
         else
             --弹金币不够Tips，并跳转
             UI:ShowMessageTip("金币不够")
             self:OnObtain(Equipment)
         end
-    else
-        Log:PrintLog("xxxxxxxxxxxxxxx", Equipment.ID, Attributes.Grade, Equipment.Level)
     end
 end
 

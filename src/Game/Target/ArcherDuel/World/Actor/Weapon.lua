@@ -663,9 +663,9 @@ function Weapon:HitTarget(ElementID, Result)
             if MovableList and MovableList[ElementID] then
                 --绑定到障碍物元件
                 Element:BindingToElement(ProjectileElementID, ElementID)
-            
+
                 --对方受击表演【假摔，没任何伤害!^_^!】
-                local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()                
+                local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
                 if NextTurnPlayer:CheckContact(ElementID) then
                     NextTurnPlayer:PerformHitStart()
                     NeedSwitchTurn = false
