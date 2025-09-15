@@ -199,7 +199,7 @@ function FightModule:OnSevenDays()  --七日挑战
     UI:SetText({UIConfig.SevenDays.Progress}, "进度:" .. TaskExp .. "/" .. 20)
 
     UI:SetVisible({UIConfig.SevenDays.ID}, true)
-    UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)    
+    UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)
     local WeeklyTaskUIID = {105077, 105084, 105091}
     local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTaskByWeekly()
