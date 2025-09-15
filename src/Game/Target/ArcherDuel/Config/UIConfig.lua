@@ -985,6 +985,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111213,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
 
@@ -1000,6 +1002,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111214,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
@@ -1014,6 +1018,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111215,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
@@ -1028,6 +1034,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111218,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
@@ -1042,6 +1050,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111216,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
@@ -1056,6 +1066,8 @@ local UIConfig = {
                 },
                 --未解锁状态颜色为
                 Lock = "#8E8E8E",
+                --未解锁的锁
+                LockImage = 111219,
                 --已解锁状态颜色为
                 OnLock = "FFFFFFFF"
             },
