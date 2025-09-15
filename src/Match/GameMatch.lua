@@ -506,8 +506,15 @@ local function ShowRankProgress(curScore, newScore)
             score = score + step
 
             if score >= nextLevel.base_score then
+                -- UI:SetVisible({111925},true)
+                -- System:FireSignEvent("RanklUp")
+                UI:SetVisible({108300}, true)
+                System:FireSignEvent("显示背景光")
+                UI:PlayUIAnimation(108300,1,0)
                 -- 切换到下一个等级图标
-                SetCurRank(nextLevel)
+                TimerManager:AddTimer(0.5, function()
+                    SetCurRank(curLevel)
+                end)
                 curLevel, nextLevel = _GAME.GameUtils.GetRankLevelByScore(score)
                 if curLevel and nextLevel then
                     maxProgress = nextLevel.base_score - curLevel.base_score
@@ -739,10 +746,10 @@ function GameMatch:StartGoldMatch()
         end)
 
         TimerManager:AddTimer(3,function ()
-            UI:SetVisible({109969},true)
+            UI:SetVisible({110896},true)
             TimerManager:RemoveTimer(timer)
             TimerManager:AddTimer(0.5,function ()
-                UI:SetVisible({109969},false)
+                UI:SetVisible({110896},false)
                 UI:SetVisible(MatchConfig.MatchUI_Start,false)
                 -- 开始匹配倒计时
                 self:MathCountDown(MatchInfo)
@@ -1059,10 +1066,8 @@ function GameMatch:ShowGoldTop3(top3Players)
             if reward then
                 local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
                 if cfg and cfg.iconIndex then
-                    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzzz 111 ", v.icon, cfg.iconIndex)
                     UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
                 end    
-                    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzzz 222 ", v.text, reward.count)
                 UI:SetText({v.text}, tostring(reward.count))
             end
         end

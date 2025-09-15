@@ -17,7 +17,7 @@ local function GetProjectile(SceneID, CallBack)
         else
             Element:SpawnElementWithTransform(Element.SPAWN_TYPE.Prefab, SceneID, function(ElementID)
                 CallBack(ElementID)
-            end)
+            end, Engine.Vector(10000, 10000, 10000))
         end
     end
 end
@@ -32,7 +32,7 @@ local function RemoveProjectile(ElementID, SceneID)
             Pool = {}
             ProjectilesPool[SceneID] = Pool
         end
-        Element:SetPosition(ElementID, Engine.Vector(1000, 1000, 1000), Element.COORDINATE.World)
+        Element:SetPosition(ElementID, Engine.Vector(10000, 10000, 10000), Element.COORDINATE.World)
         table.insert(Pool, ElementID)
     end
 end

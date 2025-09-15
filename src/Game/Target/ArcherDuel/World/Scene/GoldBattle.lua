@@ -230,7 +230,10 @@ function GoldBattle:OnSwitchTurn()
 
     -- 模拟AI
     local CurrentTurnPlayer = self:GetCurrentTurnPlayer()
-    self:SimulateAI(CurrentTurnPlayer)
+    local delay = math.random(5, 10) -- 随机延迟时间
+    TimerManager:AddTimer(delay, function()
+        self:SimulateAI(CurrentTurnPlayer)
+    end)
 end
 
 --- 观察投掷物
