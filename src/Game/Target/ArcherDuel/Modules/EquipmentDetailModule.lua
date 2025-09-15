@@ -266,7 +266,7 @@ function EquipmentDetailModule:OnUpgrade(Equipment)
             local EquipmentModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
             EquipmentModule:RefreshUI(self.CurrentCategory)
             --播放升级特效
-
+            System:FireSignEvent("LevelUp")
         else
             --弹金币不够Tips，并跳转
             UI:ShowMessageTip("金币不够")
