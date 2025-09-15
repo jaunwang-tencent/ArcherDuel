@@ -49,6 +49,8 @@ function StoreModule:Open(PlayerData)
             end
         end
     end
+    --添加之前显示子节点
+    UI:SetVisible(self.ScrollItems, true)
     --添加到滚动视图
     UI:AddToScrollView(StoreView.Scrollable, self.ScrollItems)
 
@@ -65,11 +67,13 @@ end
 --- 关闭
 function StoreModule:Close()
     --销毁视图
-    UI:RemoveFromScrollView(110361, self.ScrollItems)
+    local StoreView = UIConfig.StoreView
+    UI:RemoveFromScrollView(StoreView.Scrollable, self.ScrollItems)
     for _, ButtonInfo in pairs(self.ButtonInfos) do
         UI:UnRegisterPressed(ButtonInfo.ButtonID)
     end
-    UI:UnRegisterClicked(110962)
+    --再隐藏子节点
+    UI:SetVisible(self.ScrollItems, false)
     --清除玩家数据
     self.ScrollItems = nil
     self.ButtonInfos = nil
