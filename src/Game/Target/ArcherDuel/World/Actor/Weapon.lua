@@ -1,6 +1,8 @@
 local TaskEvents = require("Game.Framework.Task.TaskEvents")
 --武器
 local Weapon = UGCS.RTTI.Class("Weapon", UGCS.Framework.Actor)
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 -- 武器投掷物实例池
 local ProjectilesPool = {}
@@ -163,7 +165,7 @@ function Weapon:GetHeightOffset(PitchDegree)
         --计算直线距离
         local Distance = UMath:GetVectorLength(Displacement) * 0.01
         --重新计算命中区域
-        local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
+        local LowerDegree, UpperDegree = GameUtils.ComputeHitRange(AimSetting, Displacement)
         --半高
         local HalfDegreeRange = 0.5 * (UpperDegree + LowerDegree)
         --高度偏移
@@ -258,7 +260,7 @@ function Weapon:BuildSplineCurve(PitchDegree, IsAimTrack, LimitDistance)
                     end
                     NewEndPoint = Engine.Vector(EndPoint.X + tmepDis, EndPoint.Y, Displacement.Z)
                 end
-                local CurvePoints = UGCS.Target.ArcherDuel.Helper.GameUtils.GenerateCurve(StartPoint, MiddlePoint, NewEndPoint, Segment, Curvature, ExtraRate)
+                local CurvePoints = GameUtils.GenerateCurve(StartPoint, MiddlePoint, NewEndPoint, Segment, Curvature, ExtraRate)
 
                 if CurvePoints then
                     local PointCount = #CurvePoints
@@ -361,12 +363,12 @@ function Weapon:ComputeVelocity(PitchDegree)
         local CharacterConfig = self.OwnerPlayer.Config
         local AimSetting = CharacterConfig and CharacterConfig.AimSetting
         if AimSetting then
-            local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
+            --local LowerDegree, UpperDegree = GameUtils.ComputeHitRange(AimSetting, Displacement)
             local Gravity = self.CurrentScene:GetGravity()
             local L, H = math.abs(Displacement.X) * 0.01, Displacement.Z * 0.01
             --计算高度差
             local HeightOffset = self:GetHeightOffset(PitchDegree)
-            local Velocity = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeVelocity(PitchDegree, Gravity, L, H + HeightOffset)
+            local Velocity = GameUtils.ComputeVelocity(PitchDegree, Gravity, L, H + HeightOffset)
             return Velocity
         end
     end
@@ -661,9 +663,9 @@ function Weapon:HitTarget(ElementID, Result)
             if MovableList and MovableList[ElementID] then
                 --绑定到障碍物元件
                 Element:BindingToElement(ProjectileElementID, ElementID)
-            
+
                 --对方受击表演【假摔，没任何伤害!^_^!】
-                local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()                
+                local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
                 if NextTurnPlayer:CheckContact(ElementID) then
                     NextTurnPlayer:PerformHitStart()
                     NeedSwitchTurn = false

@@ -68,6 +68,7 @@ UGCS.Target.ArcherDuel.World.Scene.GoldBattle = require "Game.Target.ArcherDuel.
 
 --模块
 UGCS.Target.ArcherDuel.Modules = {}
+UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule = require "Game.Target.ArcherDuel.Modules.EquipmentDetailModule"
 UGCS.Target.ArcherDuel.Modules.LoadingModule = require "Game.Target.ArcherDuel.Modules.LoadingModule"
 UGCS.Target.ArcherDuel.Modules.BattleModule = require "Game.Target.ArcherDuel.Modules.BattleModule"
 UGCS.Target.ArcherDuel.Modules.LobbyModule = require "Game.Target.ArcherDuel.Modules.LobbyModule"

@@ -10,8 +10,12 @@ local DiamondRankManager = require("Game.Framework.Rank.DiamondRank")
 function TournamentModule:Open(PlayerData)
     --寄存玩家数据
     self.PlayerData = PlayerData
+    local TournamentView = UIConfig.TournamentView
 
-    local Rank_Scroll = {107535}
+    --注册Table标签
+
+    local DiamondView = TournamentView.Diamond
+    local Rank_Scroll = {DiamondView.Rank_Scroll.ID}
     UI:SetVisible(Rank_Scroll, true)
 
     local DiamondRankPlayerList = {}
@@ -27,22 +31,22 @@ function TournamentModule:Open(PlayerData)
     end
     for i, v in ipairs(DiamondRankData) do
         if i== 1 then
-            UI:SetText({UIConfig.RankView.Diamond.Rank_1.Name}, v.name)
-            UI:SetImage({UIConfig.RankView.Diamond.Rank_1.Image}, v.headIcon, true)
-            --UI:SetText({UIConfig.RankView.Diamond.Rank_1.Button}, v.name)
-            UI:SetText({UIConfig.RankView.Diamond.Rank_1.Text}, tostring(v.DiamondScore))
+            UI:SetText({DiamondView.Rank_1.Name}, v.name)
+            UI:SetImage({DiamondView.Rank_1.Image}, v.headIcon, true)
+            --UI:SetText({DiamondView.Rank_1.Button}, v.name)
+            UI:SetText({DiamondView.Rank_1.Text}, tostring(v.DiamondScore))
         elseif i == 2 then
-            UI:SetText({UIConfig.RankView.Diamond.Rank_2.Name}, v.name)
-            UI:SetImage({UIConfig.RankView.Diamond.Rank_2.Image}, v.headIcon, true)
-            --UI:SetText({UIConfig.RankView.Diamond.Rank_2.Button}, v.name)
-            UI:SetText({UIConfig.RankView.Diamond.Rank_2.Text}, tostring(v.DiamondScore))
+            UI:SetText({DiamondView.Rank_2.Name}, v.name)
+            UI:SetImage({DiamondView.Rank_2.Image}, v.headIcon, true)
+            --UI:SetText({DiamondView.Rank_2.Button}, v.name)
+            UI:SetText({DiamondView.Rank_2.Text}, tostring(v.DiamondScore))
         elseif i == 3 then
-            UI:SetText({UIConfig.RankView.Diamond.Rank_3.Name}, v.name)
-            UI:SetImage({UIConfig.RankView.Diamond.Rank_3.Image}, v.headIcon, true)
-            --UI:SetText({UIConfig.RankView.Diamond.Rank_3.Button}, v.name)
-            UI:SetText({UIConfig.RankView.Diamond.Rank_3.Text}, tostring(v.DiamondScore))
+            UI:SetText({DiamondView.Rank_3.Name}, v.name)
+            UI:SetImage({DiamondView.Rank_3.Image}, v.headIcon, true)
+            --UI:SetText({DiamondView.Rank_3.Button}, v.name)
+            UI:SetText({DiamondView.Rank_3.Text}, tostring(v.DiamondScore))
         else
-            local NewUI =  UI:DuplicateWidget(107535, 0, 0)
+            local NewUI =  UI:DuplicateWidget(DiamondView.Rank_Scroll.ID, 0, 0)
             local DiamondScore = UI:FindChildWithIndex(NewUI, 2) -- 积分
             local Rank = UI:FindChildWithIndex(NewUI, 3) -- 名次
             local Name = UI:FindChildWithIndex(NewUI, 4) -- 玩家名字
@@ -60,14 +64,14 @@ function TournamentModule:Open(PlayerData)
             RankNum = i
         end
     end
-    UI:AddToScrollView(107735, DiamondRankPlayerList)
+    UI:AddToScrollView(DiamondView.ScrollView, DiamondRankPlayerList)
 
+    --本玩家Rank_8
     if isRank then
         UI:SetText({107566}, tostring(RankNum))
     else
         UI:SetText({107566}, "未上榜")
     end
-    
     UI:SetText({107568}, Chat:GetCustomName(Character:GetLocalPlayerId()))
     UI:SetImage({107567}, Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()), true)
     UI:SetText({107574}, tostring(Rank_DiamondScore_Num))

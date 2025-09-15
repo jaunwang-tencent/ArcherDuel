@@ -156,6 +156,28 @@ function GameUtils.GenerateCurve(p0, p1, p2, segment, curvature, extraRate)
     return curve1
 end
 
+--- 刷新图标
+---@param IconUI 图标资源
+---@param EquipmentData 装备数据
+function GameUtils.RefreshIconWithAsset(IconUI, AssetName, AssetIndex)
+    local ElementId = System:GetScriptParentID()
+    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+    local IconId = IconIdArray[AssetIndex]
+    UI:SetImage({IconUI}, IconId, true)
+end
+
+--- 刷新图标
+---@param IconUI 图标资源
+---@param Index 图标索引
+function GameUtils.RefreshIconWithEquipment(IconUI, Equipment)
+    --装备配置
+    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+    local EquipmentData = EquipmentConfig[Equipment.ID]
+    local AssetName = EquipmentData.AssetName or "weapon_icon"
+    local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
+    GameUtils.RefreshIconWithAsset(IconUI, AssetName, AssetIndex)
+end
+
 --- 设置玩家基础数据
 ---@param DataName 数据名称
 ---@param DataValue 数据值

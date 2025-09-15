@@ -4,6 +4,8 @@ local BattleModule = {}
 local CharacterConfigTable = UGCS.Target.ArcherDuel.Config.CharacterConfig
 local SceneConfigTable = UGCS.Target.ArcherDuel.Config.SceneConfig
 local WeaponConfigTable = UGCS.Target.ArcherDuel.Config.WeaponConfig
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --- 打开
 ---@param Context 上下文【透传数据】
@@ -295,7 +297,7 @@ function BattleModule:GetAIAimPitchDegree()
     if Displacement then
         local AimSetting = self.CharacterConfig.AimSetting
         if AimSetting then
-            local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
+            local LowerDegree, UpperDegree = GameUtils.ComputeHitRange(AimSetting, Displacement)
             local PitchDegree = math.random(math.floor(LowerDegree * 10) - 50, math.floor(UpperDegree * 10) + 50) * 0.1
             Log:PrintLog(string.format("GetAIAimPitchDegree(PitchDegree=%f)", PitchDegree))
             return PitchDegree

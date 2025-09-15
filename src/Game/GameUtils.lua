@@ -164,6 +164,33 @@ function GameUtils.GetRewardsByWin()
     return rewards
 end
 
+--获取当前是星期几
+function GameUtils.GetWeekDay()
+    -- 设定2000-01-01 00:00:00的时间戳作为epoch零点
+    local epochZeroTs = MiscService:DateYMDHMSToTime("2000-01-01 00:00:00")
 
+    -- 日期字符串转零点时间戳: "YYYY-MM-DD" -> 当天零点时间戳
+    local function dateStrToZeroTime(dateStr)
+        return MiscService:DateYMDHMSToTime(dateStr .. " 00:00:00")
+    end
+
+    -- 时间戳转日期字符串 "YYYY-MM-DD"
+    local function timeToDateStr(ts)
+        return string.sub(MiscService:TimeStampToDateYMDHMS(ts), 1, 10)
+    end
+
+    -- 计算距离2000-01-01零点的天数
+    local function getDaysSinceEpoch(ts)
+        local zeroTs = dateStrToZeroTime(timeToDateStr(ts))
+        return math.floor((zeroTs - epochZeroTs) / (24*3600))
+    end
+
+    local nowStr = MiscService:GetServerTimeToTime()
+    local nowTs = MiscService:DateYMDHMSToTime(nowStr)
+
+    -- 计算星期几，周一=1，周日=7，2000-01-01是周六，偏移5调整
+    local days = getDaysSinceEpoch(nowTs)
+    return ((days + 5) % 7) + 1
+end
 
 return GameUtils

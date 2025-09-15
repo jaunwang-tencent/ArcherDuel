@@ -4,6 +4,8 @@ local LobbyModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --缺省基础数值
 local DefaultBaseData =
@@ -29,9 +31,10 @@ local DefaultBaseData =
     Daily_Progress = 1,
     Player_BattlePoints_Num = 0,  --门票
     Player_TaskDailyExp_Num = 0,  --每日任务经验
-    Player_CollectTask_Num = 0,   --每日领取任务，按位来标记任务是否已领取
+    Player_CollectTaskDaily_Num = 0,   --每日领取任务，按位来标记任务是否已领取
     Rank_DiamondScore_Num = 0,    --钻石联赛中的积分
     Player_TaskWeeklyExp_Num = 0, --每周任务经验
+    Player_CollectTaskWeekly_Num = 0,   --每日领取任务，按位来标记任务是否已领取
 }
 
 --- 打开
@@ -121,7 +124,7 @@ function LobbyModule:LoadData()
         BaseData[ArchiveKey] = Data
     end
     --测试【砖石，用来购买商品】
-    --BaseData.Diamond = 555555
+    --BaseData.Coin = 555555
     self.PlayerData.BaseData = BaseData
 
     --2、装备数据
@@ -280,7 +283,7 @@ function LobbyModule:DefaultEquipmentData()
             Equipped = HasInit,             --是否装备
         }
         if HasInit then
-            Equipment.Piece = 50
+            Equipment.Piece = 1
             Equipment.Level = 3
         end
         AllEquipment[ID] = Equipment
@@ -538,18 +541,6 @@ function LobbyModule:RefreshStoreData()
     
 end
 
---- 刷新图标
----@param IconUI 图标资源
----@param AssetName 资产名称
----@param AssetIndex 资产索引
-function LobbyModule:RefreshIcon(IconUI, AssetName, AssetIndex)
-    local ElementId = System:GetScriptParentID()
-
-    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
-    local IconId = IconIdArray[AssetIndex]
-    UI:SetImage({IconUI}, IconId, true)
-end
-
 --- 刷新通用资源栏
 function LobbyModule:RefreshGeneralResourceBar()
     local MainView = UIConfig.MainView
@@ -558,7 +549,7 @@ function LobbyModule:RefreshGeneralResourceBar()
         local BaseData = self.PlayerData.BaseData
         --玩家图标
         --目前API侧无法读取玩家图标，暂时使用这个
-        self:RefreshIcon(GeneralResourceBar.PlayerIcon, "avatar", 1)
+        GameUtils.RefreshIconWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
         UI:SetText({GeneralResourceBar.Rank.Label}, tostring(BaseData.Rank))
         UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(BaseData.Coin))
         UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))
