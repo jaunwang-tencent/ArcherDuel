@@ -111,6 +111,16 @@ function FightModule:Close()
          --先注销点击事件
          UI:UnRegisterClicked(EquipmentSlot.Image)
     end
+    for i = 1, 7, 1 do
+        local dayObj = UIConfig.SevenDays.TabButton["Days" .. i]
+        UI:UnRegisterClicked(dayObj.Selected)
+    end
+
+    for index = 1, 4, 1 do
+        local ButtonID = UIConfig.SevenDays.TaskProgress.Button[index]
+        UI:UnRegisterClicked(ButtonID)
+    end
+    
     self.PlayerData = nil
 end
 
@@ -171,67 +181,39 @@ end
 
 function FightModule:OnSevenDays()  --七日挑战
     --这里打开七日挑战页面
-    local TaskExp = self.PlayerData.BaseData.Player_TaskWeeklyExp_Num
-    local CollectTask = self.PlayerData.BaseData.Player_CollectTask_Num
-    --local TaskExp = 5
-    --local CollectTask = 1
-    local winningPoints = {5, 10, 15, 20}
-    local TaskProcesID  = UIConfig.SevenDays.TaskProgress.Progress
-    for index = 1, 4, 1 do
-        local NodeID = UIConfig.SevenDays.TaskProgress.Node[index]
-        local LockID = UIConfig.SevenDays.TaskProgress.Lock[index]
-        local CheckID = UIConfig.SevenDays.TaskProgress.Check[index]
-        local ButtonID = UIConfig.SevenDays.TaskProgress.Button[index]
-        local MaskID = UIConfig.SevenDays.TaskProgress.Mask[index]
-        if TaskExp >= winningPoints[index] then
-            UI:SetVisible({NodeID}, true)
-            UI:SetVisible({LockID}, false)
-            if (CollectTask & (1 << (index - 1))) ~= 0 then
-                --已经领取奖品
-                UI:SetVisible({CheckID}, true)
-                UI:SetVisible({MaskID}, true)
-                UI:SetVisible({ButtonID}, false)
-            else
-                UI:SetVisible({CheckID}, false)
-                UI:SetVisible({MaskID}, false)
-                UI:SetVisible({ButtonID}, true)
-                UI:UnRegisterClicked(ButtonID)
-                UI:RegisterClicked(ButtonID, function (ButtonID)
-                    --self.PlayerData.BaseData.Player_CollectTask_Num = self.PlayerData.BaseData.Player_CollectTask_Num | (1 << (index - 1))
-                    --self:RefreshTaskProcesUI()
-                end)
-            end
-        else
-            UI:SetVisible({NodeID}, false)
-            UI:SetVisible({LockID}, true)
-            UI:SetVisible({CheckID}, false)
-            UI:SetVisible({MaskID}, false)
-            UI:SetVisible({ButtonID}, true)
-        end 
-    end
-    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp / 20 * 100)
-    UI:SetProgressMaxValue({TaskProcesID}, 100)
-    UI:SetText({UIConfig.SevenDays.Progress}, "进度:" .. TaskExp .. "/" .. 20)
 
-    UI:SetVisible({UIConfig.SevenDays.ID}, true)
-    UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)
-    local WeeklyTaskUIID = {105077, 105084, 105091}
-    local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
-    local ret = taskMgr:getAllTaskByWeekly()
-    local i = 1
-    for _, v in pairs(ret) do
-        local UIID = WeeklyTaskUIID[i]
-        UI:SetVisible({UIID}, true)
-        local ExpText = UI:FindChildWithIndex(UIID,1) -- 活跃值
-        local Name = UI:FindChildWithIndex(UIID,2) -- 名字
-        local Progress = UI:FindChildWithIndex(UIID,7) -- 进度
-        UI:SetText({ExpText}, tostring(v.rewards.WeeklyExp))
-        UI:SetText({Name}, v.name)
-        local _, current, max = v:getProgressNumer()
-        UI:SetProgressCurrentValue({Progress}, current)
-        UI:SetProgressMaxValue({Progress}, max)
-        i = i + 1
+    local day = _GAME.GameUtils.GetWeekDay() -- 获取当前是星期几
+
+    -- 周活跃进度 UI begin
+    self:RefreshTaskProcesUI()
+    -- 周活跃进度 UI end
+
+    -- 周任务 UI begin
+    self:RefreshWeeklyTaskUI(day)
+    -- 周任务 UI end
+
+    -- 每天切页按钮 UI begin
+    local dayLock = {0, 111213, 111214, 111215, 111218, 111216, 111219}
+    for i = 1, 7, 1 do
+        local flag = day == i
+        local dayObj = UIConfig.SevenDays.TabButton["Days" .. i]
+        UI:SetVisible({dayObj.Unselected}, flag)
+        UI:SetVisible({dayObj.Selected}, not flag)
+        if i <= day then
+            UI:SetVisible({dayLock[i]}, false)
+            UI:SetImageColor({dayObj.Selected}, dayObj.OnLock)
+            UI:UnRegisterClicked(dayObj.Selected)
+            UI:RegisterClicked(dayObj.Selected, function(UIID)
+                Log:PrintLog("点击的是第" .. i .. "天")
+                self:RefreshWeeklyTaskUI(i)
+                self:RefreshTabDayUI(i)
+            end)
+        else
+            UI:SetVisible({dayLock[i]}, true)
+            UI:SetImageColor({dayObj.Selected}, dayObj.Lock)
+        end
     end
+    -- 每天切页按钮 UI end
 end
 
 function FightModule:OnMatch()
@@ -255,6 +237,112 @@ end
 
 function FightModule:OnRank()
     --这里打开段位奖励随机奖励
+end
+
+function FightModule:RefreshTaskProcesUI()
+    local TaskExp = self.PlayerData.BaseData.Player_TaskWeeklyExp_Num
+    local CollectTask = self.PlayerData.BaseData.Player_CollectTaskWeekly_Num
+    --local TaskExp = 5
+    --local CollectTask = 1
+    local winningPoints = {5, 10, 15, 20}
+    local TaskProcesID  = UIConfig.SevenDays.TaskProgress.Progress
+    for index = 1, 4, 1 do
+        local NodeID = UIConfig.SevenDays.TaskProgress.Image[index]
+        local LockID = UIConfig.SevenDays.TaskProgress.Lock[index]
+        local CheckID = UIConfig.SevenDays.TaskProgress.Check[index]
+        local ButtonID = UIConfig.SevenDays.TaskProgress.Button[index]
+        local MaskID = UIConfig.SevenDays.TaskProgress.Mask[index]
+        if TaskExp >= winningPoints[index] then
+            UI:SetVisible({NodeID}, true)
+            UI:SetVisible({LockID}, false)
+            if (CollectTask & (1 << (index - 1))) ~= 0 then
+                --已经领取奖品
+                UI:SetVisible({CheckID}, true)
+                UI:SetVisible({MaskID}, true)
+                UI:SetVisible({ButtonID}, false)
+            else
+                UI:SetVisible({CheckID}, false)
+                UI:SetVisible({MaskID}, false)
+                UI:SetVisible({ButtonID}, true)
+                UI:UnRegisterClicked(ButtonID)
+                UI:RegisterClicked(ButtonID, function (ButtonID)
+                    self.PlayerData.BaseData.Player_CollectTaskWeekly_Num = self.PlayerData.BaseData.Player_CollectTaskWeekly_Num | (1 << (index - 1))
+                    self:RefreshTaskProcesUI()
+
+                end)
+            end
+        else
+            UI:SetVisible({NodeID}, false)
+            UI:SetVisible({LockID}, true)
+            UI:SetVisible({CheckID}, false)
+            UI:SetVisible({MaskID}, false)
+            UI:SetVisible({ButtonID}, true)
+        end
+    end
+    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp / 20 * 100)
+    UI:SetProgressMaxValue({TaskProcesID}, 100)
+    UI:SetText({UIConfig.SevenDays.Progress}, "进度:" .. TaskExp .. "/" .. 20)
+end
+
+function FightModule:RefreshWeeklyTaskUI(wday)
+    UI:SetVisible({UIConfig.SevenDays.ID}, true)
+    UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)
+    local WeeklyTaskUIID = {105077, 105084, 105091}
+    local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
+    local ret = taskMgr:getAllTaskByWeekly()
+    local i = 1
+    for _, v in pairs(ret) do
+        if v.conditions and v.conditions[1] and v.conditions[1].wday == wday then
+            local UIID = WeeklyTaskUIID[i]
+            UI:SetVisible({UIID}, true)
+            local ExpText = UI:FindChildWithIndex(UIID,4) -- 活跃值
+            local Name = UI:FindChildWithIndex(UIID,5) -- 名字
+            local Finish = UI:FindChildWithIndex(UIID,1) -- 已完成
+            local Completed = UI:FindChildWithIndex(UIID,2) -- 领奖
+            local Button = UI:FindChildWithIndex(UIID,3) -- 前往按钮
+            local Progress = UI:FindChildWithIndex(UIID,8) -- 进度
+            UI:SetText({ExpText}, tostring(v.rewards.WeeklyExp))
+            UI:SetText({Name}, v.name)
+            if v.state == taskMgr.Task.State.COMPLETED then
+                UI:SetVisible({Finish}, false)
+                UI:SetVisible({Completed}, true)
+                UI:UnRegisterClicked(Completed)
+                UI:RegisterClicked(Completed,function (ItemUID)
+                    local finishTaskRet = taskMgr:finishTask(v.id)
+                    if finishTaskRet == true then
+                        local taskExp = self.PlayerData.BaseData.Player_TaskWeeklyExp_Num
+                        if v.rewards and v.rewards.WeeklyExp then
+                            self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = taskExp + v.rewards.WeeklyExp
+                        end
+                    end
+                    self:RefreshTaskProcesUI()
+                    self:RefreshWeeklyTaskUI(wday)
+                end)
+                UI:SetVisible({Button}, false)
+            elseif v.state == taskMgr.Task.State.FINISH then
+                UI:SetVisible({Finish}, true)
+                UI:SetVisible({Completed}, false)
+                UI:SetVisible({Button}, false)
+            else
+                UI:SetVisible({Finish}, false)
+                UI:SetVisible({Completed}, false)
+                UI:SetVisible({Button}, true)
+            end
+            local _, current, max = v:getProgressNumer()
+            UI:SetProgressCurrentValue({Progress}, current)
+            UI:SetProgressMaxValue({Progress}, max)
+            i = i + 1
+        end
+    end
+end
+
+function FightModule:RefreshTabDayUI(wday)
+    for i = 1, 7, 1 do
+        local flag = wday == i
+        local dayObj = UIConfig.SevenDays.TabButton["Days" .. i]
+        UI:SetVisible({dayObj.Unselected}, flag)
+        UI:SetVisible({dayObj.Selected}, not flag)
+    end
 end
 
 return FightModule

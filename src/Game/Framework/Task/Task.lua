@@ -8,6 +8,7 @@ function Condition:new(type, params)
         type = type,
         target = params.target,
         requiredAmount = params.requiredAmount or 1,
+        wday = params.wday or 0,
         currentAmount = 0,
         completed = false
     }
@@ -136,6 +137,25 @@ function BattleWinCondition:check(params)
     return false, self.currentAmount
 end
 
+-- 使用弓箭胜利
+local BattleWinUseBowCondition = setmetatable({}, {__index = Condition})
+BattleWinUseBowCondition.__index = BattleWinUseBowCondition
+
+
+function BattleWinUseBowCondition:new(params)
+    local obj = Condition.new(self, TaskEvents.BattleWinUseBow, params)
+    return obj
+end
+
+function BattleWinUseBowCondition:check(params)
+    if params.event == TaskEvents.BattleWinUseBow then
+        self.currentAmount = self.currentAmount + 1
+        self.completed = self.currentAmount >= self.requiredAmount
+        return true, self.currentAmount
+    end
+    return false, self.currentAmount
+end
+
 
 local LoginGameCondition = setmetatable({}, {__index = Condition})
 LoginGameCondition.__index = LoginGameCondition
@@ -148,7 +168,7 @@ end
 function LoginGameCondition:check(params)
     if params.event == TaskEvents.LoginGame then
         self.currentAmount = self.currentAmount + 1
-        self.completed = true
+        self.completed = self.currentAmount >= self.requiredAmount
         return true, self.currentAmount
     end
     return false, self.currentAmount
@@ -166,7 +186,7 @@ end
 function HeadShotCondition:check(params)
     if params.event == TaskEvents.HeadShot then
         self.currentAmount = self.currentAmount + 1
-        self.completed = true
+        self.completed = self.currentAmount >= self.requiredAmount
         return true, self.currentAmount
     end
     return false, self.currentAmount
@@ -272,9 +292,21 @@ function Task:checkCompletion(params)
 
     local allCompleted = true
     for _, condition in ipairs(self.conditions) do
-        if not condition:check(params) then
-            allCompleted = false
+        if self.type == Task.TaskType.Weekly then
+            local day = _GAME.GameUtils.GetWeekDay()
+            if condition.wday and condition.wday <= day then
+                if not condition:check(params) or not condition:isCompleted() then
+                    allCompleted = false
+                end
+            else
+                allCompleted = false
+            end
+        else
+            if not condition:check(params) or not condition:isCompleted() then
+                allCompleted = false
+            end
         end
+        
     end
 
     if allCompleted then
@@ -353,7 +385,7 @@ function TaskManager:GetInsatnce()
     }
 
     obj.conditionFactories[TaskEvents.Battle] = function(params) return BattleCondition:new(params) end
-    obj.conditionFactories[TaskEvents.BattleWinUseBow] = function(params) return BattleWinCondition:new(params) end
+    obj.conditionFactories[TaskEvents.BattleWinUseBow] = function(params) return BattleWinUseBowCondition:new(params) end
     obj.conditionFactories[TaskEvents.LoginGame] = function(params) return LoginGameCondition:new(params) end
     obj.conditionFactories[TaskEvents.HeadShot] = function(params) return HeadShotCondition:new(params) end
 
@@ -497,17 +529,16 @@ function TaskManager:LoadSavedTaskData()
     if not Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable") then
         return
     end
-   
+
     local str = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "TaskDataTable")
-    Log:PrintLog("LoadData",str)
-    
+    Log:PrintLog("LoadTaskData",str)
     local savedData = MiscService:JsonStr2Table(str)
     if savedData == nil then
        return
     end
     local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
-    for i, v in pairs (savedData) do
-        local task = TaskManagerInstance:getTask(i)
+    for _, v in pairs (savedData) do
+        local task = TaskManagerInstance:getTask(v.id)
         if task then
             task.state = v.state
             local conditions = v.conditions
@@ -525,17 +556,18 @@ function TaskManager:SaveTaskData()
     local saveData = {}
     local  TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
     local tasks = TaskManagerInstance:getActiveTasks()
-    for i, v in pairs (tasks) do
+    for _, v in pairs (tasks) do
         local data = {}
-        data.state = v.state 
+        data.id = v.id
+        data.state = v.state
         data.conditions = {}
-        for k, condition in ipairs(v.conditions) do
+        for _, condition in ipairs(v.conditions) do
             local cond = {}
-            cond.currentAmount = cond.currentAmount
-            cond.completed = cond.completed
-            table.insert( data.conditions, cond)
+            cond.currentAmount = condition.currentAmount
+            cond.completed = condition.completed
+            table.insert(data.conditions, cond)
         end
-        table.insert( saveData, data)
+        table.insert(saveData, data)
     end
     local str = MiscService:Table2JsonStr(saveData)
     Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable", str)

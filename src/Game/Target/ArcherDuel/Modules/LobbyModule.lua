@@ -31,9 +31,10 @@ local DefaultBaseData =
     Daily_Progress = 1,
     Player_BattlePoints_Num = 0,  --门票
     Player_TaskDailyExp_Num = 0,  --每日任务经验
-    Player_CollectTask_Num = 0,   --每日领取任务，按位来标记任务是否已领取
+    Player_CollectTaskDaily_Num = 0,   --每日领取任务，按位来标记任务是否已领取
     Rank_DiamondScore_Num = 0,    --钻石联赛中的积分
     Player_TaskWeeklyExp_Num = 0, --每周任务经验
+    Player_CollectTaskWeekly_Num = 0,   --每日领取任务，按位来标记任务是否已领取
 }
 
 --- 打开
