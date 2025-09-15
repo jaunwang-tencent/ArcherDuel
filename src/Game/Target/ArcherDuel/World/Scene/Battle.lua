@@ -148,7 +148,7 @@ function Battle:LoadCharacter(Context)
 
         local CurrentTurnPlayer = self:GetCurrentTurnPlayer()
         CurrentTurnPlayer:SetLookAt()
-        -- self:LookPlayer(CurrentTurnPlayer)
+        self:LookPlayer(CurrentTurnPlayer)
     else
         Log:PrintError("没有指定场景的配置信息")
     end
