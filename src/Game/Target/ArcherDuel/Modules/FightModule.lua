@@ -14,8 +14,8 @@ function FightModule:Open(PlayerData)
     self.PlayerData = PlayerData
 
     self:RegreshBodyUI()
-    local HomeView = UIConfig.HomeView
-    local CenterView = HomeView and HomeView.CenterView
+    local FightView = UIConfig.FightView
+    local CenterView = FightView and FightView.CenterView
 
     --广告按钮监听
     UI:RegisterPressed(CenterView.Ad_1.ID, function()
@@ -78,8 +78,8 @@ end
 
 --- 关闭
 function FightModule:Close()
-    local HomeView = UIConfig.HomeView
-    local CenterView = HomeView and HomeView.CenterView
+    local FightView = UIConfig.FightView
+    local CenterView = FightView and FightView.CenterView
     UI:UnRegisterPressed(CenterView.Ad_1.ID)
     UI:UnRegisterPressed(CenterView.Ad_2.ID)
     UI:UnRegisterPressed(CenterView.Golden.ID)
@@ -107,16 +107,16 @@ end
 
 --- 刷新身体上的数据
 function FightModule:RegreshBodyUI()
-    local HomeView = UIConfig.HomeView
+    local FightView = UIConfig.FightView
     local PlayerData = self.PlayerData
     --角色身上的装备
     local EquipmentSlotConfig = {
-        [1] = HomeView.LeftView.Character,
-        [2] = HomeView.LeftView.Top,
-        [3] = HomeView.LeftView.Bottoms,
-        [4] = HomeView.RightView.Bow,
-        [5] = HomeView.RightView.Aex,
-        [6] = HomeView.RightView.Spear,
+        [1] = FightView.LeftView.Character,
+        [2] = FightView.LeftView.Top,
+        [3] = FightView.LeftView.Bottoms,
+        [4] = FightView.RightView.Bow,
+        [5] = FightView.RightView.Aex,
+        [6] = FightView.RightView.Spear,
     }
     local BodyEquipment = PlayerData.BodyEquipment
     for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
@@ -227,7 +227,7 @@ function FightModule:OnMatch()
       randomNumber = 8
   end
   --这里要关闭所有页面
-  UI:SetVisible({UIConfig.MainView.TitleBar.ID,UIConfig.MainView.StoreResourceBar.ID,UIConfig.MainView.GeneralResourceBar.ID,UIConfig.HomeView.CenterView.ID,UIConfig.HomeView.LeftView.ID,UIConfig.HomeView.RightView.ID}, false)
+  UI:SetVisible({UIConfig.MainView.TitleBar.ID,UIConfig.MainView.StoreResourceBar.ID,UIConfig.MainView.GeneralResourceBar.ID,UIConfig.FightView.CenterView.ID,UIConfig.FightView.LeftView.ID,UIConfig.FightView.RightView.ID}, false)
   System:FireSignEvent(tostring(randomNumber))
   Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", randomNumber)
 end

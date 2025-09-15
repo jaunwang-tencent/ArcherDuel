@@ -552,7 +552,6 @@ function LobbyModule:RefreshIcon(IconUI, AssetName, AssetIndex)
     UI:SetImage({IconUI}, IconId, true)
 end
 
-
 --- 刷新通用资源栏
 function LobbyModule:RefreshGeneralResourceBar()
     local MainView = UIConfig.MainView
