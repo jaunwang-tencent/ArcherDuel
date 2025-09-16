@@ -17,7 +17,7 @@ function EquipmentDetailModule:Open(Equipment)
     UI:SetVisible({DetailView.ID}, true)
 
     --注册按钮事件
-    UI:RegisterPressed(EquipmentView.DetailView.Close, function()
+    UI:RegisterClicked(EquipmentView.DetailView.Close, function()
         EquipmentDetailModule:Close()
     end)
 
@@ -78,10 +78,11 @@ function EquipmentDetailModule:Open(Equipment)
     UI:SetProgressMaxValue({UpgradableTip.Progress}, Upgrade.Piece)
     UI:SetProgressCurrentValue({UpgradableTip.Progress}, CurrentPiece)
     UI:SetText({UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
-
+    --装备品质底图
+    GameUtils.SetImageWithAsset(DetailView.Background, "EquipmentImage", Attributes.Grade)
     --武器图标
     UI:SetText({ DetailView.WeaponIcon.Level }, string.format("等级%d", Equipment.Level))
-    GameUtils.RefreshIconWithEquipment(DetailView.WeaponIcon.Icon, Equipment)
+    GameUtils.SetImageWithEquipment(DetailView.WeaponIcon.Icon, Equipment)
 
     --装备属性信息
     UI:SetVisible({DetailView.AttributeIcon.ID}, true)
@@ -211,7 +212,7 @@ function EquipmentDetailModule:Close()
     end
 
     --注销关闭按钮事件
-    UI:UnRegisterPressed(EquipmentView.DetailView.Close)
+    UI:UnRegisterClicked(EquipmentView.DetailView.Close)
 end
 
 --- 获取

@@ -1,5 +1,7 @@
 --对决模块
 local FightModule = {}
+--装备配置
+local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 --段位配置
 local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 --UI配置
@@ -150,7 +152,10 @@ function FightModule:RegreshBodyUI()
             --设置等级
             UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
             --图标
-            GameUtils.RefreshIconWithEquipment(EquipmentSlot.Image, Equipment)
+            GameUtils.SetImageWithEquipment(EquipmentSlot.Image, Equipment)
+            --装备品质底图
+            local Attributes = EquipmentConfig[Equipment.ID].Attributes
+            GameUtils.SetImageWithAsset(EquipmentSlot.Background, "EquipmentImage", Attributes.Grade)
             UI:SetVisible({EquipmentSlot.EmptyImage}, false)
         else
             --没有装备则清空

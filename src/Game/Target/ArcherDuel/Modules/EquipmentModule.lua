@@ -119,6 +119,7 @@ function EquipmentModule:RegreshBodyUI()
         UI:UnRegisterClicked(EquipmentSlot.Image)
         local Equipment = BodyEquipment[Category]
         if Equipment then
+            local Attributes = EquipmentConfig[Equipment.ID].Attributes
             --点击装备事件
             UI:RegisterClicked(EquipmentSlot.Image, function()
                 EquipmentDetailModule:Open(Equipment)
@@ -132,14 +133,15 @@ function EquipmentModule:RegreshBodyUI()
                 UI:SetVisible({EquipmentSlot.Progress}, true)
                 --碎片相关
                 local CurrentPiece = Equipment.Piece
-                local Attributes = EquipmentConfig[Equipment.ID].Attributes
                 local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
                 UI:SetProgressMaxValue({EquipmentSlot.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
                 UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
             end
             --图标
-            GameUtils.RefreshIconWithEquipment(EquipmentSlot.Image, Equipment)
+            GameUtils.SetImageWithEquipment(EquipmentSlot.Image, Equipment)
+            --装备品质底图
+            GameUtils.SetImageWithAsset(EquipmentSlot.Background, "EquipmentImage", Attributes.Grade)
             UI:SetVisible({EquipmentSlot.EmptyImage}, false)
         else
             --没有装备则清空
@@ -263,7 +265,7 @@ function EquipmentModule:RefreshListUI(Category)
             UI:SetText({ProgressTextUI}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
         end
         --设置品质
-        GameUtils.RefreshIconWithAsset(BackgroundUI, "EquipmentImage", Attributes.Grade)
+        GameUtils.SetImageWithAsset(BackgroundUI, "EquipmentImage", Attributes.Grade)
         --设置等级
         UI:SetText({LevelUI}, string.format("等级%d", Equipment.Level))
         --是否已装备
@@ -274,7 +276,7 @@ function EquipmentModule:RefreshListUI(Category)
             table.insert(HideItems, EquippedUI)
         end
         --图标
-        GameUtils.RefreshIconWithEquipment(IconUI, Equipment)
+        GameUtils.SetImageWithEquipment(IconUI, Equipment)
         --UI显隐
         UI:SetTransparency(ShowItems, 1)
         UI:SetTransparency(HideItems, 0)

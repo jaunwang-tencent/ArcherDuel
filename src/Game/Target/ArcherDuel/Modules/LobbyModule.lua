@@ -22,11 +22,11 @@ local DefaultBaseData =
     Equipped_Hat_Lv = 1,
     Equipped_Glasses_Lv = 1,
     Equipped_Cloth_Lv = 1,
-    Coin = 1,                     --金币
+    Coin = 5000,                  --金币
     Diamond = 1,                  --砖石
     Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
-    GoldBox = 1,                  --金宝箱
-    SilverBox = 1,                --银宝箱
+    GoldBox = 3,                  --金宝箱
+    SilverBox = 5,                --银宝箱
     NormalBox = 1,                --普通宝箱
     Daily_Progress = 1,
     Player_BattlePoints_Num = 0,  --门票
@@ -88,24 +88,6 @@ function LobbyModule:PerformLoading()
     end)
 end
 
---- 角色站街，TODO：换成假人，装备穿戴
-function LobbyModule:CharacterStandby()
-    --设置角色位置
-    TimerManager:AddTimer(0.5,function ()
-        Character:SetPosition(Character:GetLocalPlayerId(), Engine.Vector(-609.84,0,124.2))
-        Character:SetRotation(Character:GetLocalPlayerId(), Engine.Vector(0,0,-90))
-    end)
-
-    --本地角色
-    self.PlayerID =  Character:GetLocalPlayerId()
-    TimerManager:AddTimer(1,function ()
-        System:FireSignEvent("启动相机",{Character:GetLocalPlayerId()})
-    end)
-
-    --获取头像
-    UI:SetImage({100470},Chat:GetCustomHeadIcon(self.PlayerID))
-end
-
 --- 加载玩家数据
 function LobbyModule:LoadData()
     --1、玩家基础数据
@@ -145,17 +127,51 @@ function LobbyModule:LoadData()
     self:RefreshEquipmentData()
 
     --3、商店数据
-    local AllGoods
+    local AllItems
     if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table") then
         --这里读取玩家的装备 --并进行排序
         local All_Goods_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table")
         --文字转为组
-        AllGoods = MiscService:JsonStr2Table(All_Goods_Table)
+        AllItems = MiscService:JsonStr2Table(All_Goods_Table)
     else
-        AllGoods = self:DefaultStoreData()
+        AllItems = self:DefaultStoreData()
     end
-    self.PlayerData.AllGoods = AllGoods
+    self.PlayerData.AllItems = AllItems
     self:RefreshStoreData()
+end
+
+--- 角色站街，装备穿戴
+function LobbyModule:CharacterStandby()
+    --获取本地玩家标识【真人出生点挪走，相机后面去】
+    self.PlayerID =  Character:GetLocalPlayerId()
+    --设置角色位置【角色占位：SceneId = 433】
+    local StandbyHoldeSceneId = 433
+    local Location = Element:GetPosition(StandbyHoldeSceneId)
+    local Rotation = Element:GetRotation(StandbyHoldeSceneId)
+    self.StandbyUID = FakeCharacter:CreateCharacter(Location, Rotation, Engine.Vector(1, 1, 1), false)
+
+    --本地角色【影视相机：SceneId = 436】
+    UGCS.Framework.Executor.Delay(1, function ()
+        System:FireSignEvent("启动相机",{self.PlayerID})
+    end)
+end
+
+--- 刷新外观
+function LobbyModule:RefreshAvatar()
+    local BodyEquipment = self.PlayerData.BodyEquipment
+    if BodyEquipment then
+        local BodyIds = {}
+        for _, Equipment in pairs(BodyEquipment) do
+            local EquipmentData = EquipmentConfig[Equipment.ID]
+            if EquipmentData and EquipmentData.EquipID then
+                table.insert(BodyIds, EquipmentData.EquipID)
+            end
+        end
+        FakeCharacter:ChangeCharacterBody(self.StandbyUID, BodyIds)
+    else
+        --没有则换回玩家原皮
+        FakeCharacter:ChangeBodyFromPlayer(self.StandbyUID, self.PlayerID)
+    end
 end
 
 --- 保存玩家数据
@@ -173,8 +189,8 @@ function LobbyModule:SaveData()
     --Log:PrintLog("SaveData", self.PlayerID, All_Equipment_Table)
 
     --3、商店数据
-    local AllGoods = self.PlayerData.AllGoods
-    local All_Goods_Table = MiscService:Table2JsonStr(AllGoods)
+    local AllItems = self.PlayerData.AllItems
+    local All_Goods_Table = MiscService:Table2JsonStr(AllItems)
     Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table", All_Goods_Table)
 end
 
@@ -283,7 +299,7 @@ function LobbyModule:DefaultEquipmentData()
             Equipped = HasInit,             --是否装备
         }
         if HasInit then
-            Equipment.Piece = 1
+            Equipment.Piece = 10
             Equipment.Level = 3
         end
         AllEquipment[ID] = Equipment
@@ -335,21 +351,31 @@ function LobbyModule:RefreshEquipmentData()
     end
     self.PlayerData.GroupByCategory = GroupByCategory
     self.PlayerData.BodyEquipment = BodyEquipment
+    --重新刷新外观
+    self:RefreshAvatar()
 end
 
 --- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】
 function LobbyModule:DefaultStoreData()
     --没有则初始化
-    local AllGoods = {}
+    local AllItems = {}
     --3.1、限定奖池
-    AllGoods.LimitItem = {
+    AllItems.LimitItem = {
         [1] = {
-            --消耗品【约定：关系或】
-            Consumables = {
-                --消耗一个黄金宝箱
-                GoldBox = 1,
-                --或者600个砖石
-                Diamond = 600,
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗一个黄金宝箱
+                    GoldBox = 1,
+                    --或者600个砖石
+                    Diamond = 600,
+                },
+                [2] = {
+                    --广告资源
+                    Ad = "test_gold_box_tag",
+                    --广告冷却时间
+                    AdCoolTime = 24 * 3600
+                }
             },
             --商品
             Goods = {
@@ -364,32 +390,20 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --消耗品【约定：关系或】
-            Consumables = {
-                --广告资源
-                Ad = "test_ad_tag",
-                --广告冷却时间
-                AdCoolTime = 24 * 3600
-            },
-            --商品
-            Goods = {
-                Equipments = {
-                    [1] = { ID = 1, Piece = 10 },
-                    [2] = { ID = 15, Piece = 15 },
-                    [3] = { ID = 38, Piece = 20 },
-                    [4] = { ID = 61, Piece = 25 },
-                    [5] = { ID = 77, Piece = 30 },
-                    [6] = { ID = 93, Piece = 30 },
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗一个白银宝箱
+                    SilverBox = 1,
+                    --或者600个砖石
+                    Diamond = 180,
+                },
+                [2] = {
+                    --广告资源
+                    Ad = "test_silver_box_tag",
+                    --广告冷却时间
+                    AdCoolTime = 24 * 3600
                 }
-            }
-        },
-        [3] = {
-            --消耗品
-            Consumables = {
-                --消耗一个白银宝箱
-                SilverBox = 1,
-                --或者600个砖石
-                Diamond = 180,
             },
             --商品
             Goods = {
@@ -403,38 +417,20 @@ function LobbyModule:DefaultStoreData()
                 }
             }
         },
-        [4] = {
-            --消耗品
-            Consumables = {
-                --广告资源
-                Ad = "test_ad_tag",
-                --广告冷却时间
-                AdCoolTime = 24 * 3600
-            },
-            --商品
-            Goods = {
-                Equipments = {
-                    [1] = { ID = 2, Piece = 10 },
-                    [2] = { ID = 16, Piece = 15 },
-                    [3] = { ID = 39, Piece = 20 },
-                    [4] = { ID = 62, Piece = 25 },
-                    [5] = { ID = 78, Piece = 30 },
-                    [6] = { ID = 94, Piece = 30 },
-                }
-            }
-        }
     }
     --3.2、每日限购
-    AllGoods.DailyItem = {
+    AllItems.DailyItem = {
         [1] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 100,
-                --最大收集次数
-                MaxCollect = 2,
-                --已收集次数
-                HasCollect = 0
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个砖石
+                    Diamond = 100,
+                    --最大收集次数
+                    MaxCollect = 2,
+                    --已收集次数
+                    HasCollect = 0
+                }
             },
             --商品
             Goods = {
@@ -444,14 +440,16 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --消耗品
-            Consumables = {
-                --消耗50个砖石
-                Diamond = 50,
-                --最大收集次数
-                MaxCollect = 3,
-                --已收集次数
-                HasCollect = 0
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗50个砖石
+                    Diamond = 50,
+                    --最大收集次数
+                    MaxCollect = 3,
+                    --已收集次数
+                    HasCollect = 0
+                }
             },
             --商品
             Goods = {
@@ -461,14 +459,16 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [3] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 600,
-                --最大收集次数
-                MaxCollect = 1,
-                --已收集次数
-                HasCollect = 0
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个砖石
+                    Diamond = 600,
+                    --最大收集次数
+                    MaxCollect = 1,
+                    --已收集次数
+                    HasCollect = 0
+                }
             },
             --商品
             Goods = {
@@ -478,17 +478,19 @@ function LobbyModule:DefaultStoreData()
             }
         }
     }
-    --3.3、宝石
-    AllGoods.DiamondItem = {
+    --3.3、砖石
+    AllItems.DiamondItem = {
         [1] = {
-            --消耗品
-            Consumables = {
-                --广告资源
-                Ad = "test_ad_tag",
-                --最大收集次数
-                MaxCollect = 5,
-                --已收集次数
-                HasCollect = 0
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --广告资源
+                    Ad = "test_diamond_tag",
+                    --最大收集次数
+                    MaxCollect = 5,
+                    --已收集次数
+                    HasCollect = 0
+                }
             },
             --商品
             Goods = {
@@ -497,13 +499,15 @@ function LobbyModule:DefaultStoreData()
             }
         }
     }
-    --3.4、金币
-    AllGoods.CoinItem = {
+    --3.4、金币【购买】
+    AllItems.CoinItem = {
         [1] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 150,
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个砖石
+                    Diamond = 150,
+                }
             },
             --商品
             Goods = {
@@ -511,10 +515,12 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 1000,
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个砖石
+                    Diamond = 1000,
+                }
             },
             --商品
             Goods = {
@@ -522,10 +528,12 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [3] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 4200,
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个砖石
+                    Diamond = 4200,
+                }
             },
             --商品
             Goods = {
@@ -533,12 +541,12 @@ function LobbyModule:DefaultStoreData()
             }
         }
     }
-    return AllGoods
+    return AllItems
 end
 
 --- 刷新商店
 function LobbyModule:RefreshStoreData()
-    
+
 end
 
 --- 刷新通用资源栏
@@ -546,10 +554,13 @@ function LobbyModule:RefreshGeneralResourceBar()
     local MainView = UIConfig.MainView
     local GeneralResourceBar = MainView and MainView.GeneralResourceBar
     if GeneralResourceBar then
+        --玩家基础数据
         local BaseData = self.PlayerData.BaseData
         --玩家图标
         --目前API侧无法读取玩家图标，暂时使用这个
-        GameUtils.RefreshIconWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
+        --获取头像
+        UI:SetImage({GeneralResourceBar.PlayerIcon},Chat:GetCustomHeadIcon(self.PlayerID), true)
+        --GameUtils.SetImageWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
         UI:SetText({GeneralResourceBar.Rank.Label}, tostring(BaseData.Rank))
         UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(BaseData.Coin))
         UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))
