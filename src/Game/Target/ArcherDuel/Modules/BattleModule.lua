@@ -6,6 +6,7 @@ local SceneConfigTable = UGCS.Target.ArcherDuel.Config.SceneConfig
 local WeaponConfigTable = UGCS.Target.ArcherDuel.Config.WeaponConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
 --- 打开
 ---@param Context 上下文【透传数据】
@@ -196,6 +197,40 @@ function BattleModule:OnTouchReleased(_, Y)
 end
 
 function BattleModule:OnGameEnd()
+    local curPlayer = self.BattleScene:GetCurrentTurnPlayer()
+    local nextPlayer = self.BattleScene:GetNextTurnPlayer()
+    local winPlayer = nil
+    if curPlayer:IsInState(UGCS.Target.ArcherDuel.Character.States.DeathState) then
+        winPlayer = nextPlayer
+    elseif nextPlayer:IsInState(UGCS.Target.ArcherDuel.Character.States.DeathState) then
+        winPlayer = curPlayer
+    end
+    if winPlayer then
+        local win = winPlayer:IsControlled()
+
+        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleComplete) -- 完成比赛
+        if win then -- 对局胜利
+            System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWin)
+            local hpRate = winPlayer:GetPlayerHPRate()
+            if hpRate > 0.6 then -- 血量大于60%获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.WinBloodline60)
+            end
+            if hpRate > 0.8 then -- 血量大于80%获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.WinBloodline80)
+            end
+            if hpRate == 1 then -- 无伤获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.WinBloodline100)
+            end
+            if self.WeaponConfig.TypeName == "Bow" then -- 使用弓获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseBow)
+            elseif self.WeaponConfig.TypeName == "Axe" then -- 使用斧获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseAxe)
+            elseif self.WeaponConfig.TypeName == "Spear" then -- 使用矛获得胜利
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseSpear)
+            end
+        end
+    end
+
     if self.RoomFSM then
         --切换到结算状态
         self.RoomFSM:SwitchState(UGCS.Target.ArcherDuel.Room.States.ResultState)

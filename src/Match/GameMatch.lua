@@ -899,7 +899,7 @@ function GameMatch:OnGoldFail()
 
     -- 将自己放入败者组
     table.remove(self.goldWinnerRivalInfo, 1)
-    table.insert(self.goldFailerRivalInfo, 1,{isSelf = true})
+    table.insert(self.goldFailerRivalInfo,  {isSelf = true})
     -- 其他表演对手随机判定为负
     local failNames = {}
     for i, v in pairs(self.goldShowBattleRivals) do
@@ -1009,13 +1009,18 @@ function GameMatch:GoldBattleWinMatchShow()
             if Head_Mask[i] and MatchConfig.GoldWinner_Head_UI[i] then
                 UI:SetVisible({Head_Mask[maskIndex]},true)
                 for index = 1, #MatchConfig.GoldWinner_Head_UI[i] do
+                    UI:SetVisible(MatchConfig.GoldWinner_Head_UI[i],true)
                     local uid =  UI:FindChildWithIndex(Head_Mask[i], index)
-                    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzz 222 ", index, uid)
                     if uid and uid ~= 0 then
-                        if self.goldResults and self.goldResults.Winer and self.goldResults.Winer[i] then
-                            Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzz 333 ", index, uid, self.goldResults.Winer[i][index])
+                        if self.goldResults and self.goldResults.Winer and self.goldResults.Winer[i] and self.goldResults.Winer[i][index] then
                             -- UI:SetVisible({uid},true)
-                            UI:SetImageColor({uid}, self.goldResults.Winer[i][index] and "#0DEF0D" or "#EF1414")
+                            local info = self.goldResults.Winer[i][index].info
+                            if info.isSelf then
+                                UI:SetImage({MatchConfig.GoldWinner_Head_UI[i][index]}, Chat:GetCustomHeadIcon(self.localPlayerId))
+                            else
+                                UI:SetImage({MatchConfig.GoldWinner_Head_UI[i][index]}, info.headIcon, true)
+                            end
+                            UI:SetImageColor({uid}, self.goldResults.Winer[i][index].victory and "#0DEF0D" or "#EF1414")
                         end
                     end
                 end
@@ -1062,6 +1067,37 @@ end
 -- 黄金赛败者组分组展示
 function GameMatch:GoldBattleFailMatchShow()
     local delay = 0.1
+    local maskIndex = self.goldBattleRound - 1
+    local Head_UIs, Head_Mask = {}, {}
+    Head_UIs = MatchConfig.GoldFailer_Head_UI[self.goldBattleRound]
+    Head_Mask = MatchConfig.GoldFailer_Head_Mask
+
+    local function setheadIcon()
+        --先设置好头像和颜色
+        for i = 1, maskIndex do
+            if Head_Mask[i] and MatchConfig.GoldFailer_Head_UI[i] then
+                UI:SetVisible({Head_Mask[maskIndex]},true)
+                for index = 1, #MatchConfig.GoldFailer_Head_UI[i] do
+                    UI:SetVisible(MatchConfig.GoldFailer_Head_UI[i], true)
+                    local uid =  UI:FindChildWithIndex(Head_Mask[i], index)
+                    if uid and uid ~= 0 then
+                        if self.goldResults and self.goldResults.Failer and self.goldResults.Failer[i] and self.goldResults.Failer[i][index] then
+                            -- UI:SetVisible({uid},true)
+                            local info = self.goldResults.Failer[i][index].info
+                            Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzz 333", i, index, self.goldResults.Failer[i][index].victory)
+                            if info.isSelf then
+                                UI:SetImage({MatchConfig.GoldFailer_Head_UI[i][index]}, Chat:GetCustomHeadIcon(self.localPlayerId))
+                            else
+                                UI:SetImage({MatchConfig.GoldFailer_Head_UI[i][index]}, info.headIcon, true)
+                            end
+                            UI:SetImageColor({uid}, self.goldResults.Failer[i][index].victory and "#0DEF0D" or "#EF1414")
+                        end
+                    end
+                end
+            end
+        end
+    end
+
     UI:SetVisible({110069,110109,110074,112655,110070},true)  --打开玩家失败展示页面  --需要将图片更换成玩家头像  图片id为112566
     if not self.goldBattleResult then --第一次进入到败者组
         UI:SetVisible({112654,112655,112567},true)
@@ -1070,31 +1106,17 @@ function GameMatch:GoldBattleFailMatchShow()
             UI:PlayUIAnimation(112567,self.goldBattleRound,0)  --再第几局失败，就移动到相应的位置
         end)
         delay = delay + 1
+        UI:SetVisible(MatchConfig.GoldFailer_Head_UI[self.goldBattleRound], false)
+        TimerManager:AddTimer(delay, function()
+            UI:SetVisible(MatchConfig.GoldFailer_Head_UI[self.goldBattleRound], true)
+            UI:SetVisible(MatchConfig.GoldWinner_Move_Head_UI, false)
+            setheadIcon()
+        end)
     else
         -- 进行头像颜色表演
-        local Head_UIs, Head_Mask = {}, {}
-        local maskIndex = self.goldBattleRound - 1
         UI:SetVisible({110069,110109,110074,112655,110070},true)  --打开败者组页面
-        Head_UIs = MatchConfig.GoldFailer_Head_UI[self.goldBattleRound]
-        Head_Mask = MatchConfig.GoldFailer_Head_Mask
 
-        --先设置好颜色
-        for i = 1, maskIndex do
-            if Head_Mask[i] and MatchConfig.GoldFailer_Head_UI[i] then
-                UI:SetVisible({Head_Mask[maskIndex]},true)
-                for index = 1, #MatchConfig.GoldFailer_Head_UI[i] do
-                    local uid =  UI:FindChildWithIndex(Head_Mask[i], index)
-                    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzz 222 ", index, uid)
-                    if uid and uid ~= 0 then
-                        if self.goldResults and self.goldResults.Failer and self.goldResults.Failer[i] then
-                            Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzz 333 ", index, uid, self.goldResults.Failer[i][index])
-                            -- UI:SetVisible({uid},true)
-                            UI:SetImageColor({uid}, self.goldResults.Failer[i][index] and "#0DEF0D" or "#EF1414")
-                        end
-                    end
-                end
-            end
-        end
+        setheadIcon()
 
         --隐藏下一局的头像
         UI:SetVisible(Head_UIs, false)
@@ -1114,6 +1136,7 @@ function GameMatch:GoldBattleFailMatchShow()
             end)
         end)
     end
+
     TimerManager:AddTimer(delay ,function ()
         UI:SetVisible({110722,110580,109965,110108,110078},true)  --打开对局背景  分支图
         UI:PlayUIAnimation(110722,1,0)
@@ -1176,7 +1199,20 @@ function GameMatch:OnGoldBattleContinue()
             UI:SetText({110081},"胜者组"..string.rep("丨", self.goldBattleRound ))
         end
     elseif self.goldFailCount == 1 then --失败过一次，在败者组
-    Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzzzz #self.goldFailerRivalInfo ", #self.goldFailerRivalInfo)
+        if self.goldBattleResult == false and #self.goldFailerRivalInfo%2 == 1 then -- 加入败者组后，败者组有单位数选手，模拟一次对局
+            self.goldBattleRound = self.goldBattleRound + 1
+            local mathRivals = self:GoldMathRivals()
+            local failNames = {}
+            for _, v in pairs(mathRivals) do
+                local failIndex = math.random(1, 2)
+                self:SetGoldResult(v[1].failCount == 0, 1~=failIndex, v[1].name)
+                self:SetGoldResult(v[2].failCount == 0, 2~=failIndex, v[2].name)
+                table.insert(failNames, v[failIndex].name)
+            end
+            for i, v in ipairs(failNames) do
+                self:GoldRivalDefeat(v)
+            end
+        end
         if #self.goldFailerRivalInfo > 1 then --败者组有两人以上对手
             UI:SetVisible(MatchConfig.GoldFailer_UI,true)
             UI:SetVisible(MatchConfig.GoldWinner_UI,false)
@@ -1184,14 +1220,14 @@ function GameMatch:OnGoldBattleContinue()
         else
             UI:SetVisible(MatchConfig.GoldFailer_UI,true)
             UI:SetVisible(MatchConfig.GoldWinner_UI,false)
-            UI:SetText({110081},"决赛")
+            UI:SetText({110075},"决赛")
             self.isGoldFinalBattle = true
         end
     end
 
     -- 如果是败者组第二局，比较特殊，34为这一局新加入的对手，但是需要分别和12匹配，在这里手动调整一下顺位
     if self.goldBattleRound == 2 then
-        local info = table.remove(self.goldFailerRivalInfo, 4)
+        local info = table.remove(self.goldFailerRivalInfo, 3)
         table.insert(self.goldFailerRivalInfo, 1, info)
     end
 
@@ -1260,7 +1296,7 @@ function GameMatch:ShowGoldTop3(top3Players)
                 local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
                 if cfg and cfg.iconIndex then
                     UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
-                end    
+                end
                 UI:SetText({v.text}, tostring(reward.count))
             end
         end
@@ -1274,19 +1310,19 @@ function GameMatch:SetGoldResult(bWiner, victory, name, isSelf)
         local function getIndex(RivalInfo)
             for i, v in ipairs(RivalInfo) do
                 if (v.name == name) or (isSelf and v.isSelf) then
-                    return i
+                    return i, v
                 end
             end
         end
         if bWiner then -- 胜者组比赛记录
-            local index = getIndex(self.goldWinnerRivalInfo)
+            local index, info = getIndex(self.goldWinnerRivalInfo)
             if index then
-                self.goldResults.Winer[self.goldBattleRound][index] = victory
+                self.goldResults.Winer[self.goldBattleRound][index] = {victory = victory, info = info}
             end
         else
-            local index = getIndex(self.goldFailerRivalInfo)
+            local index, info = getIndex(self.goldFailerRivalInfo)
             if index then
-                self.goldResults.Failer[self.goldBattleRound][index] = victory
+                self.goldResults.Failer[self.goldBattleRound][index] = {victory = victory, info = info}
             end
         end
     end

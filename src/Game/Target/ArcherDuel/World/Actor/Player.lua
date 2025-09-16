@@ -1,5 +1,3 @@
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
-
 --玩家角色
 local Player = UGCS.RTTI.Class("Player", UGCS.Framework.Actor)
 
@@ -316,11 +314,20 @@ function Player:SetPlayerHP()
         if PlayerView then
             self.UI_HP = PlayerView.HPValue
             local HUD_HPList = {self.UI_HP}
-            UI:SetProgressMaxValue(HUD_HPList, self.Attributes.Health)
-            UI:SetProgressCurrentValue(HUD_HPList, self.Attributes.Health)
+            self.hpMax = self.Attributes.Health
+            UI:SetProgressMaxValue(HUD_HPList, self.hpMax)
+            UI:SetProgressCurrentValue(HUD_HPList, self.hpMax)
             self.UI_Damage = PlayerView.DeductHP
         end
     end
+end
+
+-- 获取玩家血量百分比
+function Player:GetPlayerHPRate()
+    if self.Attributes and self.Attributes.Health and self.hpMax then
+        return self.Attributes.Health/self.hpMax
+    end
+    return 0
 end
 
 function Player:GetDefaultData(PlayerID, KeyStr, DefaultValue)
@@ -504,16 +511,6 @@ function Player:Death()
         -- 发送游戏结果信号
         local EventName = self:IsControlled() and _GAME.Events.BattleFail or _GAME.Events.BattleVictory
         System:FireGameEvent(EventName)
-
-        if EventName == _GAME.Events.BattleVictory then -- 对局胜利
-            if self.WeaponConfig.TypeName == "Bow" then -- 使用弓获得胜利
-                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseBow)
-            elseif self.WeaponConfig.TypeName == "Axe" then -- 使用斧获得胜利
-                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseAxe)
-            elseif self.WeaponConfig.TypeName == "Spear" then -- 使用矛获得胜利
-                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.BattleWinUseSpear)
-            end
-        end
     end
 end
 
