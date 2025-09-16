@@ -1,5 +1,6 @@
 --黄金赛战场，他负责管理场景中动态创建的元素以及回合管理（在这里，玩法由场景决定）
 local GoldBattle = UGCS.RTTI.Class("GoldBattle", UGCS.Framework.Scene)
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --- 构造
 ---@param Context 上下文
@@ -241,23 +242,15 @@ end
 function GoldBattle:LookProjectile(Position)
 end
 
+
 --- 获取AI瞄准俯仰角
 function GoldBattle:GetAIAimPitchDegree()
     local Displacement = self:GetDisplacement()
     if Displacement then
         local AimSetting = self.CharacterConfig.AimSetting
-        if AimSetting.SampleSpline then
-            local LowerDegree, UpperDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputeHitRange(AimSetting, Displacement)
-            local PitchDegree = math.random(math.floor(LowerDegree * 10) - 50, math.floor(UpperDegree * 10) + 50) * 0.1
-            Log:PrintLog(string.format("GetAIAimPitchDegree(PitchDegree=%f)", PitchDegree))
-            return PitchDegree
-        else
-            local V = self:GetCurrentTurnCharacterProjectileVelocity()
-            local G = self.SceneGravity
-            local L, H = math.abs(Displacement.X) * 0.01, Displacement.Z * 0.01
-            local Foot, Head = H - 0.5, H + AimSetting.CharacterHeight + 0.5
-            local TH = UMath:GetRandomFloat(Foot, Head)
-            local PitchDegree = UGCS.Target.ArcherDuel.Helper.GameUtils.ComputePitch(V, G, L, -TH)
+        if AimSetting then
+            local LowerDegree, UpperDegree = GameUtils.ComputeHitRange(AimSetting, Displacement)
+            local PitchDegree = math.random(math.floor(LowerDegree * 10)-50, math.floor(UpperDegree * 10)+50) * 0.1
             return PitchDegree
         end
     end
@@ -269,12 +262,10 @@ function GoldBattle:SimulateAI(TargetCharacter)
     --模拟瞄准
     UGCS.Framework.Executor.Delay(Perform.AIIdleToAimTime, function()
         local AIAimPitchDegree = self:GetAIAimPitchDegree()
-        Log:PrintLog("TXPerform(AIAim)", AIAimPitchDegree)
         --非玩家攻击回合
         TargetCharacter:Aim(AIAimPitchDegree)
         --瞄准一定时间后
         UGCS.Framework.Executor.Delay(Perform.AIAimToFireTime, function()
-            Log:PrintLog("TXPerform(AIFire)", AIAimPitchDegree)
             TargetCharacter:Fire(AIAimPitchDegree)
         end)
     end)
@@ -287,8 +278,8 @@ function GoldBattle:OnGoldShow(showTime)
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Local)
 
-		local startOffest = {X = -1000, Y = -200, Z = 250} -- 起始偏移点
-		local endOffest = {X = -1000, Y = 200, Z = 250} -- 结束偏移点
+		local startOffest = {X = -1000, Y = -100, Z = 250} -- 起始偏移点
+		local endOffest = {X = -1000, Y = 100, Z = 250} -- 结束偏移点
 		local Forward = UMath:RotatorToForward(LocalRotation)
 		local Up = Engine.Vector(0, 0, 1)
 		local Right = UMath:GetNormalize(UMath:GetVectorCross(Up, Forward))
