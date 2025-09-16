@@ -171,7 +171,7 @@ function StoreModule:BuyGood(ButtonInfo)
             --直接消耗
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             --获得物品
-            self:GainGoods(Goods)
+            self:ShowGainView(Goods)
         else
             --看广告，在此弹出看广告弹窗【没有资源...】
             self:ShowAdView(Goods)
@@ -187,12 +187,12 @@ function StoreModule:BuyGood(ButtonInfo)
     System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
 end
 
---- 获得物品
+--- 显示获得视图
 ---@param Goods 物品
-function StoreModule:GainGoods(Goods)
-    --获得界面展示
-    self:ShowGainView(Goods)
-    local BaseData = self.PlayerData.BaseData
+function StoreModule:ShowGainView(Goods)
+    local GainView = UIConfig.GainView
+    UI:SetVisible({GainView.ID}, true)
+
     if Goods.Equipments then
         --获取装备
         local AllEquipment = self.PlayerData.AllEquipment
@@ -202,39 +202,24 @@ function StoreModule:GainGoods(Goods)
             TargetEquipment.Piece = TargetEquipment.Piece + Equipment.Piece
             --解锁
             TargetEquipment.Unlock = true
+
+            --显示部分
+            GameUtils.SetImageWithEquipment(GainView.GoodSlot.Icon, Equipment)
+            local Attributes = EquipmentConfig[Equipment.ID].Attributes
+            GameUtils.SetImageWithAsset(GainView.GoodSlot.Background, "EquipmentImage", Attributes.Grade)
         end
         --刷新装备数据
         System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
-    end
-
-    if Goods.Coin then
-        --获取金币
-        BaseData.Coin = BaseData.Coin + Goods.Coin
-    end
-
-    if Goods.Diamond then
-        --获取砖石
-        BaseData.Diamond = BaseData.Diamond + Goods.Diamond
-        System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
-    end
-end
-
---- 显示获得视图
----@param Goods 物品
-function StoreModule:ShowGainView(Goods)
-    local GainView = UIConfig.GainView
-    UI:SetVisible({GainView.ID}, true)
-    if Goods.Equipments then
-        --获得装备，显示装备
-        local Equipment = self:GetEquipmentByGoods(Goods)
-        GameUtils.SetImageWithEquipment(GainView.GoodSlot.Icon, Equipment)
-        local Attributes = EquipmentConfig[Equipment.ID].Attributes
-        GameUtils.SetImageWithAsset(GainView.GoodSlot.Background, "EquipmentImage", Attributes.Grade)
     elseif Goods.Coin then
         --获得金钱，显示金钱
+        local BaseData = self.PlayerData.BaseData
+        BaseData.Coin = BaseData.Coin + Goods.Coin
     elseif Goods.Diamond then
         --获得砖石，显示砖石
+        local BaseData = self.PlayerData.BaseData
+        BaseData.Diamond = BaseData.Diamond + Goods.Diamond
     end
+
     --设置物品图标
     UI:RegisterClicked(GainView.CloseButton, function()
         UI:SetVisible({GainView.ID}, false)
@@ -275,8 +260,12 @@ end
 function StoreModule:SeeAd(AdTag, Goods)
     --看广告
     UI:ShowMessageTip("See Ad:" .. AdTag)
-    --不看广告了，直接获得物品
-    self:GainGoods(Goods)
+
+    --这一段是模拟观看广告
+    UGCS.Framework.Executor.Delay(5, function()
+        --看完广告后，获得物品
+        self:ShowGainView(Goods)
+    end)
 end
 
 --- 打开宝箱
