@@ -266,8 +266,15 @@ function EquipmentDetailModule:OnUpgrade(Equipment)
             --刷新UI
             local EquipmentModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
             EquipmentModule:RefreshUI(self.CurrentCategory)
+
             --播放升级特效
-            System:FireSignEvent("LevelUp")
+            local EquipmentView = UIConfig.EquipmentView
+            local DetailView = EquipmentView and EquipmentView.DetailView
+            UI:SetVisible(DetailView.UpgradeEffect, false)
+            UI:SetVisible(DetailView.UpgradeEffect, true)
+            for _, EffectUI in ipairs(DetailView.UpgradeEffect) do
+                UI:PlayUIAnimation(EffectUI, 1, 0)
+            end
         else
             --弹金币不够Tips，并跳转
             UI:ShowMessageTip("金币不够")

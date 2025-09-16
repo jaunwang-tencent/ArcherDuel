@@ -353,6 +353,10 @@ local UIConfig = {
                 --攻击力
                 AttackPower = 101877
             },
+            --升级特效
+            UpgradeEffect = {
+                111423,111422,111421
+            },
             --升级进度
             UpgradeProgress = {
                 --当前进度
