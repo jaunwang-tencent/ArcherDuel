@@ -78,7 +78,8 @@ function EquipmentDetailModule:Open(Equipment)
     UI:SetProgressMaxValue({UpgradableTip.Progress}, Upgrade.Piece)
     UI:SetProgressCurrentValue({UpgradableTip.Progress}, CurrentPiece)
     UI:SetText({UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
-
+    --装备品质底图
+    GameUtils.RefreshIconWithAsset(DetailView.Background, "EquipmentImage", Attributes.Grade)
     --武器图标
     UI:SetText({ DetailView.WeaponIcon.Level }, string.format("等级%d", Equipment.Level))
     GameUtils.RefreshIconWithEquipment(DetailView.WeaponIcon.Icon, Equipment)

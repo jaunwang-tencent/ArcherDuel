@@ -176,6 +176,8 @@ local UIConfig = {
                 Label = 104156,
                 Image = 100534,
                 Progress = 101868,
+                --背景图
+                Background = 110835,
                 --进度条文本
                 ProgressText = 111287
             },
@@ -184,6 +186,8 @@ local UIConfig = {
                 Label = 104157,
                 Image = 100535,
                 Progress = 104028,
+                --背景图
+                Background = 110834,
                 --进度条文本
                 ProgressText = 111288
             },
@@ -192,6 +196,8 @@ local UIConfig = {
                 Label = 104158,
                 Image = 100536,
                 Progress = 104029,
+                --背景图
+                Background = 110833,
                 --进度条文本
                 ProgressText = 111290
             }
@@ -204,6 +210,8 @@ local UIConfig = {
                 Label = 104159,
                 Image = 100539,
                 Progress = 104030,
+                --背景图
+                Background = 110847,
                 --进度条文本
                 ProgressText = 111291
             },
@@ -213,6 +221,8 @@ local UIConfig = {
                 Image = 100538,
                 Progress = 104031,
                 EmptyImage = 110930,
+                --背景图
+                Background = 110846,
                 --进度条文本
                 ProgressText = 111292
             },
@@ -222,6 +232,8 @@ local UIConfig = {
                 Image = 100537,
                 Progress = 104542,
                 EmptyImage = 110929,
+                --背景图
+                Background = 110845,
                 --进度条文本
                 ProgressText = 111293
             }
@@ -323,6 +335,8 @@ local UIConfig = {
             Close = 100569,
             --装备名称
             Title = 100558,
+            --装备背景
+            Background = 110919,
             --当前属性值
             CurrentAttribute = 100565,
             --强化属性值
@@ -369,7 +383,6 @@ local UIConfig = {
                 Progress = 100562,
                 --进度条文本
                 ProgressText = 111286
-
             },
             --未有装备
             NotEquipped = {
@@ -514,16 +527,22 @@ local UIConfig = {
             Character = {
                 Label = 104839,
                 Image = 100506,
+                --背景图
+                Background = 110843,
             },
             --上衣
             Top = {
                 Label = 104838,
                 Image = 100507,
+                --背景图
+                Background = 110842,
             },
             --下装
             Bottoms = {
                 Label = 104837,
                 Image = 100508,
+                --背景图
+                Background = 110841,
             }
         },
         --右视图
@@ -533,17 +552,23 @@ local UIConfig = {
             Bow = {
                 Label = 104843,
                 Image = 100509,
+                --背景图
+                Background = 110829,
             },
             --投斧
             Aex = {
                 Label = 104842,
                 Image = 100510,
+                --背景图
+                Background = 110831,
                 EmptyImage = 110927
             },
             --投矛
             Spear = {
                 Label = 104841,
                 Image = 100511,
+                --背景图
+                Background = 110832,
                 EmptyImage = 110928
             },
         },

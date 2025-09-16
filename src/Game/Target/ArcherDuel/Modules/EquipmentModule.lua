@@ -119,6 +119,7 @@ function EquipmentModule:RegreshBodyUI()
         UI:UnRegisterClicked(EquipmentSlot.Image)
         local Equipment = BodyEquipment[Category]
         if Equipment then
+            local Attributes = EquipmentConfig[Equipment.ID].Attributes
             --点击装备事件
             UI:RegisterClicked(EquipmentSlot.Image, function()
                 EquipmentDetailModule:Open(Equipment)
@@ -132,7 +133,6 @@ function EquipmentModule:RegreshBodyUI()
                 UI:SetVisible({EquipmentSlot.Progress}, true)
                 --碎片相关
                 local CurrentPiece = Equipment.Piece
-                local Attributes = EquipmentConfig[Equipment.ID].Attributes
                 local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
                 UI:SetProgressMaxValue({EquipmentSlot.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
@@ -140,6 +140,8 @@ function EquipmentModule:RegreshBodyUI()
             end
             --图标
             GameUtils.RefreshIconWithEquipment(EquipmentSlot.Image, Equipment)
+            --装备品质底图
+            GameUtils.RefreshIconWithAsset(EquipmentSlot.Background, "EquipmentImage", Attributes.Grade)
             UI:SetVisible({EquipmentSlot.EmptyImage}, false)
         else
             --没有装备则清空

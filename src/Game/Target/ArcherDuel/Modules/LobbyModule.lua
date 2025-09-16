@@ -22,7 +22,7 @@ local DefaultBaseData =
     Equipped_Hat_Lv = 1,
     Equipped_Glasses_Lv = 1,
     Equipped_Cloth_Lv = 1,
-    Coin = 1,                     --金币
+    Coin = 1000000,                     --金币
     Diamond = 1,                  --砖石
     Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
     GoldBox = 1,                  --金宝箱
@@ -283,7 +283,7 @@ function LobbyModule:DefaultEquipmentData()
             Equipped = HasInit,             --是否装备
         }
         if HasInit then
-            Equipment.Piece = 1
+            Equipment.Piece = 10
             Equipment.Level = 3
         end
         AllEquipment[ID] = Equipment
