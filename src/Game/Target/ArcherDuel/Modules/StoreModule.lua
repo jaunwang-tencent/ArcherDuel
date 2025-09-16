@@ -216,7 +216,7 @@ function StoreModule:OpenBox(boxId)
         --隐藏组
         UI:SetVisible({ThreeItem.ItemGroupID}, false)
         --恢复动画播放
-        UI:ResumeUIAnimation(ThreeItem.ItemGroupID)
+        UI:ResumeUIAnimation(ThreeItem.ItemGroupID, 1)
         --隐藏组
         UI:SetVisible({ThreeItem.ID}, false)
         --注销事件
