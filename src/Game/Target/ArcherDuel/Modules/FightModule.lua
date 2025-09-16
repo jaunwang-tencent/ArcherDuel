@@ -152,10 +152,10 @@ function FightModule:RegreshBodyUI()
             --设置等级
             UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
             --图标
-            GameUtils.RefreshIconWithEquipment(EquipmentSlot.Image, Equipment)
+            GameUtils.SetImageWithEquipment(EquipmentSlot.Image, Equipment)
             --装备品质底图
             local Attributes = EquipmentConfig[Equipment.ID].Attributes
-            GameUtils.RefreshIconWithAsset(EquipmentSlot.Background, "EquipmentImage", Attributes.Grade)
+            GameUtils.SetImageWithAsset(EquipmentSlot.Background, "EquipmentImage", Attributes.Grade)
             UI:SetVisible({EquipmentSlot.EmptyImage}, false)
         else
             --没有装备则清空

@@ -181,8 +181,8 @@ function StoreModule:OpenBox(boxId)
             local EquipmentData = EquipmentConfig[EquipmentID]
             local BoxItem = ThreeItem.ItemGroup[RewardIndex]
             UI:SetVisible({BoxItem.Icon, BoxItem.Background}, true)
-            GameUtils.RefreshIconWithAsset(BoxItem.Icon, EquipmentData.AssetName, EquipmentData.AssetIndex)
-            GameUtils.RefreshIconWithAsset(BoxItem.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+            GameUtils.SetImageWithAsset(BoxItem.Icon, EquipmentData.AssetName, EquipmentData.AssetIndex)
+            GameUtils.SetImageWithAsset(BoxItem.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
         end
         UI:PlayUIAnimation(ThreeItem.ItemGroupID, 1, 0)
         --播到1.6秒暂停播放

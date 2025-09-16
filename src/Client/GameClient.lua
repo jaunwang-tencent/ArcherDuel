@@ -14,8 +14,6 @@ end
 -- 客户端游戏开始时
 function GameClient:OnStart()
     Log:PrintLog("[GameClient:OnStart]")
-    
-    UI:SetImage({100470},Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()))
 
     self.ArcherDuelApp = UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.App)
 

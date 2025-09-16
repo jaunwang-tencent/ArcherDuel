@@ -41,10 +41,10 @@ local DefaultBaseData =
 ---@param Context 上下文【透传数据】
 function LobbyModule:Open(Context)
     self:PerformLoading()
-    self:CharacterStandby()
     self:LoadData()
     self:InitView()
     self:RegisterGameEvent()
+    self:CharacterStandby()
 end
 
 --- 刷新
@@ -86,24 +86,6 @@ function LobbyModule:PerformLoading()
             UGCS.Framework.Updator.Free(self.UpdatorID)
         end
     end)
-end
-
---- 角色站街，TODO：换成假人，装备穿戴
-function LobbyModule:CharacterStandby()
-    --设置角色位置
-    TimerManager:AddTimer(0.5,function ()
-        Character:SetPosition(Character:GetLocalPlayerId(), Engine.Vector(-609.84,0,124.2))
-        Character:SetRotation(Character:GetLocalPlayerId(), Engine.Vector(0,0,-90))
-    end)
-
-    --本地角色
-    self.PlayerID =  Character:GetLocalPlayerId()
-    TimerManager:AddTimer(1,function ()
-        System:FireSignEvent("启动相机",{Character:GetLocalPlayerId()})
-    end)
-
-    --获取头像
-    UI:SetImage({100470},Chat:GetCustomHeadIcon(self.PlayerID))
 end
 
 --- 加载玩家数据
@@ -156,6 +138,36 @@ function LobbyModule:LoadData()
     end
     self.PlayerData.AllGoods = AllGoods
     self:RefreshStoreData()
+end
+
+--- 角色站街，装备穿戴
+function LobbyModule:CharacterStandby()
+    --获取本地玩家标识【真人出生点挪走，相机后面去】
+    self.PlayerID =  Character:GetLocalPlayerId()
+    --设置角色位置【角色占位：SceneId = 433】
+    local StandbyHoldeSceneId = 433
+    local Location = Element:GetPosition(StandbyHoldeSceneId)
+    local Rotation = Element:GetRotation(StandbyHoldeSceneId)
+    self.StandbyUID = FakeCharacter:CreateCharacter(Location, Rotation, Engine.Vector(1, 1, 1), false)
+    --换形象
+    FakeCharacter:ChangeBodyFromPlayer(self.StandbyUID, self.PlayerID)
+    --换装备
+    local BodyEquipment = self.PlayerData.BodyEquipment
+    if BodyEquipment then
+        local BodyIds = {}
+        for _, Equipment in pairs(BodyEquipment) do
+            local EquipmentData = EquipmentConfig[Equipment.ID]
+            if EquipmentData and EquipmentData.EquipID then
+                table.insert(BodyIds, EquipmentData.EquipID)
+            end
+        end
+        FakeCharacter:ChangeCharacterBody(self.StandbyUID, BodyIds)
+    end
+
+    --本地角色【影视相机：SceneId = 436】
+    UGCS.Framework.Executor.Delay(1, function ()
+        System:FireSignEvent("启动相机",{self.PlayerID})
+    end)
 end
 
 --- 保存玩家数据
@@ -538,7 +550,7 @@ end
 
 --- 刷新商店
 function LobbyModule:RefreshStoreData()
-    
+
 end
 
 --- 刷新通用资源栏
@@ -546,10 +558,13 @@ function LobbyModule:RefreshGeneralResourceBar()
     local MainView = UIConfig.MainView
     local GeneralResourceBar = MainView and MainView.GeneralResourceBar
     if GeneralResourceBar then
+        --玩家基础数据
         local BaseData = self.PlayerData.BaseData
         --玩家图标
         --目前API侧无法读取玩家图标，暂时使用这个
-        GameUtils.RefreshIconWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
+        --获取头像
+        UI:SetImage({GeneralResourceBar.PlayerIcon},Chat:GetCustomHeadIcon(self.PlayerID), true)
+        --GameUtils.SetImageWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
         UI:SetText({GeneralResourceBar.Rank.Label}, tostring(BaseData.Rank))
         UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(BaseData.Coin))
         UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))
