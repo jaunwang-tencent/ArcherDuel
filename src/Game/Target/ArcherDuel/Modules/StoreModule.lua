@@ -214,10 +214,16 @@ function StoreModule:ShowGainView(Goods)
         --获得金钱，显示金钱
         local BaseData = self.PlayerData.BaseData
         BaseData.Coin = BaseData.Coin + Goods.Coin
+
+        --显示部分
+        GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 4)
     elseif Goods.Diamond then
         --获得砖石，显示砖石
         local BaseData = self.PlayerData.BaseData
         BaseData.Diamond = BaseData.Diamond + Goods.Diamond
+
+        --显示部分
+        GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 6)
     end
 
     --设置物品图标
@@ -262,7 +268,7 @@ function StoreModule:SeeAd(AdTag, Goods)
     UI:ShowMessageTip("See Ad:" .. AdTag)
 
     --这一段是模拟观看广告
-    UGCS.Framework.Executor.Delay(5, function()
+    UGCS.Framework.Executor.Delay(3, function()
         --看完广告后，获得物品
         self:ShowGainView(Goods)
     end)
