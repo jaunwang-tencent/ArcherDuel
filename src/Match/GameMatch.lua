@@ -750,10 +750,11 @@ function GameMatch:StartGoldMatch()
         end)
 
         TimerManager:AddTimer(3,function ()
-            UI:SetVisible({110896},true)
+            UI:SetVisible({109969,110896},true)
             TimerManager:RemoveTimer(timer)
-            TimerManager:AddTimer(0.5,function ()
-                UI:SetVisible({110896},false)
+            UI:PlayUIAnimation(110896,1,0)
+            TimerManager:AddTimer(3.5,function ()
+                UI:SetVisible({109969,110896},false)
                 UI:SetVisible(MatchConfig.MatchUI_Start,false)
                 -- 开始匹配倒计时
                 self:MathCountDown(MatchInfo)
@@ -804,6 +805,13 @@ function GameMatch:GoldMathRivals()
 
     return MathRivals, BattleRival
 end
+
+-- System:RegisterSignEvent("关闭两个界面！",function ()
+--     UI:SetVisible({110069,110109,111945,110070,110065,110082,110721,110526,109965,110108,110085,110648,110720,110079},false)  --关闭胜利页面
+--     UI:SetVisible({110069,110109,110074,112655,110070,110065,110722,110580,110683,110720,109965,110108,110078},false)  --关闭失败页面
+-- end)
+
+
 
 -- 黄金赛胜利
 function GameMatch:OnGoldVictory()
@@ -943,6 +951,112 @@ function GameMatch:GoldRivalDefeat(name)
     end
 end
 
+-- 黄金赛下一局奖励
+function GameMatch:GoldBattleShowReward()
+    UI:SetVisible(MatchConfig.MatchUI_Next,true)
+
+    -- 下一局奖励，按照下一局赢之后全输的情况来计算
+    local step = GoldBattleStep[self.goldBattleRound-1 + 2-self.goldFailCount] -- 按照后两局全输来决定排名奖励
+    local rank = #step
+    local CurrencyIconList = GetCurrencyIconList()
+    local rewardUI = self.goldFailCount == 0 and MatchConfig.GoldWinner_Reward_UI or MatchConfig.GoldFailer_Reward_UI
+    for i, v in ipairs(rewardUI) do
+        local reward = GoldRewardConfig[rank][i]
+        if reward then
+            local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
+            if cfg and cfg.iconIndex then
+                UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
+            end    
+            UI:SetText({v.text}, tostring(reward.count))
+        end
+    end
+end
+
+-- 黄金赛匹配分组展示
+function GameMatch:GoldBattleWinMatchShow()
+    local delay = 0
+    delay = delay + 1
+    if self.goldBattleRound == 1 then --第一局，从分组赛到胜者组
+        UI:SetVisible({110069,110109,111945,110070,110065},true)  --打开展示页面  需要将头像依次换成获胜的玩家头像 需要更换四个头像id为 ID  = {111944,111942,111940,111938}
+        TimerManager:AddTimer(delay,function ()
+            UI:PlayUIAnimation(110065,1,0)      --将展示背景隐藏动画
+        end)
+        delay = delay + 1
+        TimerManager:AddTimer(delay ,function ()
+            UI:SetVisible({110065},false)
+            for i = 1, 4, 1 do
+                local uid =  UI:FindChildWithIndex(111945,i)
+                UI:PlayUIAnimation(uid,1,0)              --将四个头像移动到相应的位置
+            end
+        end)
+    end
+    delay = delay + 1   ------------从这里开始  只要胜利都会触发
+    TimerManager:AddTimer(delay,function ()
+        UI:SetVisible({110082,110721,110526,109965,110108,110085},true)   --打开退出对应的底板信息
+    end)
+    delay = delay + 1
+    TimerManager:AddTimer(delay,function ()
+        UI:SetVisible({110648,110720},true)
+        UI:PlayUIAnimation(110648,1,0)     --打开退出获胜奖励的的动画
+        UI:PlayUIAnimation(110720,1,0)     --打开退出获胜奖励的的动画
+        self:GoldBattleShowReward()
+    end)
+    delay = delay + 2
+    TimerManager:AddTimer(delay,function ()
+        UI:SetVisible({110079},true)   --继续按钮
+    end)
+end
+
+-- 黄金赛匹配分组展示
+function GameMatch:GoldBattleFailMatchShow()
+    local delay = 0
+    delay = delay + 1
+    UI:SetVisible({110069,110109,110074,112655,110070},true)  --打开玩家失败展示页面  --需要将图片更换成玩家头像  图片id为112566
+    UI:PlayUIAnimation(112654,1,0)   --暂时失败文本
+    if self.goldBattleRound == 1 then --第一局，从分组赛到败者组
+        TimerManager:AddTimer(delay,function ()
+            UI:PlayUIAnimation(112567,self.goldBattleRound,0)  --再第几局失败，就移动到相应的位置   最多
+        end)
+        delay = delay + 1
+    end
+    TimerManager:AddTimer(delay ,function ()
+        UI:SetVisible({110722,110580,109965,110108,110078},true)  --打开对局背景  分支图
+        UI:PlayUIAnimation(110722,1,0)
+        UI:PlayUIAnimation(110580,1,0)   --渐显动画
+        end)
+    delay = delay + 0.5
+    TimerManager:AddTimer(delay ,function ()
+        UI:SetVisible({112655,112654},false)   --关闭展示头像
+    end)
+    delay = delay + 1
+    TimerManager:AddTimer(delay,function ()
+        UI:SetVisible({110683,110720},true)  --打开退出和奖励展示页面
+        UI:PlayUIAnimation(110683,1,0)
+        UI:PlayUIAnimation(110720,1,0)
+        self:GoldBattleShowReward()
+    end)
+    delay = delay + 1
+    TimerManager:AddTimer(delay,function ()
+        UI:SetVisible({110079},true)   --继续按钮
+    end)
+end
+
+System:RegisterSignEvent("关闭两个界面！",function ()
+    UI:SetVisible({110069,110109,111945,110070,110065,110082,110721,110526,109965,110108,110085,110648,110720,110079},false)  --关闭胜利页面
+    UI:SetVisible({110069,110109,110074,112655,110070,110065,110722,110580,110683,110720,109965,110108,110078},false)  --关闭失败页面
+end)
+
+-- 黄金赛匹配分组展示
+function GameMatch:GoldBattleMatchShow()
+    self:UpdateGoldHead()
+
+    if self.goldBattleResult then -- 胜利
+        self:GoldBattleWinMatchShow()
+    else
+        self:GoldBattleFailMatchShow()
+    end
+end
+
 --继续黄金赛
 --黄金赛比赛规则，8个人总共会进行6场比赛，失败过一次的人会进入败者组，失败过2次的人会被淘汰，胜者组和败者组分别进行比赛
 --依次类推，在第3局结束后，胜者组还会剩下最后一人，败者组还会剩下3人
@@ -983,31 +1097,13 @@ function GameMatch:OnGoldBattleContinue()
         end
     end
 
-    UI:SetVisible(MatchConfig.MatchUI_Next,true)
-
-    -- 下一局奖励，按照下一局赢之后全输的情况来计算
-    local step = GoldBattleStep[self.goldBattleRound-1 + 2-self.goldFailCount] -- 按照后两局全输来决定排名奖励
-    local rank = #step
-    local CurrencyIconList = GetCurrencyIconList()
-    local rewardUI = self.goldFailCount == 0 and MatchConfig.GoldWinner_Reward_UI or MatchConfig.GoldFailer_Reward_UI
-    for i, v in ipairs(rewardUI) do
-        local reward = GoldRewardConfig[rank][i]
-        if reward then
-            local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[reward.id]
-            if cfg and cfg.iconIndex then
-                UI:SetImage({v.icon},CurrencyIconList[cfg.iconIndex],true)
-            end    
-            UI:SetText({v.text}, tostring(reward.count))
-        end
-    end
-
     -- 如果是败者组第二局，比较特殊，34为这一局新加入的对手，但是需要分别和12匹配，在这里手动调整一下顺位
     if self.goldBattleRound == 2 then
         local info = table.remove(self.goldFailerRivalInfo, 4)
         table.insert(self.goldFailerRivalInfo, 1, info)
     end
 
-    self:UpdateGoldHead()
+    self:GoldBattleMatchShow()
 end
 
 -- 黄金赛Top3展示
@@ -1056,7 +1152,8 @@ function GameMatch:ShowGoldTop3(top3Players)
     Camera:MovieCameraStart(MatchConfig.GoldSceneConfig[self.mapId].Camera)
     -- 移动相机
     local pos = Element:GetPosition(MatchConfig.GoldSceneConfig[self.mapId].Podium)
-    Element:MoveTo(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(3000,0,1000),1,Element.CURVE.linear)
+    -- Element:MoveTo(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(3000,0,1000),1,Element.CURVE.linear)
+    Element:SetPosition(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(3000,0,1000),Element.COORDINATE.World)
     Element:SetForward(MatchConfig.GoldSceneConfig[self.mapId].Camera, -Element:GetForward(MatchConfig.GoldSceneConfig[self.mapId].Podium))
 
     TimerManager:AddTimer(1, function()
@@ -1105,15 +1202,21 @@ function GameMatch:SetGoldHeadState(bWiner, victory, name, isSelf)
 end
 
 function GameMatch:UpdateGoldHead()
-    if self.goldBattleRound == 0 then -- 分组赛
+    if MatchConfig.GoldTeam_Head_UI[self.goldBattleRound] then
+        UI:SetVisible(MatchConfig.GoldTeam_Head_UI[self.goldBattleRound], true)
+        for i = self.goldBattleRound+1, #MatchConfig.GoldTeam_Head_UI do
+            UI:SetVisible(MatchConfig.GoldTeam_Head_UI[i], false)
+        end
+
         for i, v in ipairs(self.goldWinnerRivalInfo) do
             if v.isSelf then
-                UI:SetImage({MatchConfig.Gold_Head_UI[i]}, Chat:GetCustomHeadIcon(self.localPlayerId), true)
+                UI:SetImage({MatchConfig.GoldTeam_Head_UI[self.goldBattleRound][i]}, Chat:GetCustomHeadIcon(self.localPlayerId), true)
             else
-                UI:SetImage({MatchConfig.Gold_Head_UI[i]}, v.headIcon, true)
+                UI:SetImage({MatchConfig.GoldTeam_Head_UI[self.goldBattleRound][i]}, v.headIcon, true)
             end
         end
-    else
+    end
+    if self.goldBattleRound > 0 then
         local Head_UI, RivalInfo
         if self.goldFailCount == 0 then --在胜者组
             Head_UI = MatchConfig.GoldWinner_Head_UI
