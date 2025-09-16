@@ -78,6 +78,24 @@ function TournamentModule:Open(PlayerData)
 
     self.DiamondRankPlayerList = DiamondRankPlayerList
     UI:SetVisible(Rank_Scroll, false)
+
+    local tabBtn = {106561,106560,106559}
+    local tabUnselected = {106563,106564,106565}
+    local view = {106605,106518,107540}
+
+    UI:SetVisible(tabUnselected,false)
+    UI:SetVisible({tabUnselected[1]},true)
+    UI:SetVisible(view,false)
+    UI:SetVisible({view[1]},true)
+
+    for i, btnId in ipairs(tabBtn) do
+        UI:RegisterPressed(btnId,function (btnId)
+            UI:SetVisible(tabUnselected,false)
+            UI:SetVisible({tabUnselected[i]},true)
+            UI:SetVisible(view,false)
+            UI:SetVisible({view[i]},true)
+        end)
+    end
 end
 
 --- 刷新
@@ -91,6 +109,11 @@ function TournamentModule:Close()
     if self.DiamondRankPlayerList then
         UI:SetVisible(self.DiamondRankPlayerList, false)
         self.DiamondRankPlayerList = nil
+    end
+
+    local tabBtn = {106561,106560,106559}
+    for _, btnId in ipairs(tabBtn) do
+        UI:UnRegisterClicked(btnId)
     end
 end
 
