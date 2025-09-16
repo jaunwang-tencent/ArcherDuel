@@ -29,6 +29,24 @@ function Condition:getProgress()
     return self.currentAmount, self.requiredAmount
 end
 
+-- 普通进度任务
+local GeneralProgressCondition = setmetatable({}, {__index = Condition})
+GeneralProgressCondition.__index = GeneralProgressCondition
+
+function GeneralProgressCondition:new(taskEvents, params)
+    local obj = Condition.new(self, taskEvents, params)
+    return obj
+end
+
+function GeneralProgressCondition:check(params)
+    if params.event == self.type then
+        self.currentAmount = self.currentAmount + 1
+        self.completed = self.currentAmount >= self.requiredAmount
+        return true, self.currentAmount
+    end
+    return false, self.currentAmount
+end
+
 -- 击杀条件
 local KillCondition = setmetatable({}, {__index = Condition})
 KillCondition.__index = KillCondition
@@ -140,7 +158,6 @@ end
 -- 使用弓箭胜利
 local BattleWinUseBowCondition = setmetatable({}, {__index = Condition})
 BattleWinUseBowCondition.__index = BattleWinUseBowCondition
-
 
 function BattleWinUseBowCondition:new(params)
     local obj = Condition.new(self, TaskEvents.BattleWinUseBow, params)
@@ -291,9 +308,9 @@ function Task:checkCompletion(params)
     end
 
     local allCompleted = true
+    local day = _GAME.GameUtils.GetWeekDay()
     for _, condition in ipairs(self.conditions) do
         if self.type == Task.TaskType.Weekly then
-            local day = _GAME.GameUtils.GetWeekDay()
             if condition.wday and condition.wday <= day then
                 if not condition:check(params) or not condition:isCompleted() then
                     allCompleted = false
@@ -306,7 +323,6 @@ function Task:checkCompletion(params)
                 allCompleted = false
             end
         end
-        
     end
 
     if allCompleted then
@@ -375,7 +391,7 @@ TaskManager.Instance = nil
 TaskManager.Task = Task
 TaskManager.Condition = Condition
 function TaskManager:GetInsatnce()
-    if  TaskManager.Instance then
+    if TaskManager.Instance then
         return TaskManager.Instance
     end
     local obj = {
@@ -384,25 +400,28 @@ function TaskManager:GetInsatnce()
         conditionFactories = {},
     }
 
-    obj.conditionFactories[TaskEvents.Battle] = function(params) return BattleCondition:new(params) end
-    obj.conditionFactories[TaskEvents.BattleWinUseBow] = function(params) return BattleWinUseBowCondition:new(params) end
     obj.conditionFactories[TaskEvents.LoginGame] = function(params) return LoginGameCondition:new(params) end
-    obj.conditionFactories[TaskEvents.HeadShot] = function(params) return HeadShotCondition:new(params) end
+    obj.conditionFactories[TaskEvents.Battle] = function(params) return GeneralProgressCondition:new(TaskEvents.Battle, params) end
+    obj.conditionFactories[TaskEvents.BattleWinUseBow] = function(params) return GeneralProgressCondition:new(TaskEvents.BattleWinUseBow, params) end
+    obj.conditionFactories[TaskEvents.HeadShot] = function(params) return GeneralProgressCondition:new(TaskEvents.HeadShot, params) end
 
     setmetatable(obj, self)
     TaskManager.Instance = obj
-    System:RegisterGameEvent(_GAME.Events.ExecuteTask, function(EventName, params)
-        Log:PrintDebug("eventType:", EventName)
-        TaskManager.Instance:handleEvent(EventName, params)
-    end)
+    Log:PrintDebug("System:RegisterGameEvent")
+    System:RegisterGameEvent(_GAME.Events.ExecuteTask, self.OnExecuteTask, self)
 
     local _time = MiscService:DateYMDHMSToTime(MiscService:GetServerTimeToTime())
 
     obj.TaskIintTime = _time
-    local day = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.day) --2023
+    local day = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Day) --2023
     obj.TaskIintTimeDay = day
 
     return obj
+end
+
+function TaskManager:OnExecuteTask(EventName, params)
+    Log:PrintDebug("eventType:", EventName)
+    TaskManager.Instance:handleEvent(EventName, params)
 end
 
 function TaskManager:registerConditionFactory(type, factory)
@@ -422,7 +441,18 @@ function TaskManager:createCompositeCondition(operator, subConditions)
 end
 
 function TaskManager:addTask(task)
-    self.tasks[task.id] = task
+    if task and task.id then
+        self.tasks[task.id] = task
+    end
+end
+
+function TaskManager:delTask(task)
+    if task and task.id then
+        self.tasks[task.id] = nil
+        if self.activeTasks and self.activeTasks[task.id] then
+            self.activeTasks[task.id] = nil
+        end
+    end
 end
 
 function TaskManager:getTask(taskId)
@@ -516,15 +546,6 @@ function TaskManager:getActiveTasks()
     return tasks
 end
 
-function TaskManager:IsTaskTimeOut()
-    local day = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.day)
-    if day == self.TaskIintTimeDay then
-        local _time = MiscService:DateYMDHMSToTime(MiscService:GetServerTimeToTime())
-        return  _time - self.TaskIintTime > 24 * 60 * 60
-    end
-    return true
-end
-
 function TaskManager:LoadSavedTaskData()
     if not Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable") then
         return
@@ -554,7 +575,7 @@ end
 
 function TaskManager:SaveTaskData()
     local saveData = {}
-    local  TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
     local tasks = TaskManagerInstance:getActiveTasks()
     for _, v in pairs (tasks) do
         local data = {}
@@ -571,20 +592,11 @@ function TaskManager:SaveTaskData()
     end
     local str = MiscService:Table2JsonStr(saveData)
     Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable", str)
-
 end
 
 function TaskManager:Init()
-
-    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
-    if TaskManagerInstance:IsTaskTimeOut() then
-        TaskManager.Instance = nil
-        TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
-    end
-
     local TaskPool = require("Game.Framework.Task.TaskPool")
-    TaskManagerInstance = TaskPool.BuildTask()
-    
+    local TaskManagerInstance = TaskPool.BuildTask()
     return TaskManagerInstance
 end
 

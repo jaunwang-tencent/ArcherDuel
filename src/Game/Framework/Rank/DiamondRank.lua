@@ -2,7 +2,7 @@ local DiamondRankManager = {}
 
 local MatchConfig = require("Match.MatchConfig")
 
-local dailyScoreHours = {6, 12, 18} -- 积分时间点
+local dailyScoreHours = {6, 18} -- 积分时间点
 
 -- 设定2000-01-01 00:00:00的时间戳作为epoch零点
 local epochZeroTs = MiscService:DateYMDHMSToTime("2000-01-01 00:00:00")

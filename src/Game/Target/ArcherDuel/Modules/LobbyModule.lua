@@ -35,6 +35,7 @@ local DefaultBaseData =
     Rank_DiamondScore_Num = 0,    --钻石联赛中的积分
     Player_TaskWeeklyExp_Num = 0, --每周任务经验
     Player_CollectTaskWeekly_Num = 0,   --每日领取任务，按位来标记任务是否已领取
+    Player_LastLoginTime_Num = 0,   --上次登录时间
 }
 
 --- 打开
@@ -138,6 +139,25 @@ function LobbyModule:LoadData()
     end
     self.PlayerData.AllItems = AllItems
     self:RefreshStoreData()
+
+    local nowStr = MiscService:GetServerTimeToTime()
+    local nowTs = MiscService:DateYMDHMSToTime(nowStr)
+
+    local lastLoginTime = self.PlayerData.BaseData.Player_LastLoginTime_Num
+    if lastLoginTime == nil or lastLoginTime == 0 or lastLoginTime > nowTs then
+        lastLoginTime = nowTs - (7 * 24 * 60 * 60)
+    end
+
+    if _GAME.GameUtils.isCrossDay(lastLoginTime) then
+        --跨天登录了
+        Log:PrintLog("跨天登录了")
+    end
+    if _GAME.GameUtils.isCrossWeek(lastLoginTime) then
+        --跨周登录了
+        Log:PrintLog("跨周登录了")
+    end
+
+    self.PlayerData.BaseData.Player_LastLoginTime_Num = nowTs
 end
 
 --- 角色站街，装备穿戴

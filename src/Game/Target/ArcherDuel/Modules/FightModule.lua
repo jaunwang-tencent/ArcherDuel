@@ -72,11 +72,11 @@ function FightModule:Open(PlayerData)
         UI:SetText({Rank.Text}, level.name)
 
         if RankInfoConfig[level.id + 1] then
-            UI:SetProgressCurrentValue({Rank.Progress}, BattlePoints - level.base_score)
             UI:SetProgressMaxValue({Rank.Progress}, RankInfoConfig[level.id + 1].base_score)
+            UI:SetProgressCurrentValue({Rank.Progress}, BattlePoints - level.base_score)
         else
-            UI:SetProgressCurrentValue({Rank.Progress}, BattlePoints)
             UI:SetProgressMaxValue({Rank.Progress}, BattlePoints)
+            UI:SetProgressCurrentValue({Rank.Progress}, BattlePoints)
         end
     end
 end
@@ -284,8 +284,8 @@ function FightModule:RefreshTaskProcesUI()
             UI:SetVisible({ButtonID}, true)
         end
     end
-    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp / 20 * 100)
     UI:SetProgressMaxValue({TaskProcesID}, 100)
+    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp / 20 * 100)
     UI:SetText({UIConfig.SevenDays.Progress}, "进度:" .. TaskExp .. "/" .. 20)
 end
 
@@ -334,8 +334,8 @@ function FightModule:RefreshWeeklyTaskUI(wday)
                 UI:SetVisible({Button}, true)
             end
             local _, current, max = v:getProgressNumer()
-            UI:SetProgressCurrentValue({Progress}, current)
             UI:SetProgressMaxValue({Progress}, max)
+            UI:SetProgressCurrentValue({Progress}, current)
             i = i + 1
         end
     end

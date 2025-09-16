@@ -164,33 +164,100 @@ function GameUtils.GetRewardsByWin()
     return rewards
 end
 
+local function getYMD(timestamp)
+    local year = MiscService:TimeStampToTime(timestamp, MiscService.ETimeUnit.Year)
+    local month = MiscService:TimeStampToTime(timestamp, MiscService.ETimeUnit.Month)
+    local day = MiscService:TimeStampToTime(timestamp, MiscService.ETimeUnit.Day)
+    return year, month, day
+end
+
+-- 蔡勒公式算星期几，返回1-7，1代表周一，7代表周日
+local function dayOfWeek(year, month, day)
+    if month < 3 then
+        month = month + 12
+        year = year - 1
+    end
+    local K = year % 100
+    local J = math.floor(year / 100)
+    local h = (day + math.floor(13*(month+1)/5) + K + math.floor(K/4) + math.floor(J/4) + 5*J) % 7
+    local d = ((h + 5) % 7) + 1
+    return d
+end
+
+-- 获取 ts 所在周一的时间戳
+local function getMondayTimestamp(ts)
+    local y,m,d = getYMD(ts)
+    local dow = dayOfWeek(y,m,d) -- 获取当日星期几，周一=1
+
+    -- 计算周一日期 = 当前日期 - (dow-1)
+    local mondayDay = d - (dow - 1)
+
+    -- 注意月日边界，假设你们有接口能直接根据年月日生成时间戳，这里示范用字符串形式调用
+    -- 注意月日可能越界，比如deduct到上个月，此处简单代码可能不支持跨月减日，需要根据你们接口完善
+    -- 理想是有接口：DateYMDToTime(year, month, day)
+    -- 下面示范拼时间字符串，day可能小于1需要业务改造
+
+    -- 简单的处理示范（不处理跨月，仅示例演示）
+    if mondayDay < 1 then
+        -- 这里我们简单减一个月
+        local prevMonth = m - 1
+        local prevYear = y
+        if prevMonth < 1 then
+            prevMonth = 12
+            prevYear = y - 1
+        end
+
+        -- 获取上个月天数
+        local daysInMonth = {31,28,31,30,31,30,31,31,30,31,30,31}
+        local function isLeapYear(yr)
+            return (yr % 400 == 0) or (yr % 4 == 0 and yr % 100 ~= 0)
+        end
+        if isLeapYear(prevYear) then daysInMonth[2] = 29 end
+
+        mondayDay = mondayDay + daysInMonth[prevMonth]
+        y = prevYear
+        m = prevMonth
+    else
+        -- 还是原年月日
+    end
+
+    local mondayTimeStr = string.format("%04d-%02d-%02d 00:00:00", y, m, mondayDay)
+    local mondayTs = MiscService:DateYMDHMSToTime(mondayTimeStr)
+    return mondayTs
+end
+
 --获取当前是星期几
 function GameUtils.GetWeekDay()
-    -- 设定2000-01-01 00:00:00的时间戳作为epoch零点
-    local epochZeroTs = MiscService:DateYMDHMSToTime("2000-01-01 00:00:00")
+    local year = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Year)
+    local month= MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Month)
+    local day  = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Day)
+    local weekDay = dayOfWeek(year, month, day)
+    return weekDay
+end
 
-    -- 日期字符串转零点时间戳: "YYYY-MM-DD" -> 当天零点时间戳
-    local function dateStrToZeroTime(dateStr)
-        return MiscService:DateYMDHMSToTime(dateStr .. " 00:00:00")
-    end
-
-    -- 时间戳转日期字符串 "YYYY-MM-DD"
-    local function timeToDateStr(ts)
-        return string.sub(MiscService:TimeStampToDateYMDHMS(ts), 1, 10)
-    end
-
-    -- 计算距离2000-01-01零点的天数
-    local function getDaysSinceEpoch(ts)
-        local zeroTs = dateStrToZeroTime(timeToDateStr(ts))
-        return math.floor((zeroTs - epochZeroTs) / (24*3600))
-    end
+-- 跨天判断
+function GameUtils.isCrossDay(lastLoginTs)
+    if not lastLoginTs then return true end
 
     local nowStr = MiscService:GetServerTimeToTime()
     local nowTs = MiscService:DateYMDHMSToTime(nowStr)
 
-    -- 计算星期几，周一=1，周日=7，2000-01-01是周六，偏移5调整
-    local days = getDaysSinceEpoch(nowTs)
-    return ((days + 5) % 7) + 1
+    local lastYear, lastMonth, lastDay = getYMD(lastLoginTs)
+    local nowYear, nowMonth, nowDay = getYMD(nowTs)
+
+    return lastYear ~= nowYear or lastMonth ~= nowMonth or lastDay ~= nowDay
+end
+
+function GameUtils.isCrossWeek(lastLoginTs)
+    if not lastLoginTs then return true end
+
+    local nowStr = MiscService:GetServerTimeToTime()
+    local nowTs = MiscService:DateYMDHMSToTime(nowStr)
+
+    local lastMonday = getMondayTimestamp(lastLoginTs)
+    local nowMonday = getMondayTimestamp(nowTs)
+
+    return lastMonday ~= nowMonday
 end
 
 return GameUtils

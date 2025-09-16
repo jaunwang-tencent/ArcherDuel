@@ -79,31 +79,135 @@ TaskPool.taskcfg = {
 }
 
 function TaskPool.BuildTask()
-
     local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
-    for _, v in pairs(TaskPool.taskcfg) do
-        local condition
-        if v.takeType == TaskClass.TaskType.Weekly then
-            condition = TaskManagerInstance:createCondition(v.condition.type, {
-                requiredAmount = v.condition.param[1],
-                wday = v.condition.wday
-            })
-        else
-            condition = TaskManagerInstance:createCondition(v.condition.type, {
-                requiredAmount = v.condition.param[1],
-            })
-        end
+    local playerId = Character:GetLocalPlayerId()
+    local nowStr = MiscService:GetServerTimeToTime()
+    local nowTs = MiscService:DateYMDHMSToTime(nowStr)
 
-        local Quest = TaskClass:new(v.id, v.takeType, v.taskName, v.taskDes, {condition}, v.rewards)
-        Quest:addOnCompleteCallback(function()
-            -- Log:PrintLog("恭喜你完成了任务!")
-        end)
+    local lastTaskRefreshTime
+    if Archive:HasPlayerData(playerId, Archive.TYPE.Number, "Player_LastTaskRefreshTime_Num") then
+        lastTaskRefreshTime = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "lastTaskRefreshTime")
+    else
+        lastTaskRefreshTime = nowTs - (7 * 24 * 60 * 60)
+    end
+    if lastTaskRefreshTime == nil or lastTaskRefreshTime == 0 or lastTaskRefreshTime > nowTs then
+        lastTaskRefreshTime = nowTs - (7 * 24 * 60 * 60)
+    end
+
+    --加载存档中任务数据
+    local saveDataKV
+    if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable") then
+        local str = Archive:GetPlayerData(playerId, Archive.TYPE.String, "TaskDataTable")
+        local savedData = MiscService:JsonStr2Table(str)
+        if savedData then
+            saveDataKV = {}
+            for _, v in pairs(savedData) do
+                saveDataKV[v.id] = v
+            end
+        end
+    end
+
+    --如果存在任务存档数据则直接加载对应配置
+    for _, v in pairs(TaskPool.taskcfg) do
+        if saveDataKV and saveDataKV[v.id] then
+            local condition
+            if v.takeType == TaskClass.TaskType.Weekly then
+                condition = TaskManagerInstance:createCondition(v.condition.type, {
+                    requiredAmount = v.condition.param[1],
+                    wday = v.condition.wday
+                })
+            else
+                condition = TaskManagerInstance:createCondition(v.condition.type, {
+                    requiredAmount = v.condition.param[1],
+                })
+            end
+
+            local Quest = TaskClass:new(v.id, v.takeType, v.taskName, v.taskDes, {condition}, v.rewards)
+            TaskManagerInstance:addTask(Quest)
+            TaskManagerInstance:acceptTask(Quest.id)
+        end
+    end
+
+    if saveDataKV then
+        TaskManagerInstance:LoadSavedTaskData()
+    else
+        lastTaskRefreshTime = nowTs - (7 * 24 * 60 * 60)
+    end
+
+    if _GAME.GameUtils.isCrossDay(lastTaskRefreshTime) then
+        --跨天登录了
+        TaskPool.RefreshDailyTask(saveDataKV)
+    end
+    if _GAME.GameUtils.isCrossWeek(lastTaskRefreshTime) then
+        --跨周登录了
+        TaskPool.RefreshWeeklyTask(saveDataKV)
+    end
+
+    Archive:SetPlayerData(playerId, Archive.TYPE.Number, "lastTaskRefreshTime")
+
+    return TaskManagerInstance
+end
+
+function TaskPool.RefreshDailyTask(saveDataKV)
+    math.randomseed(TimerManager:GetClock())
+    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    if saveDataKV then
+        for _, v in pairs(saveDataKV) do
+            local Quest = TaskManagerInstance:getTask(v.id)
+            if Quest and Quest.takeType == TaskClass.TaskType.Daily then
+                TaskManagerInstance:delTask(v.id)
+            end
+        end
+    end
+
+    local taskColumn = {}
+    for _, v in pairs(TaskPool.taskcfg) do
+        if v.takeType == TaskClass.TaskType.Daily then
+            if taskColumn[v.column] then
+                table.insert(taskColumn[v.column], v)
+            else
+                taskColumn[v.column] = {v}
+            end
+        end
+    end
+    for _, v in pairs(taskColumn) do
+        local index = math.random(1, #v)
+        local condition = TaskManagerInstance:createCondition(v[index].condition.type, {
+            requiredAmount = v[index].condition.param[1],
+        })
+        local Quest = TaskClass:new(v[index].id, v[index].takeType, v[index].taskName, v[index].taskDes, {condition}, v[index].rewards)
         TaskManagerInstance:addTask(Quest)
         TaskManagerInstance:acceptTask(Quest.id)
     end
-    TaskManagerInstance:LoadSavedTaskData()
 
-    return TaskManagerInstance
+    TaskManagerInstance:SaveTaskData()
+end
+
+function TaskPool.RefreshWeeklyTask(saveDataKV)
+    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    if saveDataKV then
+        for _, v in pairs(saveDataKV) do
+            local Quest = TaskManagerInstance:getTask(v.id)
+            if Quest and Quest.takeType == TaskClass.TaskType.Weekly then
+                TaskManagerInstance:delTask(v.id)
+            end
+        end
+    end
+
+    for _, v in pairs(TaskPool.taskcfg) do
+        if v.takeType == TaskClass.TaskType.Weekly then
+            local condition = TaskManagerInstance:createCondition(v.condition.type, {
+                requiredAmount = v.condition.param[1],
+                wday = v.condition.wday
+            })
+
+            local Quest = TaskClass:new(v.id, v.takeType, v.taskName, v.taskDes, {condition}, v.rewards)
+            TaskManagerInstance:addTask(Quest)
+            TaskManagerInstance:acceptTask(Quest.id)
+        end
+    end
+
+    TaskManagerInstance:SaveTaskData()
 end
 
 return TaskPool
