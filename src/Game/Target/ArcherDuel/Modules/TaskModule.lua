@@ -54,8 +54,8 @@ function TaskModule:RefreshTaskProcesUI()
         end 
     end
     UI:SetText({UIConfig.TaskView.TaskProcesView.Text},tostring(TaskExp))
-    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp / 240 * 100)
     UI:SetProgressMaxValue({TaskProcesID}, 100)
+    UI:SetProgressCurrentValue({TaskProcesID}, TaskExp / 240 * 100)
 end
 
 function TaskModule:RefreshTaskUI()
@@ -108,8 +108,8 @@ function TaskModule:RefreshTaskUI()
         local ExpText = UI:FindChildWithIndex(NewUI, 8) -- 奖励活跃文本
         UI:SetText({ProgressText}, math.floor(current) .. "/" .. math.floor(max))
         UI:SetText({ExpText}, tostring(v.rewards.DailyExp))
-        UI:SetProgressCurrentValue({Progress}, current)
         UI:SetProgressMaxValue({Progress}, max)
+        UI:SetProgressCurrentValue({Progress}, current)
         if v.state == taskMgr.Task.State.COMPLETED then
             UI:SetVisible({BtnID1}, false)
             UI:SetVisible({BtnID2}, true)
