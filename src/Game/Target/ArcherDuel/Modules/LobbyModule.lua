@@ -149,8 +149,6 @@ function LobbyModule:CharacterStandby()
     local Location = Element:GetPosition(StandbyHoldeSceneId)
     local Rotation = Element:GetRotation(StandbyHoldeSceneId)
     self.StandbyUID = FakeCharacter:CreateCharacter(Location, Rotation, Engine.Vector(1, 1, 1), false)
-    --换形象
-    FakeCharacter:ChangeBodyFromPlayer(self.StandbyUID, self.PlayerID)
     --换装备
     local BodyEquipment = self.PlayerData.BodyEquipment
     if BodyEquipment then
@@ -162,6 +160,9 @@ function LobbyModule:CharacterStandby()
             end
         end
         FakeCharacter:ChangeCharacterBody(self.StandbyUID, BodyIds)
+    else
+        --没有则换回玩家原皮
+        FakeCharacter:ChangeBodyFromPlayer(self.StandbyUID, self.PlayerID)
     end
 
     --本地角色【影视相机：SceneId = 436】
