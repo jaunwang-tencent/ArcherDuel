@@ -6,48 +6,48 @@ local TaskClass = require("Game.Framework.Task.Task").Task
 local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
 TaskPool.taskcfg = {
-    { id = 1, takeType = TaskClass.TaskType.Daily, taskName = "登录游戏", taskDes = "登录游戏", condition = {type = TaskEvents.LoginGame , param = {1} },  rewards = {DailyExp = 10} },
+    { id = 1, takeType = TaskClass.TaskType.Daily, taskName = "登录游戏", taskDes = "登录游戏", condition = {type = TaskEvents.LoginGame , param = {1} },  rewards = {DailyExp = 10}, column = 1 },
 
-    { id = 2, takeType = TaskClass.TaskType.Daily, taskName = "使用弓箭赢得1场比赛", taskDes = "使用弓箭赢得1场比赛", condition = {type = TaskEvents.BattleWinUseBow , param = {1} },  rewards = {DailyExp = 15} },
-    { id = 3, takeType = TaskClass.TaskType.Daily, taskName = "使用投矛赢得1场比赛", taskDes = "使用投矛赢得1场比赛", condition = {type = TaskEvents.BattleWinUseSpear , param = {1} },  rewards = {DailyExp = 15} },
-    { id = 4, takeType = TaskClass.TaskType.Daily, taskName = "使用投斧赢得1场比赛", taskDes = "使用投斧赢得1场比赛", condition = {type = TaskEvents.BattleWinUseAxe , param = {1} },  rewards = {DailyExp = 15} },
+    { id = 2, takeType = TaskClass.TaskType.Daily, taskName = "使用弓箭赢得1场比赛", taskDes = "使用弓箭赢得1场比赛", condition = {type = TaskEvents.BattleWinUseBow , param = {1} },  rewards = {DailyExp = 15}, column = 2 },
+    { id = 3, takeType = TaskClass.TaskType.Daily, taskName = "使用投矛赢得1场比赛", taskDes = "使用投矛赢得1场比赛", condition = {type = TaskEvents.BattleWinUseSpear , param = {1} },  rewards = {DailyExp = 15}, column = 2 },
+    { id = 4, takeType = TaskClass.TaskType.Daily, taskName = "使用投斧赢得1场比赛", taskDes = "使用投斧赢得1场比赛", condition = {type = TaskEvents.BattleWinUseAxe , param = {1} },  rewards = {DailyExp = 15}, column = 2 },
 
-    { id = 5, takeType = TaskClass.TaskType.Daily, taskName = "赢得3场比赛", taskDes = "赢得3场比赛", condition = {type = TaskEvents.BattleWin , param = {3} },  rewards = {DailyExp = 15} },
-    { id = 6, takeType = TaskClass.TaskType.Daily, taskName = "完成5场比赛", taskDes = "完成5场比赛", condition = {type = TaskEvents.BattleComplete , param = {5} },  rewards = {DailyExp = 15} },
+    { id = 5, takeType = TaskClass.TaskType.Daily, taskName = "赢得3场比赛", taskDes = "赢得3场比赛", condition = {type = TaskEvents.BattleWin , param = {3} },  rewards = {DailyExp = 15}, column = 3 },
+    { id = 6, takeType = TaskClass.TaskType.Daily, taskName = "完成5场比赛", taskDes = "完成5场比赛", condition = {type = TaskEvents.BattleComplete , param = {5} },  rewards = {DailyExp = 15}, column = 3 },
 
-    { id = 7, takeType = TaskClass.TaskType.Daily, taskName = "赢得500金币", taskDes = "赢得500金币", condition = {type = TaskEvents.GainCoin , param = {500} },  rewards = {DailyExp = 20} },
-    { id = 8, takeType = TaskClass.TaskType.Daily, taskName = "命中头部1次", taskDes = "命中头部1次", condition = {type = TaskEvents.HeadShot , param = {1} },  rewards = {DailyExp = 20} },
+    { id = 7, takeType = TaskClass.TaskType.Daily, taskName = "赢得500金币", taskDes = "赢得500金币", condition = {type = TaskEvents.GainCoin , param = {500} },  rewards = {DailyExp = 20}, column = 4 },
+    { id = 8, takeType = TaskClass.TaskType.Daily, taskName = "命中头部1次", taskDes = "命中头部1次", condition = {type = TaskEvents.HeadShot , param = {1} },  rewards = {DailyExp = 20}, column = 4 },
 
-    { id = 9, takeType = TaskClass.TaskType.Daily, taskName = "领取免费的金币", taskDes = "领取免费的金币", condition = {type = TaskEvents.AdCoin , param = {1} },  rewards = {DailyExp = 20} },
-    { id = 10, takeType = TaskClass.TaskType.Daily, taskName = "领取免费的钻石", taskDes = "领取免费的钻石", condition = {type = TaskEvents.AdDiamond , param = {1} },  rewards = {DailyExp = 20} },
+    { id = 9, takeType = TaskClass.TaskType.Daily, taskName = "领取免费的金币", taskDes = "领取免费的金币", condition = {type = TaskEvents.AdCoin , param = {1} },  rewards = {DailyExp = 20}, column = 5 },
+    { id = 10, takeType = TaskClass.TaskType.Daily, taskName = "领取免费的钻石", taskDes = "领取免费的钻石", condition = {type = TaskEvents.AdDiamond , param = {1} },  rewards = {DailyExp = 20}, column = 5 },
 
-    { id = 11, takeType = TaskClass.TaskType.Daily, taskName = "使用弓箭赢得3场比赛", taskDes = "使用弓箭赢得3场比赛", condition = {type = TaskEvents.BattleWinUseBow , param = {3} },  rewards = {DailyExp = 20} },
-    { id = 12, takeType = TaskClass.TaskType.Daily, taskName = "使用投矛赢得3场比赛", taskDes = "使用投矛赢得3场比赛", condition = {type = TaskEvents.BattleWinUseSpear , param = {3} },  rewards = {DailyExp = 20} },
-    { id = 13, takeType = TaskClass.TaskType.Daily, taskName = "使用投斧赢得3场比赛", taskDes = "使用投斧赢得3场比赛", condition = {type = TaskEvents.BattleWinUseAxe , param = {3} },  rewards = {DailyExp = 20} },
+    { id = 11, takeType = TaskClass.TaskType.Daily, taskName = "使用弓箭赢得3场比赛", taskDes = "使用弓箭赢得3场比赛", condition = {type = TaskEvents.BattleWinUseBow , param = {3} },  rewards = {DailyExp = 20}, column = 6 },
+    { id = 12, takeType = TaskClass.TaskType.Daily, taskName = "使用投矛赢得3场比赛", taskDes = "使用投矛赢得3场比赛", condition = {type = TaskEvents.BattleWinUseSpear , param = {3} },  rewards = {DailyExp = 20}, column = 6 },
+    { id = 13, takeType = TaskClass.TaskType.Daily, taskName = "使用投斧赢得3场比赛", taskDes = "使用投斧赢得3场比赛", condition = {type = TaskEvents.BattleWinUseAxe , param = {3} },  rewards = {DailyExp = 20}, column = 6 },
 
-    { id = 14, takeType = TaskClass.TaskType.Daily, taskName = "赢得5场比赛", taskDes = "赢得5场比赛", condition = {type = TaskEvents.BattleWin , param = {5} },  rewards = {DailyExp = 20} },
-    { id = 15, takeType = TaskClass.TaskType.Daily, taskName = "完成10场比赛", taskDes = "完成10场比赛", condition = {type = TaskEvents.BattleComplete , param = {10} },  rewards = {DailyExp = 20} },
+    { id = 14, takeType = TaskClass.TaskType.Daily, taskName = "赢得5场比赛", taskDes = "赢得5场比赛", condition = {type = TaskEvents.BattleWin , param = {5} },  rewards = {DailyExp = 20}, column = 7 },
+    { id = 15, takeType = TaskClass.TaskType.Daily, taskName = "完成10场比赛", taskDes = "完成10场比赛", condition = {type = TaskEvents.BattleComplete , param = {10} },  rewards = {DailyExp = 20}, column = 7 },
 
-    { id = 16, takeType = TaskClass.TaskType.Daily, taskName = "升级1次角色", taskDes = "升级1次角色", condition = {type = TaskEvents.UpdateCharacter , param = {1} },  rewards = {DailyExp = 20} },
-    { id = 17, takeType = TaskClass.TaskType.Daily, taskName = "升级1次上装", taskDes = "升级1次上装", condition = {type = TaskEvents.UpdateTop , param = {1} },  rewards = {DailyExp = 20} },
-    { id = 18, takeType = TaskClass.TaskType.Daily, taskName = "升级1次下装", taskDes = "升级1次下装", condition = {type = TaskEvents.UpdateBottoms , param = {1} },  rewards = {DailyExp = 20} },
+    { id = 16, takeType = TaskClass.TaskType.Daily, taskName = "升级1次角色", taskDes = "升级1次角色", condition = {type = TaskEvents.UpdateCharacter , param = {1} },  rewards = {DailyExp = 20}, column = 8 },
+    { id = 17, takeType = TaskClass.TaskType.Daily, taskName = "升级1次上装", taskDes = "升级1次上装", condition = {type = TaskEvents.UpdateTop , param = {1} },  rewards = {DailyExp = 20}, column = 8 },
+    { id = 18, takeType = TaskClass.TaskType.Daily, taskName = "升级1次下装", taskDes = "升级1次下装", condition = {type = TaskEvents.UpdateBottoms , param = {1} },  rewards = {DailyExp = 20}, column = 8 },
 
-    { id = 19, takeType = TaskClass.TaskType.Daily, taskName = "升级1次弓箭", taskDes = "升级1次弓箭", condition = {type = TaskEvents.UpdateBow , param = {1} },  rewards = {DailyExp = 20} },
-    { id = 20, takeType = TaskClass.TaskType.Daily, taskName = "升级1次投矛", taskDes = "升级1次投矛", condition = {type = TaskEvents.UpdateSpear , param = {1} },  rewards = {DailyExp = 20} },
-    { id = 21, takeType = TaskClass.TaskType.Daily, taskName = "升级1次投斧", taskDes = "升级1次投斧", condition = {type = TaskEvents.UpdateAxe , param = {1} },  rewards = {DailyExp = 20} },
+    { id = 19, takeType = TaskClass.TaskType.Daily, taskName = "升级1次弓箭", taskDes = "升级1次弓箭", condition = {type = TaskEvents.UpdateBow , param = {1} },  rewards = {DailyExp = 20}, column = 9 },
+    { id = 20, takeType = TaskClass.TaskType.Daily, taskName = "升级1次投矛", taskDes = "升级1次投矛", condition = {type = TaskEvents.UpdateSpear , param = {1} },  rewards = {DailyExp = 20}, column = 9 },
+    { id = 21, takeType = TaskClass.TaskType.Daily, taskName = "升级1次投斧", taskDes = "升级1次投斧", condition = {type = TaskEvents.UpdateAxe , param = {1} },  rewards = {DailyExp = 20}, column = 9 },
 
-    { id = 22, takeType = TaskClass.TaskType.Daily, taskName = "以60%或更高血量获胜", taskDes = "以60%或更高血量获胜", condition = {type = TaskEvents.WinBloodline60 , param = {1} },  rewards = {DailyExp = 20} },
-    { id = 23, takeType = TaskClass.TaskType.Daily, taskName = "赢得1000金币", taskDes = "赢得1000金币", condition = {type = TaskEvents.GainCoin , param = {1000} },  rewards = {DailyExp = 20} },
+    { id = 22, takeType = TaskClass.TaskType.Daily, taskName = "以60%或更高血量获胜", taskDes = "以60%或更高血量获胜", condition = {type = TaskEvents.WinBloodline60 , param = {1} },  rewards = {DailyExp = 20}, column = 10 },
+    { id = 23, takeType = TaskClass.TaskType.Daily, taskName = "赢得1000金币", taskDes = "赢得1000金币", condition = {type = TaskEvents.GainCoin , param = {1000} },  rewards = {DailyExp = 20}, column = 10 },
 
-    { id = 24, takeType = TaskClass.TaskType.Daily, taskName = "以80%或更高血量获胜", taskDes = "以80%或更高血量获胜", condition = {type = TaskEvents.WinBloodline80 , param = {1} },  rewards = {DailyExp = 20} },
-    { id = 25, takeType = TaskClass.TaskType.Daily, taskName = "命中头部3次", taskDes = "命中头部3次", condition = {type = TaskEvents.HeadShot , param = {3} },  rewards = {DailyExp = 20} },
+    { id = 24, takeType = TaskClass.TaskType.Daily, taskName = "以80%或更高血量获胜", taskDes = "以80%或更高血量获胜", condition = {type = TaskEvents.WinBloodline80 , param = {1} },  rewards = {DailyExp = 20}, column = 11 },
+    { id = 25, takeType = TaskClass.TaskType.Daily, taskName = "命中头部3次", taskDes = "命中头部3次", condition = {type = TaskEvents.HeadShot , param = {3} },  rewards = {DailyExp = 20}, column = 11 },
 
-    { id = 26, takeType = TaskClass.TaskType.Daily, taskName = "在不受伤情况下赢得比赛", taskDes = "在不受伤情况下赢得比赛", condition = {type = TaskEvents.WinBloodline100 , param = {1} },  rewards = {DailyExp = 25} },
-    { id = 27, takeType = TaskClass.TaskType.Daily, taskName = "赢得1500金币", taskDes = "赢得1500金币", condition = {type = TaskEvents.GainCoin , param = {1500} },  rewards = {DailyExp = 25} },
+    { id = 26, takeType = TaskClass.TaskType.Daily, taskName = "在不受伤情况下赢得比赛", taskDes = "在不受伤情况下赢得比赛", condition = {type = TaskEvents.WinBloodline100 , param = {1} },  rewards = {DailyExp = 25}, column = 12 },
+    { id = 27, takeType = TaskClass.TaskType.Daily, taskName = "赢得1500金币", taskDes = "赢得1500金币", condition = {type = TaskEvents.GainCoin , param = {1500} },  rewards = {DailyExp = 25}, column = 12 },
 
-    { id = 28, takeType = TaskClass.TaskType.Daily, taskName = "使用弓箭赢得5场比赛", taskDes = "使用弓箭赢得5场比赛", condition = {type = TaskEvents.BattleWinUseBow , param = {5} },  rewards = {DailyExp = 25} },
-    { id = 29, takeType = TaskClass.TaskType.Daily, taskName = "使用投矛赢得5场比赛", taskDes = "使用投矛赢得5场比赛", condition = {type = TaskEvents.BattleWinUseSpear , param = {5} },  rewards = {DailyExp = 25} },
-    { id = 30, takeType = TaskClass.TaskType.Daily, taskName = "使用投斧赢得5场比赛", taskDes = "使用投斧赢得5场比赛", condition = {type = TaskEvents.BattleWinUseAxe , param = {5} },  rewards = {DailyExp = 25} },
+    { id = 28, takeType = TaskClass.TaskType.Daily, taskName = "使用弓箭赢得5场比赛", taskDes = "使用弓箭赢得5场比赛", condition = {type = TaskEvents.BattleWinUseBow , param = {5} },  rewards = {DailyExp = 25}, column = 13 },
+    { id = 29, takeType = TaskClass.TaskType.Daily, taskName = "使用投矛赢得5场比赛", taskDes = "使用投矛赢得5场比赛", condition = {type = TaskEvents.BattleWinUseSpear , param = {5} },  rewards = {DailyExp = 25}, column = 13 },
+    { id = 30, takeType = TaskClass.TaskType.Daily, taskName = "使用投斧赢得5场比赛", taskDes = "使用投斧赢得5场比赛", condition = {type = TaskEvents.BattleWinUseAxe , param = {5} },  rewards = {DailyExp = 25}, column = 13 },
 
     { id = 31, takeType = TaskClass.TaskType.Weekly, taskName = "周一登录游戏1次", taskDes = "", condition = {type = TaskEvents.LoginGame , param = {1} , wday = 1},  rewards = {WeeklyExp = 1} },                           --周一任务
     { id = 32, takeType = TaskClass.TaskType.Weekly, taskName = "周一登录游戏2次", taskDes = "", condition = {type = TaskEvents.LoginGame , param = {2} , wday = 1},  rewards = {WeeklyExp = 1} },                           --周一任务
