@@ -22,8 +22,8 @@ local DefaultBaseData =
     Equipped_Hat_Lv = 1,
     Equipped_Glasses_Lv = 1,
     Equipped_Cloth_Lv = 1,
-    Coin = 1000000,                     --金币
-    Diamond = 1,                  --宝石
+    Coin = 5000,                  --金币
+    Diamond = 1,                  --砖石
     Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
     GoldBox = 3,                  --金宝箱
     SilverBox = 5,                --银宝箱
@@ -105,7 +105,7 @@ function LobbyModule:LoadData()
         --写入数据
         BaseData[ArchiveKey] = Data
     end
-    --测试【宝石，用来购买商品】
+    --测试【砖石，用来购买商品】
     --BaseData.Coin = 555555
     self.PlayerData.BaseData = BaseData
 
@@ -367,12 +367,12 @@ function LobbyModule:DefaultStoreData()
                 [1] = {
                     --消耗一个黄金宝箱
                     GoldBox = 1,
-                    --或者600个宝石
+                    --或者600个砖石
                     Diamond = 600,
                 },
                 [2] = {
                     --广告资源
-                    Ad = "test_ad_tag",
+                    Ad = "test_gold_box_tag",
                     --广告冷却时间
                     AdCoolTime = 24 * 3600
                 }
@@ -395,12 +395,12 @@ function LobbyModule:DefaultStoreData()
                 [1] = {
                     --消耗一个白银宝箱
                     SilverBox = 1,
-                    --或者600个宝石
+                    --或者600个砖石
                     Diamond = 180,
                 },
                 [2] = {
                     --广告资源
-                    Ad = "test_ad_tag",
+                    Ad = "test_silver_box_tag",
                     --广告冷却时间
                     AdCoolTime = 24 * 3600
                 }
@@ -424,7 +424,7 @@ function LobbyModule:DefaultStoreData()
             --费用【约定：关系或】
             Costs = {
                 [1] = {
-                    --消耗100个宝石
+                    --消耗100个砖石
                     Diamond = 100,
                     --最大收集次数
                     MaxCollect = 2,
@@ -443,7 +443,7 @@ function LobbyModule:DefaultStoreData()
             --费用【约定：关系或】
             Costs = {
                 [1] = {
-                    --消耗50个宝石
+                    --消耗50个砖石
                     Diamond = 50,
                     --最大收集次数
                     MaxCollect = 3,
@@ -462,7 +462,7 @@ function LobbyModule:DefaultStoreData()
             --费用【约定：关系或】
             Costs = {
                 [1] = {
-                    --消耗100个宝石
+                    --消耗100个砖石
                     Diamond = 600,
                     --最大收集次数
                     MaxCollect = 1,
@@ -478,14 +478,14 @@ function LobbyModule:DefaultStoreData()
             }
         }
     }
-    --3.3、宝石
+    --3.3、砖石
     AllItems.DiamondItem = {
         [1] = {
             --费用【约定：关系或】
             Costs = {
                 [1] = {
                     --广告资源
-                    Ad = "test_ad_tag",
+                    Ad = "test_diamond_tag",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -494,7 +494,7 @@ function LobbyModule:DefaultStoreData()
             },
             --商品
             Goods = {
-                --获得宝石
+                --获得砖石
                 Diamond = 600
             }
         }
@@ -505,7 +505,7 @@ function LobbyModule:DefaultStoreData()
             --费用【约定：关系或】
             Costs = {
                 [1] = {
-                    --消耗100个宝石
+                    --消耗100个砖石
                     Diamond = 150,
                 }
             },
@@ -518,7 +518,7 @@ function LobbyModule:DefaultStoreData()
             --费用【约定：关系或】
             Costs = {
                 [1] = {
-                    --消耗100个宝石
+                    --消耗100个砖石
                     Diamond = 1000,
                 }
             },
@@ -531,7 +531,7 @@ function LobbyModule:DefaultStoreData()
             --费用【约定：关系或】
             Costs = {
                 [1] = {
-                    --消耗100个宝石
+                    --消耗100个砖石
                     Diamond = 4200,
                 }
             },

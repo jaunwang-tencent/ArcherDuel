@@ -73,7 +73,7 @@ function StoreModule:Open(PlayerData)
                         SlotIndex = SlotIndex,
                         Goods = Item.Goods
                     }
-                    local Equipment = self:GetEquipment(GoodInfo)
+                    local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
                     GameUtils.SetImageWithEquipment(GoodInfo.ButtonID, Equipment)
                     UI:RegisterClicked(GoodInfo.ButtonID, function()
                         self:GoodDetail(GoodInfo)
@@ -117,22 +117,34 @@ end
 
 --- 获取指定商品信息对应的装备数据
 ---@param GoodInfo 商品信息
-function StoreModule:GetEquipment(GoodInfo)
-        --装备
-        local Equipments = GoodInfo.Goods and GoodInfo.Goods.Equipments
-        local EquipmentGood = Equipments and Equipments[GoodInfo.SlotIndex]
-        if EquipmentGood then
-            local AllEquipment = self.PlayerData.AllEquipment
-            local Equipment = AllEquipment[EquipmentGood.ID]
-            return Equipment
-        end
+function StoreModule:GetEquipmentByGoodInfo(GoodInfo)
+    --装备
+    local Equipments = GoodInfo.Goods and GoodInfo.Goods.Equipments
+    local EquipmentGood = Equipments and Equipments[GoodInfo.SlotIndex]
+    if EquipmentGood then
+        local AllEquipment = self.PlayerData.AllEquipment
+        local Equipment = AllEquipment[EquipmentGood.ID]
+        return Equipment
+    end
+end
+
+--- 获取指定商品中的装备【第一个】
+---@param Goods 商品
+function StoreModule:GetEquipmentByGoods(Goods)
+    local Equipments = Goods and Goods.Equipments
+    local EquipmentGood = Equipments and Equipments[1]
+    if EquipmentGood then
+        local AllEquipment = self.PlayerData.AllEquipment
+        local Equipment = AllEquipment[EquipmentGood.ID]
+        return Equipment
+    end
 end
 
 --- 商品详情
 ---@param GoodInfo 商品详情
 function StoreModule:GoodDetail(GoodInfo)
     --装备
-    local Equipment = self:GetEquipment(GoodInfo)
+    local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
     if Equipment then
         EquipmentDetailModule:Open(Equipment)
     end
@@ -160,19 +172,16 @@ function StoreModule:BuyGood(ButtonInfo)
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             --获得物品
             self:GainGoods(Goods)
-            Log:PrintLog("Last Diamond", BaseData.Diamond)
         else
             --看广告，在此弹出看广告弹窗【没有资源...】
-            Log:PrintLog("Last Diamond", BaseData.Diamond)
+            self:ShowAdView(Goods)
         end
     elseif Costs.Ad then
-        --看广告
-        UI:ShowMessageTip("See Ad:" .. Costs.Ad)
-        --不看广告了，直接获得物品
-        self:GainGoods(Goods)
+        --观看广告
+        self:SeeAd(Costs.Ad, Goods)
     else
         --不可购买
-        Log:PrintLog("Cant Buy", ButtonInfo.ButtonID)
+        UI:ShowMessageTip("Cant Buy:" .. ButtonInfo.ButtonID)
     end
     --刷新商店资源
     System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
@@ -181,7 +190,8 @@ end
 --- 获得物品
 ---@param Goods 物品
 function StoreModule:GainGoods(Goods)
-    --TODO：获得界面展示
+    --获得界面展示
+    self:ShowGainView(Goods)
     local BaseData = self.PlayerData.BaseData
     if Goods.Equipments then
         --获取装备
@@ -207,6 +217,66 @@ function StoreModule:GainGoods(Goods)
         BaseData.Diamond = BaseData.Diamond + Goods.Diamond
         System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
     end
+end
+
+--- 显示获得视图
+---@param Goods 物品
+function StoreModule:ShowGainView(Goods)
+    local GainView = UIConfig.GainView
+    UI:SetVisible({GainView.ID}, true)
+    if Goods.Equipments then
+        --获得装备，显示装备
+        local Equipment = self:GetEquipmentByGoods(Goods)
+        GameUtils.SetImageWithEquipment(GainView.GoodSlot.Icon, Equipment)
+        local Attributes = EquipmentConfig[Equipment.ID].Attributes
+        GameUtils.SetImageWithAsset(GainView.GoodSlot.Background, "EquipmentImage", Attributes.Grade)
+    elseif Goods.Coin then
+        --获得金钱，显示金钱
+    elseif Goods.Diamond then
+        --获得砖石，显示砖石
+    end
+    --设置物品图标
+    UI:RegisterClicked(GainView.CloseButton, function()
+        UI:SetVisible({GainView.ID}, false)
+        --注销按钮事件
+        UI:UnRegisterClicked(GainView.CloseButton)
+    end)
+end
+
+--- 显示广告视图
+---@param Goods 物品
+function StoreModule:ShowAdView(Goods)
+    local AdView = UIConfig.AdView
+    UI:SetVisible({AdView.ID}, true)
+
+    UI:RegisterClicked(AdView.AdButton, function()
+        ----关闭
+        UI:SetVisible({AdView.ID}, false)
+        --观看广告
+        self:SeeAd(Goods)
+        --注销按钮事件
+        UI:UnRegisterClicked(AdView.AdButton)
+        UI:UnRegisterClicked(AdView.CloseButton)
+    end)
+
+    --设置物品图标
+    UI:RegisterClicked(AdView.CloseButton, function()
+        --直接关闭
+        UI:SetVisible({AdView.ID}, false)
+        --注销按钮事件
+        UI:UnRegisterClicked(AdView.AdButton)
+        UI:UnRegisterClicked(AdView.CloseButton)
+    end)
+end
+
+--- 观看广告
+---@param AdTag 广告标签
+---@param Goods 商品
+function StoreModule:SeeAd(AdTag, Goods)
+    --看广告
+    UI:ShowMessageTip("See Ad:" .. AdTag)
+    --不看广告了，直接获得物品
+    self:GainGoods(Goods)
 end
 
 --- 打开宝箱
@@ -282,4 +352,5 @@ function StoreModule:OpenBox(boxId)
     end)
     return BoxRewards
 end
+
 return StoreModule

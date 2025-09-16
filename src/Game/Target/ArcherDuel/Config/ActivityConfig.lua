@@ -8,11 +8,11 @@ local ActivityConfig = {
     DailyActivity = {
 
     },
-    --免费宝石【看广告】
+    --免费砖石【看广告】
     FreeDiamond = {
 
     },
-    --金币购买【宝石消耗】
+    --金币购买【砖石消耗】
     PurchaseCoin = {
 
     }
