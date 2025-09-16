@@ -498,7 +498,7 @@ function LobbyModule:DefaultStoreData()
             }
         }
     }
-    --3.3、砖石
+    --3.3、免费砖石
     AllItems.DiamondItem = {
         [1] = {
             --费用【约定：关系或】
@@ -507,7 +507,7 @@ function LobbyModule:DefaultStoreData()
                     --广告资源
                     Ad = "test_diamond_tag",
                     --最大收集次数
-                    MaxCollect = 5,
+                    MaxCollect = 10,
                     --已收集次数
                     HasCollect = 0
                 }
@@ -519,7 +519,7 @@ function LobbyModule:DefaultStoreData()
             }
         }
     }
-    --3.4、金币【购买】
+    --3.4、购买金币
     AllItems.CoinItem = {
         [1] = {
             --费用【约定：关系或】

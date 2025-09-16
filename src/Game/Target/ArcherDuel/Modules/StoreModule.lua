@@ -74,7 +74,15 @@ function StoreModule:Open(PlayerData)
                         Goods = Item.Goods
                     }
                     local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
-                    GameUtils.SetImageWithEquipment(GoodInfo.ButtonID, Equipment)
+                    if Equipment then
+                        GameUtils.SetImageWithEquipment(GoodInfo.ButtonID, Equipment)
+                    elseif GoodInfo.Goods.Coin then
+                        --显示金币
+                        GameUtils.SetImageWithAsset(GoodInfo.ButtonID, "Currency", 4)
+                    elseif GoodInfo.Goods.Diamond then
+                        --显示砖石
+                        GameUtils.SetImageWithAsset(GoodInfo.ButtonID, "Currency", 6)
+                    end
                     UI:RegisterClicked(GoodInfo.ButtonID, function()
                         self:GoodDetail(GoodInfo)
                     end)
