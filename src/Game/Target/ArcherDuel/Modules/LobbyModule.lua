@@ -41,10 +41,10 @@ local DefaultBaseData =
 ---@param Context 上下文【透传数据】
 function LobbyModule:Open(Context)
     self:PerformLoading()
+    self:CharacterStandby()
     self:LoadData()
     self:InitView()
     self:RegisterGameEvent()
-    self:CharacterStandby()
 end
 
 --- 刷新
@@ -149,7 +149,15 @@ function LobbyModule:CharacterStandby()
     local Location = Element:GetPosition(StandbyHoldeSceneId)
     local Rotation = Element:GetRotation(StandbyHoldeSceneId)
     self.StandbyUID = FakeCharacter:CreateCharacter(Location, Rotation, Engine.Vector(1, 1, 1), false)
-    --换装备
+
+    --本地角色【影视相机：SceneId = 436】
+    UGCS.Framework.Executor.Delay(1, function ()
+        System:FireSignEvent("启动相机",{self.PlayerID})
+    end)
+end
+
+--- 刷新外观
+function LobbyModule:RefreshAvatar()
     local BodyEquipment = self.PlayerData.BodyEquipment
     if BodyEquipment then
         local BodyIds = {}
@@ -164,11 +172,6 @@ function LobbyModule:CharacterStandby()
         --没有则换回玩家原皮
         FakeCharacter:ChangeBodyFromPlayer(self.StandbyUID, self.PlayerID)
     end
-
-    --本地角色【影视相机：SceneId = 436】
-    UGCS.Framework.Executor.Delay(1, function ()
-        System:FireSignEvent("启动相机",{self.PlayerID})
-    end)
 end
 
 --- 保存玩家数据
@@ -348,6 +351,8 @@ function LobbyModule:RefreshEquipmentData()
     end
     self.PlayerData.GroupByCategory = GroupByCategory
     self.PlayerData.BodyEquipment = BodyEquipment
+    --重新刷新外观
+    self:RefreshAvatar()
 end
 
 --- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】
