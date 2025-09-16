@@ -207,23 +207,26 @@ function EquipmentModule:RefreshListUI(Category)
     UI:SetListViewItemSetCall(TileView.ID, function(ListViewID, ItemIndex, ItemData, Select)
         local IconUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Icon)
         local Equipment
+        local ShowItems, HideItems = {}, {}
         local ItemDataIndex = ItemData.Index
         local BackgroundUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Background)
+        local MaskIconUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.MaskIcon)
         if ItemDataIndex <= HasUseCount then
             --已用的
             Equipment = HasUseEquipment[ItemDataIndex]
+            table.insert(HideItems, MaskIconUI)
         elseif ItemDataIndex <= HasUseCount + NotUseCount then
             --未用的
             Equipment = NotUseEquipment[ItemDataIndex - HasUseCount]
+            table.insert(HideItems, MaskIconUI)
         else
             --锁定的
             Equipment = LockedEquipment[ItemDataIndex - HasUseCount - NotUseCount]
-            UI:SetImageColor({IconUI, BackgroundUI},"#595959")
+            table.insert(ShowItems, MaskIconUI)
         end
         --寄存到数据相
         ItemData.Equipment = Equipment
 
-        local ShowItems, HideItems = {}, {}
         --解锁相关
         local LockUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Lock)
         local UpgradableUI = UI:GetListViewItemUID(ListViewID, ItemIndex, Item.Upgradable)

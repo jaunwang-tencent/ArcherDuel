@@ -325,7 +325,7 @@ local UIConfig = {
                     --进度条文本
                     ProgressText = 111285,
                     --装备遮罩
-                    Icon_1 = 115142
+                    MaskIcon = 115142
                 }
             }
         },
