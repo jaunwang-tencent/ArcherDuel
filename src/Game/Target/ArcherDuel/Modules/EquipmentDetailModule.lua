@@ -17,7 +17,7 @@ function EquipmentDetailModule:Open(Equipment)
     UI:SetVisible({DetailView.ID}, true)
 
     --注册按钮事件
-    UI:RegisterPressed(EquipmentView.DetailView.Close, function()
+    UI:RegisterClicked(EquipmentView.DetailView.Close, function()
         EquipmentDetailModule:Close()
     end)
 
@@ -212,7 +212,7 @@ function EquipmentDetailModule:Close()
     end
 
     --注销关闭按钮事件
-    UI:UnRegisterPressed(EquipmentView.DetailView.Close)
+    UI:UnRegisterClicked(EquipmentView.DetailView.Close)
 end
 
 --- 获取

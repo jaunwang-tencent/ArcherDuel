@@ -23,10 +23,10 @@ local DefaultBaseData =
     Equipped_Glasses_Lv = 1,
     Equipped_Cloth_Lv = 1,
     Coin = 1000000,                     --金币
-    Diamond = 1,                  --砖石
+    Diamond = 1,                  --宝石
     Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
-    GoldBox = 1,                  --金宝箱
-    SilverBox = 1,                --银宝箱
+    GoldBox = 3,                  --金宝箱
+    SilverBox = 5,                --银宝箱
     NormalBox = 1,                --普通宝箱
     Daily_Progress = 1,
     Player_BattlePoints_Num = 0,  --门票
@@ -105,7 +105,7 @@ function LobbyModule:LoadData()
         --写入数据
         BaseData[ArchiveKey] = Data
     end
-    --测试【砖石，用来购买商品】
+    --测试【宝石，用来购买商品】
     --BaseData.Coin = 555555
     self.PlayerData.BaseData = BaseData
 
@@ -127,16 +127,16 @@ function LobbyModule:LoadData()
     self:RefreshEquipmentData()
 
     --3、商店数据
-    local AllGoods
+    local AllItems
     if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table") then
         --这里读取玩家的装备 --并进行排序
         local All_Goods_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table")
         --文字转为组
-        AllGoods = MiscService:JsonStr2Table(All_Goods_Table)
+        AllItems = MiscService:JsonStr2Table(All_Goods_Table)
     else
-        AllGoods = self:DefaultStoreData()
+        AllItems = self:DefaultStoreData()
     end
-    self.PlayerData.AllGoods = AllGoods
+    self.PlayerData.AllItems = AllItems
     self:RefreshStoreData()
 end
 
@@ -189,8 +189,8 @@ function LobbyModule:SaveData()
     --Log:PrintLog("SaveData", self.PlayerID, All_Equipment_Table)
 
     --3、商店数据
-    local AllGoods = self.PlayerData.AllGoods
-    local All_Goods_Table = MiscService:Table2JsonStr(AllGoods)
+    local AllItems = self.PlayerData.AllItems
+    local All_Goods_Table = MiscService:Table2JsonStr(AllItems)
     Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table", All_Goods_Table)
 end
 
@@ -358,16 +358,24 @@ end
 --- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】
 function LobbyModule:DefaultStoreData()
     --没有则初始化
-    local AllGoods = {}
+    local AllItems = {}
     --3.1、限定奖池
-    AllGoods.LimitItem = {
+    AllItems.LimitItem = {
         [1] = {
-            --消耗品【约定：关系或】
-            Consumables = {
-                --消耗一个黄金宝箱
-                GoldBox = 1,
-                --或者600个砖石
-                Diamond = 600,
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗一个黄金宝箱
+                    GoldBox = 1,
+                    --或者600个宝石
+                    Diamond = 600,
+                },
+                [2] = {
+                    --广告资源
+                    Ad = "test_ad_tag",
+                    --广告冷却时间
+                    AdCoolTime = 24 * 3600
+                }
             },
             --商品
             Goods = {
@@ -382,32 +390,20 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --消耗品【约定：关系或】
-            Consumables = {
-                --广告资源
-                Ad = "test_ad_tag",
-                --广告冷却时间
-                AdCoolTime = 24 * 3600
-            },
-            --商品
-            Goods = {
-                Equipments = {
-                    [1] = { ID = 1, Piece = 10 },
-                    [2] = { ID = 15, Piece = 15 },
-                    [3] = { ID = 38, Piece = 20 },
-                    [4] = { ID = 61, Piece = 25 },
-                    [5] = { ID = 77, Piece = 30 },
-                    [6] = { ID = 93, Piece = 30 },
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗一个白银宝箱
+                    SilverBox = 1,
+                    --或者600个宝石
+                    Diamond = 180,
+                },
+                [2] = {
+                    --广告资源
+                    Ad = "test_ad_tag",
+                    --广告冷却时间
+                    AdCoolTime = 24 * 3600
                 }
-            }
-        },
-        [3] = {
-            --消耗品
-            Consumables = {
-                --消耗一个白银宝箱
-                SilverBox = 1,
-                --或者600个砖石
-                Diamond = 180,
             },
             --商品
             Goods = {
@@ -421,38 +417,20 @@ function LobbyModule:DefaultStoreData()
                 }
             }
         },
-        [4] = {
-            --消耗品
-            Consumables = {
-                --广告资源
-                Ad = "test_ad_tag",
-                --广告冷却时间
-                AdCoolTime = 24 * 3600
-            },
-            --商品
-            Goods = {
-                Equipments = {
-                    [1] = { ID = 2, Piece = 10 },
-                    [2] = { ID = 16, Piece = 15 },
-                    [3] = { ID = 39, Piece = 20 },
-                    [4] = { ID = 62, Piece = 25 },
-                    [5] = { ID = 78, Piece = 30 },
-                    [6] = { ID = 94, Piece = 30 },
-                }
-            }
-        }
     }
     --3.2、每日限购
-    AllGoods.DailyItem = {
+    AllItems.DailyItem = {
         [1] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 100,
-                --最大收集次数
-                MaxCollect = 2,
-                --已收集次数
-                HasCollect = 0
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个宝石
+                    Diamond = 100,
+                    --最大收集次数
+                    MaxCollect = 2,
+                    --已收集次数
+                    HasCollect = 0
+                }
             },
             --商品
             Goods = {
@@ -462,14 +440,16 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --消耗品
-            Consumables = {
-                --消耗50个砖石
-                Diamond = 50,
-                --最大收集次数
-                MaxCollect = 3,
-                --已收集次数
-                HasCollect = 0
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗50个宝石
+                    Diamond = 50,
+                    --最大收集次数
+                    MaxCollect = 3,
+                    --已收集次数
+                    HasCollect = 0
+                }
             },
             --商品
             Goods = {
@@ -479,14 +459,16 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [3] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 600,
-                --最大收集次数
-                MaxCollect = 1,
-                --已收集次数
-                HasCollect = 0
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个宝石
+                    Diamond = 600,
+                    --最大收集次数
+                    MaxCollect = 1,
+                    --已收集次数
+                    HasCollect = 0
+                }
             },
             --商品
             Goods = {
@@ -497,31 +479,35 @@ function LobbyModule:DefaultStoreData()
         }
     }
     --3.3、宝石
-    AllGoods.DiamondItem = {
+    AllItems.DiamondItem = {
         [1] = {
-            --消耗品
-            Consumables = {
-                --广告资源
-                Ad = "test_ad_tag",
-                --最大收集次数
-                MaxCollect = 5,
-                --已收集次数
-                HasCollect = 0
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --广告资源
+                    Ad = "test_ad_tag",
+                    --最大收集次数
+                    MaxCollect = 5,
+                    --已收集次数
+                    HasCollect = 0
+                }
             },
             --商品
             Goods = {
-                --获得砖石
+                --获得宝石
                 Diamond = 600
             }
         }
     }
-    --3.4、金币
-    AllGoods.CoinItem = {
+    --3.4、金币【购买】
+    AllItems.CoinItem = {
         [1] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 150,
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个宝石
+                    Diamond = 150,
+                }
             },
             --商品
             Goods = {
@@ -529,10 +515,12 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 1000,
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个宝石
+                    Diamond = 1000,
+                }
             },
             --商品
             Goods = {
@@ -540,10 +528,12 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [3] = {
-            --消耗品
-            Consumables = {
-                --消耗100个砖石
-                Diamond = 4200,
+            --费用【约定：关系或】
+            Costs = {
+                [1] = {
+                    --消耗100个宝石
+                    Diamond = 4200,
+                }
             },
             --商品
             Goods = {
@@ -551,7 +541,7 @@ function LobbyModule:DefaultStoreData()
             }
         }
     }
-    return AllGoods
+    return AllItems
 end
 
 --- 刷新商店

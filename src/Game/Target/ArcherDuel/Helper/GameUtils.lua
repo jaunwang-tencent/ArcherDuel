@@ -171,11 +171,13 @@ end
 ---@param Index 图标索引
 function GameUtils.SetImageWithEquipment(IconUI, Equipment)
     --装备配置
-    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
-    local EquipmentData = EquipmentConfig[Equipment.ID]
-    local AssetName = EquipmentData.AssetName or "weapon_icon"
-    local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
-    GameUtils.SetImageWithAsset(IconUI, AssetName, AssetIndex)
+    if Equipment then
+        local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+        local EquipmentData = EquipmentConfig[Equipment.ID]
+        local AssetName = EquipmentData.AssetName or "weapon_icon"
+        local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
+        GameUtils.SetImageWithAsset(IconUI, AssetName, AssetIndex)
+    end
 end
 
 --- 设置玩家基础数据
