@@ -129,16 +129,16 @@ function LobbyModule:LoadData()
     self:RefreshEquipmentData()
 
     --3、商店数据
-    local AllItems
-    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table") then
+    local AllShops
+    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Shops_Table") then
         --这里读取玩家的装备 --并进行排序
-        local All_Goods_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table")
+        local All_Shops_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Shops_Table")
         --文字转为组
-        AllItems = MiscService:JsonStr2Table(All_Goods_Table)
+        AllShops = MiscService:JsonStr2Table(All_Shops_Table)
     else
-        AllItems = self:DefaultStoreData()
+        AllShops = self:DefaultShopData()
     end
-    self.PlayerData.AllItems = AllItems
+    self.PlayerData.AllShops = AllShops
     self:RefreshStoreData()
 
     local nowStr = MiscService:GetServerTimeToTime()
@@ -210,8 +210,8 @@ function LobbyModule:SaveData()
     --Log:PrintLog("SaveData", self.PlayerID, All_Equipment_Table)
 
     --3、商店数据
-    local AllItems = self.PlayerData.AllItems
-    local All_Goods_Table = MiscService:Table2JsonStr(AllItems)
+    local AllShops = self.PlayerData.AllShops
+    local All_Goods_Table = MiscService:Table2JsonStr(AllShops)
     Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table", All_Goods_Table)
 end
 
@@ -391,11 +391,11 @@ function LobbyModule:RefreshEquipmentData()
 end
 
 --- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】
-function LobbyModule:DefaultStoreData()
+function LobbyModule:DefaultShopData()
     --没有则初始化
-    local AllItems = {}
+    local AllShops = {}
     --3.1、限定奖池
-    AllItems.LimitItem = {
+    AllShops.LimitItem = {
         [1] = {
             --费用
             Costs = {
@@ -407,7 +407,7 @@ function LobbyModule:DefaultStoreData()
                 },
                 [2] = {
                     --广告资源
-                    Ad = "test_gold_box_tag",
+                    AdTag = "test_gold_box_tag",
                     --广告冷却时间
                     AdCoolTime = 24 * 3600,
                     --点击时间戳
@@ -437,7 +437,7 @@ function LobbyModule:DefaultStoreData()
                 },
                 [2] = {
                     --广告资源
-                    Ad = "test_silver_box_tag",
+                    AdTag = "test_silver_box_tag",
                     --广告冷却时间
                     AdCoolTime = 24 * 3600,
                     --点击时间戳
@@ -458,13 +458,15 @@ function LobbyModule:DefaultStoreData()
         },
     }
     --3.2、每日限购
-    AllItems.DailyItem = {
+    AllShops.DailyItem = {
         [1] = {
             --费用
             Costs = {
                 [1] = {
                     --消耗100个砖石
                     Diamond = 100,
+                    --广告资源
+                    AdTag = "test_daily_tag",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -484,6 +486,8 @@ function LobbyModule:DefaultStoreData()
                 [1] = {
                     --消耗50个砖石
                     Diamond = 50,
+                    --广告资源
+                    AdTag = "test_daily_tag",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -503,6 +507,8 @@ function LobbyModule:DefaultStoreData()
                 [1] = {
                     --消耗100个砖石
                     Diamond = 600,
+                    --广告资源
+                    AdTag = "test_daily_tag",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -518,13 +524,13 @@ function LobbyModule:DefaultStoreData()
         }
     }
     --3.3、免费砖石
-    AllItems.DiamondItem = {
+    AllShops.DiamondItem = {
         [1] = {
             --费用【约定：关系或】
             Costs = {
                 [1] = {
                     --广告资源
-                    Ad = "test_diamond_tag",
+                    AdTag = "test_diamond_tag",
                     --最大收集次数
                     MaxCollect = 10,
                     --已收集次数
@@ -539,7 +545,7 @@ function LobbyModule:DefaultStoreData()
         }
     }
     --3.4、购买金币
-    AllItems.CoinItem = {
+    AllShops.CoinItem = {
         [1] = {
             --费用
             Costs = {
@@ -557,7 +563,7 @@ function LobbyModule:DefaultStoreData()
             --费用
             Costs = {
                 [1] = {
-                    --消耗100个砖石
+                    --消耗12000个砖石
                     Diamond = 1000,
                 }
             },
@@ -570,7 +576,7 @@ function LobbyModule:DefaultStoreData()
             --费用
             Costs = {
                 [1] = {
-                    --消耗100个砖石
+                    --消耗4200个砖石
                     Diamond = 4200,
                 }
             },
@@ -580,7 +586,7 @@ function LobbyModule:DefaultStoreData()
             }
         }
     }
-    return AllItems
+    return AllShops
 end
 
 --- 刷新商店
