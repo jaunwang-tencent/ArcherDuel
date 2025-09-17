@@ -110,17 +110,40 @@ function LobbyModule:Update(DeltaTime)
     UI:SetText({UIConfig.TaskView.TaskProcesView.Time}, "剩余时间：" .. leftStr)
     UI:SetText({UIConfig.SevenDays.Time}, weekLeftStr)
     UI:SetText({105035}, weekLeftStr)
-    
+
      --商城视图
      local StoreView = UIConfig.StoreView
      --加载商城活动
      local Activities = StoreView.Activities
-     --1、限定奖池
+     --1、限定奖池【一周】
      UI:SetText({Activities[1].CountDown}, weekLeftStr)
-     --2、每日限购
+     --2、每日限购【一天】
      UI:SetText({Activities[2].CountDown}, leftStr)
-     --3、免费砖石
+     --3、免费砖石【一天】
      UI:SetText({Activities[3].CountDown}, leftStr)
+
+     -- 跨天检测，保存昨天的年月日
+    if not self._lastDate then
+        self._lastDate = {year=year, month=month, day=day}
+    else
+        if year ~= self._lastDate.year or month ~= self._lastDate.month or day ~= self._lastDate.day then
+            self:RefreshDailyItem()
+            self:RefreshDiamondItem()
+            self._lastDate = {year=year, month=month, day=day}
+        end
+    end
+
+    -- 跨周检测，保存上次周几
+    if not self._lastWeekday then
+        self._lastWeekday = wday
+    else
+        if wday < self._lastWeekday then -- 因为周一=1，周日=7，周数回到1即跨周
+            self:RefreshLimitItem()
+            self._lastWeekday = wday
+        else
+            self._lastWeekday = wday
+        end
+    end
 end
 
 --- 关闭
@@ -227,6 +250,8 @@ function LobbyModule:LoadData()
     if _GAME.GameUtils.isCrossDay(lastLoginTime) then
         --跨天登录了
         Log:PrintLog("跨天登录了")
+        self:RefreshDailyItem()
+        self:RefreshDiamondItem()
 
         self.PlayerData.BaseData.Player_TaskDailyExp_Num = 0
         self.PlayerData.BaseData.Player_CollectTaskDaily_Num = 0
@@ -240,6 +265,7 @@ function LobbyModule:LoadData()
     if _GAME.GameUtils.isCrossWeek(lastLoginTime) then
         --跨周登录了
         Log:PrintLog("跨周登录了")
+        self:RefreshLimitItem()
 
         --跨周登录了，重置每周任务经验
         self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = 0
@@ -704,7 +730,7 @@ function LobbyModule:DefaultShopData()
     return AllShops
 end
 
---- 刷新限定奖池
+--- 刷新限定奖池【一周】
 function LobbyModule:RefreshLimitItem()
     --第几周
     math.randomseed(TimerManager:GetClock())
@@ -721,6 +747,9 @@ function LobbyModule:RefreshLimitItem()
         Goods.Equipments = {}
         if BoxEquipmentIdsSet then
             WeekIndex = WeekIndex % #BoxEquipmentIdsSet
+            if WeekIndex == 0 then
+                WeekIndex = 1
+            end
             local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
             for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
                 Goods.Equipments[Index] = { ID = BoxEquipmentId }
@@ -729,7 +758,7 @@ function LobbyModule:RefreshLimitItem()
     end
 end
 
---- 刷新每日限购
+--- 刷新每日限购【一天】
 function LobbyModule:RefreshDailyItem()
     local AllDailyItem = self.PlayerData.AllShops.DailyItem
     --概率表
@@ -772,7 +801,7 @@ function LobbyModule:RefreshDailyItem()
     end
 end
 
---- 刷新免费砖石
+--- 刷新免费砖石【一天】
 function LobbyModule:RefreshDiamondItem()
     local AllDiamondItem = self.PlayerData.AllShops.DiamondItem
     AllDiamondItem[1].Costs[1].MaxCollect = 5
