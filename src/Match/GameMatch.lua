@@ -410,7 +410,7 @@ function GameMatch:MathCountDown(MatchInfo)
             UI:SetText({105683}, curLevel.name)
         end
         if WeaponConfig[MatchInfo.BattleRivalInfo.weaponId] then
-            weaponIconIndex = MatchInfo.BattleWeapon.weaponId
+            weaponIconIndex = MatchInfo.BattleRivalInfo.weaponId
         end
         if MatchInfo.BattleRivalInfo.equipments["Character"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]] then
             bodyIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].AssetIndex
@@ -1280,8 +1280,8 @@ function GameMatch:ShowGoldTop3(top3Players)
     Camera:MovieCameraStart(MatchConfig.GoldSceneConfig[self.mapId].Camera)
     -- 移动相机
     local pos = Element:GetPosition(MatchConfig.GoldSceneConfig[self.mapId].Podium)
-    -- Element:MoveTo(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(3000,0,1000),1,Element.CURVE.linear)
-    Element:SetPosition(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(2000,0,1000),Element.COORDINATE.World)
+    Element:MoveTo(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(2000,0,1000),1,Element.CURVE.linear,pos+Engine.Vector(3000,0,1000))
+    -- Element:SetPosition(MatchConfig.GoldSceneConfig[self.mapId].Camera,pos+Engine.Vector(2000,0,1000),Element.COORDINATE.World)
     Element:SetForward(MatchConfig.GoldSceneConfig[self.mapId].Camera, -Element:GetForward(MatchConfig.GoldSceneConfig[self.mapId].Podium))
 
     TimerManager:AddTimer(1, function()
