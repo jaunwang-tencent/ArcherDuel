@@ -89,24 +89,69 @@ function StoreModule:Close()
     self.PlayerData = nil
 end
 
+--- 刷新价格
+---@param ShopView 商铺视图
+---@param ShopCosts 商铺消耗
+function StoreModule:RefreshPrice(ShopView, ShopCosts)
+    --获取当前拥有的砖石数量
+    local CurrentDiamond = self.PlayerData.BaseData.Diamond
+    --获取当前拥有的金宝箱数量
+    local CurrentGoldBox = self.PlayerData.BaseData.GoldBox
+    --获取当前拥有的银宝箱数量
+    local CurrentSilverBox = self.PlayerData.BaseData.SilverBox
+
+    --砖石&广告类型
+    local DiamondStyle = ShopView.DiamondStyle
+    local AdStyle = ShopView.AdStyle
+    if DiamondStyle and AdStyle then
+        if ShopCosts.Diamond and CurrentDiamond > ShopCosts.Diamond then
+            --当前玩家拥有消耗砖石数量时，使用砖石购买方式
+            UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, true)
+            UI:SetText({DiamondStyle.Price}, tostring(ShopCosts.Diamond))
+            UI:SetVisible({AdStyle}, false)
+        else
+            --否则观看广告方式
+            UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, false)
+            UI:SetVisible({AdStyle}, true)
+        end
+    end
+
+    --宝箱类型
+    local BoxStyle = ShopView.BoxStyle
+    if BoxStyle then
+        if ShopCosts.GoldBox and CurrentGoldBox >= ShopCosts.GoldBox then
+            --金宝箱
+            GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 2)
+            UI:SetText({BoxStyle.Price}, tostring(ShopCosts.GoldBox))
+        elseif ShopCosts.SilverBox and CurrentSilverBox >= ShopCosts.SilverBox then
+            --银宝箱
+            GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 1)
+            UI:SetText({BoxStyle.Price}, tostring(ShopCosts.SilverBox))
+        elseif ShopCosts.Diamond and CurrentDiamond >= ShopCosts.Diamond then
+            --砖石
+            GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 6)
+            UI:SetText({BoxStyle.Price}, tostring(ShopCosts.Diamond))
+        else
+            --数据错误
+            UI:ShowMessageTip("商品数据错误！")
+        end
+    end
+end
+
 --- 刷新商铺【一般地购买某个商品只有一种途径（一个按钮），但不排除会有多个购买途径，比如限定奖池，可以开宝箱、也可以观看广告】
 ---@param ShopGroup 商铺视图组
 ---@param ShopItem 商铺数据项
 function StoreModule:RefreshShop(ShopGroup, ShopItem)
     local ShopGoods = ShopItem and ShopItem.Goods
     if ShopGroup and ShopGoods then
-        --获取当前拥有的砖石数量
-        local CurrentDiamond = self.PlayerData.BaseData.Diamond
-        --获取当前拥有的金宝箱数量
-        local CurrentGoldBox = self.PlayerData.BaseData.GoldBox
-        --获取当前拥有的银宝箱数量
-        local CurrentSilverBox = self.PlayerData.BaseData.SilverBox
         for ShopIndex, ShopSlot in pairs(ShopGroup) do
             --消耗信息
             local ShopCosts = ShopItem.Costs[ShopIndex]
             --处理商铺
             if ShopCosts and ShopGoods then
                 local ShopInfo = {
+                    --寄存商铺视图，以便刷新
+                    ShopView = ShopSlot,
                     --商铺点击
                     SlotID = ShopSlot.ID,
                     --商铺内容
@@ -115,41 +160,8 @@ function StoreModule:RefreshShop(ShopGroup, ShopItem)
                         Goods = ShopGoods
                     }
                 }
-                --砖石&广告类型
-                local DiamondStyle = ShopSlot.DiamondStyle
-                local AdStyle = ShopSlot.AdStyle
-                if DiamondStyle and AdStyle then
-                    if ShopCosts.Diamond and CurrentDiamond > ShopCosts.Diamond then
-                        --当前玩家拥有消耗砖石数量时，使用砖石购买方式
-                        UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, true)
-                        UI:SetText({DiamondStyle.Price}, tostring(ShopCosts.Diamond))
-                        UI:SetVisible({AdStyle}, false)
-                    else
-                        --否则观看广告方式
-                        UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, false)
-                        UI:SetVisible({AdStyle}, true)
-                    end
-                end
-                --宝箱类型
-                local BoxStyle = ShopSlot.BoxStyle
-                if BoxStyle then
-                    if ShopCosts.GoldBox and CurrentGoldBox > ShopCosts.GoldBox then
-                        --金宝箱
-                        GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 2)
-                        UI:SetText({BoxStyle.Price}, tostring(ShopCosts.GoldBox))
-                    elseif ShopCosts.SilverBox and CurrentSilverBox > ShopCosts.SilverBox then
-                        --银宝箱
-                        GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 1)
-                        UI:SetText({BoxStyle.Price}, tostring(ShopCosts.SilverBox))
-                    elseif ShopCosts.Diamond and CurrentDiamond > ShopCosts.Diamond then
-                        --砖石
-                        GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 6)
-                        UI:SetText({BoxStyle.Price}, tostring(ShopCosts.Diamond))
-                    else
-                        --数据错误
-                        UI:ShowMessageTip("商品数据错误！")
-                    end
-                end
+                --刷新价格
+                self:RefreshPrice(ShopSlot, ShopCosts)
                 --注册商铺按钮事件
                 UI:RegisterClicked(ShopInfo.SlotID, function()
                     self:BuyGood(ShopInfo)
@@ -169,6 +181,8 @@ function StoreModule:RefreshGood(GoodGroup, ShopItem)
     if GoodGroup then
         for GoodIndex, GoodSlot in pairs(GoodGroup) do
             local GoodInfo = {
+                --寄存商品视图，以便刷新
+                GoodView = GoodSlot,
                 --商品点击
                 SlotID = GoodSlot.ID,
                 --商品索引
@@ -198,7 +212,7 @@ function StoreModule:RefreshGood(GoodGroup, ShopItem)
                 --寄存收集次数，即便刷新
                 ShopCosts.CollectTimesUI = GoodSlot.Times
                 local Text = string.format("%d/%d", ShopCosts.MaxCollect - ShopCosts.HasCollect, ShopCosts.MaxCollect)
-                UI:SetText({ShopCosts.CollectTimesUI}, Text)
+                UI:SetText({GoodSlot.Times}, Text)
             end
             --商品数量
             if GoodSlot.Count then
@@ -296,7 +310,9 @@ function StoreModule:BuyGood(ShopInfo)
     if Success then
         --累计消耗
         self:AccumulateCollected(Costs)
-         --刷新商店资源
+        --刷新价格
+        self:RefreshPrice(ShopInfo.ShopView, Costs)
+        --刷新商店资源
         System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
     end
 end
