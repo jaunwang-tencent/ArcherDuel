@@ -13,6 +13,11 @@ function Battle:OnCreate(Context)
     self.CriticalHitReward = BattleView and BattleView.CriticalHitReward
     if self.CriticalHitReward then
         UI:SetVisible({self.CriticalHitReward.ID}, true)
+        if self.Config.IsGold then
+            UI:SetVisible({self.CriticalHitReward.RewardBox}, false)
+        else
+            UI:SetVisible({self.CriticalHitReward.RewardBox}, true)
+        end
     end
 
     --战斗场景

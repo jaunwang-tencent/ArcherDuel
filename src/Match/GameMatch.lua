@@ -506,6 +506,10 @@ function GameMatch:MathCountDown(MatchInfo)
         UI:SetVisible(MatchConfig.Match_UI,false)
         System:FireGameEvent(_GAME.Events.BattleStart)
     end)
+
+    if self.isGold then --黄金赛隐藏下局奖励
+        UI:SetVisible({105671}, false)
+    end
 end
 
 -- 展示排位进度
@@ -628,11 +632,13 @@ end
 function GameMatch:OnFail()
     --减积分
     local score = _GAME.GameUtils.GetPlayerRankScore()
+    local curLevel = _GAme.GameUtils.GetRankLevelByScore(score)
     Log:PrintLog("[GameMatch:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
     _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
 
     UI:SetVisible({106509}, true)
     UI:SetText({109444}, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore.." 积分")
+    UI:SetText({109445}, "-"..curLevel.cost)
     System:FireGameEvent(_GAME.Events.GameEnd)
 end
 
@@ -901,7 +907,7 @@ function GameMatch:OnGoldFail()
     self.goldBattleResult = false
     self.goldFailCount = self.goldFailCount + 1
 
-    if self.goldFailCount == 2 then -- 失败2次，黄金赛结束
+    if self.goldFailCount == 2 or self.isGoldFinalBattle then -- 失败2次，黄金赛结束
         local rank = #GoldBattleStep[self.goldBattleRound]
         if rank <= 3 then -- 3名以内，进行展示
             local top3Players = {}
@@ -914,7 +920,7 @@ function GameMatch:OnGoldFail()
             System:FireGameEvent(_GAME.Events.GameEnd)
         else
             -- 公布排名
-            UI:SetVisible({110204, 110718},true)
+            UI:SetVisible({110204,110718,110717,110687},true)
             UI:SetText({110206},"第"..rank.."名")
             local CurrencyIconList = GetCurrencyIconList()
             for i, v in ipairs(MatchConfig.GoldEnd_Reward_UI) do
@@ -1302,11 +1308,11 @@ function GameMatch:ShowGoldTop3(top3Players)
                     table.insert(bodyIds, EquipmentConfig[v].EquipID)
                 end
             end
-            if isSelf then
-                FakeCharacter:ChangeBodyFromPlayer(UID, self.localPlayerId)
-            else
+            -- if isSelf then
+            --     FakeCharacter:ChangeBodyFromPlayer(UID, self.localPlayerId)
+            -- else
                 FakeCharacter:ChangeCharacterBody(UID, bodyIds)
-            end
+            -- end
         end
         if top == 1 then
             TimerManager:AddTimer(1, function()

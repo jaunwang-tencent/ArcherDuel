@@ -117,13 +117,14 @@ function Bow:RefreshBowString(Progress)
                         local instanceId = WeaponResource.Projectile.Root -- 将场景的中的箭借用
                         Element:SetForward(instanceId,Element:GetForward(self.UID))
                         Element:BindingToElement(instanceId,self.UID)
-                        Element:SetPosition(instanceId, Engine.Vector(250, 100, -50),Element.COORDINATE.Part)
+                        Element:SetPosition(instanceId, Engine.Vector(250, 100, -50), Element.COORDINATE.Part)
+                        Element:SetRotation(instanceId, Engine.Rotator(90, 0, 0), Element.COORDINATE.Part)
                         self.bBindArrow = true
                     end
                 else
                     if self.bBindArrow then
                         local instanceId = WeaponResource.Projectile.Root -- 将场景的中的箭还回去
-                        Element:SetPosition(instanceId,Engine.Vector(-100000, -100000, -100000),Element.COORDINATE.World)
+                        Element:SetPosition(instanceId,Engine.Vector(-100000, -100000, -100000), Element.COORDINATE.World)
                         Element:UnBinding(instanceId)
                         self.bBindArrow = false
                     end
