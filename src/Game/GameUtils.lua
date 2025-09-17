@@ -19,6 +19,37 @@ function GameUtils.GetRankLevelByScore(score)
     return RankInfoConfig[#RankInfoConfig]
 end
 
+-- 根据阶段获取等级
+function GameUtils.GetRankLevelByTitleLv(titleLv)
+    for _, v in ipairs(RankInfoConfig) do
+        if v.titleLv == titleLv and v.resetTag == true then
+            return v
+        end
+    end
+
+    return RankInfoConfig[1]
+end
+
+-- 是否抵达黄金段位
+function GameUtils.IsReachGoldRank(score)
+    local level = GameUtils.GetRankLevelByScore(score)
+    if level and level.id >= 7 then
+        return true
+    end
+
+    return false
+end
+
+-- 是否抵达钻石段位
+function GameUtils.IsReachDiamondRank(score)
+    local level = GameUtils.GetRankLevelByScore(score)
+    if level and level.id >= 12 then
+        return true
+    end
+
+    return false
+end
+
 -- 设置玩家排位积分
 function GameUtils.SetPlayerRankScore(score)
     Log:PrintLog("[GameUtils.SetPlayerRankScore] score：" .. score)
@@ -42,12 +73,15 @@ function GameUtils.GetPlayerRankScore()
 end
 
 -- 给玩家添加奖励物品
-function GameUtils.AddPlayerReward(rewardArchive, addRewardCount)
-    local playerId = Character:GetLocalPlayerId()
-    --加积分
-    local Reward_Num = Archive:GetPlayerData(playerId, Archive.TYPE.Number, rewardArchive)
-    Reward_Num = (Reward_Num or 0) + addRewardCount
-    Archive:SetPlayerData(playerId, Archive.TYPE.Number, rewardArchive, Reward_Num)
+function GameUtils.AddPlayerReward(rewardId, addRewardCount)
+    local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[rewardId]
+    if cfg and cfg.archive then
+        local playerId = Character:GetLocalPlayerId()
+        --加积分
+        local Reward_Num = Archive:GetPlayerData(playerId, Archive.TYPE.Number, cfg.archive)
+        Reward_Num = (Reward_Num or 0) + addRewardCount
+        Archive:SetPlayerData(playerId, Archive.TYPE.Number, cfg.archive, Reward_Num)
+    end
 end
 
 function GameUtils.GetEquipmentMap()
