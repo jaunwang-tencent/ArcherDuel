@@ -125,49 +125,22 @@ function TournamentModule:OnMatch()
         --这里打开寻找对局页面
         --生成1到7的随机数字
         local RandomNumber = math.random(1, 6)  --随机海岛和天空
-        -- if RandomNumber == 7 then
-        --     RandomNumber = 8
-        -- end
-        --这里要关闭所有页面
-        UI:SetVisible({UIConfig.MainView.TitleBar.ID,
-            UIConfig.MainView.StoreResourceBar.ID,
-            UIConfig.MainView.GeneralResourceBar.ID,
-            UIConfig.FightView.CenterView.ID,
-            UIConfig.FightView.LeftView.ID,
-            UIConfig.FightView.RightView.ID
-        }, false)
-        System:FireSignEvent(tostring(RandomNumber))
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 1)
+        System:FireSignEvent(tostring(1))
     end
 end
 
 function TournamentModule:OnGoldMatch()
     if _GAME.GameUtils.CanEnterGoldBattle() then
-        --这里要关闭所有页面
-        UI:SetVisible({UIConfig.MainView.TitleBar.ID,
-            UIConfig.MainView.StoreResourceBar.ID,
-            UIConfig.MainView.GeneralResourceBar.ID,
-            UIConfig.FightView.CenterView.ID,
-            UIConfig.FightView.LeftView.ID,
-            UIConfig.FightView.RightView.ID
-        }, false)
-        System:FireSignEvent(tostring(7))
         Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 7)
+        System:FireSignEvent(tostring(7))
     end
 end
 
 function TournamentModule:OnDiamondMatch()
     if _GAME.GameUtils.CanEnterDiamondRankBattle() then
-        --这里要关闭所有页面
-        UI:SetVisible({UIConfig.MainView.TitleBar.ID,
-            UIConfig.MainView.StoreResourceBar.ID,
-            UIConfig.MainView.GeneralResourceBar.ID,
-            UIConfig.FightView.CenterView.ID,
-            UIConfig.FightView.LeftView.ID,
-            UIConfig.FightView.RightView.ID
-        }, false)
-        System:FireSignEvent(tostring(8))
         Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 8)
+        System:FireSignEvent(tostring(8))
     end
 end
 
@@ -196,6 +169,12 @@ function TournamentModule:Close()
     UI:UnRegisterClicked(TournamentView.Gold.Button)
     --进入钻石联赛
     UI:UnRegisterClicked(TournamentView.Diamond.Button)
+
+    local uis = {}
+    for i, v in pairs(TournamentView) do
+        table.insert(uis, v.ID)
+    end
+    UI:SetVisible(uis, false)
 end
 
 return TournamentModule

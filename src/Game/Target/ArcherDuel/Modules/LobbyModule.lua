@@ -59,6 +59,11 @@ end
 
 --- 关闭
 function LobbyModule:Close()
+    if self.CurrentModule then
+        self.CurrentModule:Close()
+        self.CurrentModule = nil
+    end
+
     --菜单栏
     local TitleBar = UIConfig.MainView.TitleBar
     --打开主菜单

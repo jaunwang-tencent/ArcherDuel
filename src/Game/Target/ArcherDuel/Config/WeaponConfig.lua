@@ -6420,6 +6420,10 @@ local WeaponConfig = {
         },
         --属性参数
         Attributes = {
+            --线速率【单位：米每秒】
+            Velocity = 25,
+            --武器质量【单位：千克】（反推，非真实）
+            Mass = 15000,
             -- 生命值
             Heal = 0,
             -- 攻击力
