@@ -58,8 +58,8 @@ function GameMatch:Init()
     if #self.localWeapons == 0 then -- 试玩兜底
         self.localWeapons = {
             ["Bow"] = 1,
-            ["Axe"] = 2,
-            ["Spear"] = 3,
+            ["Axe"] = 17,
+            ["Spear"] = 33,
         }
     end
 
