@@ -296,8 +296,13 @@ function StoreModule:BuyGood(ShopInfo)
             --获得物品
             self:ShowGainView(Costs, Goods)
         else
-            --在此弹出看广告弹窗
-            self:ShowAdView(Costs, Goods)
+            if Costs.AdTag then
+                --观看广告
+                self:SeeAd(Costs, Goods)
+            else
+                --在此弹出看广告弹窗
+                self:ShowAdView(Costs, Goods)
+            end
         end
     elseif Costs.AdTag then
         --观看广告
@@ -385,7 +390,7 @@ function StoreModule:ShowGainView(Costs, Goods)
     end)
 end
 
---- 显示广告视图
+--- 显示广告视图，通过看广告来获取砖石
 ---@param Costs 消耗
 ---@param Goods 物品
 function StoreModule:ShowAdView(Costs, Goods)
@@ -418,7 +423,6 @@ end
 function StoreModule:SeeAd(Costs, Goods)
     local AdTag = Costs.AdTag
     if AdTag then
-        UI:ShowMessageTip(AdTag)
         --注册广告结束事件
         System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
             local LocalPlayerId = Character:GetLocalPlayerId()

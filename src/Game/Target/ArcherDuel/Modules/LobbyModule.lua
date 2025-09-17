@@ -594,6 +594,8 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗100个砖石
                     Diamond = 150,
+                    --广告资源
+                    AdTag = "test_coin_tag",
                 }
             },
             --商品
@@ -607,6 +609,8 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗12000个砖石
                     Diamond = 1000,
+                    --广告资源
+                    AdTag = "test_coin_tag",
                 }
             },
             --商品
@@ -620,6 +624,8 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗4200个砖石
                     Diamond = 4200,
+                    --广告资源
+                    AdTag = "test_coin_tag",
                 }
             },
             --商品
