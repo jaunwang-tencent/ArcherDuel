@@ -149,13 +149,13 @@ local UIConfig = {
         --商店-资源栏
         StoreResourceBar = {
             ID = 107845,
-            --金宝箱
-            GoldBox = {
+            --银宝箱
+            SilverBox = {
                 ID = 107829,
                 Label = 107828
             },
-            --银宝箱
-            SilverBox = {
+            --金宝箱
+            GoldBox = {
                 ID = 107833,
                 Label = 107832
             },

@@ -121,11 +121,11 @@ function StoreModule:RefreshPrice(ShopView, ShopCosts)
     if BoxStyle then
         if ShopCosts.GoldBox and CurrentGoldBox >= ShopCosts.GoldBox then
             --金宝箱
-            GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 2)
+            GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 1)
             UI:SetText({BoxStyle.Price}, tostring(ShopCosts.GoldBox))
         elseif ShopCosts.SilverBox and CurrentSilverBox >= ShopCosts.SilverBox then
             --银宝箱
-            GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 1)
+            GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 2)
             UI:SetText({BoxStyle.Price}, tostring(ShopCosts.SilverBox))
         elseif ShopCosts.Diamond and CurrentDiamond >= ShopCosts.Diamond then
             --砖石
@@ -450,11 +450,10 @@ function StoreModule:OpenBox(boxId)
     --开宝箱表演
     local TargetBoxID
     for _, Perform in ipairs(ThreeItem.PerformGroup) do
+        UI:SetVisible({Perform.ID}, false)
         if boxId == Perform.ResourceID then
             UI:SetVisible({Perform.ID}, true)
             TargetBoxID = Perform.ID
-        else
-            UI:SetVisible({Perform.ID}, false)
         end
     end
 
@@ -510,6 +509,12 @@ function StoreModule:OpenBox(boxId)
         UI:SetVisible({ThreeItem.ItemGroupID}, false)
         --恢复动画播放【这个方案可能还是会有问题！！！】
         UI:ResumeUIAnimation(ThreeItem.ItemGroupID, 1)
+        for _, Perform in ipairs(ThreeItem.PerformGroup) do
+            if boxId == Perform.ResourceID then
+                UI:SetVisible({Perform.ID}, false)
+                TargetBoxID = Perform.ID
+            end
+        end
         --隐藏组
         UI:SetVisible({ThreeItem.ID}, false)
         --注销事件
