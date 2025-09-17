@@ -90,16 +90,6 @@ function EquipmentModule:Close()
     self.PlayerData = nil
 end
 
---- 刷新图标
----@param IconUI 图标资源
----@param EquipmentData 装备数据
-function EquipmentModule:RefreshIcon2(IconUI, AssetName, AssetIndex)
-    local ElementId = System:GetScriptParentID()
-    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
-    local IconId = IconIdArray[AssetIndex]
-    UI:SetImage({IconUI}, IconId, true)
-end
-
 --- 刷新身体上的数据
 function EquipmentModule:RegreshBodyUI()
     local EquipmentView = UIConfig.EquipmentView
