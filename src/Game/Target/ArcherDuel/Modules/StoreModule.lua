@@ -167,6 +167,11 @@ function StoreModule:RefreshGood(GoodGroup, ShopItem, HoldInfo)
             if Equipment then
                 --装备
                 GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
+                --装备品质
+                if GoodSlot.Background then
+                    local EquipmentData = EquipmentConfig[Equipment.ID]
+                    GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+                end
             else
                 if not GoodSlot.IconLock then
                     if ShopGoods.Coin then

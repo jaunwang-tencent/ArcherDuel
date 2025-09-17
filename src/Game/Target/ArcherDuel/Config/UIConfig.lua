@@ -833,6 +833,8 @@ local UIConfig = {
                         GoodGroup = {
                             [1] = {
                                 ID = 110338,
+                                --背景图
+                                Background = 115379,
                                 --剩余可点击次数 10/10
                                 Times = 110339,
                             }
@@ -859,6 +861,8 @@ local UIConfig = {
                         GoodGroup = {
                             [1] = {
                                 ID = 110343,
+                                --背景图
+                                Background = 115380,
                                 --剩余可点击次数 10/10
                                 Times = 110344,
                             }
@@ -885,6 +889,8 @@ local UIConfig = {
                         GoodGroup = {
                             [1] = {
                                 ID = 110349,
+                                --背景图
+                                Background = 115381,
                                 --剩余可点击次数 10/10
                                 Times = 110350,
                             }
