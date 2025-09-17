@@ -71,12 +71,12 @@ function StoreModule:RefreshPrice(ShopView, ShopCosts)
     local DiamondStyle = ShopView.DiamondStyle
     local AdStyle = ShopView.AdStyle
     if DiamondStyle and AdStyle then
-        if ShopCosts.Diamond and CurrentDiamond > ShopCosts.Diamond then
+        if ShopCosts.Diamond and (CurrentDiamond > ShopCosts.Diamond or not ShopCosts.AdTag) then
             --当前玩家拥有消耗砖石数量时，使用砖石购买方式
             UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, true)
             UI:SetText({DiamondStyle.Price}, tostring(ShopCosts.Diamond))
             UI:SetVisible({AdStyle}, false)
-        else
+        elseif ShopCosts.AdTag then
             --否则观看广告方式
             UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, false)
             UI:SetVisible({AdStyle}, true)
@@ -297,7 +297,7 @@ function StoreModule:BuyGood(ShopInfo)
             Success = true
         else
             --在此弹出看广告弹窗
-            self:ShowAdView(Costs, Goods)
+            self:ShowAdView(Goods)
         end
         if Success then
             self:OpenBox(200003)
@@ -313,7 +313,7 @@ function StoreModule:BuyGood(ShopInfo)
             Success = true
         else
             --在此弹出看广告弹窗
-            self:ShowAdView(Costs, Goods)
+            self:ShowAdView(Goods)
         end
         if Success then
             self:OpenBox(200002)
@@ -329,15 +329,15 @@ function StoreModule:BuyGood(ShopInfo)
         else
             if Costs.AdTag then
                 --观看广告
-                self:SeeAd(Costs, Goods)
+                self:SeeAd(Costs.AdTag, Goods)
             else
                 --在此弹出看广告弹窗
-                self:ShowAdView(Costs, Goods)
+                self:ShowAdView(Goods)
             end
         end
     elseif Costs.AdTag then
         --观看广告
-        self:SeeAd(Costs, Goods)
+        self:SeeAd(Costs.AdTag, Goods)
     else
         --不可购买
         UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
@@ -421,10 +421,10 @@ function StoreModule:ShowGainView(Costs, Goods)
     end)
 end
 
---- 显示广告视图，通过看广告来获取砖石
----@param Costs 消耗
+--- 显示广告视图，通过看广告来获取砖石【免费获取，每天固定数量】
+---@param AdTag 广告标识
 ---@param Goods 物品
-function StoreModule:ShowAdView(Costs, Goods)
+function StoreModule:ShowAdView(Goods)
     local AdView = UIConfig.AdView
     UI:SetVisible({AdView.ID}, true)
 
@@ -432,7 +432,7 @@ function StoreModule:ShowAdView(Costs, Goods)
         ----关闭
         UI:SetVisible({AdView.ID}, false)
         --观看广告
-        self:SeeAd(Costs, Goods)
+        self:SeeAd("ad_tag_free", Goods)
         --注销按钮事件
         UI:UnRegisterClicked(AdView.AdButton)
         UI:UnRegisterClicked(AdView.CloseButton)
@@ -449,10 +449,9 @@ function StoreModule:ShowAdView(Costs, Goods)
 end
 
 --- 观看广告
----@param Costs 消耗
+---@param AdTag 广告标识
 ---@param Goods 商品
-function StoreModule:SeeAd(Costs, Goods)
-    local AdTag = Costs.AdTag
+function StoreModule:SeeAd(AdTag, Goods)
     if AdTag then
         --注册广告结束事件
         System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)

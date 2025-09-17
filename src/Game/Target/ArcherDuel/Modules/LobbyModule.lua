@@ -475,7 +475,7 @@ function LobbyModule:DefaultShopData()
                 },
                 [2] = {
                     --广告资源
-                    AdTag = "test_gold_box_tag",
+                    AdTag = "ad_tag_gold_box",
                     --广告冷却时间
                     AdCoolTime = 24 * 3600,
                     --点击时间戳
@@ -499,7 +499,7 @@ function LobbyModule:DefaultShopData()
                 },
                 [2] = {
                     --广告资源
-                    AdTag = "test_silver_box_tag",
+                    AdTag = "ad_tag_silver_box",
                     --广告冷却时间
                     AdCoolTime = 24 * 3600,
                     --点击时间戳
@@ -522,7 +522,7 @@ function LobbyModule:DefaultShopData()
                     --消耗100个砖石
                     Diamond = 100,
                     --广告资源
-                    AdTag = "test_daily_tag",
+                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -543,7 +543,7 @@ function LobbyModule:DefaultShopData()
                     --消耗50个砖石
                     Diamond = 50,
                     --广告资源
-                    AdTag = "test_daily_tag",
+                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -564,7 +564,7 @@ function LobbyModule:DefaultShopData()
                     --消耗100个砖石
                     Diamond = 600,
                     --广告资源
-                    AdTag = "test_daily_tag",
+                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -586,7 +586,7 @@ function LobbyModule:DefaultShopData()
             Costs = {
                 [1] = {
                     --广告资源
-                    AdTag = "test_diamond_tag",
+                    AdTag = "ad_tag_diamond",
                     --最大收集次数
                     MaxCollect = 10,
                     --已收集次数
@@ -596,7 +596,7 @@ function LobbyModule:DefaultShopData()
             --商品
             Goods = {
                 --获得砖石
-                Diamond = 600
+                Diamond = 60
             }
         }
     }
@@ -606,10 +606,8 @@ function LobbyModule:DefaultShopData()
             --费用
             Costs = {
                 [1] = {
-                    --消耗100个砖石
-                    Diamond = 150,
                     --广告资源
-                    AdTag = "test_coin_tag",
+                    AdTag = "ad_tag_coin",
                 }
             },
             --商品
@@ -623,8 +621,6 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗12000个砖石
                     Diamond = 1000,
-                    --广告资源
-                    AdTag = "test_coin_tag",
                 }
             },
             --商品
@@ -638,8 +634,6 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗4200个砖石
                     Diamond = 4200,
-                    --广告资源
-                    AdTag = "test_coin_tag",
                 }
             },
             --商品
