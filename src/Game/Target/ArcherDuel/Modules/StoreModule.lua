@@ -167,6 +167,11 @@ function StoreModule:RefreshGood(GoodGroup, ShopItem, HoldInfo)
             if Equipment then
                 --装备
                 GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
+                --装备品质
+                if GoodSlot.Background then
+                    local EquipmentData = EquipmentConfig[Equipment.ID]
+                    GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+                end
             else
                 if not GoodSlot.IconLock then
                     if ShopGoods.Coin then
@@ -291,7 +296,7 @@ function StoreModule:BuyGood(ShopInfo)
             --消耗金宝箱
             BaseData.GoldBox = BaseData.GoldBox - Costs.GoldBox
             Success = true
-        elseif Costs.Diamond and BaseData.Diamond > Costs.Diamond then
+        elseif Costs.Diamond and BaseData.Diamond >= Costs.Diamond then
             --消砖石
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             Success = true
@@ -307,7 +312,7 @@ function StoreModule:BuyGood(ShopInfo)
             --消耗银宝箱
             BaseData.SilverBox = BaseData.SilverBox - Costs.SilverBox
             Success = true
-        elseif Costs.Diamond and BaseData.Diamond > Costs.Diamond then
+        elseif Costs.Diamond and BaseData.Diamond >= Costs.Diamond then
             --消砖石
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             Success = true
@@ -320,7 +325,7 @@ function StoreModule:BuyGood(ShopInfo)
         end
     elseif Costs.Diamond then
         --消耗砖石
-        if BaseData.Diamond > Costs.Diamond then
+        if BaseData.Diamond >= Costs.Diamond then
             --直接消耗
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             Success = true
@@ -379,7 +384,7 @@ function StoreModule:ShowGainView(Costs, Goods)
         for _, Equipment in pairs(Goods.Equipments) do
             local TargetEquipment = AllEquipment[Equipment.ID]
             --累加碎片
-            TargetEquipment.Piece = TargetEquipment.Piece + Equipment.Piece
+            TargetEquipment.Piece = TargetEquipment.Piece + 1
             --解锁
             TargetEquipment.Unlock = true
 

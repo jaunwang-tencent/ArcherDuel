@@ -457,7 +457,7 @@ local UIConfig = {
             --当前活跃值文本
             Text = 103892,
             --时间
-            TIme = 111150,
+            Time = 111150,
             --锁 组 注释：当玩家活跃值未到某一阶段为显示状态（即为默认显示），当玩家活跃值到达状态后，锁则为隐藏状态。
             Lock = {
                 [1] = 103890,
@@ -833,6 +833,8 @@ local UIConfig = {
                         GoodGroup = {
                             [1] = {
                                 ID = 110338,
+                                --背景图
+                                Background = 115379,
                                 --剩余可点击次数 10/10
                                 Times = 110339,
                             }
@@ -859,6 +861,8 @@ local UIConfig = {
                         GoodGroup = {
                             [1] = {
                                 ID = 110343,
+                                --背景图
+                                Background = 115380,
                                 --剩余可点击次数 10/10
                                 Times = 110344,
                             }
@@ -885,6 +889,8 @@ local UIConfig = {
                         GoodGroup = {
                             [1] = {
                                 ID = 110349,
+                                --背景图
+                                Background = 115381,
                                 --剩余可点击次数 10/10
                                 Times = 110350,
                             }
@@ -930,7 +936,7 @@ local UIConfig = {
                 --根节点页面ID--需添加到滚动列表
                 ID = 110319,
                 --倒计时
-                CountDown = 110358,
+                CountDown = 110317,
                 --活动页面视图【一些购买按钮&商品槽】
                 Views = {
                     [1] = {

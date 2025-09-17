@@ -4,8 +4,10 @@ local LobbyModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
---开宝箱配置
+--宝箱配置
 local OpenBoxConfig = UGCS.Target.ArcherDuel.Config.OpenBoxConfig
+--商品配置
+local GoodsConfig = UGCS.Target.ArcherDuel.Config.GoodsConfig
 
 --缺省基础数值
 local DefaultBaseData =
@@ -54,7 +56,94 @@ end
 --- 刷新
 ---@param DeltaTime 时间戳
 function LobbyModule:Update(DeltaTime)
-    
+    if self.CurrentModule then
+        self.CurrentModule:Update(DeltaTime)
+    end
+
+    -- 累计计时器
+    self._timeAccumulator = (self._timeAccumulator or 60) + DeltaTime
+    if self._timeAccumulator < 60 then
+        return
+    end
+    self._timeAccumulator = self._timeAccumulator - 60
+
+    -- 当前时间
+    local nowStr = MiscService:GetServerTimeToTime()
+    local nowTs = MiscService:DateYMDHMSToTime(nowStr)
+
+    -- 当前年月日
+    local year = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Year)
+    local month= MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Month)
+    local day  = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Day)
+
+    -- 当日0点时间戳
+    local zeroTimestamp = MiscService:DateYMDHMSToTime(
+        string.format("%04d-%02d-%02d 00:00:00", year, month, day)
+    )
+
+    -- 已过秒数，当天剩余秒数
+    local secondsPassed = nowTs - zeroTimestamp
+    local secondsLeft = 24 * 3600 - secondsPassed
+
+    -- 格式化当天剩余时间时分秒
+    local leftHour = math.floor(secondsLeft / 3600)
+    local leftMin = math.floor((secondsLeft % 3600) / 60)
+    local leftStr = string.format("%02d时%02d分", leftHour, leftMin)
+
+    -- 当前星期几（假设周一=1, 周日=7）
+    local wday = _GAME.GameUtils.GetWeekDay()
+
+    -- 计算距离本周剩余秒数
+    -- 一周剩余天数 = 7 - 当前周几
+    local daysLeft = 7 - wday
+
+    -- 一周剩余秒数 = 今天剩余秒 + 剩余天数 * 24 * 3600
+    local weekSecondsLeft = secondsLeft + daysLeft * 24 * 3600
+
+    local weekLeftDays = math.floor(weekSecondsLeft / (24 * 3600))
+    local weekLeftHours = math.floor((weekSecondsLeft % (24 * 3600)) / 3600)
+
+    local weekLeftStr = string.format("%d天 %02d时", weekLeftDays, weekLeftHours)
+
+    print("当前时间:", nowStr, "距今日剩余:", leftStr, "距离本周剩余:", weekLeftStr)
+
+    UI:SetText({UIConfig.TaskView.TaskProcesView.Time}, "剩余时间：" .. leftStr)
+    UI:SetText({UIConfig.SevenDays.Time, UIConfig.TournamentView.World.CountDown, UIConfig.TournamentView.Gold.CountDown, UIConfig.TournamentView.Diamond.CountDown}, weekLeftStr)
+    UI:SetText({105035}, weekLeftStr)
+
+     --商城视图
+     local StoreView = UIConfig.StoreView
+     --加载商城活动
+     local Activities = StoreView.Activities
+     --1、限定奖池【一周】
+     UI:SetText({Activities[1].CountDown}, weekLeftStr)
+     --2、每日限购【一天】
+     UI:SetText({Activities[2].CountDown}, leftStr)
+     --3、免费砖石【一天】
+     UI:SetText({Activities[3].CountDown}, leftStr)
+
+     -- 跨天检测，保存昨天的年月日
+    if not self._lastDate then
+        self._lastDate = {year=year, month=month, day=day}
+    else
+        if year ~= self._lastDate.year or month ~= self._lastDate.month or day ~= self._lastDate.day then
+            self:RefreshDailyItem()
+            self:RefreshDiamondItem()
+            self._lastDate = {year=year, month=month, day=day}
+        end
+    end
+
+    -- 跨周检测，保存上次周几
+    if not self._lastWeekday then
+        self._lastWeekday = wday
+    else
+        if wday < self._lastWeekday then -- 因为周一=1，周日=7，周数回到1即跨周
+            self:RefreshLimitItem()
+            self._lastWeekday = wday
+        else
+            self._lastWeekday = wday
+        end
+    end
 end
 
 --- 关闭
@@ -136,39 +225,18 @@ function LobbyModule:LoadData()
     self:RefreshEquipmentData()
 
     --3、商店数据
-    local AllShops
     if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Shops_Table") then
         --这里读取玩家的装备 --并进行排序
         local All_Shops_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Shops_Table")
         --文字转为组
-        AllShops = MiscService:JsonStr2Table(All_Shops_Table)
+        self.PlayerData.AllShops = MiscService:JsonStr2Table(All_Shops_Table)
     else
-        AllShops = self:DefaultShopData()
+        self.PlayerData.AllShops = self:DefaultShopData()
+        --刷新限定奖池
+        self:RefreshLimitItem()
+        self:RefreshDailyItem()
+        self:RefreshDiamondItem()
     end
-    --刷新限定奖池
-    --第几周
-    local WeekIndex = 59
-    local AllLimitItem = AllShops.LimitItem
-    for _, LimitItem in pairs(AllLimitItem) do
-        local BoxEquipmentIdsSet
-        if LimitItem.Costs[1].GoldBox then
-            BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
-        elseif LimitItem.Costs[1].SilverBox then
-            BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
-        end
-        local Goods = LimitItem.Goods
-        Goods.Equipments = {}
-        if BoxEquipmentIdsSet then
-            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
-            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
-            for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
-                Goods.Equipments[Index] = { ID = BoxEquipmentId }
-            end
-        end
-    end
-
-    self.PlayerData.AllShops = AllShops
-    self:RefreshStoreData()
 
     local nowStr = MiscService:GetServerTimeToTime()
     local nowTs = MiscService:DateYMDHMSToTime(nowStr)
@@ -182,6 +250,8 @@ function LobbyModule:LoadData()
     if _GAME.GameUtils.isCrossDay(lastLoginTime) then
         --跨天登录了
         Log:PrintLog("跨天登录了")
+        self:RefreshDailyItem()
+        self:RefreshDiamondItem()
 
         self.PlayerData.BaseData.Player_TaskDailyExp_Num = 0
         self.PlayerData.BaseData.Player_CollectTaskDaily_Num = 0
@@ -195,6 +265,7 @@ function LobbyModule:LoadData()
     if _GAME.GameUtils.isCrossWeek(lastLoginTime) then
         --跨周登录了
         Log:PrintLog("跨周登录了")
+        self:RefreshLimitItem()
 
         --跨周登录了，重置每周任务经验
         self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = 0
@@ -306,6 +377,7 @@ function LobbyModule:InitView()
 
     --切换到主视图
     self:SwitchView("Fight")
+    UI:SetVisible({UIConfig.StoreView.Activities[4].CountDown}, false)
 end
 
 function LobbyModule:SwitchView(ViewName)
@@ -413,16 +485,31 @@ function LobbyModule:RefreshEquipmentData()
     --2.2、装备分类
     --按类型分组且品质降序
     local GroupByCategory = {}
+    --按品质分组
+    local GroupByGrade = {}
     --装备槽【六个部位】
     local BodyEquipment = {}
     for _, Equipment in pairs(AllEquipment) do
+        --获取装备数据
+        local EquipmentData = EquipmentConfig[Equipment.ID]
+        --回写装备品质
+        Equipment.Grade = EquipmentData and EquipmentData.Attributes.Grade or 1
+
         --按种类分类
-        local Group = GroupByCategory[Equipment.Category]
-        if not Group then
-            Group = {}
-            GroupByCategory[Equipment.Category] = Group
+        local Group1 = GroupByCategory[Equipment.Category]
+        if not Group1 then
+            Group1 = {}
+            GroupByCategory[Equipment.Category] = Group1
         end
-        table.insert(Group, Equipment)
+        table.insert(Group1, Equipment)
+
+        --按品质分类
+        local Group2 = GroupByGrade[Equipment.Grade]
+        if not Group2 then
+            Group2 = {}
+            GroupByGrade[Equipment.Grade] = Group2
+        end
+        table.insert(Group2, Equipment)
 
         if not Equipment.Unlock and Equipment.Piece > 0 then
             --没有解锁，则解锁，并消耗一个
@@ -439,7 +526,6 @@ function LobbyModule:RefreshEquipmentData()
             end
             BodyEquipment[Equipment.Category] = Equipment
             --刷新基础数据
-            local EquipmentData = EquipmentConfig[Equipment.ID]
             if EquipmentData then
                 local IDName = string.format("Equipped_%s_ID", EquipmentData.TypeName)
                 DefaultBaseData[IDName] = Equipment.ID
@@ -457,6 +543,7 @@ function LobbyModule:RefreshEquipmentData()
         end)
     end
     self.PlayerData.GroupByCategory = GroupByCategory
+    self.PlayerData.GroupByGrade = GroupByGrade
     self.PlayerData.BodyEquipment = BodyEquipment
     --统计已穿戴装备的ID和等级
     --重新刷新外观
@@ -526,8 +613,6 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗100个砖石
                     Diamond = 100,
-                    --广告资源
-                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -536,9 +621,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {
-                    [1] = { ID = 3, Piece = 10 }
-                }
+                Equipments = {}
             }
         },
         [2] = {
@@ -547,8 +630,6 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗50个砖石
                     Diamond = 50,
-                    --广告资源
-                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -557,9 +638,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {
-                    [1] = { ID = 4, Piece = 10 }
-                }
+                Equipments = {}
             }
         },
         [3] = {
@@ -568,8 +647,6 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗100个砖石
                     Diamond = 600,
-                    --广告资源
-                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -578,9 +655,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {
-                    [1] = { ID = 5, Piece = 10 }
-                }
+                Equipments = {}
             }
         }
     }
@@ -593,7 +668,7 @@ function LobbyModule:DefaultShopData()
                     --广告资源
                     AdTag = "ad_tag_diamond",
                     --最大收集次数
-                    MaxCollect = 10,
+                    MaxCollect = 5,
                     --已收集次数
                     HasCollect = 0
                 }
@@ -650,9 +725,82 @@ function LobbyModule:DefaultShopData()
     return AllShops
 end
 
---- 刷新商店
-function LobbyModule:RefreshStoreData()
+--- 刷新限定奖池【一周】
+function LobbyModule:RefreshLimitItem()
+    --第几周
+    math.randomseed(TimerManager:GetClock())
+    local WeekIndex = math.random(1, 60)
+    local AllLimitItem = self.PlayerData.AllShops.LimitItem
+    for _, LimitItem in pairs(AllLimitItem) do
+        local BoxEquipmentIdsSet
+        if LimitItem.Costs[1].GoldBox then
+            BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
+        elseif LimitItem.Costs[1].SilverBox then
+            BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
+        end
+        local Goods = LimitItem.Goods
+        Goods.Equipments = {}
+        if BoxEquipmentIdsSet then
+            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
+            if WeekIndex == 0 then
+                WeekIndex = 1
+            end
+            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
+            for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
+                Goods.Equipments[Index] = { ID = BoxEquipmentId }
+            end
+        end
+    end
+end
 
+--- 刷新每日限购【一天】
+function LobbyModule:RefreshDailyItem()
+    local AllDailyItem = self.PlayerData.AllShops.DailyItem
+    --概率表
+    local GradeProbability = {}
+    local Weight = 0
+    for _, Config in ipairs(GoodsConfig) do
+        Weight = Weight + Config.Weight
+        GradeProbability[Config.Grade] = Weight
+    end
+    local RandomGoodConfig = function()
+        --摇骰子
+        local RandomValue = math.random(1, Weight)
+        local TargetGrade = 1
+        local MinValue = 0
+        local MaxValue
+        for Grade = 1, 4 do
+            MaxValue = GradeProbability[Grade]
+            if RandomValue >= MinValue and RandomValue <= MaxValue then
+                TargetGrade = Grade
+                break
+            end
+            MinValue = MaxValue
+        end
+        return GoodsConfig[TargetGrade]
+    end
+    math.randomseed(TimerManager:GetClock())
+    for _, DailyItem in pairs(AllDailyItem) do
+        --根据权重随机一个品质
+        local TargetGoodConfig = RandomGoodConfig()
+        --编组
+        local GroupByGrade = self.PlayerData.GroupByGrade
+        local EquipmentGroup = GroupByGrade[TargetGoodConfig.Grade]
+        local EquipmentID = EquipmentGroup[math.random(1, #EquipmentGroup)].ID
+        DailyItem.Costs[1].MaxCollect = TargetGoodConfig.Times
+        DailyItem.Costs[1].HasCollect = 0
+        DailyItem.Costs[1].Diamond = TargetGoodConfig.Price
+        local Goods = DailyItem.Goods
+        Goods.Equipments = {}
+        Goods.Equipments[1] = { ID = EquipmentID }
+    end
+end
+
+--- 刷新免费砖石【一天】
+function LobbyModule:RefreshDiamondItem()
+    local AllDiamondItem = self.PlayerData.AllShops.DiamondItem
+    AllDiamondItem[1].Costs[1].MaxCollect = 5
+    AllDiamondItem[1].Costs[1].HasCollect = 0
 end
 
 --- 刷新通用资源栏
