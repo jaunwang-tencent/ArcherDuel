@@ -379,7 +379,7 @@ function StoreModule:ShowGainView(Costs, Goods)
         for _, Equipment in pairs(Goods.Equipments) do
             local TargetEquipment = AllEquipment[Equipment.ID]
             --累加碎片
-            TargetEquipment.Piece = TargetEquipment.Piece + Equipment.Piece
+            TargetEquipment.Piece = TargetEquipment.Piece + 1
             --解锁
             TargetEquipment.Unlock = true
 
