@@ -40,18 +40,21 @@ function StoreModule:Open(PlayerData)
         local SplitItem =  UI:DuplicateWidget(StoreView.SplitItem, 6000, 6000)
         table.insert(self.ScrollItems, SplitItem)
 
-        --商品
-        local Items = ItemsMap[ActivityIndex]
-        --商铺
-        local Views = Activity.Views
-        for ViewIndex, ViewSlot in ipairs(Views) do
-            --商铺数据项
-            local ShopItem = Items and Items[ViewIndex]
-            --刷新商铺
-            self:RefreshShop(ViewSlot.ShopGroup, ShopItem)
+        --1、关闭所有视图？！
 
-            --刷新商品
-            self:RefreshGood(ViewSlot.GoodGroup, ShopItem)
+        --2、商品【由数据驱动视图】
+        local ShopItems = ItemsMap[ActivityIndex]
+        if ShopItems then
+            for ViewIndex, ShopItem in pairs(ShopItems) do
+                local ViewSlot = Activity.Views[ViewIndex]
+                if ViewSlot then
+                    --刷新商铺
+                    self:RefreshShop(ViewSlot.ShopGroup, ShopItem)
+
+                    --刷新商品
+                    self:RefreshGood(ViewSlot.GoodGroup, ShopItem)
+                end
+            end
         end
     end
     --添加之前显示子节点
@@ -192,14 +195,10 @@ function StoreModule:RefreshGood(GoodGroup, ShopItem)
             if GoodSlot.Times then
                 --消耗信息【这种情况下是一一映射】
                 local ShopCosts = ShopItem.Costs[GoodIndex]
+                --寄存收集次数，即便刷新
+                ShopCosts.CollectTimesUI = GoodSlot.Times
                 local Text = string.format("%d/%d", ShopCosts.MaxCollect - ShopCosts.HasCollect, ShopCosts.MaxCollect)
-                UI:SetText({GoodSlot.Times}, Text)
-            end
-            if GoodSlot.Progress then
-                --消耗信息【这种情况下是一一映射】
-                local ShopCosts = ShopItem.Costs[GoodIndex]
-                UI:SetProgressMaxValue({GoodSlot.Progress}, ShopCosts.MaxCollect)
-                UI:SetProgressCurrentValue({GoodSlot.Progress}, ShopCosts.MaxCollect - ShopCosts.HasCollect)
+                UI:SetText({ShopCosts.CollectTimesUI}, Text)
             end
             --商品数量
             if GoodSlot.Count then
@@ -257,34 +256,62 @@ function StoreModule:BuyGood(ShopInfo)
     local Costs = ShopContent.Costs
     local Goods = ShopContent.Goods
     local BaseData = self.PlayerData.BaseData
+    --前置条件检测
+    if Costs.HasCollect and Costs.MaxCollect and Costs.HasCollect >= Costs.MaxCollect then
+        --超过消耗数量则不允购买
+        UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
+        return
+    end
+    local Success = false
     if Costs.GoldBox and BaseData.GoldBox >= Costs.GoldBox then
         --消耗金宝箱
         BaseData.GoldBox = BaseData.GoldBox - Costs.GoldBox
+        Success = true
         self:OpenBox(200003)
     elseif Costs.SilverBox and BaseData.SilverBox >= Costs.SilverBox then
         --消耗银宝箱
         BaseData.SilverBox = BaseData.SilverBox - Costs.SilverBox
+        Success = true
         self:OpenBox(200002)
     elseif Costs.Diamond then
         --消耗砖石
         if BaseData.Diamond > Costs.Diamond then
             --直接消耗
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
+            Success = true
             --获得物品
             self:ShowGainView(Costs, Goods)
         else
             --在此弹出看广告弹窗
-            self:ShowAdView(Goods)
+            self:ShowAdView(Costs, Goods)
         end
-    elseif Costs.Ad then
+    elseif Costs.AdTag then
         --观看广告
-        self:SeeAd(Costs.Ad, Goods)
+        self:SeeAd(Costs, Goods)
     else
         --不可购买
-        UI:ShowMessageTip("Cant Buy:" .. ShopInfo.ButtonID)
+        UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
     end
-    --刷新商店资源
-    System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
+
+    if Success then
+        --累计消耗
+        self:AccumulateCollected(Costs)
+         --刷新商店资源
+        System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
+    end
+end
+
+--- 累计收集次数
+---@param Costs 消耗
+function StoreModule:AccumulateCollected(Costs)
+    if Costs.HasCollect and Costs.MaxCollect then
+        Costs.HasCollect = Costs.HasCollect + 1
+        --刷新视图
+        if Costs.CollectTimesUI then
+            local Text = string.format("%d/%d", Costs.MaxCollect - Costs.HasCollect, Costs.MaxCollect)
+            UI:SetText({Costs.CollectTimesUI}, Text)
+        end
+    end
 end
 
 --- 显示获得视图
@@ -319,7 +346,7 @@ function StoreModule:ShowGainView(Costs, Goods)
         --显示部分
         GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 4)
 
-        if Costs and Costs.Ad then
+        if Costs and Costs.AdTag then
             System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
         end
     elseif Goods.Diamond then
@@ -329,7 +356,7 @@ function StoreModule:ShowGainView(Costs, Goods)
 
         --显示部分
         GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 6)
-        if Costs and Costs.Ad then
+        if Costs and Costs.AdTag then
             System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
         end
     end
@@ -343,8 +370,9 @@ function StoreModule:ShowGainView(Costs, Goods)
 end
 
 --- 显示广告视图
+---@param Costs 消耗
 ---@param Goods 物品
-function StoreModule:ShowAdView(Goods)
+function StoreModule:ShowAdView(Costs, Goods)
     local AdView = UIConfig.AdView
     UI:SetVisible({AdView.ID}, true)
 
@@ -352,7 +380,7 @@ function StoreModule:ShowAdView(Goods)
         ----关闭
         UI:SetVisible({AdView.ID}, false)
         --观看广告
-        self:SeeAd(Goods)
+        self:SeeAd(Costs, Goods)
         --注销按钮事件
         UI:UnRegisterClicked(AdView.AdButton)
         UI:UnRegisterClicked(AdView.CloseButton)
@@ -369,23 +397,27 @@ function StoreModule:ShowAdView(Goods)
 end
 
 --- 观看广告
----@param AdTag 广告标签
+---@param Costs 消耗
 ---@param Goods 商品
-function StoreModule:SeeAd(AdTag, Goods)
-    --注册广告结束事件
-    System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
-        local LocalPlayerId = Character:GetLocalPlayerId()
-        if AdTag == mark and LocalPlayerId == userId then
-            --这一段是模拟观看广告
-            UGCS.Framework.Executor.Delay(3, function()
+function StoreModule:SeeAd(Costs, Goods)
+    local AdTag = Costs.AdTag
+    if AdTag then
+        UI:ShowMessageTip(AdTag)
+        --注册广告结束事件
+        System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
+            local LocalPlayerId = Character:GetLocalPlayerId()
+            if AdTag == mark and LocalPlayerId == userId then
+                --累计收集次数
+                self:AccumulateCollected()
+
                 --看完广告后，获得物品
                 self:ShowGainView({Ad = AdTag}, Goods)
-            end)
-        end
-    end)
+            end
+        end)
 
-    --广告观看
-    IAA:LetPlayerWatchAds(AdTag)
+        --广告观看
+        IAA:LetPlayerWatchAds(AdTag)
+    end
 end
 
 --- 打开宝箱
