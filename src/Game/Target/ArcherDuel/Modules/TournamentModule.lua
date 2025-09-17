@@ -68,6 +68,14 @@ function TournamentModule:Open(PlayerData)
 
     local score = _GAME.GameUtils.GetPlayerRankScore()
     local level = _GAME.GameUtils.GetRankLevelByScore(score)
+    UI:SetImageColor({TournamentView.World.Image_1}, "#FFFFFF")
+    UI:SetImageColor({TournamentView.World.Image_2}, "#FFFFFF")
+    UI:SetImageColor({TournamentView.World.Image_3}, "#FFFFFF")
+    UI:SetImageColor({TournamentView.World.Image_4}, "#FFFFFF")
+    UI:SetImageColor({TournamentView.World.Image_5}, "#FFFFFF")
+    UI:SetImageColor({TournamentView.World.Image_6}, "#FFFFFF")
+    UI:SetImageColor({TournamentView.World["Image_"..level.titleLv]}, "#58DEFF")
+
     UI:SetText({106676}, tostring(level.cost))
     --本玩家Rank_8
     if isRank then
