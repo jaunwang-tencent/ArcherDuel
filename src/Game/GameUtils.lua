@@ -81,6 +81,8 @@ function GameUtils.AddPlayerReward(rewardId, addRewardCount)
         local Reward_Num = Archive:GetPlayerData(playerId, Archive.TYPE.Number, cfg.archive)
         Reward_Num = (Reward_Num or 0) + addRewardCount
         Archive:SetPlayerData(playerId, Archive.TYPE.Number, cfg.archive, Reward_Num)
+
+        System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
     end
 end
 
@@ -387,7 +389,7 @@ function GameUtils.CanEnterDiamondRankBattle()
     return false
 end
 
-function GameUtils.ShowGainView(Goods)
+function GameUtils.ShowGainView(Goods, closeCallback)
     --UI配置
     local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
     local GainView = UIConfig.GainView
@@ -422,6 +424,9 @@ function GameUtils.ShowGainView(Goods)
     UI:RegisterClicked(GainView.CloseButton, function()
         UI:SetVisible({GainView.ID}, false)
         UI:SetVisible({UIConfig.StoreView.PurchasePopup.Text}, false)
+        if closeCallback then
+            closeCallback()
+        end
         --注销按钮事件
         UI:UnRegisterClicked(GainView.CloseButton)
     end)

@@ -524,8 +524,16 @@ function FightModule:RefreshTaskProcesUI()
                 UI:UnRegisterClicked(ButtonID)
                 UI:RegisterClicked(ButtonID, function (ButtonID)
                     self.PlayerData.BaseData.Player_CollectTaskWeekly_Num = self.PlayerData.BaseData.Player_CollectTaskWeekly_Num | (1 << (index - 1))
+                    if index == 1 then
+                        _GAME.GameUtils.AddPlayerReward(100002, 100)
+                    elseif index == 2 then
+                        _GAME.GameUtils.AddPlayerReward(200003, 1)
+                    elseif index == 3 then
+                        _GAME.GameUtils.AddPlayerReward(200002, 2)
+                    elseif index == 4 then
+                        _GAME.GameUtils.AddPlayerReward(200003, 2)
+                    end
                     self:RefreshTaskProcesUI()
-
                 end)
             end
         else
@@ -545,6 +553,7 @@ function FightModule:RefreshWeeklyTaskUI(wday)
     UI:SetVisible({UIConfig.SevenDays.ID}, true)
     UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)
     local WeeklyTaskUIID = {105077, 105084, 105091}
+    local iconIDs = {105075, 105082, 105089}
     local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTaskByWeekly()
     local i = 1
@@ -558,7 +567,6 @@ function FightModule:RefreshWeeklyTaskUI(wday)
             local Completed = UI:FindChildWithIndex(UIID,2) -- 领奖
             local Button = UI:FindChildWithIndex(UIID,3) -- 前往按钮
             local Progress = UI:FindChildWithIndex(UIID,8) -- 进度
-            UI:SetText({ExpText}, tostring(v.rewards.WeeklyExp))
             UI:SetText({Name}, v.name)
             if v.state == taskMgr.Task.State.COMPLETED then
                 UI:SetVisible({Finish}, false)
@@ -588,6 +596,11 @@ function FightModule:RefreshWeeklyTaskUI(wday)
             local _, current, max = v:getProgressNumer()
             UI:SetProgressMaxValue({Progress}, max)
             UI:SetProgressCurrentValue({Progress}, current)
+            if v.rewards and v.rewards.RewardId then
+                local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[v.rewards.RewardId]
+                GameUtils.SetImageWithAsset(iconIDs[i], "Currency", cfg.iconIndex)
+                UI:SetText({ExpText}, tostring(v.rewards.RewardCount))
+            end
             i = i + 1
         end
     end
