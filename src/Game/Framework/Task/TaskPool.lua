@@ -154,7 +154,7 @@ function TaskPool.RefreshDailyTask(saveDataKV)
     if saveDataKV then
         for _, v in pairs(saveDataKV) do
             local Quest = TaskManagerInstance:getTask(v.id)
-            if Quest and Quest.takeType == TaskClass.TaskType.Daily then
+            if Quest and Quest.type == TaskClass.TaskType.Daily then
                 TaskManagerInstance:delTask(v.id)
             end
         end

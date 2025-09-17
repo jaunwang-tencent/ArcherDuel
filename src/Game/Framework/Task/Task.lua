@@ -460,11 +460,11 @@ function TaskManager:addTask(task)
     end
 end
 
-function TaskManager:delTask(task)
-    if task and task.id then
-        self.tasks[task.id] = nil
-        if self.activeTasks and self.activeTasks[task.id] then
-            self.activeTasks[task.id] = nil
+function TaskManager:delTask(id)
+    if id and self.tasks[id] then
+        self.tasks[id] = nil
+        if self.activeTasks and self.activeTasks[id] then
+            self.activeTasks[id] = nil
         end
     end
 end
