@@ -813,7 +813,7 @@ function LobbyModule:RefreshGeneralResourceBar()
         --玩家图标
         --目前API侧无法读取玩家图标，暂时使用这个
         --获取头像
-        UI:SetImage({GeneralResourceBar.PlayerIcon},Chat:GetCustomHeadIcon(self.PlayerID), true)
+        UI:SetImage({GeneralResourceBar.PlayerIcon}, Chat:GetCustomHeadIcon(self.PlayerID))
         --GameUtils.SetImageWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
         UI:SetText({GeneralResourceBar.Rank.Label}, tostring(BaseData.Rank))
         UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(BaseData.Coin))

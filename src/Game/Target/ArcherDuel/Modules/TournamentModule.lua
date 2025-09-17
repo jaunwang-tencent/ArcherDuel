@@ -84,7 +84,7 @@ function TournamentModule:Open(PlayerData)
         UI:SetText({107566}, "未上榜")
     end
     UI:SetText({107568}, Chat:GetCustomName(Character:GetLocalPlayerId()))
-    UI:SetImage({107567}, Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()), true)
+    UI:SetImage({107567}, Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()))
     UI:SetText({107574}, tostring(Rank_DiamondScore_Num))
 
     self.DiamondRankPlayerList = DiamondRankPlayerList
