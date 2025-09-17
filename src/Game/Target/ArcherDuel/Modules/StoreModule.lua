@@ -94,6 +94,7 @@ function StoreModule:Open(PlayerData)
                                 UI:SetText({BoxStyle.Price}, tostring(Cost.Diamond))
                             else
                                 --数据错误
+                                UI:ShowMessageTip("商品数据错误！")
                             end
                         end
                         UI:RegisterClicked(ButtonInfo.ButtonID, function()
@@ -116,12 +117,16 @@ function StoreModule:Open(PlayerData)
                     local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
                     if Equipment then
                         GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
-                    elseif GoodInfo.Goods.Coin then
-                        --显示金币
-                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
-                    elseif GoodInfo.Goods.Diamond then
-                        --显示砖石
-                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
+                    else
+                        if not GoodSlot.IconLock then
+                            if GoodInfo.Goods.Coin then
+                                --显示金币
+                                GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
+                            elseif GoodInfo.Goods.Diamond then
+                                --显示砖石
+                                GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
+                            end
+                        end
                     end
                     --点击次数
                     if GoodSlot.Times then
@@ -136,7 +141,8 @@ function StoreModule:Open(PlayerData)
                     end
                     --商品数量
                     if GoodSlot.Count then
-                        local Text = tostring(GoodInfo.Goods.Coin)
+                        local Value = GoodInfo.Goods.Coin or GoodInfo.Goods.Diamond
+                        local Text = tostring(Value)
                         UI:SetText({GoodSlot.Count}, Text)
                     end
                     --注册点击事件
@@ -329,14 +335,20 @@ end
 ---@param AdTag 广告标签
 ---@param Goods 商品
 function StoreModule:SeeAd(AdTag, Goods)
-    --看广告
-    UI:ShowMessageTip("See Ad:" .. AdTag)
-
-    --这一段是模拟观看广告
-    UGCS.Framework.Executor.Delay(3, function()
-        --看完广告后，获得物品
-        self:ShowGainView(Goods)
+    --注册广告结束事件
+    System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
+        local LocalPlayerId = Character:GetLocalPlayerId()
+        if AdTag == mark and LocalPlayerId == userId then
+            --这一段是模拟观看广告
+            UGCS.Framework.Executor.Delay(3, function()
+                --看完广告后，获得物品
+                self:ShowGainView(Goods)
+            end)
+        end
     end)
+
+    --广告观看
+    IAA:LetPlayerWatchAds(AdTag)
 end
 
 --- 打开宝箱
@@ -373,16 +385,20 @@ function StoreModule:OpenBox(boxId)
             GameUtils.SetImageWithAsset(BoxItem.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
         end
         UI:PlayUIAnimation(ThreeItem.ItemGroupID, 1, 0)
+        --暂停特效播放
+        UGCS.Framework.Executor.Delay(0.7, function()
+            if TargetBoxID then
+                UI:EffectPausePlay(TargetBoxID)
+            end
+        end)
         --播到1.6秒暂停播放
         UGCS.Framework.Executor.Delay(1.6, function()
             UI:PauseUIAnimation(ThreeItem.ItemGroupID, 1)
+            --当表演完成之后才显示领取按钮
+            UGCS.Framework.Executor.Delay(0.5, function()
+                UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},true)
+            end)
         end)
-    end)
-    UGCS.Framework.Executor.Delay(3,function ()
-        if TargetBoxID then
-            UI:EffectPausePlay(TargetBoxID)
-        end
-        UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},true)
     end)
 
     --注册领取事件
