@@ -1040,6 +1040,13 @@ local SceneConfig = {
                 },
             },
         },
+        --样条设置
+        SplineSetting = {
+            --样条曲率【单位：1】
+            Curvature = 0.35,
+            --中点振幅【单位：米】
+            Amplitude = 5,
+        }
     },
     --室外
     [7] = {
