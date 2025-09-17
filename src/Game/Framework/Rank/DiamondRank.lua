@@ -114,25 +114,26 @@ local function isCrossWeek(ts1, ts2)
     return getMondayZeroTs(ts1) ~= getMondayZeroTs(ts2)
 end
 
+local function sample_unique(n, k)
+    assert(k <= n, "k must be <= n")
+    local t = {}
+    for i = 1, n do t[i] = i end
+    -- 部分 Fisher-Yates：只打乱前 k 个位置
+    for i = 1, k do
+        local j = math.random(i, n)
+        t[i], t[j] = t[j], t[i]
+    end
+    local res = {}
+    for i = 1, k do res[i] = t[i] end
+    return res
+end
+
 DiamondRankManager.last_update_ts = 0
 DiamondRankManager.PlayerNum = 50
 
 --构建新的排行榜
 function DiamondRankManager.BuildDiamondRank()
-    local function sample_unique(n, k)
-        assert(k <= n, "k must be <= n")
-        local t = {}
-        for i = 1, n do t[i] = i end
-        -- 部分 Fisher-Yates：只打乱前 k 个位置
-        for i = 1, k do
-            local j = math.random(i, n)
-            t[i], t[j] = t[j], t[i]
-        end
-        local res = {}
-        for i = 1, k do res[i] = t[i] end
-        return res
-    end
-
+    
     local DiamondRankData = {}
     local headIcons = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "avatar", CustomProperty.PROPERTY_TYPE.Image)
     -- 取 50 个不重复的整数
