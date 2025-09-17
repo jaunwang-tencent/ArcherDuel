@@ -84,6 +84,18 @@ function GameUtils.AddPlayerReward(rewardId, addRewardCount)
     end
 end
 
+-- 获取玩家拥有的物品数量
+function GameUtils.GetPlayerReward(rewardId)
+    local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[rewardId]
+    if cfg and cfg.archive then
+        local playerId = Character:GetLocalPlayerId()
+        local Reward_Num = Archive:GetPlayerData(playerId, Archive.TYPE.Number, cfg.archive)
+        Reward_Num = (Reward_Num or 0)
+        return Reward_Num
+    end
+    return 0
+end
+
 function GameUtils.GetEquipmentMap()
     if GameUtils.EquipmentMap then
         return GameUtils.EquipmentMap
@@ -367,6 +379,64 @@ function GameUtils.GetGoldBattleCount()
     else
         return 0
     end
+end
+
+function GameUtils.CanEnterDiamondRankBattle()
+    if _GAME.GameUtils.GetPlayerReward(100003) > 0 then
+        return true
+    end
+    UI:ShowMessageTip("入场券不足，无法进入钻石联赛")
+    return false
+end
+
+function GameUtils.ShowGainView(Goods)
+    --UI配置
+    local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+    local GainView = UIConfig.GainView
+    UI:SetVisible({GainView.ID}, true)
+
+    if Goods.Coin then
+        --获得金钱，显示金钱
+        GameUtils.AddPlayerReward(100001, Goods.Coin)
+        GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 4)
+        UI:SetText({UIConfig.StoreView.PurchasePopup.Text}, tostring(Goods.Coin))
+        UI:SetVisible({UIConfig.StoreView.PurchasePopup.Text}, true)
+    elseif Goods.Diamond then
+        --获得砖石，显示砖石
+        GameUtils.AddPlayerReward(100002, Goods.Diamond)
+        GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 6)
+        UI:SetText({UIConfig.StoreView.PurchasePopup.Text}, tostring(Goods.Diamond))
+        UI:SetVisible({UIConfig.StoreView.PurchasePopup.Text}, true)
+    elseif Goods.DiamondScore then
+        local Rank_DiamondScore_Num = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "Rank_DiamondScore_Num")
+        if Rank_DiamondScore_Num then
+            Rank_DiamondScore_Num = Rank_DiamondScore_Num + Goods.DiamondScore
+            Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "Rank_DiamondScore_Num", Rank_DiamondScore_Num)
+        else
+            Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "Rank_DiamondScore_Num", Goods.DiamondScore)
+        end
+        GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 7)
+        UI:SetText({UIConfig.StoreView.PurchasePopup.Text}, tostring(Goods.DiamondScore))
+        UI:SetVisible({UIConfig.StoreView.PurchasePopup.Text}, true)
+    end
+
+    --设置物品图标
+    UI:RegisterClicked(GainView.CloseButton, function()
+        UI:SetVisible({GainView.ID}, false)
+        UI:SetVisible({UIConfig.StoreView.PurchasePopup.Text}, false)
+        --注销按钮事件
+        UI:UnRegisterClicked(GainView.CloseButton)
+    end)
+end
+
+--- 刷新图标
+---@param IconUI 图标资源
+---@param EquipmentData 装备数据
+function GameUtils.SetImageWithAsset(IconUI, AssetName, AssetIndex)
+    local ElementId = System:GetScriptParentID()
+    local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+    local IconId = IconIdArray[AssetIndex]
+    UI:SetImage({IconUI}, IconId, true)
 end
 
 return GameUtils

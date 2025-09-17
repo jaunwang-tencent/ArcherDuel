@@ -1529,10 +1529,12 @@ end
 
 -- 钻石赛胜利
 function GameMatch:OnDiamondVictory()
+    _GAME.GameUtils.ShowGainView({DiamondScore = 16})
 end
 
 -- 钻石赛失败
 function GameMatch:OnDiamondFail()
+    _GAME.GameUtils.ShowGainView({DiamondScore = 8})
 end
 
 return GameMatch

@@ -316,7 +316,7 @@ function FightModule:OnGoldMatch()
 end
 
 function FightModule:OnDiamondMatch()
-    if _GAME.GameUtils.CanEnterRankBattle() then
+    if _GAME.GameUtils.CanEnterDiamondRankBattle() then
         --这里要关闭所有页面
         UI:SetVisible({UIConfig.MainView.TitleBar.ID,
             UIConfig.MainView.StoreResourceBar.ID,
