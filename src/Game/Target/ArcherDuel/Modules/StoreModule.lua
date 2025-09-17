@@ -17,25 +17,22 @@ function StoreModule:Open(PlayerData)
     self.PlayerData = PlayerData
 
     local StoreView = UIConfig.StoreView
+    --活动页
     self.ScrollItems = {}
-    self.ButtonInfos = {}
+    --商铺信息
+    self.ShopInfos = {}
+    --商品信息
     self.GoodInfos = {}
     --加载商城活动
     local Activities = StoreView.Activities
-    --获取所有商品
-    local AllItems = PlayerData.AllItems
+    --获取商店中所有商品
+    local AllShops = PlayerData.AllShops
     local ItemsMap = {
-        [1] = AllItems.LimitItem,
-        [2] = AllItems.DailyItem,
-        [3] = AllItems.DiamondItem,
-        [4] = AllItems.CoinItem,
+        [1] = AllShops.LimitItem,
+        [2] = AllShops.DailyItem,
+        [3] = AllShops.DiamondItem,
+        [4] = AllShops.CoinItem,
     }
-    --获取当前拥有的砖石数量
-    local CurrentDiamond = PlayerData.BaseData.Diamond
-    --获取当前拥有的金宝箱数量
-    local CurrentGoldBox = PlayerData.BaseData.GoldBox
-    --获取当前拥有的银宝箱数量
-    local CurrentSilverBox = PlayerData.BaseData.SilverBox
     for ActivityIndex, Activity in ipairs(Activities) do
         --插入活动页签
         table.insert(self.ScrollItems, Activity.ID)
@@ -46,113 +43,15 @@ function StoreModule:Open(PlayerData)
         --商品
         local Items = ItemsMap[ActivityIndex]
         --商铺
-        local Shops = Activity.Shops
-        for ShopIndex, ShopSlot in ipairs(Shops) do
-            local Item = Items and Items[ShopIndex]
-            --按钮组【一般地购买某个商品只有一种途径（一个按钮），但不排除会有多个购买途径，比如限定奖池，可以开宝箱、也可以观看广告】
-            local ButtonGroup = ShopSlot.ButtonGroup
-            if ButtonGroup and Item then
-                local Costs = Item.Costs
-                for ButtonIndex, ButtonSlot in pairs(ButtonGroup) do
-                    local Cost = Costs[ButtonIndex]
-                    if Item then
-                        local ButtonInfo = {
-                            ButtonID = ButtonSlot.ID,
-                            Item = {
-                                Costs = Cost,
-                                Goods = Item.Goods
-                            }
-                        }
-                        --砖石&广告类型
-                        local DiamondStyle = ButtonSlot.DiamondStyle
-                        local AdStyle = ButtonSlot.AdStyle
-                        if DiamondStyle and AdStyle then
-                            if Cost.Diamond and CurrentDiamond > Cost.Diamond then
-                                --当前玩家拥有消耗砖石数量时，使用砖石购买方式
-                                UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, true)
-                                UI:SetText({DiamondStyle.Price}, tostring(Cost.Diamond))
-                                UI:SetVisible({AdStyle}, false)
-                            else
-                                --否则观看广告方式
-                                UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, false)
-                                UI:SetVisible({AdStyle}, true)
-                            end
-                        end
-                        --宝箱类型
-                        local BoxStyle = ButtonSlot.BoxStyle
-                        if BoxStyle then
-                            if Cost.GoldBox and CurrentGoldBox > Cost.GoldBox then
-                                --金宝箱
-                                GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 2)
-                                UI:SetText({BoxStyle.Price}, tostring(Cost.GoldBox))
-                            elseif Cost.SilverBox and CurrentSilverBox > Cost.SilverBox then
-                                --银宝箱
-                                GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 1)
-                                UI:SetText({BoxStyle.Price}, tostring(Cost.SilverBox))
-                            elseif Cost.Diamond and CurrentDiamond > Cost.Diamond then
-                                --砖石
-                                GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 6)
-                                UI:SetText({BoxStyle.Price}, tostring(Cost.Diamond))
-                            else
-                                --数据错误
-                                UI:ShowMessageTip("商品数据错误！")
-                            end
-                        end
-                        UI:RegisterClicked(ButtonInfo.ButtonID, function()
-                            self:BuyGood(ButtonInfo)
-                        end)
-                        table.insert(self.ButtonInfos, ButtonInfo)
-                    end
-                end
-            end
+        local Views = Activity.Views
+        for ViewIndex, ViewSlot in ipairs(Views) do
+            --商铺数据项
+            local ShopItem = Items and Items[ViewIndex]
+            --刷新商铺
+            self:RefreshShop(ViewSlot.ShopGroup, ShopItem)
 
-            --品槽组
-            local GoodGroup = ShopSlot.GoodGroup
-            if GoodGroup then
-                for SlotIndex, GoodSlot in pairs(GoodGroup) do
-                    local GoodInfo = {
-                        ButtonID = GoodSlot.ID,
-                        SlotIndex = SlotIndex,
-                        Goods = Item.Goods
-                    }
-                    local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
-                    if Equipment then
-                        GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
-                    else
-                        if not GoodSlot.IconLock then
-                            if GoodInfo.Goods.Coin then
-                                --显示金币
-                                GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
-                            elseif GoodInfo.Goods.Diamond then
-                                --显示砖石
-                                GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
-                            end
-                        end
-                    end
-                    --点击次数
-                    if GoodSlot.Times then
-                        local Cost = Item.Costs[SlotIndex]
-                        local Text = string.format("%d/%d", Cost.MaxCollect - Cost.HasCollect, Cost.MaxCollect)
-                        UI:SetText({GoodSlot.Times}, Text)
-                    end
-                    if GoodSlot.Progress then
-                        local Cost = Item.Costs[SlotIndex]
-                        UI:SetProgressMaxValue({GoodSlot.Progress}, Cost.MaxCollect)
-                        UI:SetProgressCurrentValue({GoodSlot.Progress}, Cost.MaxCollect - Cost.HasCollect)
-                    end
-                    --商品数量
-                    if GoodSlot.Count then
-                        local Value = GoodInfo.Goods.Coin or GoodInfo.Goods.Diamond
-                        local Text = tostring(Value)
-                        UI:SetText({GoodSlot.Count}, Text)
-                    end
-                    --注册点击事件
-                    UI:RegisterClicked(GoodSlot.ID, function()
-                        self:GoodDetail(GoodInfo)
-                    end)
-                    table.insert(self.GoodInfos, GoodInfo)
-                end
-            end
+            --刷新商品
+            self:RefreshGood(ViewSlot.GoodGroup, ShopItem)
         end
     end
     --添加之前显示子节点
@@ -172,27 +71,156 @@ function StoreModule:Close()
     --销毁视图
     local StoreView = UIConfig.StoreView
     UI:RemoveFromScrollView(StoreView.Scrollable, self.ScrollItems)
-    for _, ButtonInfo in pairs(self.ButtonInfos) do
-        UI:UnRegisterClicked(ButtonInfo.ButtonID)
+    for _, ShopInfo in pairs(self.ShopInfos) do
+        UI:UnRegisterClicked(ShopInfo.SlotID)
     end
     for _, GoodInfo in pairs(self.GoodInfos) do
-        UI:UnRegisterClicked(GoodInfo.ButtonID)
+        UI:UnRegisterClicked(GoodInfo.SlotID)
     end
     --再隐藏子节点
     UI:SetVisible(self.ScrollItems, false)
     --清除玩家数据
     self.ScrollItems = nil
-    self.ButtonInfos = nil
+    self.ShopInfos = nil
     self.GoodInfos = nil
     self.PlayerData = nil
+end
+
+--- 刷新商铺【一般地购买某个商品只有一种途径（一个按钮），但不排除会有多个购买途径，比如限定奖池，可以开宝箱、也可以观看广告】
+---@param ShopGroup 商铺视图组
+---@param ShopItem 商铺数据项
+function StoreModule:RefreshShop(ShopGroup, ShopItem)
+    local ShopGoods = ShopItem and ShopItem.Goods
+    if ShopGroup and ShopGoods then
+        --获取当前拥有的砖石数量
+        local CurrentDiamond = self.PlayerData.BaseData.Diamond
+        --获取当前拥有的金宝箱数量
+        local CurrentGoldBox = self.PlayerData.BaseData.GoldBox
+        --获取当前拥有的银宝箱数量
+        local CurrentSilverBox = self.PlayerData.BaseData.SilverBox
+        for ShopIndex, ShopSlot in pairs(ShopGroup) do
+            --消耗信息
+            local ShopCosts = ShopItem.Costs[ShopIndex]
+            --处理商铺
+            if ShopCosts and ShopGoods then
+                local ShopInfo = {
+                    --商铺点击
+                    SlotID = ShopSlot.ID,
+                    --商铺内容
+                    Content = {
+                        Costs = ShopCosts,
+                        Goods = ShopGoods
+                    }
+                }
+                --砖石&广告类型
+                local DiamondStyle = ShopSlot.DiamondStyle
+                local AdStyle = ShopSlot.AdStyle
+                if DiamondStyle and AdStyle then
+                    if ShopCosts.Diamond and CurrentDiamond > ShopCosts.Diamond then
+                        --当前玩家拥有消耗砖石数量时，使用砖石购买方式
+                        UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, true)
+                        UI:SetText({DiamondStyle.Price}, tostring(ShopCosts.Diamond))
+                        UI:SetVisible({AdStyle}, false)
+                    else
+                        --否则观看广告方式
+                        UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, false)
+                        UI:SetVisible({AdStyle}, true)
+                    end
+                end
+                --宝箱类型
+                local BoxStyle = ShopSlot.BoxStyle
+                if BoxStyle then
+                    if ShopCosts.GoldBox and CurrentGoldBox > ShopCosts.GoldBox then
+                        --金宝箱
+                        GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 2)
+                        UI:SetText({BoxStyle.Price}, tostring(ShopCosts.GoldBox))
+                    elseif ShopCosts.SilverBox and CurrentSilverBox > ShopCosts.SilverBox then
+                        --银宝箱
+                        GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 1)
+                        UI:SetText({BoxStyle.Price}, tostring(ShopCosts.SilverBox))
+                    elseif ShopCosts.Diamond and CurrentDiamond > ShopCosts.Diamond then
+                        --砖石
+                        GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 6)
+                        UI:SetText({BoxStyle.Price}, tostring(ShopCosts.Diamond))
+                    else
+                        --数据错误
+                        UI:ShowMessageTip("商品数据错误！")
+                    end
+                end
+                --注册商铺按钮事件
+                UI:RegisterClicked(ShopInfo.SlotID, function()
+                    self:BuyGood(ShopInfo)
+                end)
+                table.insert(self.ShopInfos, ShopInfo)
+            end
+        end
+    end
+end
+
+--- 刷新商品
+---@param GoodGroup 商品视图组
+---@param ShopItem 商铺数据项
+function StoreModule:RefreshGood(GoodGroup, ShopItem)
+    --处理商品
+    local ShopGoods = ShopItem.Goods
+    if GoodGroup then
+        for GoodIndex, GoodSlot in pairs(GoodGroup) do
+            local GoodInfo = {
+                --商品点击
+                SlotID = GoodSlot.ID,
+                --商品索引
+                GoodIndex = GoodIndex,
+                --商品内容
+                Content = ShopGoods
+            }
+            local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
+            if Equipment then
+                --装备
+                GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
+            else
+                if not GoodSlot.IconLock then
+                    if ShopGoods.Coin then
+                        --显示金币
+                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
+                    elseif ShopGoods.Diamond then
+                        --显示砖石
+                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
+                    end
+                end
+            end
+            --点击次数
+            if GoodSlot.Times then
+                --消耗信息【这种情况下是一一映射】
+                local ShopCosts = ShopItem.Costs[GoodIndex]
+                local Text = string.format("%d/%d", ShopCosts.MaxCollect - ShopCosts.HasCollect, ShopCosts.MaxCollect)
+                UI:SetText({GoodSlot.Times}, Text)
+            end
+            if GoodSlot.Progress then
+                --消耗信息【这种情况下是一一映射】
+                local ShopCosts = ShopItem.Costs[GoodIndex]
+                UI:SetProgressMaxValue({GoodSlot.Progress}, ShopCosts.MaxCollect)
+                UI:SetProgressCurrentValue({GoodSlot.Progress}, ShopCosts.MaxCollect - ShopCosts.HasCollect)
+            end
+            --商品数量
+            if GoodSlot.Count then
+                local Value = ShopGoods.Coin or ShopGoods.Diamond
+                local Text = tostring(Value)
+                UI:SetText({GoodSlot.Count}, Text)
+            end
+            --注册商品点击事件
+            UI:RegisterClicked(GoodInfo.SlotID, function()
+                self:GoodDetail(GoodInfo)
+            end)
+        end
+    end
 end
 
 --- 获取指定商品信息对应的装备数据
 ---@param GoodInfo 商品信息
 function StoreModule:GetEquipmentByGoodInfo(GoodInfo)
     --装备
-    local Equipments = GoodInfo.Goods and GoodInfo.Goods.Equipments
-    local EquipmentGood = Equipments and Equipments[GoodInfo.SlotIndex]
+    local EquipmentGoods = GoodInfo.Content and GoodInfo.Content.Equipments
+    local EquipmentGood = EquipmentGoods and EquipmentGoods[GoodInfo.GoodIndex]
     if EquipmentGood then
         local AllEquipment = self.PlayerData.AllEquipment
         local Equipment = AllEquipment[EquipmentGood.ID]
@@ -213,7 +241,7 @@ function StoreModule:GetEquipmentByGoods(Goods)
 end
 
 --- 商品详情
----@param GoodInfo 商品详情
+---@param GoodInfo 商品信息
 function StoreModule:GoodDetail(GoodInfo)
     --装备
     local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
@@ -223,11 +251,11 @@ function StoreModule:GoodDetail(GoodInfo)
 end
 
 --- 购买商品
----@param ButtonInfo 按钮信息
-function StoreModule:BuyGood(ButtonInfo)
-    local Item = ButtonInfo.Item
-    local Costs = Item.Costs
-    local Goods = Item.Goods
+---@param ShopInfo 商铺信息
+function StoreModule:BuyGood(ShopInfo)
+    local ShopContent = ShopInfo.Content
+    local Costs = ShopContent.Costs
+    local Goods = ShopContent.Goods
     local BaseData = self.PlayerData.BaseData
     if Costs.GoldBox and BaseData.GoldBox >= Costs.GoldBox then
         --消耗金宝箱
@@ -253,7 +281,7 @@ function StoreModule:BuyGood(ButtonInfo)
         self:SeeAd(Costs.Ad, Goods)
     else
         --不可购买
-        UI:ShowMessageTip("Cant Buy:" .. ButtonInfo.ButtonID)
+        UI:ShowMessageTip("Cant Buy:" .. ShopInfo.ButtonID)
     end
     --刷新商店资源
     System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")

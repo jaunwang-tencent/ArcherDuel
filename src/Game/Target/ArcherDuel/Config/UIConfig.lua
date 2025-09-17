@@ -696,11 +696,11 @@ local UIConfig = {
                 ID = 110329,
                 --倒计时
                 CountDown = 110327,
-                --商铺【一些购买按钮&商品槽】
-                Shops = {
+                --活动页面视图【一些购买按钮&商品槽】
+                Views = {
                     [1] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 --按钮  注释：判定是否拥有金色箱子，如果有则跳转到开箱页面
                                 ID = 110331,
@@ -713,7 +713,7 @@ local UIConfig = {
                                 },
                             },
                             [2] = {
-                                --广告按钮 
+                                --广告按钮
                                 ID = 110330,
                                 --限时类型
                                 LimitStyle = {
@@ -752,7 +752,7 @@ local UIConfig = {
                     },
                     [2] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 --按钮  注释：判定是否拥有紫色箱子，如果有则跳转到开箱页面
                                 ID = 110335,
@@ -810,11 +810,11 @@ local UIConfig = {
                 ID = 110360,
                 --倒计时
                 CountDown = 110358,
-                --商铺【一些购买按钮&商品槽】
-                Shops = {
+                --活动页面视图【一些购买按钮&商品槽】
+                Views = {
                     [1] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 --按钮
                                 ID = 110341,
@@ -840,7 +840,7 @@ local UIConfig = {
                     },
                     [2] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 --按钮
                                 ID = 110345,
@@ -866,7 +866,7 @@ local UIConfig = {
                     },
                     [3] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 --按钮  注释点击购买按钮
                                 ID = 110351,
@@ -898,11 +898,11 @@ local UIConfig = {
                 ID = 110260,
                 --倒计时
                 CountDown = 110259,
-                --商铺【一些购买按钮&商品槽】
-                Shops = {
+                --活动页面视图【一些购买按钮&商品槽】
+                Views = {
                     [1] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 --按钮  注释：观看广告按钮
                                 ID = 110284,
@@ -931,11 +931,11 @@ local UIConfig = {
                 ID = 110319,
                 --倒计时
                 CountDown = 110358,
-                --商铺【一些购买按钮&商品槽】
-                Shops = {
+                --活动页面视图【一些购买按钮&商品槽】
+                Views = {
                     [1] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 --按钮  注释：观看广告按钮
                                 ID = 110300,
@@ -961,7 +961,7 @@ local UIConfig = {
                     },
                     [2] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 ID = 110304,
                                 --看广告方式
@@ -986,7 +986,7 @@ local UIConfig = {
                     },
                     [3] = {
                         --按钮槽
-                        ButtonGroup = {
+                        ShopGroup = {
                             [1] = {
                                 ID = 110310,
                                 --看广告方式
@@ -1365,7 +1365,7 @@ local UIConfig = {
         TwoItem = {
             ID = 108048,
             --按钮组
-            ButtonGroup = {
+            ShopGroup = {
                 --再开一个【播放广告】
                 OnceMore = 108058,
                 --延迟显示部分
