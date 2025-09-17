@@ -66,6 +66,9 @@ function TournamentModule:Open(PlayerData)
     end
     UI:AddToScrollView(DiamondView.ScrollView, DiamondRankPlayerList)
 
+    local score = _GAME.GameUtils.GetPlayerRankScore()
+    local level = _GAME.GameUtils.GetRankLevelByScore(score)
+    UI:SetText({106676}, tostring(level.cost))
     --本玩家Rank_8
     if isRank then
         UI:SetText({107566}, tostring(RankNum))

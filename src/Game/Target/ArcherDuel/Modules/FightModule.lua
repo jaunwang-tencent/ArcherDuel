@@ -66,8 +66,9 @@ function FightModule:Open(PlayerData)
         self:OnSevenDays()
     end)
 
+    local level = _GAME.GameUtils.GetRankLevelByScore(score)
     --寻找对局
-    UI:SetText({CenterView.Match.Text}, string.format("%d", PlayerData.BaseData.Coin))
+    UI:SetText({CenterView.Match.Text}, string.format("%d", level.cost))
     UI:RegisterClicked(CenterView.Match.Button, function()
         self:OnMatch()
     end)
@@ -99,7 +100,6 @@ function FightModule:Open(PlayerData)
     local Rank = CenterView and CenterView.Rank
     if Rank then
         local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Rank", CustomProperty.PROPERTY_TYPE.Image)
-        local level = _GAME.GameUtils.GetRankLevelByScore(score)
         if level.icon and list[level.icon] then
             UI:SetImage({Rank.Image}, list[level.icon], true)
         end
@@ -126,7 +126,7 @@ function FightModule:Open(PlayerData)
 
         UI:SetText({Rank.Text_1}, tostring(UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore))
         UI:SetText({Rank.Text_2}, "+" .. UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore)
-        UI:SetText({Rank.Text_3}, tostring(level.cost))
+        UI:SetText({Rank.Text_3}, tostring(level.cost * 2))
     end
 end
 
