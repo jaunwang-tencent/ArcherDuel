@@ -110,14 +110,17 @@ function FightModule:Open(PlayerData)
             local max = RankInfoConfig[level.id + 1].base_score - level.base_score
             UI:SetProgressMaxValue({Rank.Progress}, max)
             UI:SetProgressCurrentValue({Rank.Progress}, value)
+            UI:SetText({115394}, value .. "/" .. max)
         else
             if RankInfoConfig[level.id - 1] then
                 local max = level.base_score - RankInfoConfig[level.id - 1].base_score
                 UI:SetProgressMaxValue({Rank.Progress}, max)
                 UI:SetProgressCurrentValue({Rank.Progress}, max)
+                UI:SetText({115394}, max .. "/" .. max)
             else
                 UI:SetProgressMaxValue({Rank.Progress}, 0)
                 UI:SetProgressCurrentValue({Rank.Progress}, 0)
+                UI:SetText({115394}, "0/0")
             end
         end
 
