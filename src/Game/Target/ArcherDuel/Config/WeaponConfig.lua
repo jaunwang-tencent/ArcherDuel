@@ -5,6 +5,10 @@ local WeaponConfig = {
     [1] = {
         --箭
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 1,
         --武器所需资源
         Resource = {
             --海岛
@@ -267,6 +271,10 @@ local WeaponConfig = {
     [2] = {
         --箭2
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 2,
         --武器所需资源
         Resource = {
             --海岛
@@ -302,7 +310,7 @@ local WeaponConfig = {
                 --手持物
                 HeldItem = {
                     -- 手持点立方体实例id
-                    Root = 2832,
+                    Root = 2832,    
                     -- 弓上方弓弦连接点立方体实例id
                     Up = 2840,
                     -- 弓下方弓弦连接点立方体实例id
@@ -529,6 +537,10 @@ local WeaponConfig = {
     [3] = {
         --箭3
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 3,
         --武器所需资源
         Resource = {
             --海岛
@@ -791,6 +803,10 @@ local WeaponConfig = {
     [4] = {
         --箭4
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 4,
         --武器所需资源
         Resource = {
             --海岛
@@ -1053,6 +1069,10 @@ local WeaponConfig = {
     [5] = {
         --箭5
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 5,
         --武器所需资源
         Resource = {
             --海岛
@@ -1090,7 +1110,7 @@ local WeaponConfig = {
                     -- 手持点立方体实例id
                     Root = 3164,
                     -- 弓上方弓弦连接点立方体实例id
-                    Up = 3164,
+                    Up = 3165,
                     -- 弓下方弓弦连接点立方体实例id
                     Down = 3166,
                     --弓弦【默认：272】
@@ -1315,6 +1335,10 @@ local WeaponConfig = {
     [6] = {
         --箭6
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 6,
         --武器所需资源
         Resource = {
             --海岛
@@ -1577,6 +1601,10 @@ local WeaponConfig = {
     [7] = {
         --箭7
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 7,
         --武器所需资源
         Resource = {
             --海岛
@@ -1839,6 +1867,10 @@ local WeaponConfig = {
     [8] = {
         --箭8
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 8,
         --武器所需资源
         Resource = {
             --海岛
@@ -2101,6 +2133,10 @@ local WeaponConfig = {
     [9] = {
         --箭9
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 9,
         --武器所需资源
         Resource = {
             --海岛
@@ -2363,6 +2399,10 @@ local WeaponConfig = {
     [10] = {
         --箭10
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 10,
         --武器所需资源
         Resource = {
             --海岛
@@ -2625,6 +2665,10 @@ local WeaponConfig = {
     [11] = {
         --箭11
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 11,
         --武器所需资源
         Resource = {
             --海岛
@@ -2887,6 +2931,10 @@ local WeaponConfig = {
     [12] = {
         --箭12
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 12,
         --武器所需资源
         Resource = {
             --海岛
@@ -3149,6 +3197,10 @@ local WeaponConfig = {
     [13] = {
         --箭13
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 13,
         --武器所需资源
         Resource = {
             --海岛
@@ -3411,6 +3463,10 @@ local WeaponConfig = {
     [14] = {
         --箭14
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 14,
         --武器所需资源
         Resource = {
             --海岛
@@ -3673,6 +3729,10 @@ local WeaponConfig = {
     [15] = {
         --箭15
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 15,
         --武器所需资源
         Resource = {
             --海岛
@@ -3935,6 +3995,10 @@ local WeaponConfig = {
     [16] = {
         --箭16
         TypeName = "Bow",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 16,
         --武器所需资源
         Resource = {
             --海岛
@@ -4197,6 +4261,10 @@ local WeaponConfig = {
     [17] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 33,
         --武器所需资源
         Resource = {
             --海岛
@@ -4412,6 +4480,10 @@ local WeaponConfig = {
     [18] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 34,
         --武器所需资源
         Resource = {
             --海岛
@@ -4627,6 +4699,10 @@ local WeaponConfig = {
     [19] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 35,
         --武器所需资源
         Resource = {
             --海岛
@@ -4842,6 +4918,10 @@ local WeaponConfig = {
     [20] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 36,
         --武器所需资源
         Resource = {
             --海岛
@@ -5057,6 +5137,10 @@ local WeaponConfig = {
     [21] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 37,
         --武器所需资源
         Resource = {
             --海岛
@@ -5272,6 +5356,10 @@ local WeaponConfig = {
     [22] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 38,
         --武器所需资源
         Resource = {
             --海岛
@@ -5486,7 +5574,11 @@ local WeaponConfig = {
     },
     [23] = {
         --斧
-        TypeName = "Axe",
+        TypeName = "Axe",   
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 39,
         --武器所需资源
         Resource = {
             --海岛
@@ -5702,6 +5794,10 @@ local WeaponConfig = {
     [24] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 40,
         --武器所需资源
         Resource = {
             --海岛
@@ -5916,7 +6012,11 @@ local WeaponConfig = {
     },
     [25] = {
         --斧
-        TypeName = "Axe",
+        TypeName = "Axe", 
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 41,
         --武器所需资源
         Resource = {
             --海岛
@@ -6132,6 +6232,10 @@ local WeaponConfig = {
     [26] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 42,
         --武器所需资源
         Resource = {
             --海岛
@@ -6343,6 +6447,10 @@ local WeaponConfig = {
     [27] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 43,
         --武器所需资源
         Resource = {
             --海岛
@@ -6558,6 +6666,10 @@ local WeaponConfig = {
     [28] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 44,
         --武器所需资源
         Resource = {
             --海岛
@@ -6773,6 +6885,10 @@ local WeaponConfig = {
     [29] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 45,
         --武器所需资源
         Resource = {
             --海岛
@@ -6987,7 +7103,11 @@ local WeaponConfig = {
     },
     [30] = {
         --斧
-        TypeName = "Axe",
+        TypeName = "Axe",   
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 46,
         --武器所需资源
         Resource = {
             --海岛
@@ -7203,6 +7323,10 @@ local WeaponConfig = {
     [31] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 47,
         --武器所需资源
         Resource = {
             --海岛
@@ -7418,6 +7542,10 @@ local WeaponConfig = {
     [32] = {
         --斧
         TypeName = "Axe",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 48,
         --武器所需资源
         Resource = {
             --海岛
@@ -7632,7 +7760,11 @@ local WeaponConfig = {
     },
     [33] = {
         --矛
-        TypeName = "Spear",
+        TypeName = "Spear", 
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 17,
         --武器所需资源
         Resource = {
             --海岛
@@ -7832,6 +7964,10 @@ local WeaponConfig = {
     [34] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 18,
         --武器所需资源
         Resource = {
             --海岛
@@ -8031,6 +8167,10 @@ local WeaponConfig = {
     [35] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 19,
         --武器所需资源
         Resource = {
             --海岛
@@ -8230,6 +8370,10 @@ local WeaponConfig = {
     [36] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 20,
         --武器所需资源
         Resource = {
             --海岛
@@ -8429,6 +8573,10 @@ local WeaponConfig = {
     [37] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 21,
         --武器所需资源
         Resource = {
             --海岛
@@ -8628,6 +8776,10 @@ local WeaponConfig = {
     [38] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 22,
         --武器所需资源
         Resource = {
             --海岛
@@ -8827,6 +8979,10 @@ local WeaponConfig = {
     [39] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 23,
         --武器所需资源
         Resource = {
             --海岛
@@ -8841,7 +8997,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 6743,
+                    Root = 6744,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 },
@@ -9026,6 +9182,10 @@ local WeaponConfig = {
     [40] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 24,
         --武器所需资源
         Resource = {
             --海岛
@@ -9225,6 +9385,10 @@ local WeaponConfig = {
     [41] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 25,
         --武器所需资源
         Resource = {
             --海岛
@@ -9424,6 +9588,10 @@ local WeaponConfig = {
     [42] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 26,
         --武器所需资源
         Resource = {
             --海岛
@@ -9623,6 +9791,10 @@ local WeaponConfig = {
     [43] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 27,
         --武器所需资源
         Resource = {
             --海岛
@@ -9822,6 +9994,10 @@ local WeaponConfig = {
     [44] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 28,
         --武器所需资源
         Resource = {
             --海岛
@@ -10021,6 +10197,10 @@ local WeaponConfig = {
     [45] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 29,
         --武器所需资源
         Resource = {
             --海岛
@@ -10220,6 +10400,10 @@ local WeaponConfig = {
     [46] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 30,
         --武器所需资源
         Resource = {
             --海岛
@@ -10419,6 +10603,10 @@ local WeaponConfig = {
     [47] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 31,
         --武器所需资源
         Resource = {
             --海岛
@@ -10618,6 +10806,10 @@ local WeaponConfig = {
     [48] = {
         --矛
         TypeName = "Spear",
+        --资产名称
+        AssetName = "weapon_icon",
+        --资产序列
+        AssetIndex = 32,
         --武器所需资源
         Resource = {
             --海岛
@@ -10814,6 +11006,8 @@ local WeaponConfig = {
             Growth = 14,
         },
     },
+
+
 }
 
 return WeaponConfig
