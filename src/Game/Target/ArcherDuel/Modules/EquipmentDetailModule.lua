@@ -8,6 +8,7 @@ local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 local UpgradeConfig = UGCS.Target.ArcherDuel.Config.UpgradeConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
 --点击装备详情界面
 function EquipmentDetailModule:Open(Equipment)
@@ -274,6 +275,20 @@ function EquipmentDetailModule:OnUpgrade(Equipment)
             UI:SetVisible(DetailView.UpgradeEffect, true)
             for _, EffectUI in ipairs(DetailView.UpgradeEffect) do
                 UI:PlayUIAnimation(EffectUI, 1, 0)
+            end
+
+            if Equipment.Category == 1 then -- 角色
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.UpdateCharacter)
+            elseif Equipment.Category == 2 then -- 上装
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.UpdateTop)
+            elseif Equipment.Category == 3 then -- 下装
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.UpdateBottoms)
+            elseif Equipment.Category == 4 then -- 弓箭
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.UpdateBow)
+            elseif Equipment.Category == 5 then -- 投斧
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.UpdateAxe)
+            elseif Equipment.Category == 6 then -- 投矛
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.UpdateSpear)
             end
         else
             --弹金币不够Tips，并跳转

@@ -401,9 +401,23 @@ function TaskManager:GetInsatnce()
     }
 
     obj.conditionFactories[TaskEvents.LoginGame] = function(params) return LoginGameCondition:new(params) end
-    obj.conditionFactories[TaskEvents.Battle] = function(params) return GeneralProgressCondition:new(TaskEvents.Battle, params) end
     obj.conditionFactories[TaskEvents.BattleWinUseBow] = function(params) return GeneralProgressCondition:new(TaskEvents.BattleWinUseBow, params) end
+    obj.conditionFactories[TaskEvents.BattleWinUseAxe] = function(params) return GeneralProgressCondition:new(TaskEvents.BattleWinUseAxe, params) end
+    obj.conditionFactories[TaskEvents.BattleWinUseSpear] = function(params) return GeneralProgressCondition:new(TaskEvents.BattleWinUseSpear, params) end
+    obj.conditionFactories[TaskEvents.BattleWin] = function(params) return GeneralProgressCondition:new(TaskEvents.BattleWin, params) end
+    obj.conditionFactories[TaskEvents.BattleComplete] = function(params) return GeneralProgressCondition:new(TaskEvents.BattleComplete, params) end
     obj.conditionFactories[TaskEvents.HeadShot] = function(params) return GeneralProgressCondition:new(TaskEvents.HeadShot, params) end
+    obj.conditionFactories[TaskEvents.UpdateAxe] = function(params) return GeneralProgressCondition:new(TaskEvents.UpdateAxe, params) end
+    obj.conditionFactories[TaskEvents.UpdateSpear] = function(params) return GeneralProgressCondition:new(TaskEvents.UpdateSpear, params) end
+    obj.conditionFactories[TaskEvents.UpdateBow] = function(params) return GeneralProgressCondition:new(TaskEvents.UpdateBow, params) end
+    obj.conditionFactories[TaskEvents.UpdateBottoms] = function(params) return GeneralProgressCondition:new(TaskEvents.UpdateBottoms, params) end
+    obj.conditionFactories[TaskEvents.UpdateTop] = function(params) return GeneralProgressCondition:new(TaskEvents.UpdateTop, params) end
+    obj.conditionFactories[TaskEvents.UpdateCharacter] = function(params) return GeneralProgressCondition:new(TaskEvents.UpdateCharacter, params) end
+    obj.conditionFactories[TaskEvents.WinBloodline60] = function(params) return GeneralProgressCondition:new(TaskEvents.WinBloodline60, params) end
+    obj.conditionFactories[TaskEvents.WinBloodline80] = function(params) return GeneralProgressCondition:new(TaskEvents.WinBloodline80, params) end
+    obj.conditionFactories[TaskEvents.WinBloodline100] = function(params) return GeneralProgressCondition:new(TaskEvents.WinBloodline100, params) end
+    obj.conditionFactories[TaskEvents.AdCoin] = function(params) return GeneralProgressCondition:new(TaskEvents.AdCoin, params) end
+    obj.conditionFactories[TaskEvents.AdDiamond] = function(params) return GeneralProgressCondition:new(TaskEvents.AdDiamond, params) end
 
     setmetatable(obj, self)
     TaskManager.Instance = obj
