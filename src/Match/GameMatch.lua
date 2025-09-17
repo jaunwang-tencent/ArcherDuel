@@ -51,54 +51,44 @@ function GameMatch:Init()
 
     --读取保存当前玩家能够使用武器
     self.localWeapons = {}
-    local bEmpty = true
     local Equipped_Bow_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Bow_ID")
     if Equipped_Bow_ID and Equipped_Bow_ID > 0 then
-        bEmpty = false
         self.localWeapons["Bow"] = Equipped_Bow_ID -- 弓
+    else
+        self.localWeapons["Bow"] = 61 -- 试玩兜底弓
     end
     local Equipped_Axe_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Axe_ID")
     if Equipped_Axe_ID and Equipped_Axe_ID > 0 then
-        bEmpty = false
         self.localWeapons["Axe"] = Equipped_Axe_ID -- 斧
+    else
+        self.localWeapons["Axe"] = 77 -- 试玩兜底斧
     end
     local Equipped_Spear_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Spear_ID")
     if Equipped_Spear_ID and Equipped_Spear_ID > 0 then
-        bEmpty = false
         self.localWeapons["Spear"] = Equipped_Spear_ID -- 矛
-    end
-    if bEmpty then -- 试玩兜底
-        self.localWeapons = {
-            ["Bow"] = 61,
-            ["Axe"] = 77,
-            ["Spear"] = 93,
-        }
+    else
+        self.localWeapons["Spear"] = 93 -- 试玩兜底矛
     end
 
     -- 当前玩家穿戴装备
     self.localEquipments = {}
-    local bEmpty = true
     local Equipped_Character_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Character_ID")
     if Equipped_Character_ID and Equipped_Character_ID > 0 then
-        bEmpty = false
         self.localEquipments["Part"] = Equipped_Character_ID
+    else
+        self.localEquipments["Part"] = 1 -- 试玩兜底
     end
     local Equipped_Bottoms_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Bottoms_ID")
     if Equipped_Bottoms_ID and Equipped_Bottoms_ID > 0 then
-        bEmpty = false
         self.localEquipments["Bottoms"] = Equipped_Bottoms_ID
+    else
+        self.localEquipments["Bottoms"] = 50 -- 试玩兜底
     end
     local Equipped_Top_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Top_ID")
     if Equipped_Top_ID and Equipped_Top_ID > 0 then
-        bEmpty = false
         self.localEquipments["Cloth"] = Equipped_Top_ID
-    end
-    if bEmpty then -- 试玩兜底
-        self.localEquipments = {
-            ["Part"] = 1,
-            ["Bottoms"] = 50,
-            ["Cloth"] = 33,
-        }
+    else
+        self.localEquipments["Cloth"] = 33 -- 试玩兜底
     end
 
     --黄金赛缓存数据
