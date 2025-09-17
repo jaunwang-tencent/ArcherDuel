@@ -508,6 +508,7 @@ function Weapon:PlayEffectOnElement(ElementID, EffectName)
         local Size = EffectData.Size and EffectData.Size or 1
         Particle:SetParticleScale(EffectID, Engine.Vector(Size, Size, Size))
         Particle:SetParticlePosition(EffectID, EffectData.Offset)
+        Particle:SetParticleRotation(EffectID, EffectData.Rotation)
         return EffectID
     end
 end
