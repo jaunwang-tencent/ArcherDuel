@@ -242,9 +242,9 @@ function StoreModule:BuyGood(ButtonInfo)
             --直接消耗
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             --获得物品
-            self:ShowGainView(Goods)
+            self:ShowGainView(Costs, Goods)
         else
-            --看广告，在此弹出看广告弹窗【没有资源...】
+            --在此弹出看广告弹窗
             self:ShowAdView(Goods)
         end
     elseif Costs.Ad then
@@ -259,8 +259,9 @@ function StoreModule:BuyGood(ButtonInfo)
 end
 
 --- 显示获得视图
+---@param Costs 消耗,目前有四种途径获得商品 {Ad = tag} or {Diamond = 1} or {GoldBox = 1} or {SilverBox = 1}
 ---@param Goods 物品
-function StoreModule:ShowGainView(Goods)
+function StoreModule:ShowGainView(Costs, Goods)
     local GainView = UIConfig.GainView
     UI:SetVisible({GainView.ID}, true)
 
@@ -342,7 +343,7 @@ function StoreModule:SeeAd(AdTag, Goods)
             --这一段是模拟观看广告
             UGCS.Framework.Executor.Delay(3, function()
                 --看完广告后，获得物品
-                self:ShowGainView(Goods)
+                self:ShowGainView({Ad = AdTag}, Goods)
             end)
         end
     end)
