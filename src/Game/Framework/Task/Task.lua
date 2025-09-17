@@ -47,6 +47,26 @@ function GeneralProgressCondition:check(params)
     return false, self.currentAmount
 end
 
+-- 获得金币任务
+local GainCoinCondition = setmetatable({}, {__index = Condition})
+GainCoinCondition.__index = GainCoinCondition
+
+function GainCoinCondition:new(taskEvents, params)
+    local obj = Condition.new(self, taskEvents, params)
+    return obj
+end
+
+function GainCoinCondition:check(params)
+    if params.event == self.type then
+        if params.params and type(params.params) == "number" then
+            self.currentAmount = self.currentAmount + params.params
+        end
+        self.completed = self.currentAmount >= self.requiredAmount
+        return true, self.currentAmount
+    end
+    return false, self.currentAmount
+end
+
 -- 击杀条件
 local KillCondition = setmetatable({}, {__index = Condition})
 KillCondition.__index = KillCondition
@@ -422,6 +442,7 @@ function TaskManager:GetInsatnce()
     obj.conditionFactories[TaskEvents.GoldBattle] = function(params) return GeneralProgressCondition:new(TaskEvents.GoldBattle, params) end
     obj.conditionFactories[TaskEvents.DiamondBattle] = function(params) return GeneralProgressCondition:new(TaskEvents.DiamondBattle, params) end
     obj.conditionFactories[TaskEvents.PlayDuration] = function(params) return GeneralProgressCondition:new(TaskEvents.PlayDuration, params) end
+    obj.conditionFactories[TaskEvents.GainCoin] = function(params) return GainCoinCondition:new(TaskEvents.GainCoin, params) end
 
     setmetatable(obj, self)
     TaskManager.Instance = obj
@@ -541,16 +562,14 @@ function TaskManager:abandonTask(taskId)
 end
 
 function TaskManager:handleEvent(eventType, params)
-    params = params or {}
-    params.event = eventType
+    local objParams = {}
+    objParams.event = eventType
+    objParams.params = params
 
-    local needsave = false
     for taskId, _ in pairs(self.activeTasks) do
         local task = self.tasks[taskId]
         if task then
-            if task:checkCompletion(params) then
-                needsave = true
-            end
+            task:checkCompletion(objParams)
         end
     end
     self:SaveTaskData()

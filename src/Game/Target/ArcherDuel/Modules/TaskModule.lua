@@ -22,7 +22,7 @@ end
 function TaskModule:RefreshTaskProcesUI()
     local TaskExp = self.PlayerData.BaseData.Player_TaskDailyExp_Num
     local CollectTask = self.PlayerData.BaseData.Player_CollectTaskDaily_Num
-    local winningPoints = {20, 70, 120, 170, 220, 240}
+    local winningPoints = {40, 80, 120, 160, 200, 240}
     local TaskProcesID  = UIConfig.TaskView.TaskProcesView.TaskProces
     for index = 1, 6, 1 do
         local lockID = UIConfig.TaskView.TaskProcesView.Lock[index]
