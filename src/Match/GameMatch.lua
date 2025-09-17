@@ -1,5 +1,6 @@
 ﻿local MatchConfig = require("Match.MatchConfig")
 local GoldRewardConfig = require("Match.GoldRewardConfig")
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
 local GameMatch = {}
 
@@ -29,7 +30,7 @@ function GameMatch:Init()
         self.mapId = CustomProperty:GetCustomProperty(System:GetScriptParentID(), "MapId", CustomProperty.PROPERTY_TYPE.Number)
     end
     self.isGold = false -- 是否是黄金赛地图
-    
+
     --构造场景表
     self.sceneIds = {}
     if UGCS.Target.ArcherDuel.Config.SceneConfig[self.mapId] then
@@ -173,8 +174,10 @@ function GameMatch:BindEvents()
 
     -- 胜利界面点击再来一次
     UI:RegisterPressed(108060,function ()
-        UI:SetVisible(MatchConfig.Victory_UI, false)
-        System:FireGameEvent(_GAME.Events.StartMatch)
+        if _GAME.GameUtils.CanEnterRankBattle() then
+            UI:SetVisible(MatchConfig.Victory_UI, false)
+            System:FireGameEvent(_GAME.Events.StartMatch)
+        end
     end)
 
     -- 胜利界面点击返回大厅
@@ -226,8 +229,10 @@ function GameMatch:BindEvents()
 
     -- 失败界面点击再来一次
     UI:RegisterClicked(106511, function()
-        UI:SetVisible(MatchConfig.Fail_UI, false)
-        System:FireGameEvent(_GAME.Events.StartMatch)
+        if _GAME.GameUtils.CanEnterRankBattle() then
+            UI:SetVisible(MatchConfig.Fail_UI, false)
+            System:FireGameEvent(_GAME.Events.StartMatch)
+        end
     end)
 
     -- 失败界面点击返回大厅
@@ -553,6 +558,15 @@ end
 function GameMatch:OnVictory()
     --加积分
     local score = _GAME.GameUtils.GetPlayerRankScore()
+    -- 加金币
+    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    if curLevel then -- 赢得比赛，获取金币数量为当前段位的2倍
+        local addCoin = 2*curLevel.cost - curLevel.cost
+        local coin = _GAME.GameUtils.GetPlayerCoin()
+        _GAME.GameUtils.SetPlayerCoin(coin + addCoin)
+        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GainCoin, addCoin)
+    end
+
     local newScore = score + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
     Log:PrintLog("[GameMatch:OnVictory] Player_BattlePoints_Num" .. newScore)
     _GAME.GameUtils.SetPlayerRankScore(newScore)
@@ -596,6 +610,13 @@ end
 function GameMatch:OnFail()
     --减积分
     local score = _GAME.GameUtils.GetPlayerRankScore()
+    -- 减金币
+    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    if curLevel then
+        local addCoin = - curLevel.cost
+        local coin = _GAME.GameUtils.GetPlayerCoin()
+        _GAME.GameUtils.SetPlayerCoin(coin + addCoin)
+    end
     Log:PrintLog("[GameMatch:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
     _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
 

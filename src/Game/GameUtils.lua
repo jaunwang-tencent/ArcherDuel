@@ -260,4 +260,36 @@ function GameUtils.isCrossWeek(lastLoginTs)
     return lastMonday ~= nowMonday
 end
 
+-- 设置玩家金币
+function GameUtils.SetPlayerCoin(coin)
+    Log:PrintLog("[GameUtils.SetPlayerCoin] coin" .. coin)
+    local playerId = Character:GetLocalPlayerId()
+    Archive:SetPlayerData(playerId, Archive.TYPE.Number, "Coin", coin)
+end
+
+-- 获取玩家金币
+function GameUtils.GetPlayerCoin()
+    local playerId = Character:GetLocalPlayerId()
+    local Coin = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "Coin")
+    if Coin then
+        return Coin
+    else
+        return 0
+    end
+end
+
+-- 判断金币是否足够打排位赛
+function GameUtils.CanEnterRankBattle()
+    local score = GameUtils.GetPlayerRankScore()
+    local curLevel = GameUtils.GetRankLevelByScore(score)
+    if curLevel then
+        local coin = _GAME.GameUtils.GetPlayerCoin()
+        if coin >= curLevel.cost then
+            return true
+        end
+    end
+    UI:ShowMessageTip("金币不足，无法进入排位赛")
+    return false
+end
+
 return GameUtils

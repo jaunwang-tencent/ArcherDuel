@@ -222,22 +222,24 @@ function FightModule:OnSevenDays()  --七日挑战
 end
 
 function FightModule:OnMatch()
-    --这里打开寻找对局页面
-    --生成1到7的随机数字
-    local RandomNumber = math.random(1, 7)  --随机海岛和天空
-    if RandomNumber == 7 then
-        RandomNumber = 8
+    if _GAME.GameUtils.CanEnterRankBattle() then
+        --这里打开寻找对局页面
+        --生成1到7的随机数字
+        local RandomNumber = math.random(1, 7)  --随机海岛和天空
+        if RandomNumber == 7 then
+            RandomNumber = 8
+        end
+        --这里要关闭所有页面
+        UI:SetVisible({UIConfig.MainView.TitleBar.ID,
+            UIConfig.MainView.StoreResourceBar.ID,
+            UIConfig.MainView.GeneralResourceBar.ID,
+            UIConfig.FightView.CenterView.ID,
+            UIConfig.FightView.LeftView.ID,
+            UIConfig.FightView.RightView.ID
+        }, false)
+        System:FireSignEvent(tostring(RandomNumber))
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
     end
-    --这里要关闭所有页面
-    UI:SetVisible({UIConfig.MainView.TitleBar.ID,
-        UIConfig.MainView.StoreResourceBar.ID,
-        UIConfig.MainView.GeneralResourceBar.ID,
-        UIConfig.FightView.CenterView.ID,
-        UIConfig.FightView.LeftView.ID,
-        UIConfig.FightView.RightView.ID
-    }, false)
-    System:FireSignEvent(tostring(RandomNumber))
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
 end
 
 function FightModule:OnRank()
