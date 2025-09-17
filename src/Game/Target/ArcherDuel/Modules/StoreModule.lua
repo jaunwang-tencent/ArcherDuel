@@ -29,6 +29,12 @@ function StoreModule:Open(PlayerData)
         [3] = AllItems.DiamondItem,
         [4] = AllItems.CoinItem,
     }
+    --获取当前拥有的砖石数量
+    local CurrentDiamond = PlayerData.BaseData.Diamond
+    --获取当前拥有的金宝箱数量
+    local CurrentGoldBox = PlayerData.BaseData.GoldBox
+    --获取当前拥有的银宝箱数量
+    local CurrentSilverBox = PlayerData.BaseData.SilverBox
     for ActivityIndex, Activity in ipairs(Activities) do
         --插入活动页签
         table.insert(self.ScrollItems, Activity.ID)
@@ -56,6 +62,40 @@ function StoreModule:Open(PlayerData)
                                 Goods = Item.Goods
                             }
                         }
+                        --砖石&广告类型
+                        local DiamondStyle = ButtonSlot.DiamondStyle
+                        local AdStyle = ButtonSlot.AdStyle
+                        if DiamondStyle and AdStyle then
+                            if Cost.Diamond and CurrentDiamond > Cost.Diamond then
+                                --当前玩家拥有消耗砖石数量时，使用砖石购买方式
+                                UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, true)
+                                UI:SetText({DiamondStyle.Price}, tostring(Cost.Diamond))
+                                UI:SetVisible({AdStyle}, false)
+                            else
+                                --否则观看广告方式
+                                UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, false)
+                                UI:SetVisible({AdStyle}, true)
+                            end
+                        end
+                        --宝箱类型
+                        local BoxStyle = ButtonSlot.BoxStyle
+                        if BoxStyle then
+                            if Cost.GoldBox and CurrentGoldBox > Cost.GoldBox then
+                                --金宝箱
+                                GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 2)
+                                UI:SetText({BoxStyle.Price}, tostring(Cost.GoldBox))
+                            elseif Cost.SilverBox and CurrentSilverBox > Cost.SilverBox then
+                                --银宝箱
+                                GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 1)
+                                UI:SetText({BoxStyle.Price}, tostring(Cost.SilverBox))
+                            elseif Cost.Diamond and CurrentDiamond > Cost.Diamond then
+                                --砖石
+                                GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 6)
+                                UI:SetText({BoxStyle.Price}, tostring(Cost.Diamond))
+                            else
+                                --数据错误
+                            end
+                        end
                         UI:RegisterClicked(ButtonInfo.ButtonID, function()
                             self:BuyGood(ButtonInfo)
                         end)
@@ -75,15 +115,32 @@ function StoreModule:Open(PlayerData)
                     }
                     local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
                     if Equipment then
-                        GameUtils.SetImageWithEquipment(GoodInfo.ButtonID, Equipment)
+                        GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
                     elseif GoodInfo.Goods.Coin then
                         --显示金币
-                        GameUtils.SetImageWithAsset(GoodInfo.ButtonID, "Currency", 4)
+                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
                     elseif GoodInfo.Goods.Diamond then
                         --显示砖石
-                        GameUtils.SetImageWithAsset(GoodInfo.ButtonID, "Currency", 6)
+                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
                     end
-                    UI:RegisterClicked(GoodInfo.ButtonID, function()
+                    --点击次数
+                    if GoodSlot.Times then
+                        local Cost = Item.Costs[SlotIndex]
+                        local Text = string.format("%d/%d", Cost.MaxCollect - Cost.HasCollect, Cost.MaxCollect)
+                        UI:SetText({GoodSlot.Times}, Text)
+                    end
+                    if GoodSlot.Progress then
+                        local Cost = Item.Costs[SlotIndex]
+                        UI:SetProgressMaxValue({GoodSlot.Progress}, Cost.MaxCollect)
+                        UI:SetProgressCurrentValue({GoodSlot.Progress}, Cost.MaxCollect - Cost.HasCollect)
+                    end
+                    --商品数量
+                    if GoodSlot.Count then
+                        local Text = tostring(GoodInfo.Goods.Coin)
+                        UI:SetText({GoodSlot.Count}, Text)
+                    end
+                    --注册点击事件
+                    UI:RegisterClicked(GoodSlot.ID, function()
                         self:GoodDetail(GoodInfo)
                     end)
                     table.insert(self.GoodInfos, GoodInfo)
