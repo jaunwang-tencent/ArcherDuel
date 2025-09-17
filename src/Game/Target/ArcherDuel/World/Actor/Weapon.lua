@@ -646,9 +646,11 @@ function Weapon:HitTarget(ElementID, Result)
         --命中角色，由角色响应
         if self.CurrentScene then
             if Result.HitBody == Character.SOCKET_NAME.Head then
-                self.CurrentScene:HeadShot()
-                if self.OwnerPlayer:IsControlled() then --本人命中他人时
-                    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.HeadShot)
+                if self.CurrentScene.HeadShot then
+                    self.CurrentScene:HeadShot()
+                    if self.OwnerPlayer:IsControlled() then --本人命中他人时
+                        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.HeadShot)
+                    end
                 end
             end
             local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()

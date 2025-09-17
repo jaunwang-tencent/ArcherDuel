@@ -43,6 +43,19 @@ function TaskModule:RefreshTaskProcesUI()
                 UI:UnRegisterClicked(ButtonID)
                 UI:RegisterClicked(ButtonID, function (ButtonID)
                     self.PlayerData.BaseData.Player_CollectTaskDaily_Num = self.PlayerData.BaseData.Player_CollectTaskDaily_Num | (1 << (index - 1))
+                    if index == 1 then
+                        _GAME.GameUtils.AddPlayerReward(100002, 10)
+                    elseif index == 2 then
+                        _GAME.GameUtils.AddPlayerReward(100002, 15)
+                    elseif index == 3 then
+                        _GAME.GameUtils.AddPlayerReward(100002, 30)
+                    elseif index == 4 then
+                        _GAME.GameUtils.AddPlayerReward(100002, 40)
+                    elseif index == 5 then
+                        _GAME.GameUtils.AddPlayerReward(100002, 55)
+                    elseif index == 6 then
+                        _GAME.GameUtils.AddPlayerReward(200003, 1)
+                    end
                     self:RefreshTaskProcesUI()
                 end)
             end

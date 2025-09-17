@@ -99,7 +99,7 @@ function GameMatch:Init()
     if bEmpty then -- 试玩兜底
         self.localEquipments = {
             ["Part"] = 1,
-            ["Bottoms"] = 17,
+            ["Bottoms"] = 50,
             ["Cloth"] = 33,
         }
     end
@@ -117,6 +117,9 @@ function GameMatch:Init()
 
     if self.battleType == BattleType.Gold then
         self:InitGoldMatch()
+        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GoldBattle) -- 参加一次黄金赛
+    elseif self.battleType == BattleType.Diamond then
+        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.DiamondBattle) -- 参加一次钻石赛
     end
 
     self:BindEvents()
@@ -198,7 +201,7 @@ function GameMatch:BindEvents()
     UI:RegisterPressed(108060,function ()
         if _GAME.GameUtils.CanEnterRankBattle() then
             UI:ResumeUIAnimation(111057,1)
-            UI:SetVisible({108052,108051},false)
+            UI:SetVisible({108052,108051,108056},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
             System:FireGameEvent(_GAME.Events.StartMatch)
         end
@@ -206,6 +209,8 @@ function GameMatch:BindEvents()
 
     -- 胜利界面点击返回大厅
     UI:RegisterPressed(108059,function ()
+        UI:ResumeUIAnimation(111057,1)
+        UI:SetVisible({108052,108051,108056},false)
         UI:SetVisible(MatchConfig.Victory_UI, false)
         System:FireSignEvent("GoHome")
     end)
@@ -704,7 +709,7 @@ end
 function GameMatch:OnFail()
     --减积分
     local score = _GAME.GameUtils.GetPlayerRankScore()
-    local curLevel = _GAme.GameUtils.GetRankLevelByScore(score)
+    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
     Log:PrintLog("[GameMatch:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
     _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
 
@@ -766,7 +771,6 @@ function GameMatch:InitGoldMatch()
     end
     self:UpdateGoldHead()
 
-    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GoldBattle) -- 参加一次黄金赛
     -- 扣除一次黄金赛奖励
     local count = _GAME.GameUtils.GetGoldBattleCount()
     if count then
@@ -1535,12 +1539,16 @@ end
 
 -- 钻石赛胜利
 function GameMatch:OnDiamondVictory()
-    _GAME.GameUtils.ShowGainView({DiamondScore = 16})
+    _GAME.GameUtils.ShowGainView({DiamondScore = 16}, function()
+        System:FireSignEvent("GoHome")
+    end)
 end
 
 -- 钻石赛失败
 function GameMatch:OnDiamondFail()
-    _GAME.GameUtils.ShowGainView({DiamondScore = 8})
+    _GAME.GameUtils.ShowGainView({DiamondScore = 8}, function()
+        System:FireSignEvent("GoHome")
+    end)
 end
 
 return GameMatch
