@@ -4,30 +4,31 @@ local LobbyModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
---辅助API
-local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --缺省基础数值
 local DefaultBaseData =
 {
-    Equipped_Bow_Num = 1,
-    Equipped_Spear_Num = 0,
-    Equipped_Axe_Num = 0,
-    Equipped_Hat_Num = 1,
-    Equipped_Glasses_Num = 1,
-    Equipped_Cloth_Num = 1,
+    --已穿戴床被信息
+    Equipped_Character_ID = 1,
+    Equipped_Top_ID = 15,
+    Equipped_Bottoms_ID = 38,
+    Equipped_Bow_ID = 61,
+    Equipped_Axe_ID = 77,
+    Equipped_Spear_ID = 93,
+    Equipped_Character_Lv = 1,
+    Equipped_Top_Lv = 1,
+    Equipped_Bottoms_Lv = 1,
     Equipped_Bow_Lv = 1,
-    Equipped_Spear_Lv = 0,
-    Equipped_Axe_Lv = 0,
-    Equipped_Hat_Lv = 1,
-    Equipped_Glasses_Lv = 1,
-    Equipped_Cloth_Lv = 1,
+    Equipped_Axe_Lv = 1,
+    Equipped_Spear_Lv = 1,
+    --资产信息
     Coin = 5000,                  --金币
     Diamond = 1,                  --砖石
     Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
     GoldBox = 3,                  --金宝箱
     SilverBox = 5,                --银宝箱
     NormalBox = 1,                --普通宝箱
+    --其它信息
     Daily_Progress = 1,
     Player_BattlePoints_Num = 0,  --门票
     Player_TaskDailyExp_Num = 0,  --每日任务经验
@@ -307,21 +308,26 @@ end
 function LobbyModule:DefaultEquipmentData()
     --没有则初始化
     local AllEquipment = {}
-    local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true, [77] = true, [93] = true }
-    for ID, Data in pairs(EquipmentConfig) do
-        local HasInit = InitEquippedID[ID]
+    for ID, EquipmentData in pairs(EquipmentConfig) do
         local Equipment = {
-            ID = ID,                        --装备编号ID
-            Level = 1,                      --装备等级
-            Piece = 0,                      --碎片数量
-            Category = Data.Category,       --装备类别
-            Unlock = HasInit,               --是否解锁
-            Equipped = HasInit,             --是否装备
+            ID = ID,                                --装备编号
+            Level = 1,                              --装备等级
+            Piece = 0,                              --碎片数量
+            Category = EquipmentData.Category,      --装备类别
+            Unlock = false,                         --是否解锁
+            Equipped = false,                       --是否装备
         }
-        if HasInit then
-            Equipment.Piece = 10
-            Equipment.Level = 3
+        --基础数据名称
+        local IDName = string.format("Equipped_%s_ID", EquipmentData.TypeName)
+        local TargetID = DefaultBaseData[IDName]
+        if TargetID == ID then
+            Equipment.Unlock = true
+            Equipment.Equipped = true
+            Equipment.Piece = 10    --缺省十个
+            Equipment.Level = 3     --缺省三级
         end
+        local LvName = string.format("Equipped_%s_Lv", EquipmentData.TypeName)
+        DefaultBaseData[LvName] = Equipment.Level
         AllEquipment[ID] = Equipment
     end
     return AllEquipment
@@ -359,6 +365,14 @@ function LobbyModule:RefreshEquipmentData()
                 EquippedEquipment.Equipped = false
             end
             BodyEquipment[Equipment.Category] = Equipment
+            --刷新基础数据
+            local EquipmentData = EquipmentConfig[Equipment.ID]
+            if EquipmentData then
+                local IDName = string.format("Equipped_%s_ID", EquipmentData.TypeName)
+                DefaultBaseData[IDName] = Equipment.ID
+                local LvName = string.format("Equipped_%s_Lv", EquipmentData.TypeName)
+                DefaultBaseData[LvName] = Equipment.Level
+            end
         end
     end
     --按品质排序
@@ -371,6 +385,7 @@ function LobbyModule:RefreshEquipmentData()
     end
     self.PlayerData.GroupByCategory = GroupByCategory
     self.PlayerData.BodyEquipment = BodyEquipment
+    --统计已穿戴装备的ID和等级
     --重新刷新外观
     self:RefreshAvatar()
 end
@@ -382,10 +397,10 @@ function LobbyModule:DefaultStoreData()
     --3.1、限定奖池
     AllItems.LimitItem = {
         [1] = {
-            --费用【约定：关系或】
+            --费用
             Costs = {
                 [1] = {
-                    --消耗一个黄金宝箱
+                    --消耗一个黄金宝箱【约定：关系或】
                     GoldBox = 1,
                     --或者600个砖石
                     Diamond = 600,
@@ -410,10 +425,10 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --费用【约定：关系或】
+            --费用
             Costs = {
                 [1] = {
-                    --消耗一个白银宝箱
+                    --消耗一个白银宝箱【约定：关系或】
                     SilverBox = 1,
                     --或者600个砖石
                     Diamond = 180,
@@ -441,13 +456,13 @@ function LobbyModule:DefaultStoreData()
     --3.2、每日限购
     AllItems.DailyItem = {
         [1] = {
-            --费用【约定：关系或】
+            --费用
             Costs = {
                 [1] = {
                     --消耗100个砖石
                     Diamond = 100,
                     --最大收集次数
-                    MaxCollect = 2,
+                    MaxCollect = 5,
                     --已收集次数
                     HasCollect = 0
                 }
@@ -460,13 +475,13 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --费用【约定：关系或】
+            --费用
             Costs = {
                 [1] = {
                     --消耗50个砖石
                     Diamond = 50,
                     --最大收集次数
-                    MaxCollect = 3,
+                    MaxCollect = 5,
                     --已收集次数
                     HasCollect = 0
                 }
@@ -479,13 +494,13 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [3] = {
-            --费用【约定：关系或】
+            --费用
             Costs = {
                 [1] = {
                     --消耗100个砖石
                     Diamond = 600,
                     --最大收集次数
-                    MaxCollect = 1,
+                    MaxCollect = 5,
                     --已收集次数
                     HasCollect = 0
                 }
@@ -522,7 +537,7 @@ function LobbyModule:DefaultStoreData()
     --3.4、购买金币
     AllItems.CoinItem = {
         [1] = {
-            --费用【约定：关系或】
+            --费用
             Costs = {
                 [1] = {
                     --消耗100个砖石
@@ -535,7 +550,7 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [2] = {
-            --费用【约定：关系或】
+            --费用
             Costs = {
                 [1] = {
                     --消耗100个砖石
@@ -548,7 +563,7 @@ function LobbyModule:DefaultStoreData()
             }
         },
         [3] = {
-            --费用【约定：关系或】
+            --费用
             Costs = {
                 [1] = {
                     --消耗100个砖石

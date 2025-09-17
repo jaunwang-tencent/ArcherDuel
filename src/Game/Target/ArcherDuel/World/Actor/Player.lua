@@ -342,15 +342,15 @@ end
 function Player:GetEquipData(ForceUpdate)
     if ForceUpdate or not self.EquipData then
         local PlayerID = Character:GetLocalPlayerId()
-        local Part_Num = self:GetDefaultData(PlayerID, "Equipped_Part_Num", 1)
-        local Bottoms_Num = self:GetDefaultData(PlayerID, "Equipped_Bottoms_Num", 38)
-        local Cloth_Num = self:GetDefaultData(PlayerID, "Equipped_Cloth_Num", 15)
+        local Part_Num = self:GetDefaultData(PlayerID, "Equipped_Character_ID", 1)
+        local Bottoms_Num = self:GetDefaultData(PlayerID, "Equipped_Bottoms_ID", 38)
+        local Cloth_Num = self:GetDefaultData(PlayerID, "Equipped_Top_ID", 15)
         local Bow_Lv = self:GetDefaultData(PlayerID, "Equipped_Bow_Lv", 1)
         local Spear_Lv = self:GetDefaultData(PlayerID, "Equipped_Spear_Lv", 1)
         local Axe_Lv = self:GetDefaultData(PlayerID, "Equipped_Axe_Lv", 1)
         local Part_Lv = self:GetDefaultData(PlayerID, "Equipped_Part_Lv", 1)
         local Bottoms_Lv = self:GetDefaultData(PlayerID, "Equipped_Bottoms_Lv", 1)
-        local Cloth_Lv = self:GetDefaultData(PlayerID, "Equipped_Cloth_Lv", 1)
+        local Cloth_Lv = self:GetDefaultData(PlayerID, "Equipped_Top_Lv", 1)
 
         local Weapon_Lv
         -- todo self.WeaponType is nil
