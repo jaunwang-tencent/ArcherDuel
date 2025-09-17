@@ -56,7 +56,71 @@ end
 --- 刷新
 ---@param DeltaTime 时间戳
 function LobbyModule:Update(DeltaTime)
+    if self.CurrentModule then
+        self.CurrentModule:Update(DeltaTime)
+    end
+
+    -- 累计计时器
+    self._timeAccumulator = (self._timeAccumulator or 60) + DeltaTime
+    if self._timeAccumulator < 60 then
+        return
+    end
+    self._timeAccumulator = self._timeAccumulator - 60
+
+    -- 当前时间
+    local nowStr = MiscService:GetServerTimeToTime()
+    local nowTs = MiscService:DateYMDHMSToTime(nowStr)
+
+    -- 当前年月日
+    local year = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Year)
+    local month= MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Month)
+    local day  = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Day)
+
+    -- 当日0点时间戳
+    local zeroTimestamp = MiscService:DateYMDHMSToTime(
+        string.format("%04d-%02d-%02d 00:00:00", year, month, day)
+    )
+
+    -- 已过秒数，当天剩余秒数
+    local secondsPassed = nowTs - zeroTimestamp
+    local secondsLeft = 24 * 3600 - secondsPassed
+
+    -- 格式化当天剩余时间时分秒
+    local leftHour = math.floor(secondsLeft / 3600)
+    local leftMin = math.floor((secondsLeft % 3600) / 60)
+    local leftStr = string.format("%02d时%02d分", leftHour, leftMin)
+
+    -- 当前星期几（假设周一=1, 周日=7）
+    local wday = _GAME.GameUtils.GetWeekDay()
+
+    -- 计算距离本周剩余秒数
+    -- 一周剩余天数 = 7 - 当前周几
+    local daysLeft = 7 - wday
+
+    -- 一周剩余秒数 = 今天剩余秒 + 剩余天数 * 24 * 3600
+    local weekSecondsLeft = secondsLeft + daysLeft * 24 * 3600
+
+    local weekLeftDays = math.floor(weekSecondsLeft / (24 * 3600))
+    local weekLeftHours = math.floor((weekSecondsLeft % (24 * 3600)) / 3600)
+
+    local weekLeftStr = string.format("%d天 %02d时", weekLeftDays, weekLeftHours)
+
+    print("当前时间:", nowStr, "距今日剩余:", leftStr, "距离本周剩余:", weekLeftStr)
+
+    UI:SetText({UIConfig.TaskView.TaskProcesView.Time}, "剩余时间：" .. leftStr)
+    UI:SetText({UIConfig.SevenDays.Time}, weekLeftStr)
+    UI:SetText({105035}, weekLeftStr)
     
+     --商城视图
+     local StoreView = UIConfig.StoreView
+     --加载商城活动
+     local Activities = StoreView.Activities
+     --1、限定奖池
+     UI:SetText({Activities[1].CountDown}, weekLeftStr)
+     --2、每日限购
+     UI:SetText({Activities[2].CountDown}, leftStr)
+     --3、免费砖石
+     UI:SetText({Activities[3].CountDown}, leftStr)
 end
 
 --- 关闭
