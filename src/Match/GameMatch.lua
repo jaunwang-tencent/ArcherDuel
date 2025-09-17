@@ -1115,7 +1115,7 @@ function GameMatch:GoldBattleFailMatchShow()
         --先设置好头像和颜色
         for i = 1, maskIndex do
             if Head_Mask[i] and MatchConfig.GoldFailer_Head_UI[i] then
-                UI:SetVisible({Head_Mask[maskIndex]},true)
+                UI:SetVisible({Head_Mask[i]},true)
                 for index = 1, #MatchConfig.GoldFailer_Head_UI[i] do
                     UI:SetVisible(MatchConfig.GoldFailer_Head_UI[i], true)
                     local uid =  UI:FindChildWithIndex(Head_Mask[i], index)
@@ -1123,7 +1123,6 @@ function GameMatch:GoldBattleFailMatchShow()
                         if self.goldResults and self.goldResults.Failer and self.goldResults.Failer[i] and self.goldResults.Failer[i][index] then
                             -- UI:SetVisible({uid},true)
                             local info = self.goldResults.Failer[i][index].info
-                            Log:PrintDebug("zzzzzzzzzzzzzzzzzzzzzzz 333", i, index, self.goldResults.Failer[i][index].victory)
                             if info.isSelf then
                                 UI:SetImage({MatchConfig.GoldFailer_Head_UI[i][index]}, Chat:GetCustomHeadIcon(self.localPlayerId))
                             else
@@ -1142,7 +1141,11 @@ function GameMatch:GoldBattleFailMatchShow()
         UI:SetVisible({112654,112655,112567},true)
         UI:PlayUIAnimation(112654,1,0)   --暂时失败文本
         TimerManager:AddTimer(delay,function ()
-            UI:PlayUIAnimation(112567,self.goldBattleRound,0)  --再第几局失败，就移动到相应的位置
+            local round = self.goldBattleRound
+            if self.goldBattleRound == 4 then --第三局为模拟局，会被直接跳过
+                round = 3
+            end
+            UI:PlayUIAnimation(112567, round, 0)  --再第几局失败，就移动到相应的位置
         end)
         delay = delay + 1
         UI:SetVisible(MatchConfig.GoldFailer_Head_UI[self.goldBattleRound], false)
@@ -1221,12 +1224,12 @@ function GameMatch:OnGoldBattleContinue()
     if self.goldFailCount == 0 then --没有失败过，在胜者组
         if #self.goldWinnerRivalInfo < 2 then --胜者组中已经没有对手，此时败者组里面应该还剩3个，模拟两次对局
             for i = 1, 2 do
-                self.goldBattleRound = self.goldBattleRound + 1
                 local mathRivals = self:GoldMathRivals()
                 for _, v in pairs(mathRivals) do
                     local failIndex = math.random(1, 2)
                     self:GoldRivalDefeat(v[failIndex].name)
                 end
+                self.goldBattleRound = self.goldBattleRound + 1
             end
             self.isGoldFinalBattle = true
             UI:SetVisible(MatchConfig.GoldWinner_UI,true)
@@ -1239,7 +1242,6 @@ function GameMatch:OnGoldBattleContinue()
         end
     elseif self.goldFailCount == 1 then --失败过一次，在败者组
         if self.goldBattleResult == false and #self.goldFailerRivalInfo%2 == 1 then -- 加入败者组后，败者组有单位数选手，模拟一次对局
-            self.goldBattleRound = self.goldBattleRound + 1
             local mathRivals = self:GoldMathRivals()
             local failNames = {}
             for _, v in pairs(mathRivals) do
@@ -1251,7 +1253,12 @@ function GameMatch:OnGoldBattleContinue()
             for i, v in ipairs(failNames) do
                 self:GoldRivalDefeat(v)
             end
+            -- 把自己挪到最前面
+            local info = table.remove(self.goldFailerRivalInfo, #self.goldFailerRivalInfo)
+            table.insert(self.goldFailerRivalInfo, 1, info)
+            self.goldBattleRound = self.goldBattleRound + 1
         end
+
         if #self.goldFailerRivalInfo > 1 then --败者组有两人以上对手
             UI:SetVisible(MatchConfig.GoldFailer_UI,true)
             UI:SetVisible(MatchConfig.GoldWinner_UI,false)
