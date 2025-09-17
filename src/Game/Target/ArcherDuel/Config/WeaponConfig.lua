@@ -2,7 +2,7 @@ local Prop_L = "Prop_L"
 local Prop_R = "Prop_R"
 --武器配置
 local WeaponConfig = {
-    [1] = {
+    [61] = {
         --箭
         TypeName = "Bow",
         --资产名称
@@ -268,7 +268,7 @@ local WeaponConfig = {
             Growth = 7,
         },
     },
-    [2] = {
+    [62] = {
         --箭2
         TypeName = "Bow",
         --资产名称
@@ -534,7 +534,7 @@ local WeaponConfig = {
             Growth = 10,
         },
     },
-    [3] = {
+    [63] = {
         --箭3
         TypeName = "Bow",
         --资产名称
@@ -800,7 +800,7 @@ local WeaponConfig = {
             Growth = 10,
         },
     },
-    [4] = {
+    [64] = {
         --箭4
         TypeName = "Bow",
         --资产名称
@@ -1066,7 +1066,7 @@ local WeaponConfig = {
             Growth = 10,
         },
     },
-    [5] = {
+    [65] = {
         --箭5
         TypeName = "Bow",
         --资产名称
@@ -1332,7 +1332,7 @@ local WeaponConfig = {
             Growth = 12,
         },
     },
-    [6] = {
+    [66] = {
         --箭6
         TypeName = "Bow",
         --资产名称
@@ -1598,7 +1598,7 @@ local WeaponConfig = {
             Growth = 11,
         },
     },
-    [7] = {
+    [67] = {
         --箭7
         TypeName = "Bow",
         --资产名称
@@ -1864,7 +1864,7 @@ local WeaponConfig = {
             Growth = 8,
         },
     },
-    [8] = {
+    [68] = {
         --箭8
         TypeName = "Bow",
         --资产名称
@@ -2130,7 +2130,7 @@ local WeaponConfig = {
             Growth =10,
         },
     },
-    [9] = {
+    [69] = {
         --箭9
         TypeName = "Bow",
         --资产名称
@@ -2396,7 +2396,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [10] = {
+    [70] = {
         --箭10
         TypeName = "Bow",
         --资产名称
@@ -2662,7 +2662,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [11] = {
+    [71] = {
         --箭11
         TypeName = "Bow",
         --资产名称
@@ -2928,7 +2928,7 @@ local WeaponConfig = {
             Growth = 16,
         },
     },
-    [12] = {
+    [72] = {
         --箭12
         TypeName = "Bow",
         --资产名称
@@ -3194,7 +3194,7 @@ local WeaponConfig = {
             Growth = 11,
         },
     },
-    [13] = {
+    [73] = {
         --箭13
         TypeName = "Bow",
         --资产名称
@@ -3460,7 +3460,7 @@ local WeaponConfig = {
             Growth = 10,
         },
     },
-    [14] = {
+    [74] = {
         --箭14
         TypeName = "Bow",
         --资产名称
@@ -3726,7 +3726,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [15] = {
+    [75] = {
         --箭15
         TypeName = "Bow",
         --资产名称
@@ -3992,7 +3992,7 @@ local WeaponConfig = {
             Growth = 10,
         },
     },
-    [16] = {
+    [76] = {
         --箭16
         TypeName = "Bow",
         --资产名称
@@ -4258,7 +4258,7 @@ local WeaponConfig = {
             Growth = 8,
         },
     },
-    [17] = {
+    [77] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -4477,7 +4477,7 @@ local WeaponConfig = {
             Growth = 10,
         },
     },
-    [18] = {
+    [78] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -4696,7 +4696,7 @@ local WeaponConfig = {
             Growth = 12,
         },
     },
-    [19] = {
+    [79] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -4915,7 +4915,7 @@ local WeaponConfig = {
             Growth = 12,
         },
     },
-    [20] = {
+    [80] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -5134,7 +5134,7 @@ local WeaponConfig = {
             Growth = 12,
         },
     },
-    [21] = {
+    [81] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -5353,7 +5353,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [22] = {
+    [82] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -5572,7 +5572,7 @@ local WeaponConfig = {
             Growth = 14,
         },
     },
-    [23] = {
+    [83] = {
         --斧
         TypeName = "Axe",   
         --资产名称
@@ -5791,7 +5791,7 @@ local WeaponConfig = {
             Growth = 12,
         },
     },
-    [24] = {
+    [84] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -6010,7 +6010,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [25] = {
+    [85] = {
         --斧
         TypeName = "Axe", 
         --资产名称
@@ -6229,7 +6229,7 @@ local WeaponConfig = {
             Growth = 15,
         },
     },
-    [26] = {
+    [86] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -6448,7 +6448,7 @@ local WeaponConfig = {
             Growth = 14,
         },
     },
-    [27] = {
+    [87] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -6667,7 +6667,7 @@ local WeaponConfig = {
             Growth = 16,
         },
     },
-    [28] = {
+    [88] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -6886,7 +6886,7 @@ local WeaponConfig = {
             Growth = 15,
         },
     },
-    [29] = {
+    [89] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -7105,7 +7105,7 @@ local WeaponConfig = {
             Growth = 6,
         },
     },
-    [30] = {
+    [90] = {
         --斧
         TypeName = "Axe",   
         --资产名称
@@ -7324,7 +7324,7 @@ local WeaponConfig = {
             Growth = 16,
         },
     },
-    [31] = {
+    [91] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -7543,7 +7543,7 @@ local WeaponConfig = {
             Growth = 15,
         },
     },
-    [32] = {
+    [92] = {
         --斧
         TypeName = "Axe",
         --资产名称
@@ -7762,7 +7762,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [33] = {
+    [93] = {
         --矛
         TypeName = "Spear", 
         --资产名称
@@ -7965,7 +7965,7 @@ local WeaponConfig = {
             Growth = 8,
         },
     },
-    [34] = {
+    [94] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -8168,7 +8168,7 @@ local WeaponConfig = {
             Growth = 12,
         },
     },
-    [35] = {
+    [95] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -8371,7 +8371,7 @@ local WeaponConfig = {
             Growth = 12,
         },
     },
-    [36] = {
+    [96] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -8574,7 +8574,7 @@ local WeaponConfig = {
             Growth = 12,
         },
     },
-    [37] = {
+    [97] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -8777,7 +8777,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [38] = {
+    [98] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -8980,7 +8980,7 @@ local WeaponConfig = {
             Growth = 16,
         },
     },
-    [39] = {
+    [99] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -9183,7 +9183,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [40] = {
+    [100] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -9386,7 +9386,7 @@ local WeaponConfig = {
             Growth = 13,
         },
     },
-    [41] = {
+    [101] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -9589,7 +9589,7 @@ local WeaponConfig = {
             Growth = 15,
         },
     },
-    [42] = {
+    [102] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -9792,7 +9792,7 @@ local WeaponConfig = {
             Growth = 15,
         },
     },
-    [43] = {
+    [103] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -9995,7 +9995,7 @@ local WeaponConfig = {
             Growth = 15,
         },
     },
-    [44] = {
+    [104] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -10198,7 +10198,7 @@ local WeaponConfig = {
             Growth = 14,
         },
     },
-    [45] = {
+    [105] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -10401,7 +10401,7 @@ local WeaponConfig = {
             Growth = 10,
         },
     },
-    [46] = {
+    [106] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -10604,7 +10604,7 @@ local WeaponConfig = {
             Growth = 15,
         },
     },
-    [47] = {
+    [107] = {
         --矛
         TypeName = "Spear",
         --资产名称
@@ -10807,7 +10807,7 @@ local WeaponConfig = {
             Growth = 14,
         },
     },
-    [48] = {
+    [108] = {
         --矛
         TypeName = "Spear",
         --资产名称

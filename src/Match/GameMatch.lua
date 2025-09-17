@@ -72,9 +72,9 @@ function GameMatch:Init()
     end
     if bEmpty then -- 试玩兜底
         self.localWeapons = {
-            ["Bow"] = 1,
-            ["Axe"] = 17,
-            ["Spear"] = 33,
+            ["Bow"] = 61,
+            ["Axe"] = 77,
+            ["Spear"] = 93,
         }
     end
 
