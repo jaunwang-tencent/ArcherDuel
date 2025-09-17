@@ -43,19 +43,23 @@ function GameMatch:Init()
 
     --读取保存当前玩家能够使用武器
     self.localWeapons = {}
+    local bEmpty = true
     local Bow_Num = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Bow_Num")
     if Bow_Num and Bow_Num > 0 then
+        bEmpty = false
         self.localWeapons["Bow"] = Bow_Num -- 弓
     end
     local Axe_Num = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Axe_Num")
     if Axe_Num and Axe_Num > 0 then
+        bEmpty = false
         self.localWeapons["Axe"] = Axe_Num -- 斧
     end
     local Spear_Num = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Spear_Num")
     if Spear_Num and Spear_Num > 0 then
+        bEmpty = false
         self.localWeapons["Spear"] = Spear_Num -- 矛
     end
-    if #self.localWeapons == 0 then -- 试玩兜底
+    if bEmpty then -- 试玩兜底
         self.localWeapons = {
             ["Bow"] = 1,
             ["Axe"] = 17,
@@ -65,17 +69,28 @@ function GameMatch:Init()
 
     -- 当前玩家穿戴装备
     self.localEquipments = {}
+    bEmpty = true
     local Part_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Part_Num")
     if Part_Num and Part_Num > 0 then
+        bEmpty = false
         self.localEquipments["Part"] = Part_Num
     end
     local Bottoms_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Bottoms_Num")
     if Bottoms_Num and Bottoms_Num > 0 then
+        bEmpty = false
         self.localEquipments["Bottoms"] = Bottoms_Num
     end
     local Cloth_Num = Archive:GetPlayerData(PlayerID,Archive.TYPE.Number, "Equipped_Cloth_Num")
     if Cloth_Num and Cloth_Num > 0 then
+        bEmpty = false
         self.localEquipments["Cloth"] = Cloth_Num
+    end
+    if bEmpty then -- 试玩兜底
+        self.localEquipments = {
+            ["Part"] = 1,
+            ["Bottoms"] = 17,
+            ["Cloth"] = 33,
+        }
     end
 
     --黄金赛缓存数据
