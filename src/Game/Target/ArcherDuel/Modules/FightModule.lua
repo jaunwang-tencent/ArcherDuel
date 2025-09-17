@@ -60,15 +60,6 @@ function FightModule:Open(PlayerData)
         UI:SetImageColor({CenterView.Diamond.ID}, lock)
         UI:SetVisible({CenterView.Diamond.Lock}, true)
     end
-    --进入黄金联赛
-    UI:RegisterClicked(CenterView.Golden.Button, function()
-        self:OnGoldMatch()
-    end)
-
-    --进入钻石联赛
-    UI:RegisterClicked(CenterView.Diamond.Button, function()
-        self:OnDiamondMatch()
-    end)
 
     --七日挑战
     UI:RegisterClicked(CenterView.SevenDays.Button, function()

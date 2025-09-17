@@ -96,6 +96,72 @@ function TournamentModule:Open(PlayerData)
             UI:SetVisible({view[i]},true)
         end)
     end
+
+    --进入排位赛
+    UI:RegisterClicked(TournamentView.World.Button, function()
+        self:OnMatch()
+    end)
+
+    --进入黄金联赛
+    UI:RegisterClicked(TournamentView.Gold.Button, function()
+        self:OnGoldMatch()
+    end)
+
+    --进入钻石联赛
+    UI:RegisterClicked(TournamentView.Diamond.Button, function()
+        self:OnDiamondMatch()
+    end)
+end
+
+function TournamentModule:OnMatch()
+    if _GAME.GameUtils.CanEnterRankBattle() then
+        --这里打开寻找对局页面
+        --生成1到7的随机数字
+        local RandomNumber = math.random(1, 6)  --随机海岛和天空
+        -- if RandomNumber == 7 then
+        --     RandomNumber = 8
+        -- end
+        --这里要关闭所有页面
+        UI:SetVisible({UIConfig.MainView.TitleBar.ID,
+            UIConfig.MainView.StoreResourceBar.ID,
+            UIConfig.MainView.GeneralResourceBar.ID,
+            UIConfig.FightView.CenterView.ID,
+            UIConfig.FightView.LeftView.ID,
+            UIConfig.FightView.RightView.ID
+        }, false)
+        System:FireSignEvent(tostring(RandomNumber))
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
+    end
+end
+
+function TournamentModule:OnGoldMatch()
+    if _GAME.GameUtils.CanEnterGoldBattle() then
+        --这里要关闭所有页面
+        UI:SetVisible({UIConfig.MainView.TitleBar.ID,
+            UIConfig.MainView.StoreResourceBar.ID,
+            UIConfig.MainView.GeneralResourceBar.ID,
+            UIConfig.FightView.CenterView.ID,
+            UIConfig.FightView.LeftView.ID,
+            UIConfig.FightView.RightView.ID
+        }, false)
+        System:FireSignEvent(tostring(7))
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 7)
+    end
+end
+
+function TournamentModule:OnDiamondMatch()
+    if _GAME.GameUtils.CanEnterDiamondRankBattle() then
+        --这里要关闭所有页面
+        UI:SetVisible({UIConfig.MainView.TitleBar.ID,
+            UIConfig.MainView.StoreResourceBar.ID,
+            UIConfig.MainView.GeneralResourceBar.ID,
+            UIConfig.FightView.CenterView.ID,
+            UIConfig.FightView.LeftView.ID,
+            UIConfig.FightView.RightView.ID
+        }, false)
+        System:FireSignEvent(tostring(8))
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 8)
+    end
 end
 
 --- 刷新
@@ -115,6 +181,14 @@ function TournamentModule:Close()
     for _, btnId in ipairs(tabBtn) do
         UI:UnRegisterClicked(btnId)
     end
+
+    local TournamentView = UIConfig.TournamentView
+    --进入排位赛
+    UI:UnRegisterClicked(TournamentView.World.Button)
+    --进入黄金联赛
+    UI:UnRegisterClicked(TournamentView.Gold.Button)
+    --进入钻石联赛
+    UI:UnRegisterClicked(TournamentView.Diamond.Button)
 end
 
 return TournamentModule
