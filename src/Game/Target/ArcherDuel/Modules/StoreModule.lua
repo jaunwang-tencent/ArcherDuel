@@ -8,6 +8,7 @@ local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 --装备详情模块
 local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
 --- 打开
 ---@param PlayerData 玩家数据
@@ -289,6 +290,10 @@ function StoreModule:ShowGainView(Costs, Goods)
 
         --显示部分
         GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 4)
+
+        if Costs and Costs.Ad then
+            System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
+        end
     elseif Goods.Diamond then
         --获得砖石，显示砖石
         local BaseData = self.PlayerData.BaseData
@@ -296,6 +301,9 @@ function StoreModule:ShowGainView(Costs, Goods)
 
         --显示部分
         GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 6)
+        if Costs and Costs.Ad then
+            System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
+        end
     end
 
     --设置物品图标
