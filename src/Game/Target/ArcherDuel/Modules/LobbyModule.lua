@@ -613,8 +613,6 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗100个砖石
                     Diamond = 100,
-                    --广告资源
-                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -632,8 +630,6 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗50个砖石
                     Diamond = 50,
-                    --广告资源
-                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数
@@ -651,8 +647,6 @@ function LobbyModule:DefaultShopData()
                 [1] = {
                     --消耗100个砖石
                     Diamond = 600,
-                    --广告资源
-                    AdTag = "ad_tag_daily",
                     --最大收集次数
                     MaxCollect = 5,
                     --已收集次数

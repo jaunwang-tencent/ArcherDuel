@@ -296,7 +296,7 @@ function StoreModule:BuyGood(ShopInfo)
             --消耗金宝箱
             BaseData.GoldBox = BaseData.GoldBox - Costs.GoldBox
             Success = true
-        elseif Costs.Diamond and BaseData.Diamond > Costs.Diamond then
+        elseif Costs.Diamond and BaseData.Diamond >= Costs.Diamond then
             --消砖石
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             Success = true
@@ -312,7 +312,7 @@ function StoreModule:BuyGood(ShopInfo)
             --消耗银宝箱
             BaseData.SilverBox = BaseData.SilverBox - Costs.SilverBox
             Success = true
-        elseif Costs.Diamond and BaseData.Diamond > Costs.Diamond then
+        elseif Costs.Diamond and BaseData.Diamond >= Costs.Diamond then
             --消砖石
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             Success = true
@@ -325,7 +325,7 @@ function StoreModule:BuyGood(ShopInfo)
         end
     elseif Costs.Diamond then
         --消耗砖石
-        if BaseData.Diamond > Costs.Diamond then
+        if BaseData.Diamond >= Costs.Diamond then
             --直接消耗
             BaseData.Diamond = BaseData.Diamond - Costs.Diamond
             Success = true
