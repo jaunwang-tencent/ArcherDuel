@@ -25,8 +25,8 @@ local DefaultBaseData =
     Coin = 5000,                  --金币
     Diamond = 1000,                  --砖石
     Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
-    GoldBox = 3,                  --金宝箱
-    SilverBox = 5,                --银宝箱
+    GoldBox = 2,                  --金宝箱
+    SilverBox = 2,                --银宝箱
     NormalBox = 1,                --普通宝箱
     --其它信息
     Daily_Progress = 1,
