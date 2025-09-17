@@ -377,6 +377,7 @@ function LobbyModule:InitView()
 
     --切换到主视图
     self:SwitchView("Fight")
+    UI:SetVisible({UIConfig.StoreView.Activities[4].CountDown}, false)
 end
 
 function LobbyModule:SwitchView(ViewName)
