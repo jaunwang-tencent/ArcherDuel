@@ -17,9 +17,11 @@ local function GetProjectile(SceneID, CallBack)
             local ElementID = table.remove(Pool)
             CallBack(ElementID)
         else
+            local Rotation = Element:GetRotation(SceneID)
+            local Scale = Element:GetScale(SceneID)
             Element:SpawnElementWithTransform(Element.SPAWN_TYPE.Prefab, SceneID, function(ElementID)
                 CallBack(ElementID)
-            end, Engine.Vector(10000, 10000, 10000))
+            end, Engine.Vector(10000, 10000, 10000), Rotation, Scale)
         end
     end
 end
@@ -458,15 +460,20 @@ function Weapon:Update(DeltaTime)
             end
         end
 
-        --设置位置【只有在管理器中的实例才允许更新位置】
-        if self.Projectiles[ProjectileInstanceID] then
-            Element:SetPosition(ProjectileInstanceID, CurrentPosition, Element.COORDINATE.World)
-        end
+        --设置位置
+        self:SetProjectilePosition(ProjectileInstanceID, CurrentPosition)
 
         --备份上一帧位置
         if NeedRecordPosition then
             self.LastProjectilePosition = CurrentPosition
         end
+    end
+end
+
+function Weapon:SetProjectilePosition(ProjectileInstanceID, CurrentPosition)
+    --设置位置【只有在管理器中的实例才允许更新位置】
+    if self.Projectiles[ProjectileInstanceID] then
+        Element:SetPosition(ProjectileInstanceID, CurrentPosition, Element.COORDINATE.World)
     end
 end
 
@@ -595,8 +602,8 @@ function Weapon:SpawnProjectile(PitchDegree)
 
     GetProjectile(ProjectileData.Root, function(ElementID)
         Element:SetPosition(ElementID,StartPosition,Element.COORDINATE.World)
-        Element:SetRotation(ElementID,Rotation,Element.COORDINATE.World)
-        Element:SetScale(ElementID,Scale)
+        -- Element:SetRotation(ElementID,Rotation,Element.COORDINATE.World)
+        -- Element:SetScale(ElementID,Scale)
 
         --当前投掷物实例信息
         self.ProjectileInstance = {
@@ -638,10 +645,11 @@ function Weapon:HitTarget(ElementID, Result)
 
         --命中角色，由角色响应
         if self.CurrentScene then
-            if Result.HitBody == Character.SOCKET_NAME.Head and self.OwnerPlayer:IsControlled() then
-                --本人命中他人时，爆头提示
+            if Result.HitBody == Character.SOCKET_NAME.Head then
                 self.CurrentScene:HeadShot()
-                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.HeadShot)
+                if self.OwnerPlayer:IsControlled() then --本人命中他人时
+                    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.HeadShot)
+                end
             end
             local NextTurnPlayer = self.CurrentScene:GetNextTurnPlayer()
             if ElementID == NextTurnPlayer.UID then

@@ -506,6 +506,10 @@ function GameMatch:MathCountDown(MatchInfo)
         UI:SetVisible(MatchConfig.Match_UI,false)
         System:FireGameEvent(_GAME.Events.BattleStart)
     end)
+
+    if self.isGold then --黄金赛隐藏下局奖励
+        UI:SetVisible({105671}, false)
+    end
 end
 
 -- 展示排位进度
@@ -585,8 +589,61 @@ function GameMatch:OnVictory()
         System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GainCoin, addCoin-curLevel.cost)
     end
 
+    local preRank = _GAME.GameUtils.GetRankLevelByScore(score)
     local newScore = score + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
+    local newRank = _GAME.GameUtils.GetRankLevelByScore(newScore)
     Log:PrintLog("[GameMatch:OnVictory] Player_BattlePoints_Num" .. newScore)
+    if preRank and newRank then
+        if preRank.id < newRank.id then
+
+            --判断这个段位的宝箱是否领取了
+            local isReceive = false
+            if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table") then
+                local ReceiveRankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table")
+                local ReceiveRankBoxReward_Table = MiscService:JsonStr2Table(ReceiveRankBoxReward_Table_Str)
+                if ReceiveRankBoxReward_Table then
+                    for _, v in pairs(ReceiveRankBoxReward_Table) do
+                        if v == newRank.id then
+                            isReceive = true
+                            break
+                        end
+                    end
+                end
+            end
+
+            --isReceive=true则表示已经领取过宝箱了，不能再重复领取
+            if not isReceive then
+                --升阶段了可以领取宝箱了
+                local RankBoxReward_Table
+                if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table") then
+                    local RankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table")
+                    RankBoxReward_Table = MiscService:JsonStr2Table(RankBoxReward_Table_Str)
+                    table.insert(RankBoxReward_Table, newRank.id)
+                    RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
+                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+                else
+                    RankBoxReward_Table = {newRank.id}
+                    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
+                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+                end
+            end
+
+            --升到钻石了
+            if _GAME.GameUtils.IsReachDiamondRank(newScore) then
+                --判断升钻石的奖励是否已经发放
+                if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank") then
+                    local falg = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank")
+                    if falg ~= 1 then
+                        _GAME.GameUtils.AddPlayerReward(100003, 2)
+                        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 1)
+                    end
+                else
+                    _GAME.GameUtils.AddPlayerReward(100003, 2)
+                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 1)
+                end
+            end
+        end
+    end
     _GAME.GameUtils.SetPlayerRankScore(newScore)
 
     UI:SetVisible({108298},true)
@@ -628,11 +685,13 @@ end
 function GameMatch:OnFail()
     --减积分
     local score = _GAME.GameUtils.GetPlayerRankScore()
+    local curLevel = _GAme.GameUtils.GetRankLevelByScore(score)
     Log:PrintLog("[GameMatch:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
     _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
 
     UI:SetVisible({106509}, true)
     UI:SetText({109444}, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore.." 积分")
+    UI:SetText({109445}, "-"..curLevel.cost)
     System:FireGameEvent(_GAME.Events.GameEnd)
 end
 
@@ -901,7 +960,7 @@ function GameMatch:OnGoldFail()
     self.goldBattleResult = false
     self.goldFailCount = self.goldFailCount + 1
 
-    if self.goldFailCount == 2 then -- 失败2次，黄金赛结束
+    if self.goldFailCount == 2 or self.isGoldFinalBattle then -- 失败2次，黄金赛结束
         local rank = #GoldBattleStep[self.goldBattleRound]
         if rank <= 3 then -- 3名以内，进行展示
             local top3Players = {}
@@ -914,7 +973,7 @@ function GameMatch:OnGoldFail()
             System:FireGameEvent(_GAME.Events.GameEnd)
         else
             -- 公布排名
-            UI:SetVisible({110204, 110718},true)
+            UI:SetVisible({110204,110718,110717,110687},true)
             UI:SetText({110206},"第"..rank.."名")
             local CurrencyIconList = GetCurrencyIconList()
             for i, v in ipairs(MatchConfig.GoldEnd_Reward_UI) do
@@ -1302,11 +1361,11 @@ function GameMatch:ShowGoldTop3(top3Players)
                     table.insert(bodyIds, EquipmentConfig[v].EquipID)
                 end
             end
-            if isSelf then
-                FakeCharacter:ChangeBodyFromPlayer(UID, self.localPlayerId)
-            else
+            -- if isSelf then
+            --     FakeCharacter:ChangeBodyFromPlayer(UID, self.localPlayerId)
+            -- else
                 FakeCharacter:ChangeCharacterBody(UID, bodyIds)
-            end
+            -- end
         end
         if top == 1 then
             TimerManager:AddTimer(1, function()
@@ -1438,10 +1497,7 @@ end
 function GameMatch:SaveGoldReward(rank)
     local GoldReward = GoldRewardConfig[rank]
     for i, v in pairs(GoldReward) do
-        local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[v.id]
-        if cfg then
-            _GAME.GameUtils.AddPlayerReward(cfg.archive, v.count)
-        end
+        _GAME.GameUtils.AddPlayerReward(v.id, v.count)
     end
 end
 

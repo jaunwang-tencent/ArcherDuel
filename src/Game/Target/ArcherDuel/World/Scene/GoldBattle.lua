@@ -10,12 +10,6 @@ function GoldBattle:OnCreate(Context)
     --获取场景配置【只读】
     self.Config = UGCS.Target.ArcherDuel.Config.SceneConfig[Context.Situation]
     self.CharacterConfig = UGCS.Target.ArcherDuel.Config.CharacterConfig[Context.CharacterIndex]
-    -- local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
-    -- local BattleView = UIConfig and UIConfig.BattleView
-    -- self.CriticalHitReward = BattleView and BattleView.CriticalHitReward
-    -- if self.CriticalHitReward then
-    --     UI:SetVisible({self.CriticalHitReward.ID}, true)
-    -- end
 
     --战斗场景
     self.SceneIndex = Context.SceneIndex
@@ -65,11 +59,6 @@ function GoldBattle:OnDestroy()
             Element:SetRotation(SceneID, Tranfrom.Rotation, Element.COORDINATE.World)
         end
         self.ObstacleTransformList = nil
-    end
-
-    if self.CriticalHitReward then
-        UI:SetVisible({self.CriticalHitReward.ID}, true)
-        self.CriticalHitReward = nil
     end
 
     self.Config = nil

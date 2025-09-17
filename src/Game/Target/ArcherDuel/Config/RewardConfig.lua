@@ -113,7 +113,7 @@ RewardConfig.Gold_Rewards = {
 -- 大师1 4050
 -- 王者 4450
 -- 周结算段位奖励
-local Rank_Rewards = {
+RewardConfig.Rank_Rewards = {
     [0] = {
         {
             id = 100001,
@@ -401,7 +401,7 @@ local Rank_Rewards = {
 }
 
 -- 钻石联赛结算奖励
-local Diamond_Rewards = {
+RewardConfig.Diamond_Rewards = {
     -- 名次
     -- 6-50名
     [6] = {
@@ -485,3 +485,5 @@ local Diamond_Rewards = {
         },
     },
 }
+
+return RewardConfig

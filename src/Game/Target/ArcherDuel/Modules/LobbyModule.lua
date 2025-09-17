@@ -149,13 +149,55 @@ function LobbyModule:LoadData()
         lastLoginTime = nowTs - (7 * 24 * 60 * 60)
     end
 
+    local score = _GAME.GameUtils.GetPlayerRankScore()
     if _GAME.GameUtils.isCrossDay(lastLoginTime) then
         --跨天登录了
         Log:PrintLog("跨天登录了")
+
+        self.PlayerData.BaseData.Player_TaskDailyExp_Num = 0
+        self.PlayerData.BaseData.Player_CollectTaskDaily_Num = 0
+
+        if _GAME.GameUtils.IsReachDiamondRank(score) then
+            _GAME.GameUtils.AddPlayerReward(100003, 2)
+        end
     end
     if _GAME.GameUtils.isCrossWeek(lastLoginTime) then
         --跨周登录了
         Log:PrintLog("跨周登录了")
+
+        --跨周登录了，重置每周任务经验
+        self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = 0
+        self.PlayerData.BaseData.Player_CollectTaskWeekly_Num = 0
+        local level = _GAME.GameUtils.GetRankLevelByScore(score)
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 0)
+
+        --突破段位可领取段位奖励
+        local RankBoxReward_Table = {}
+        local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+
+        --已领取的段位奖励
+        local ReceiveRankBoxReward_Table = {}
+        local ReceiveRankBoxReward_Table_Str = MiscService:Table2JsonStr(ReceiveRankBoxReward_Table)
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table", ReceiveRankBoxReward_Table_Str)
+
+        --段位奖励发放
+        local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
+        if RewardConfig and RewardConfig.Rank_Rewards[level.base_score] then
+            local Reward = RewardConfig.Rank_Rewards[level.base_score]
+            for k, v in pairs(Reward) do
+                _GAME.GameUtils.AddPlayerReward(v.id, v.count)
+            end
+        end
+
+        -- 掉段逻辑
+        if level and level.titleLv <= 3 then
+            _GAME.GameUtils.SetPlayerRankScore(0)
+        else
+            local resettitleLv = level.titleLv - 2
+            local titleLvLevel = _GAME.GameUtils.GetRankLevelByTitleLv(resettitleLv)
+            _GAME.GameUtils.SetPlayerRankScore(titleLvLevel.base_score)
+        end
     end
 
     self.PlayerData.BaseData.Player_LastLoginTime_Num = nowTs

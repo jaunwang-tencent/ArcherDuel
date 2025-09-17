@@ -32,15 +32,34 @@ function FightModule:Open(PlayerData)
         self:OnClickAd2()
     end)
 
-    --跳转黄金联赛按钮
-    UI:RegisterClicked(CenterView.Golden.ID, function()
-        self:OnGolden()
-    end)
+    local score = _GAME.GameUtils.GetPlayerRankScore()
+    if _GAME.GameUtils.IsReachGoldRank(score) then
+        local unLock = "#FFFFFF"
+        UI:SetImageColor({CenterView.Golden.ID}, unLock)
+        UI:SetVisible({CenterView.Golden.Lock}, false)
+        --跳转黄金联赛按钮
+        UI:RegisterClicked(CenterView.Golden.ID, function()
+            self:OnGolden()
+        end)
+    else
+        local lock = "#8E8E8E"
+        UI:SetImageColor({CenterView.Golden.ID}, lock)
+        UI:SetVisible({CenterView.Golden.Lock}, true)
+    end
 
-    --跳转钻石联赛按钮
-    UI:RegisterClicked(CenterView.Diamond.ID, function() 
-        self:OnDiamond()
-    end)
+    if _GAME.GameUtils.IsReachDiamondRank(score) then
+        local unLock = "#FFFFFF"
+        UI:SetImageColor({CenterView.Diamond.ID}, unLock)
+        UI:SetVisible({CenterView.Diamond.Lock}, false)
+        --跳转钻石联赛按钮
+        UI:RegisterClicked(CenterView.Diamond.ID, function()
+            self:OnDiamond()
+        end)
+    else
+        local lock = "#8E8E8E"
+        UI:SetImageColor({CenterView.Diamond.ID}, lock)
+        UI:SetVisible({CenterView.Diamond.Lock}, true)
+    end
 
     --七日挑战
     UI:RegisterClicked(CenterView.SevenDays.Button, function()
@@ -53,10 +72,26 @@ function FightModule:Open(PlayerData)
         self:OnMatch()
     end)
 
-    --段位奖励
-    UI:RegisterClicked(CenterView.Rank.Button, function()
-        self:OnRank()
-    end)
+    --判断是否有可领取的段位奖励
+    if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table") then
+        local RankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table")
+        local RankBoxReward_Table = MiscService:JsonStr2Table(RankBoxReward_Table_Str)
+        if RankBoxReward_Table and #RankBoxReward_Table > 0 then
+            --段位奖励
+            UI:RegisterClicked(CenterView.Rank.Button, function()
+                self:OnRank(RankBoxReward_Table)
+            end)
+            UI:SetVisible({CenterView.Rank.Image_1}, true)
+            UI:SetVisible({CenterView.Rank.Image_2}, true)
+        else
+            UI:SetVisible({CenterView.Rank.Image_1}, false)
+            UI:SetVisible({CenterView.Rank.Image_2}, false)
+        end
+    else
+        UI:SetVisible({CenterView.Rank.Image_1}, false)
+        UI:SetVisible({CenterView.Rank.Image_2}, false)
+    end
+
     UI:RegisterClicked(101102,function()
         UI:SetVisible({UIConfig.SevenDays.ID}, false)
     end) 
@@ -64,20 +99,31 @@ function FightModule:Open(PlayerData)
     local Rank = CenterView and CenterView.Rank
     if Rank then
         local list = CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Rank", CustomProperty.PROPERTY_TYPE.Image)
-        local BattlePoints = PlayerData.BaseData["Player_BattlePoints_Num"]
-        local level = _GAME.GameUtils.GetRankLevelByScore(BattlePoints)
+        local level = _GAME.GameUtils.GetRankLevelByScore(score)
         if level.icon and list[level.icon] then
             UI:SetImage({Rank.Image}, list[level.icon], true)
         end
         UI:SetText({Rank.Text}, level.name)
 
         if RankInfoConfig[level.id + 1] then
-            UI:SetProgressMaxValue({Rank.Progress}, RankInfoConfig[level.id + 1].base_score)
-            UI:SetProgressCurrentValue({Rank.Progress}, BattlePoints - level.base_score)
+            local value = score - level.base_score
+            local max = RankInfoConfig[level.id + 1].base_score - level.base_score
+            UI:SetProgressMaxValue({Rank.Progress}, max)
+            UI:SetProgressCurrentValue({Rank.Progress}, value)
         else
-            UI:SetProgressMaxValue({Rank.Progress}, BattlePoints)
-            UI:SetProgressCurrentValue({Rank.Progress}, BattlePoints)
+            if RankInfoConfig[level.id - 1] then
+                local max = level.base_score - RankInfoConfig[level.id - 1].base_score
+                UI:SetProgressMaxValue({Rank.Progress}, max)
+                UI:SetProgressCurrentValue({Rank.Progress}, max)
+            else
+                UI:SetProgressMaxValue({Rank.Progress}, 0)
+                UI:SetProgressCurrentValue({Rank.Progress}, 0)
+            end
         end
+
+        UI:SetText({Rank.Text_1}, tostring(UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore))
+        UI:SetText({Rank.Text_2}, "+" .. UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore)
+        UI:SetText({Rank.Text_3}, tostring(level.cost))
     end
 end
 
@@ -242,8 +288,179 @@ function FightModule:OnMatch()
     end
 end
 
-function FightModule:OnRank()
+function FightModule:OnRank(RankBoxReward_Table)
     --这里打开段位奖励随机奖励
+    table.remove(RankBoxReward_Table, 1)
+    if RankBoxReward_Table and #RankBoxReward_Table == 0 then
+        local FightView = UIConfig.FightView
+        local CenterView = FightView and FightView.CenterView
+        UI:UnRegisterClicked(CenterView.Rank.Button)
+        UI:SetVisible({CenterView.Rank.Image_1}, false)
+        UI:SetVisible({CenterView.Rank.Image_2}, false)
+    end
+    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
+    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+
+    local OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
+    math.randomseed(TimerManager:GetClock())
+    local Weight = 0
+
+    --随机获取一件装备
+    for _, v in ipairs(OpenBoxConfig.RankBox[1]) do
+        Weight = Weight + v.Weight
+    end
+    local function GetOneReward()
+        -- 先随品阶
+        -- 再随装备
+        local random = math.random(1, Weight)
+        local tempWeight = 0
+        for _, v in ipairs(OpenBoxConfig.RankBox[1]) do
+            tempWeight = tempWeight + v.Weight
+            if random <= tempWeight then
+                local equipmap = _GAME.GameUtils.GetEquipmentMap()
+                local equipIds = equipmap[v.Grade]
+                if equipIds then
+                    return equipIds[math.random(1, #equipIds)]
+                end
+            end
+        end
+    end
+
+    Weight = 0
+    --随机获取钻石数量
+    for _, v in ipairs(OpenBoxConfig.RankBox[2]) do
+        Weight = Weight + v.Weight
+    end
+    local function GetDiamondCount()
+        local random = math.random(1, Weight)
+        local tempWeight = 0
+        for _, v in ipairs(OpenBoxConfig.RankBox[2]) do
+            tempWeight = tempWeight + v.Weight
+            if random <= tempWeight then
+                return v.Count
+            end
+        end
+    end
+
+    Weight = 0
+    --随机获取黄金数量
+    for _, v in ipairs(OpenBoxConfig.RankBox[2]) do
+        Weight = Weight + v.Weight
+    end
+    local function GetGoldCount()
+        local random = math.random(1, Weight)
+        local tempWeight = 0
+        for _, v in ipairs(OpenBoxConfig.RankBox[2]) do
+            tempWeight = tempWeight + v.Weight
+            if random <= tempWeight then
+                return v.Count
+            end
+        end
+    end
+
+    local ThreeItem = UIConfig.BoxView.ThreeItem
+    --显示装备按钮
+    UI:SetVisible({ThreeItem.ID, ThreeItem.ItemGroupID}, true)
+
+    --开宝箱表演
+    local TargetBoxID
+    for _, Perform in ipairs(ThreeItem.PerformGroup) do
+        if 200001 == Perform.ResourceID then
+            UI:SetVisible({Perform.ID}, true)
+            TargetBoxID = Perform.ID
+        else
+            UI:SetVisible({Perform.ID}, false)
+        end
+    end
+
+    --装备展示
+    for _, Item in ipairs(ThreeItem.ItemGroup) do
+        UI:SetVisible({Item.Icon, Item.Background, Item.Text}, false)
+    end
+    local BoxRewards = {GetOneReward(), GetDiamondCount(), GetGoldCount()}
+    print("BoxRewards: " .. BoxRewards[1] .. ", " .. BoxRewards[2] .. ", " .. BoxRewards[3])
+    UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
+
+    UGCS.Framework.Executor.Delay(2.3, function ()
+        for RewardIndex, Value in ipairs(BoxRewards) do
+            if RewardIndex == 1 then
+                local EquipmentData = EquipmentConfig[Value]
+                local BoxItem = ThreeItem.ItemGroup[RewardIndex]
+                UI:SetVisible({BoxItem.Icon, BoxItem.Background}, true)
+                GameUtils.SetImageWithAsset(BoxItem.Icon, EquipmentData.AssetName, EquipmentData.AssetIndex)
+                GameUtils.SetImageWithAsset(BoxItem.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+            elseif RewardIndex == 2 then
+                local BoxItem = ThreeItem.ItemGroup[RewardIndex]
+                UI:SetVisible({BoxItem.Icon, BoxItem.Background}, true)
+                GameUtils.SetImageWithAsset(BoxItem.Icon, "Currency", 6)
+                GameUtils.SetImageWithAsset(BoxItem.Background, "EquipmentImage", 1)
+                UI:SetText({BoxItem.Text}, tostring(Value))
+            elseif RewardIndex == 3 then
+                local BoxItem = ThreeItem.ItemGroup[RewardIndex]
+                UI:SetVisible({BoxItem.Icon, BoxItem.Background}, true)
+                GameUtils.SetImageWithAsset(BoxItem.Icon, "Currency", 4)
+                GameUtils.SetImageWithAsset(BoxItem.Background, "EquipmentImage", 1)
+                UI:SetText({BoxItem.Text}, tostring(Value))
+            end
+        end
+        UI:PlayUIAnimation(ThreeItem.ItemGroupID, 1, 0)
+        --暂停特效播放
+        UGCS.Framework.Executor.Delay(0.7, function()
+            if TargetBoxID then
+                UI:EffectPausePlay(TargetBoxID)
+            end
+        end)
+        --播到1.6秒暂停播放
+        UGCS.Framework.Executor.Delay(1.6, function()
+            UI:PauseUIAnimation(ThreeItem.ItemGroupID, 1)
+            --当表演完成之后才显示领取按钮
+            UGCS.Framework.Executor.Delay(0.5, function()
+                UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},true)
+                UI:SetVisible({ThreeItem.ItemGroup[2].Text, ThreeItem.ItemGroup[3].Text},true)
+            end)
+        end)
+    end)
+
+    --注册领取事件
+    UI:RegisterClicked(ThreeItem.Button.ID, function ()
+        --获取装备
+        local AllEquipment = self.PlayerData.AllEquipment
+        for i, Value in pairs(BoxRewards) do
+            if i == 1 then
+                local TargetEquipment = AllEquipment[Value]
+                if TargetEquipment.Unlock then
+                    --累加碎片
+                    TargetEquipment.Piece = TargetEquipment.Piece + 1
+                else
+                    --解锁
+                    TargetEquipment.Unlock = true
+                end
+            elseif i == 2 then
+                --增加钻石
+                _GAME.GameUtils.AddPlayerReward(100002, Value)
+            elseif i == 3 then
+                --增加金币
+                _GAME.GameUtils.AddPlayerReward(100001, Value)
+            end
+        end
+        --刷新装备数据
+        System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
+        --隐藏组
+        UI:SetVisible({ThreeItem.ItemGroupID}, false)
+        --恢复动画播放【这个方案可能还是会有问题！！！】
+        UI:ResumeUIAnimation(ThreeItem.ItemGroupID, 1)
+        --隐藏组
+        UI:SetVisible({ThreeItem.ID}, false)
+
+        for _, Perform in ipairs(ThreeItem.PerformGroup) do
+            UI:SetVisible({Perform.ID}, false)
+        end
+        UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
+        UI:SetVisible({ThreeItem.ItemGroup[1].Text, ThreeItem.ItemGroup[2].Text, ThreeItem.ItemGroup[3].Text},false)
+
+        --注销事件
+        UI:UnRegisterClicked(ThreeItem.Button.ID)
+    end)
 end
 
 function FightModule:RefreshTaskProcesUI()

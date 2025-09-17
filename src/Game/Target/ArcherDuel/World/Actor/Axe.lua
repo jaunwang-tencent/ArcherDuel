@@ -37,4 +37,12 @@ function Axe:AdjustForward(Velocity)
     end
 end
 
+function Axe:SetProjectilePosition(ProjectileInstanceID, CurrentPosition)
+    --设置位置【只有在管理器中的实例才允许更新位置】
+    if self.Projectiles[ProjectileInstanceID] then
+        -- 斧子抬高一点，不然容易表现上穿过人体
+        Element:SetPosition(ProjectileInstanceID, CurrentPosition+Engine.Vector(0, 0, 10), Element.COORDINATE.World)
+    end
+end
+
 return Axe
