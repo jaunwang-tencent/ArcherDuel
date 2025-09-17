@@ -31,10 +31,7 @@ function GameMatch:Init()
 
     self.localPlayerId = Character:GetLocalPlayerId()
     --获取当前地图
-    self.mapId = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "BattleStage")
-    if not self.mapId or self.mapId == 0 then
-        self.mapId = CustomProperty:GetCustomProperty(System:GetScriptParentID(), "MapId", CustomProperty.PROPERTY_TYPE.Number)
-    end
+    self.mapId = CustomProperty:GetCustomProperty(System:GetScriptParentID(), "MapId", CustomProperty.PROPERTY_TYPE.Number)
     
     self.battleType = BattleType.Rank
     --构造场景表

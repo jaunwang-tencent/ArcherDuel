@@ -133,8 +133,8 @@ function TournamentModule:OnMatch()
         --这里打开寻找对局页面
         --生成1到7的随机数字
         local RandomNumber = math.random(1, 6)  --随机海岛和天空
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 1)
-        System:FireSignEvent(tostring(1))
+        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
+        System:FireSignEvent(tostring(RandomNumber))
     end
 end
 
