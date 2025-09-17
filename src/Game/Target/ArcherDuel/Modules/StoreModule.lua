@@ -472,19 +472,19 @@ function StoreModule:SeeAd(Costs, Goods)
 end
 
 --- 打开宝箱
----@param boxId 宝箱Id
-function StoreModule:OpenBox(boxId)
+---@param BoxID 宝箱Id
+function StoreModule:OpenBox(BoxID)
     local ThreeItem = UIConfig.BoxView.ThreeItem
     --显示装备按钮
     UI:SetVisible({ThreeItem.ID, ThreeItem.ItemGroupID}, true)
 
     --开宝箱表演
-    local TargetBoxID
+    local TargetPerformID
     for _, Perform in ipairs(ThreeItem.PerformGroup) do
         UI:SetVisible({Perform.ID}, false)
-        if boxId == Perform.ResourceID then
+        if BoxID == Perform.ResourceID then
             UI:SetVisible({Perform.ID}, true)
-            TargetBoxID = Perform.ID
+            TargetPerformID = Perform.ID
         end
     end
 
@@ -492,7 +492,7 @@ function StoreModule:OpenBox(boxId)
     for _, Item in ipairs(ThreeItem.ItemGroup) do
         UI:SetVisible({Item.Icon, Item.Background}, false)
     end
-    local BoxRewards = _GAME.GameUtils.OpenBoxReward(boxId)
+    local BoxRewards = _GAME.GameUtils.OpenBoxReward(BoxID)
     UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
 
     UGCS.Framework.Executor.Delay(2.3, function ()
@@ -506,8 +506,8 @@ function StoreModule:OpenBox(boxId)
         UI:PlayUIAnimation(ThreeItem.ItemGroupID, 1, 0)
         --暂停特效播放
         UGCS.Framework.Executor.Delay(0.7, function()
-            if TargetBoxID then
-                UI:EffectPausePlay(TargetBoxID)
+            if TargetPerformID then
+                UI:EffectPausePlay(TargetPerformID)
             end
         end)
         --播到1.6秒暂停播放
@@ -537,15 +537,9 @@ function StoreModule:OpenBox(boxId)
         --刷新装备数据
         System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
         --隐藏组
-        UI:SetVisible({ThreeItem.ItemGroupID}, false)
+        UI:SetVisible({ThreeItem.ItemGroupID, TargetPerformID}, false)
         --恢复动画播放【这个方案可能还是会有问题！！！】
         UI:ResumeUIAnimation(ThreeItem.ItemGroupID, 1)
-        for _, Perform in ipairs(ThreeItem.PerformGroup) do
-            if boxId == Perform.ResourceID then
-                UI:SetVisible({Perform.ID}, false)
-                TargetBoxID = Perform.ID
-            end
-        end
         --隐藏组
         UI:SetVisible({ThreeItem.ID}, false)
         --注销事件
