@@ -23,7 +23,7 @@ local DefaultBaseData =
     Equipped_Spear_Lv = 1,
     --资产信息
     Coin = 5000,                  --金币
-    Diamond = 1,                  --砖石
+    Diamond = 1000,                  --砖石
     Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
     GoldBox = 3,                  --金宝箱
     SilverBox = 5,                --银宝箱
@@ -409,7 +409,9 @@ function LobbyModule:DefaultStoreData()
                     --广告资源
                     Ad = "test_gold_box_tag",
                     --广告冷却时间
-                    AdCoolTime = 24 * 3600
+                    AdCoolTime = 24 * 3600,
+                    --点击时间戳
+                    ClickTimestamp = 0
                 }
             },
             --商品
@@ -437,7 +439,9 @@ function LobbyModule:DefaultStoreData()
                     --广告资源
                     Ad = "test_silver_box_tag",
                     --广告冷却时间
-                    AdCoolTime = 24 * 3600
+                    AdCoolTime = 24 * 3600,
+                    --点击时间戳
+                    ClickTimestamp = 0
                 }
             },
             --商品

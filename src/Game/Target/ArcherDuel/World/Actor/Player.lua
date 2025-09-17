@@ -576,12 +576,12 @@ function Player:HandleDamage(Attacker, BodyType)
     if AttackerEquipData and DefenderEquipData then
         if BodyType == Character.SOCKET_NAME.Head then
             --爆头
-            Damage = Damage * (1 + AttackerEquipData.head_damageRate or 0)
-            Damage = Damage * (1 - DefenderEquipData.head_protection or 0)
+            Damage = Damage * (1 + (AttackerEquipData.head_damageRate or 0) / 100)
+            Damage = Damage * (1 - (DefenderEquipData.head_protection or 0) / 100)
         else
             --打身
-            Damage = Damage * (1 + AttackerEquipData.body_damageRate or 0)
-            Damage = Damage * (1 - DefenderEquipData.body_protection or 0)
+            Damage = Damage * (1 + (AttackerEquipData.body_damageRate or 0) / 100)
+            Damage = Damage * (1 - (DefenderEquipData.body_protection or 0) / 100)
         end
     end
     --3.3、伤害倍率
