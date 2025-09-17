@@ -108,7 +108,7 @@ function LobbyModule:Update(DeltaTime)
     print("当前时间:", nowStr, "距今日剩余:", leftStr, "距离本周剩余:", weekLeftStr)
 
     UI:SetText({UIConfig.TaskView.TaskProcesView.Time}, "剩余时间：" .. leftStr)
-    UI:SetText({UIConfig.SevenDays.Time}, weekLeftStr)
+    UI:SetText({UIConfig.SevenDays.Time, UIConfig.TournamentView.World.CountDown, UIConfig.TournamentView.Gold.CountDown, UIConfig.TournamentView.Diamond.CountDown}, weekLeftStr)
     UI:SetText({105035}, weekLeftStr)
     
      --商城视图
