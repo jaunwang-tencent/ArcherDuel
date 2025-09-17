@@ -94,7 +94,7 @@ function StoreModule:RefreshPrice(ShopView, ShopCosts)
             --银宝箱
             GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 2)
             UI:SetText({BoxStyle.Price}, tostring(ShopCosts.SilverBox))
-        elseif ShopCosts.Diamond and CurrentDiamond >= ShopCosts.Diamond then
+        elseif ShopCosts.Diamond then
             --砖石
             GameUtils.SetImageWithAsset(BoxStyle.Icon, "Currency", 6)
             UI:SetText({BoxStyle.Price}, tostring(ShopCosts.Diamond))
@@ -235,7 +235,7 @@ function StoreModule:RefreshStore(HoldInfo)
         --2、商品【由数据驱动视图】
         local ShopItems = ItemsMap[ActivityIndex]
         if ShopItems then
-            for ViewIndex, ShopItem in pairs(ShopItems) do
+            for ViewIndex, ShopItem in ipairs(ShopItems) do
                 local ViewSlot = Activity.Views[ViewIndex]
                 if ViewSlot then
                     --刷新商铺
@@ -286,16 +286,38 @@ function StoreModule:BuyGood(ShopInfo)
         return
     end
     local Success = false
-    if Costs.GoldBox and BaseData.GoldBox >= Costs.GoldBox then
-        --消耗金宝箱
-        BaseData.GoldBox = BaseData.GoldBox - Costs.GoldBox
-        Success = true
-        self:OpenBox(200003)
-    elseif Costs.SilverBox and BaseData.SilverBox >= Costs.SilverBox then
-        --消耗银宝箱
-        BaseData.SilverBox = BaseData.SilverBox - Costs.SilverBox
-        Success = true
-        self:OpenBox(200002)
+    if Costs.GoldBox then
+        if BaseData.GoldBox >= Costs.GoldBox then
+            --消耗金宝箱
+            BaseData.GoldBox = BaseData.GoldBox - Costs.GoldBox
+            Success = true
+        elseif Costs.Diamond and BaseData.Diamond > Costs.Diamond then
+            --消砖石
+            BaseData.Diamond = BaseData.Diamond - Costs.Diamond
+            Success = true
+        else
+            --在此弹出看广告弹窗
+            self:ShowAdView(Costs, Goods)
+        end
+        if Success then
+            self:OpenBox(200003)
+        end
+    elseif Costs.SilverBox then
+        if BaseData.SilverBox >= Costs.SilverBox then
+            --消耗银宝箱
+            BaseData.SilverBox = BaseData.SilverBox - Costs.SilverBox
+            Success = true
+        elseif Costs.Diamond and BaseData.Diamond > Costs.Diamond then
+            --消砖石
+            BaseData.Diamond = BaseData.Diamond - Costs.Diamond
+            Success = true
+        else
+            --在此弹出看广告弹窗
+            self:ShowAdView(Costs, Goods)
+        end
+        if Success then
+            self:OpenBox(200002)
+        end
     elseif Costs.Diamond then
         --消耗砖石
         if BaseData.Diamond > Costs.Diamond then

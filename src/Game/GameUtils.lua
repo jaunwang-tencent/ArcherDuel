@@ -126,7 +126,7 @@ function GameUtils.OpenBoxReward(boxId)
             Weight = Weight + v.Weight
             if random <= Weight then
                 if v.EquipIds then -- 有指认装备，直接从指认装备中取
-                    return v.EquipIds[math.random(1, v.EquipIds)]
+                    return v.EquipIds[math.random(1, #v.EquipIds)]
                 else -- 没有指认装备，从装备池中取
                     local equipmap = GameUtils.GetEquipmentMap()
                     local equipIds = equipmap[v.Grade]

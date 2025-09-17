@@ -4,6 +4,8 @@ local LobbyModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+--开宝箱配置
+local OpenBoxConfig = UGCS.Target.ArcherDuel.Config.OpenBoxConfig
 
 --缺省基础数值
 local DefaultBaseData =
@@ -23,7 +25,7 @@ local DefaultBaseData =
     Equipped_Spear_Lv = 1,
     --资产信息
     Coin = 5000,                  --金币
-    Diamond = 1000,                  --砖石
+    Diamond = 1000,               --砖石
     Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
     GoldBox = 2,                  --金宝箱
     SilverBox = 2,                --银宝箱
@@ -138,6 +140,28 @@ function LobbyModule:LoadData()
     else
         AllShops = self:DefaultShopData()
     end
+    --刷新限定奖池
+    --第几周
+    local WeekIndex = 59
+    local AllLimitItem = AllShops.LimitItem
+    for _, LimitItem in pairs(AllLimitItem) do
+        local BoxEquipmentIdsSet
+        if LimitItem.Costs[1].GoldBox then
+            BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
+        elseif LimitItem.Costs[1].SilverBox then
+            BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
+        end
+        local Goods = LimitItem.Goods
+        Goods.Equipments = {}
+        if BoxEquipmentIdsSet then
+            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
+            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
+            for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
+                Goods.Equipments[Index] = { ID = BoxEquipmentId }
+            end
+        end
+    end
+
     self.PlayerData.AllShops = AllShops
     self:RefreshStoreData()
 
@@ -458,14 +482,8 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {
-                    [1] = { ID = 1, Piece = 10 },
-                    [2] = { ID = 15, Piece = 15 },
-                    [3] = { ID = 38, Piece = 20 },
-                    [4] = { ID = 61, Piece = 25 },
-                    [5] = { ID = 77, Piece = 30 },
-                    [6] = { ID = 93, Piece = 30 },
-                }
+                --从宝箱配置中去拿
+                Equipments = {}
             }
         },
         [2] = {
@@ -488,14 +506,8 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {
-                    [1] = { ID = 2, Piece = 10 },
-                    [2] = { ID = 16, Piece = 15 },
-                    [3] = { ID = 39, Piece = 20 },
-                    [4] = { ID = 62, Piece = 25 },
-                    [5] = { ID = 78, Piece = 30 },
-                    [6] = { ID = 94, Piece = 30 },
-                }
+                --从宝箱配置中去拿
+                Equipments = {}
             }
         },
     }

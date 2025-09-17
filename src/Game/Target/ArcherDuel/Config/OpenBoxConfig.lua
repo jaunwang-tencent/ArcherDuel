@@ -103,19 +103,19 @@ OpenBoxConfig.RankBox = {
 
 -- 顶级宝箱，每次开启出三个物品
 OpenBoxConfig.GoldBox = {
-    {
+    [1] = {
         -- 品阶
         Grade = 2,
         -- 权重
         Weight = 5,
     },
-    {
+    [2] = {
         -- 品阶
         Grade = 3,
         -- 权重
         Weight = 3,
     },
-    {
+    [3] = {
         -- 品阶
         Grade = 4,
         -- 权重
@@ -143,19 +143,19 @@ OpenBoxConfig.GoldBox = {
 
 -- 高级宝箱，每次开启出三个物品
 OpenBoxConfig.SilverBox = {
-    {
+    [1] = {
         -- 品阶
         Grade = 1,
         -- 权重
         Weight = 3,
     },
-    {
+    [2] = {
         -- 品阶
         Grade = 2,
         -- 权重
         Weight = 5,
     },
-    {
+    [3] = {
         -- 品阶
         Grade = 3,
         -- 权重
