@@ -4,8 +4,10 @@ local LobbyModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
---开宝箱配置
+--宝箱配置
 local OpenBoxConfig = UGCS.Target.ArcherDuel.Config.OpenBoxConfig
+--商品配置
+local GoodsConfig = UGCS.Target.ArcherDuel.Config.GoodsConfig
 
 --缺省基础数值
 local DefaultBaseData =
@@ -59,6 +61,11 @@ end
 
 --- 关闭
 function LobbyModule:Close()
+    if self.CurrentModule then
+        self.CurrentModule:Close()
+        self.CurrentModule = nil
+    end
+
     --菜单栏
     local TitleBar = UIConfig.MainView.TitleBar
     --打开主菜单
@@ -131,39 +138,18 @@ function LobbyModule:LoadData()
     self:RefreshEquipmentData()
 
     --3、商店数据
-    local AllShops
     if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Shops_Table") then
         --这里读取玩家的装备 --并进行排序
         local All_Shops_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Shops_Table")
         --文字转为组
-        AllShops = MiscService:JsonStr2Table(All_Shops_Table)
+        self.PlayerData.AllShops = MiscService:JsonStr2Table(All_Shops_Table)
     else
-        AllShops = self:DefaultShopData()
+        self.PlayerData.AllShops = self:DefaultShopData()
+        --刷新限定奖池
+        self:RefreshLimitItem()
+        self:RefreshDailyItem()
+        self:RefreshDiamondItem()
     end
-    --刷新限定奖池
-    --第几周
-    local WeekIndex = 59
-    local AllLimitItem = AllShops.LimitItem
-    for _, LimitItem in pairs(AllLimitItem) do
-        local BoxEquipmentIdsSet
-        if LimitItem.Costs[1].GoldBox then
-            BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
-        elseif LimitItem.Costs[1].SilverBox then
-            BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
-        end
-        local Goods = LimitItem.Goods
-        Goods.Equipments = {}
-        if BoxEquipmentIdsSet then
-            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
-            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
-            for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
-                Goods.Equipments[Index] = { ID = BoxEquipmentId }
-            end
-        end
-    end
-
-    self.PlayerData.AllShops = AllShops
-    self:RefreshStoreData()
 
     local nowStr = MiscService:GetServerTimeToTime()
     local nowTs = MiscService:DateYMDHMSToTime(nowStr)
@@ -408,16 +394,31 @@ function LobbyModule:RefreshEquipmentData()
     --2.2、装备分类
     --按类型分组且品质降序
     local GroupByCategory = {}
+    --按品质分组
+    local GroupByGrade = {}
     --装备槽【六个部位】
     local BodyEquipment = {}
     for _, Equipment in pairs(AllEquipment) do
+        --获取装备数据
+        local EquipmentData = EquipmentConfig[Equipment.ID]
+        --回写装备品质
+        Equipment.Grade = EquipmentData and EquipmentData.Attributes.Grade or 1
+
         --按种类分类
-        local Group = GroupByCategory[Equipment.Category]
-        if not Group then
-            Group = {}
-            GroupByCategory[Equipment.Category] = Group
+        local Group1 = GroupByCategory[Equipment.Category]
+        if not Group1 then
+            Group1 = {}
+            GroupByCategory[Equipment.Category] = Group1
         end
-        table.insert(Group, Equipment)
+        table.insert(Group1, Equipment)
+
+        --按品质分类
+        local Group2 = GroupByGrade[Equipment.Grade]
+        if not Group2 then
+            Group2 = {}
+            GroupByGrade[Equipment.Grade] = Group2
+        end
+        table.insert(Group2, Equipment)
 
         if not Equipment.Unlock and Equipment.Piece > 0 then
             --没有解锁，则解锁，并消耗一个
@@ -434,7 +435,6 @@ function LobbyModule:RefreshEquipmentData()
             end
             BodyEquipment[Equipment.Category] = Equipment
             --刷新基础数据
-            local EquipmentData = EquipmentConfig[Equipment.ID]
             if EquipmentData then
                 local IDName = string.format("Equipped_%s_ID", EquipmentData.TypeName)
                 DefaultBaseData[IDName] = Equipment.ID
@@ -452,6 +452,7 @@ function LobbyModule:RefreshEquipmentData()
         end)
     end
     self.PlayerData.GroupByCategory = GroupByCategory
+    self.PlayerData.GroupByGrade = GroupByGrade
     self.PlayerData.BodyEquipment = BodyEquipment
     --统计已穿戴装备的ID和等级
     --重新刷新外观
@@ -531,9 +532,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {
-                    [1] = { ID = 3, Piece = 10 }
-                }
+                Equipments = {}
             }
         },
         [2] = {
@@ -552,9 +551,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {
-                    [1] = { ID = 4, Piece = 10 }
-                }
+                Equipments = {}
             }
         },
         [3] = {
@@ -573,9 +570,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {
-                    [1] = { ID = 5, Piece = 10 }
-                }
+                Equipments = {}
             }
         }
     }
@@ -588,7 +583,7 @@ function LobbyModule:DefaultShopData()
                     --广告资源
                     AdTag = "ad_tag_diamond",
                     --最大收集次数
-                    MaxCollect = 10,
+                    MaxCollect = 5,
                     --已收集次数
                     HasCollect = 0
                 }
@@ -645,9 +640,79 @@ function LobbyModule:DefaultShopData()
     return AllShops
 end
 
---- 刷新商店
-function LobbyModule:RefreshStoreData()
+--- 刷新限定奖池
+function LobbyModule:RefreshLimitItem()
+    --第几周
+    math.randomseed(TimerManager:GetClock())
+    local WeekIndex = math.random(1, 60)
+    local AllLimitItem = self.PlayerData.AllShops.LimitItem
+    for _, LimitItem in pairs(AllLimitItem) do
+        local BoxEquipmentIdsSet
+        if LimitItem.Costs[1].GoldBox then
+            BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
+        elseif LimitItem.Costs[1].SilverBox then
+            BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
+        end
+        local Goods = LimitItem.Goods
+        Goods.Equipments = {}
+        if BoxEquipmentIdsSet then
+            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
+            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
+            for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
+                Goods.Equipments[Index] = { ID = BoxEquipmentId }
+            end
+        end
+    end
+end
 
+--- 刷新每日限购
+function LobbyModule:RefreshDailyItem()
+    local AllDailyItem = self.PlayerData.AllShops.DailyItem
+    --概率表
+    local GradeProbability = {}
+    local Weight = 0
+    for _, Config in ipairs(GoodsConfig) do
+        Weight = Weight + Config.Weight
+        GradeProbability[Config.Grade] = Weight
+    end
+    local RandomGoodConfig = function()
+        --摇骰子
+        local RandomValue = math.random(1, Weight)
+        local TargetGrade = 1
+        local MinValue = 0
+        local MaxValue
+        for Grade = 1, 4 do
+            MaxValue = GradeProbability[Grade]
+            if RandomValue >= MinValue and RandomValue <= MaxValue then
+                TargetGrade = Grade
+                break
+            end
+            MinValue = MaxValue
+        end
+        return GoodsConfig[TargetGrade]
+    end
+    math.randomseed(TimerManager:GetClock())
+    for _, DailyItem in pairs(AllDailyItem) do
+        --根据权重随机一个品质
+        local TargetGoodConfig = RandomGoodConfig()
+        --编组
+        local GroupByGrade = self.PlayerData.GroupByGrade
+        local EquipmentGroup = GroupByGrade[TargetGoodConfig.Grade]
+        local EquipmentID = EquipmentGroup[math.random(1, #EquipmentGroup)].ID
+        DailyItem.Costs[1].MaxCollect = TargetGoodConfig.Times
+        DailyItem.Costs[1].HasCollect = 0
+        DailyItem.Costs[1].Diamond = TargetGoodConfig.Price
+        local Goods = DailyItem.Goods
+        Goods.Equipments = {}
+        Goods.Equipments[1] = { ID = EquipmentID }
+    end
+end
+
+--- 刷新免费砖石
+function LobbyModule:RefreshDiamondItem()
+    local AllDiamondItem = self.PlayerData.AllShops.DiamondItem
+    AllDiamondItem[1].Costs[1].MaxCollect = 5
+    AllDiamondItem[1].Costs[1].HasCollect = 0
 end
 
 --- 刷新通用资源栏
