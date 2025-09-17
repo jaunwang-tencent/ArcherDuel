@@ -356,6 +356,7 @@ function GameMatch:StartMatch()
     local weaponIndex = math.random(1, #weapons)
     BattleWeapon = weapons[weaponIndex]
     MatchInfo.BattleWeapon = BattleWeapon
+    MatchInfo.Equipments = self.localEquipments
 
     --存储随机敌人
     local BattleRivalInfo = {}
@@ -415,7 +416,7 @@ function GameMatch:MathCountDown(MatchInfo)
         local WeaponConfig = UGCS.Target.ArcherDuel.Config.WeaponConfig
         local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
         -- 自己对战信息
-        UI:SetImage({105676},Chat:GetCustomHeadIcon(self.localPlayerId))
+        UI:SetImage({105676}, Chat:GetCustomHeadIcon(self.localPlayerId))
         UI:SetText({105680}, Chat:GetCustomName(self.localPlayerId))
         local curScore = _GAME.GameUtils.GetPlayerRankScore()
         local curLevel = _GAME.GameUtils.GetRankLevelByScore(curScore)
@@ -424,6 +425,10 @@ function GameMatch:MathCountDown(MatchInfo)
                 UI:SetImage({105682}, RankIconList[curLevel.icon], true)
             end
             UI:SetText({105681}, curLevel.name)
+        end
+        --本局奖励
+        if curLevel then
+            UI:SetText({105702}, tostring(curLevel.cost * 2)) 
         end
         local weaponIconIndex, bodyIconIndex, clothIconIndex, bottomIconIndex
         if WeaponConfig[MatchInfo.BattleWeapon.weaponId] then
@@ -816,6 +821,7 @@ function GameMatch:StartGoldMatch()
     local weaponIndex = math.random(1, #weapons)
     BattleWeapon = weapons[weaponIndex]
     MatchInfo.BattleWeapon = BattleWeapon
+    MatchInfo.Equipments = self.localEquipments
 
     -- 黄金赛对手匹配
     local mathRivals, goldRivalInfo = self:GoldMathRivals()
