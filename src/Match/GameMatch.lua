@@ -183,6 +183,8 @@ function GameMatch:BindEvents()
     -- 胜利界面点击再来一次
     UI:RegisterPressed(108060,function ()
         if _GAME.GameUtils.CanEnterRankBattle() then
+            UI:ResumeUIAnimation(111057,1)
+            UI:SetVisible({108052,108051},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
             System:FireGameEvent(_GAME.Events.StartMatch)
         end
@@ -411,7 +413,7 @@ function GameMatch:MathCountDown(MatchInfo)
         end
         local weaponIconIndex, bodyIconIndex, clothIconIndex, bottomIconIndex
         if WeaponConfig[MatchInfo.BattleWeapon.weaponId] then
-            weaponIconIndex = MatchInfo.BattleWeapon.weaponId
+            weaponIconIndex = WeaponConfig[MatchInfo.BattleWeapon.weaponId].AssetIndex
         end
         if self.localEquipments["Part"] and EquipmentConfig[self.localEquipments["Part"]] then
             bodyIconIndex = EquipmentConfig[self.localEquipments["Part"]].AssetIndex
@@ -438,7 +440,7 @@ function GameMatch:MathCountDown(MatchInfo)
             UI:SetText({105683}, curLevel.name)
         end
         if WeaponConfig[MatchInfo.BattleRivalInfo.weaponId] then
-            weaponIconIndex = MatchInfo.BattleRivalInfo.weaponId
+            weaponIconIndex = WeaponConfig[MatchInfo.BattleRivalInfo.weaponId].AssetIndex
         end
         if MatchInfo.BattleRivalInfo.equipments["Character"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]] then
             bodyIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].AssetIndex

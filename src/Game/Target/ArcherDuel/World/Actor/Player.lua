@@ -26,10 +26,11 @@ function Player:OnCreate(Context)
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.MeshVisibility, false)
-        FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
-    else
-        self:ChangeCharacterBody(Context.Equipments)
+    --     FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
+    -- else
+    --     self:ChangeCharacterBody(Context.Equipments)
     end
+    self:ChangeCharacterBody(Context.Equipments)
 
     --获取角色配置【只读】
     self.Config = UGCS.Target.ArcherDuel.Config.CharacterConfig[Context.CharacterConfigID]
