@@ -118,11 +118,6 @@ function Battle:LoadCharacter(Context)
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Local)
         Element:SetVisibility(SceneResource.BirthPoint.Local, false)
-        local CurrentEquipments = {}
-        local PlayerID = Character:GetLocalPlayerId()
-        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Character_ID"))
-        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Bottoms_ID"))
-        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Top_ID"))
         self.CurrentTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = LocalPosition,
             Rotation = LocalRotation,
@@ -131,7 +126,7 @@ function Battle:LoadCharacter(Context)
             Situation = Context.Scene.Situation,
             CharacterConfigID = Context.Character.Index,
             WeaponConfigID = Context.Weapon.Index,
-            Equipments = CurrentEquipments,
+            Equipments = Context.Equipments,
         })
         --主控视角是否反向
         self.ControlledViewTurn = math.abs(LocalRotation.Z) > 90

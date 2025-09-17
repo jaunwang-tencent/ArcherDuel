@@ -37,6 +37,7 @@ function SystemFSM:OnCreate(Context)
         Weapon = {
             Index = UMath:GetRandomInt(1, 3),
         },
+        Equipments = {}, --装备
         Character = {
             Index = 1
         },
@@ -58,6 +59,8 @@ function SystemFSM:OnCreate(Context)
         -- 获取战斗武器
         Context.Weapon.Type = MatchInfo.BattleWeapon.weaponType
         Context.Weapon.Index = MatchInfo.BattleWeapon.weaponId
+        -- 获取装备
+        Context.Equipments = MatchInfo.Equipments
         -- 获取对手信息
         Context.RivalInfo.Name = MatchInfo.BattleRivalInfo.name
         Context.RivalInfo.WeaponId = MatchInfo.BattleRivalInfo.weaponId

@@ -97,6 +97,10 @@ function TournamentModule:Open(PlayerData)
         end)
     end
 
+    -- 刷新黄金赛次数
+    local count = _GAME.GameUtils.GetGoldBattleCount()
+    UI:SetText({106557}, string.format("剩余次数：%d/3", count))
+
     --进入排位赛
     UI:RegisterClicked(TournamentView.World.Button, function()
         self:OnMatch()

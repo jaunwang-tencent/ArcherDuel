@@ -366,8 +366,6 @@ function GameUtils.SetGoldBattleCount(count)
     Log:PrintLog("[GameUtils.SetGoldBattleCount] count" .. count)
     local playerId = Character:GetLocalPlayerId()
     Archive:SetPlayerData(playerId, Archive.TYPE.Number, "GoldBattleCount", count)
-
-    UI:SetText({106557}, string.format("剩余次数：%d/3", count))
 end
 
 -- 获取黄金赛次数
