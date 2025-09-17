@@ -1767,7 +1767,6 @@ local EquipmentConfig = {
             Growth = 3,
         },
     },
-
     [49] = {
         --下装12
         TypeName = "Bottoms",
@@ -2226,7 +2225,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 43,
+            Attack = 37,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -2244,13 +2243,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
             -- 成长值
-            Growth = 11,
+            Growth = 7,
         },
     },
     [62] = {
         --弓2
         TypeName = "Bow",
-        NickName = "铁弓",
+        NickName = "精铁弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2261,7 +2260,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 47,
+            Attack = 42,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -2279,7 +2278,7 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 12,
+            Growth = 10,
         },
     },
     [63] = {
@@ -2296,7 +2295,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 47,
+            Attack = 42,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -2314,13 +2313,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 12,
+            Growth = 10,
         },
     },
     [64] = {
         --弓4
         TypeName = "Bow",
-        NickName = "黑铁弓",
+        NickName = "蓝羽弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2331,7 +2330,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 47,
+            Attack = 42,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -2349,13 +2348,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 2,
             -- 成长值
-            Growth = 12,
+            Growth = 10,
         },
     },
     [65] = {
         --弓5
         TypeName = "Bow",
-        NickName = "钢骨弓",
+        NickName = "赤晶战弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2366,7 +2365,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 53,
+            Attack = 46,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -2390,7 +2389,7 @@ local EquipmentConfig = {
     [66] = {
         --弓6
         TypeName = "Bow",
-        NickName = "苍纹弓",
+        NickName = "冰晶钢弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2419,13 +2418,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 3,
             -- 成长值
-            Growth = 14,
+            Growth = 11,
         },
     },
     [67] = {
         --弓7
         TypeName = "Bow",
-        NickName = "青羽弓",
+        NickName = "异色弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2454,13 +2453,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 3,
             -- 成长值
-            Growth = 13,
+            Growth = 8,
         },
     },
     [68] = {
         --弓8
         TypeName = "Bow",
-        NickName = "金翎弓",
+        NickName = "蓝锋弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2489,13 +2488,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 3,
             -- 成长值
-            Growth = 13,
+            Growth =10,
         },
     },
     [69] = {
         --弓9
         TypeName = "Bow",
-        NickName = "穿云弓",
+        NickName = "幽影旋弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2506,7 +2505,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 59,
+            Attack = 50,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -2524,13 +2523,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 14,
+            Growth = 13,
         },
     },
     [70] = {
         --弓10
         TypeName = "Bow",
-        NickName = "落月弓",
+        NickName = "血魔弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2541,7 +2540,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 57,
+            Attack = 50,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -2559,13 +2558,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 15,
+            Growth = 13,
         },
     },
     [71] = {
         --弓11
         TypeName = "Bow",
-        NickName = "裂空弓",
+        NickName = "星冰弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2576,7 +2575,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 55,
+            Attack = 46,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -2600,7 +2599,7 @@ local EquipmentConfig = {
     [72] = {
         --弓12
         TypeName = "Bow",
-        NickName = "星羽弓",
+        NickName = "金芒天璇弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2611,7 +2610,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 58,
+            Attack = 51,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -2629,13 +2628,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 14,
+            Growth = 11,
         },
     },
     [73] = {
         --弓13
         TypeName = "Bow",
-        NickName = "风吟弓",
+        NickName = "星轨破界弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2664,13 +2663,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 14,
+            Growth = 10,
         },
     },
     [74] = {
         --弓14
         TypeName = "Bow",
-        NickName = "逐日弓",
+        NickName = "幻紫霓虹弩",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2681,7 +2680,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 56,
+            Attack = 49,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -2699,13 +2698,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 15,
+            Growth = 13,
         },
     },
     [75] = {
         --弓15
         TypeName = "Bow",
-        NickName = "雷影弓",
+        NickName = "紫晶龙牙弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2716,7 +2715,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 58,
+            Attack = 55,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -2734,13 +2733,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 14,
+            Growth = 10,
         },
     },
     [76] = {
         --弓16
         TypeName = "Bow",
-        NickName = "苍穹弓",
+        NickName = "甜梦幻心弓",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2751,7 +2750,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 57,
+            Attack = 63,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -2769,10 +2768,9 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 15,
+            Growth = 8,
         },
     },
-    
     [77] = {
         --斧头1
         TypeName = "Axe",
@@ -2787,7 +2785,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 43,
+            Attack = 42,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -2805,13 +2803,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
             -- 成长值
-            Growth = 11,
+            Growth = 10,
         },
     },
     [78] = {
         --斧头2
         TypeName = "Axe",
-        NickName = "铁斧",
+        NickName = "精铁斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2846,7 +2844,7 @@ local EquipmentConfig = {
     [79] = {
         --斧头3
         TypeName = "Axe",
-        NickName = "钢斧",
+        NickName = "合金斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2881,7 +2879,7 @@ local EquipmentConfig = {
     [80] = {
         --斧头4
         TypeName = "Axe",
-        NickName = "精铁斧",
+        NickName = "蓝纹斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2916,7 +2914,7 @@ local EquipmentConfig = {
     [81] = {
         --斧头5
         TypeName = "Axe",
-        NickName = "玄铁斧",
+        NickName = "赤晶战斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2951,7 +2949,7 @@ local EquipmentConfig = {
     [82] = {
         --斧头6
         TypeName = "Axe",
-        NickName = "苍纹斧",
+        NickName = "冰晶钢斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -2986,7 +2984,7 @@ local EquipmentConfig = {
     [83] = {
         --斧头7
         TypeName = "Axe",
-        NickName = "赤焰斧",
+        NickName = "异色斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3021,7 +3019,7 @@ local EquipmentConfig = {
     [84] = {
         --斧头8
         TypeName = "Axe",
-        NickName = "裂岩斧",
+        NickName = "蓝锋斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3032,7 +3030,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 52,
+            Attack = 51,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -3056,7 +3054,7 @@ local EquipmentConfig = {
     [85] = {
         --斧头9
         TypeName = "Axe",
-        NickName = "雷纹斧",
+        NickName = "幽影暗金斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3091,7 +3089,7 @@ local EquipmentConfig = {
     [86] = {
         --斧头10
         TypeName = "Axe",
-        NickName = "金鳞斧",
+        NickName = "血魔战斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3126,7 +3124,7 @@ local EquipmentConfig = {
     [87] = {
         --斧头11
         TypeName = "Axe",
-        NickName = "苍穹斧",
+        NickName = "星冰斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3161,7 +3159,7 @@ local EquipmentConfig = {
     [88] = {
         --斧头12
         TypeName = "Axe",
-        NickName = "血刃斧",
+        NickName = "星金芒天璇斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3196,7 +3194,7 @@ local EquipmentConfig = {
     [89] = {
         --斧头13
         TypeName = "Axe",
-        NickName = "玄冰斧",
+        NickName = "星轨破界斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3207,7 +3205,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 56,
+            Attack = 70,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -3225,13 +3223,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 14,
+            Growth = 6,
         },
     },
     [90] = {
         --斧头14
         TypeName = "Axe",
-        NickName = "陨铁斧",
+        NickName = "幻紫霓虹斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3266,7 +3264,7 @@ local EquipmentConfig = {
     [91] = {
         --斧头15
         TypeName = "Axe",
-        NickName = "金雷斧",
+        NickName = "紫晶龙牙斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3301,7 +3299,7 @@ local EquipmentConfig = {
     [92] = {
         --斧头16
         TypeName = "Axe",
-        NickName = "裂地斧",
+        NickName = "甜梦幻心斧",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3347,7 +3345,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 43,
+            Attack = 41,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -3365,7 +3363,7 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 1,
             -- 成长值
-            Growth = 11,
+            Growth = 8,
         },
     },
     [94] = {
@@ -3441,7 +3439,7 @@ local EquipmentConfig = {
     [96] = {
         --长矛4
         TypeName = "Spear",
-        NickName = "苍纹矛",
+        NickName = "蓝纹矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3476,7 +3474,7 @@ local EquipmentConfig = {
     [97] = {
         --长矛5
         TypeName = "Spear",
-        NickName = "金棱矛",
+        NickName = "赤晶战矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3487,7 +3485,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 53,
+            Attack = 51,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -3505,13 +3503,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 3,
             -- 成长值
-            Growth = 12,
+            Growth = 13,
         },
     },
     [98] = {
         --长矛6
         TypeName = "Spear",
-        NickName = "蓝锋矛",
+        NickName = "冰晶钢矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3522,7 +3520,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 49,
+            Attack = 46,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -3540,13 +3538,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 3,
             -- 成长值
-            Growth = 14,
+            Growth = 16,
         },
     },
     [99] = {
         --长矛7
         TypeName = "Spear",
-        NickName = "赤晶战矛",
+        NickName = "异色矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3581,7 +3579,7 @@ local EquipmentConfig = {
     [100] = {
         --长矛8
         TypeName = "Spear",
-        NickName = "幻蓝晶矛",
+        NickName = "蓝锋矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3592,7 +3590,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 52,
+            Attack = 51,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -3616,7 +3614,7 @@ local EquipmentConfig = {
     [101] = {
         --长矛9
         TypeName = "Spear",
-        NickName = "惊涛裂穹矛",
+        NickName = "幽影渊枪",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3627,7 +3625,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 59,
+            Attack = 55,
             -- 头部额外增伤
             HeadShotIncrease = 5,
             -- 躯干额外增伤
@@ -3645,13 +3643,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 14,
+            Growth = 15,
         },
     },
     [102] = {
         --长矛10
         TypeName = "Spear",
-        NickName = "金翎御灵矛",
+        NickName = "血魔矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3662,7 +3660,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 57,
+            Attack = 55,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -3686,7 +3684,7 @@ local EquipmentConfig = {
     [103] = {
         --长矛11
         TypeName = "Spear",
-        NickName = "赤焰焚天矛",
+        NickName = "星冰矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3715,13 +3713,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 16,
+            Growth = 15,
         },
     },
     [104] = {
         --长矛12
         TypeName = "Spear",
-        NickName = "王权鎏金矛",
+        NickName = "金芒天璇矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3756,7 +3754,7 @@ local EquipmentConfig = {
     [105] = {
         --长矛13
         TypeName = "Spear",
-        NickName = "星语天穹矛",
+        NickName = "星轨破界枪",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3785,13 +3783,13 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 14,
+            Growth = 10,
         },
     },
     [106] = {
         --长矛14
         TypeName = "Spear",
-        NickName = "紫星裂空矛",
+        NickName = "幻紫霓虹矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3802,7 +3800,7 @@ local EquipmentConfig = {
             -- 生命值
             Heal = 0,
             -- 攻击力
-            Attack = 56,
+            Attack =55,
             -- 头部额外增伤
             HeadShotIncrease = 0,
             -- 躯干额外增伤
@@ -3826,7 +3824,7 @@ local EquipmentConfig = {
     [107] = {
         --长矛15
         TypeName = "Spear",
-        NickName = "玄罡碎渊枪",
+        NickName = "紫晶圣龙矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3861,7 +3859,7 @@ local EquipmentConfig = {
     [108] = {
         --长矛16
         TypeName = "Spear",
-        NickName = "星轨破界枪",
+        NickName = "甜梦幻心矛",
         --资产名称
         AssetName = "weapon_icon",
         --资产序列
@@ -3890,7 +3888,7 @@ local EquipmentConfig = {
             -- 品阶(1=绿色,2=蓝色,3=紫色,4=金色)
             Grade = 4,
             -- 成长值
-            Growth = 15,
+            Growth = 14,
         },
     },
 }
