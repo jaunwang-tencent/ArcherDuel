@@ -157,6 +157,8 @@ function LobbyModule:LoadData()
         self.PlayerData.BaseData.Player_TaskDailyExp_Num = 0
         self.PlayerData.BaseData.Player_CollectTaskDaily_Num = 0
 
+        _GAME.GameUtils.SetGoldBattleCount(3)
+
         if _GAME.GameUtils.IsReachDiamondRank(score) then
             _GAME.GameUtils.AddPlayerReward(100003, 2)
         end

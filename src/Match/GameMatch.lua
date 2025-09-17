@@ -6,6 +6,12 @@ local GameMatch = {}
 
 math.randomseed(TimerManager:GetClock()) -- 设置随机数种子
 
+local BattleType = {
+    Rank = 1, -- 排名赛
+    Gold = 2, -- 黄金赛
+    Diamond = 3, -- 钻石赛
+}
+
 function GameMatch:Init()
     Log:PrintLog("[GameMatch:Init]")
 
@@ -29,12 +35,16 @@ function GameMatch:Init()
     if not self.mapId or self.mapId == 0 then
         self.mapId = CustomProperty:GetCustomProperty(System:GetScriptParentID(), "MapId", CustomProperty.PROPERTY_TYPE.Number)
     end
-    self.isGold = false -- 是否是黄金赛地图
-
+    
+    self.battleType = BattleType.Rank
     --构造场景表
     self.sceneIds = {}
     if UGCS.Target.ArcherDuel.Config.SceneConfig[self.mapId] then
-        self.isGold = UGCS.Target.ArcherDuel.Config.SceneConfig[self.mapId].IsGold
+        if UGCS.Target.ArcherDuel.Config.SceneConfig[self.mapId].IsGold then
+            self.battleType = BattleType.Gold
+        elseif UGCS.Target.ArcherDuel.Config.SceneConfig[self.mapId].IsDiamond then
+            self.battleType = BattleType.Diamond
+        end
         for i, v in pairs(UGCS.Target.ArcherDuel.Config.SceneConfig[self.mapId].Resource) do
             if type(i) == "number" then
                 table.insert(self.sceneIds, i)
@@ -105,7 +115,7 @@ function GameMatch:Init()
     self.isGoldFinalBattle = false -- 是否为黄金赛最后一轮
     self.goldResults = {Winer = {}, Failer = {}} -- 黄金赛比赛记录
 
-    if self.isGold then
+    if self.battleType == BattleType.Gold then
         self:InitGoldMatch()
     end
 
@@ -155,7 +165,7 @@ end
 function GameMatch:BindEvents()
     -- 收到开始匹配的事件
     System:RegisterGameEvent(_GAME.Events.StartMatch, function()
-        if self.isGold then
+        if self.battleType == BattleType.Gold then
             self:StartGoldMatch()
         else
             self:StartMatch()
@@ -164,8 +174,10 @@ function GameMatch:BindEvents()
 
     -- 收到对局胜利的事件
     System:RegisterGameEvent(_GAME.Events.BattleVictory, function ()
-        if self.isGold then
+        if self.battleType == BattleType.Gold then
             self:OnGoldVictory()
+        elseif self.battleType == BattleType.Diamond then
+            self:OnDiamondVictory()
         else
             self:OnVictory()
         end
@@ -173,8 +185,10 @@ function GameMatch:BindEvents()
     
     -- 收到对局失败的事件
     System:RegisterGameEvent(_GAME.Events.BattleFail,function ()
-        if self.isGold then
+        if self.battleType == BattleType.Gold then
             self:OnGoldFail()
+        elseif self.battleType == BattleType.Diamond then
+            self:OnDiamondFail()
         else
             self:OnFail()
         end
@@ -507,7 +521,7 @@ function GameMatch:MathCountDown(MatchInfo)
         System:FireGameEvent(_GAME.Events.BattleStart)
     end)
 
-    if self.isGold then --黄金赛隐藏下局奖励
+    if self.battleType == BattleType.Gold or self.battleType == BattleType.Diamond then --黄金赛隐藏下局奖励
         UI:SetVisible({105671}, false)
     end
 end
@@ -746,6 +760,13 @@ function GameMatch:InitGoldMatch()
         })
     end
     self:UpdateGoldHead()
+
+    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GoldBattle) -- 参加一次黄金赛
+    -- 扣除一次黄金赛奖励
+    local count = _GAME.GameUtils.GetGoldBattleCount()
+    if count then
+        _GAME.GameUtils.SetGoldBattleCount(count - 1)
+    end
 end
 
 -- 取一个黄金赛的对手出来
@@ -859,8 +880,6 @@ function GameMatch:StartGoldMatch()
                 self:MathCountDown(MatchInfo)
             end)
         end)
-
-        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GoldBattle) -- 参加一次黄金赛
     else
         -- 开始匹配倒计时
         self:MathCountDown(MatchInfo)
@@ -965,8 +984,13 @@ function GameMatch:OnGoldFail()
         if rank <= 3 then -- 3名以内，进行展示
             local top3Players = {}
             table.insert(top3Players, self.goldBattleRival) -- 第1名本局对手
-            table.insert(top3Players, {isSelf = true}) -- 第2名自己
-            table.insert(top3Players, self.lastDefeatRival) -- 第3名从剩下的人中取一个
+            if self.isGoldFinalBattle then
+                table.insert(top3Players, {isSelf = true}) -- 第2名自己
+                table.insert(top3Players, self.lastDefeatRival) -- 第3名
+            else
+                table.insert(top3Players, self.lastDefeatRival) -- 第2名
+                table.insert(top3Players, {isSelf = true}) -- 第3名自己
+            end
 
             self:SaveGoldReward(2)
             self:ShowGoldTop3(top3Players)
@@ -1499,6 +1523,16 @@ function GameMatch:SaveGoldReward(rank)
     for i, v in pairs(GoldReward) do
         _GAME.GameUtils.AddPlayerReward(v.id, v.count)
     end
+end
+
+--------------------------------------- 钻石赛 ---------------------------------------
+
+-- 钻石赛胜利
+function GameMatch:OnDiamondVictory()
+end
+
+-- 钻石赛失败
+function GameMatch:OnDiamondFail()
 end
 
 return GameMatch
