@@ -298,5 +298,4 @@ function EquipmentDetailModule:OnUpgrade(Equipment)
     end
 end
 
-
 return EquipmentDetailModule

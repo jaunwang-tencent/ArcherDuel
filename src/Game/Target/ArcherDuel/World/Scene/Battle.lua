@@ -115,9 +115,9 @@ function Battle:LoadCharacter(Context)
         Element:SetVisibility(SceneResource.BirthPoint.Local, false)
         local CurrentEquipments = {}
         local PlayerID = Character:GetLocalPlayerId()
-        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Part_Num"))
-        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Bottoms_Num"))
-        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Cloth_Num"))
+        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Character_ID"))
+        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Bottoms_ID"))
+        table.insert(CurrentEquipments, Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "Equipped_Top_ID"))
         self.CurrentTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = LocalPosition,
             Rotation = LocalRotation,
