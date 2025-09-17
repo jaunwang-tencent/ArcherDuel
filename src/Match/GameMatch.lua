@@ -370,6 +370,14 @@ function GameMatch:StartMatch()
 
     -- 开始匹配倒计时
     self:MathCountDown(MatchInfo)
+
+    -- 扣除排位赛金币
+    local score = _GAME.GameUtils.GetPlayerRankScore()
+    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    if curLevel then
+        local coin = _GAME.GameUtils.GetPlayerCoin()
+        _GAME.GameUtils.SetPlayerCoin(coin - curLevel.cost)
+    end
 end
 
 -- 匹配倒计时
@@ -569,10 +577,10 @@ function GameMatch:OnVictory()
     -- 加金币
     local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
     if curLevel then -- 赢得比赛，获取金币数量为当前段位的2倍
-        local addCoin = 2*curLevel.cost - curLevel.cost
+        local addCoin = 2*curLevel.cost
         local coin = _GAME.GameUtils.GetPlayerCoin()
         _GAME.GameUtils.SetPlayerCoin(coin + addCoin)
-        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GainCoin, addCoin)
+        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GainCoin, addCoin-curLevel.cost)
     end
 
     local newScore = score + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
@@ -618,13 +626,6 @@ end
 function GameMatch:OnFail()
     --减积分
     local score = _GAME.GameUtils.GetPlayerRankScore()
-    -- 减金币
-    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
-    if curLevel then
-        local addCoin = - curLevel.cost
-        local coin = _GAME.GameUtils.GetPlayerCoin()
-        _GAME.GameUtils.SetPlayerCoin(coin + addCoin)
-    end
     Log:PrintLog("[GameMatch:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
     _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
 
@@ -797,6 +798,8 @@ function GameMatch:StartGoldMatch()
                 self:MathCountDown(MatchInfo)
             end)
         end)
+
+        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GoldBattle) -- 参加一次黄金赛
     else
         -- 开始匹配倒计时
         self:MathCountDown(MatchInfo)

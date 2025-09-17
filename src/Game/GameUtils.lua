@@ -1,4 +1,5 @@
 local RankInfoConfig = require "Game.Target.ArcherDuel.Config.RankInfoConfig"
+local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
 local GameUtils = {}
 
@@ -66,13 +67,18 @@ end
 
 -- 开宝箱获取奖励物品
 function GameUtils.OpenBoxReward(boxId)
+
     local OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
     local BoxConfig
     if boxId == 200002 then -- 高级宝箱
         BoxConfig = OpenBoxConfig.SilverBox
     elseif boxId == 200003 then -- 极品宝箱
         BoxConfig = OpenBoxConfig.GoldBox
+    else
+        return
     end
+
+    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.OpenBox) -- 打开宝箱
 
     local Weight = 0
     for i, v in ipairs(BoxConfig) do

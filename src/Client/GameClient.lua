@@ -20,12 +20,20 @@ function GameClient:OnStart()
     local TaskManager = require "Game.Framework.Task.Task"
     TaskManager:Init()
     
+    self._startTime = TimerManager:GetTimeSeconds()
+
     System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.LoginGame)
 end
 
 -- 游戏更新
 function GameClient:OnUpdate()
     self.ArcherDuelApp:Update()
+
+    local _time = TimerManager:GetTimeSeconds()
+    if _time - self._startTime >= 60 then -- 每分钟记录一次
+        self._startTime = _time
+        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.PlayDuration)
+    end
 end
 
 -- 游戏结束

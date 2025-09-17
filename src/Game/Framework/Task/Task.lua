@@ -418,6 +418,10 @@ function TaskManager:GetInsatnce()
     obj.conditionFactories[TaskEvents.WinBloodline100] = function(params) return GeneralProgressCondition:new(TaskEvents.WinBloodline100, params) end
     obj.conditionFactories[TaskEvents.AdCoin] = function(params) return GeneralProgressCondition:new(TaskEvents.AdCoin, params) end
     obj.conditionFactories[TaskEvents.AdDiamond] = function(params) return GeneralProgressCondition:new(TaskEvents.AdDiamond, params) end
+    obj.conditionFactories[TaskEvents.OpenBox] = function(params) return GeneralProgressCondition:new(TaskEvents.OpenBox, params) end
+    obj.conditionFactories[TaskEvents.GoldBattle] = function(params) return GeneralProgressCondition:new(TaskEvents.GoldBattle, params) end
+    obj.conditionFactories[TaskEvents.DiamondBattle] = function(params) return GeneralProgressCondition:new(TaskEvents.DiamondBattle, params) end
+    obj.conditionFactories[TaskEvents.PlayDuration] = function(params) return GeneralProgressCondition:new(TaskEvents.PlayDuration, params) end
 
     setmetatable(obj, self)
     TaskManager.Instance = obj

@@ -18,6 +18,10 @@ local TaskEvents = {
     AdCoin = "AdCoin", --领取免费金币
     AdDiamond = "AdDiamond", --领取免费钻石
     GainCoin = "GainCoin", --赢得金币
+    OpenBox = "OpenBox", --开启宝箱
+    GoldBattle = "GoldBattle", --参加一次黄金联赛
+    DiamondBattle = "DiamondBattle", --参加一次钻石联赛
+    PlayDuration = "PlayDuration", --累计在线时间
 }
 
 return TaskEvents
