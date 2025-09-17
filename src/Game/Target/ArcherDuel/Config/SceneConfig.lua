@@ -1072,8 +1072,9 @@ local SceneConfig = {
                     Density = 100,
                     --可移动物体列表
                     MovableList  = {
-                        [618] = true,
-                        [621] = true,
+                        [6008] = true,
+                        [6007] = true,
+                        [1712] = true,
                     },
                     --掉落速度【单位：米每秒】
                     DropOffset = Engine.Vector(0, 0, -10000),
@@ -1212,6 +1213,8 @@ local SceneConfig = {
     },
     --室内
     [8] = {
+        -- 是否为钻石赛场景
+        IsDiamond = true,
         --战斗场景资源
         Resource = {
             [1] = {

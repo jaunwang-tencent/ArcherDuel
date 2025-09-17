@@ -332,4 +332,41 @@ function GameUtils.CanEnterRankBattle()
     return false
 end
 
+-- 判断能否进入黄金赛
+function GameUtils.CanEnterGoldBattle()
+    local score = GameUtils.GetPlayerRankScore()
+    local curLevel = GameUtils.GetRankLevelByScore(score)
+    if curLevel and curLevel.id >= 7 then -- 进入黄金段位
+        local count = GameUtils.GetGoldBattleCount()
+        if count > 0 then
+            return true
+        else
+            UI:ShowMessageTip("当日黄金赛次数已经用完")
+        end
+    else
+        UI:ShowMessageTip("达到黄金段位，才能进入黄金赛")
+    end
+    return false
+end
+
+-- 设置黄金赛次数
+function GameUtils.SetGoldBattleCount(count)
+    Log:PrintLog("[GameUtils.SetGoldBattleCount] count" .. count)
+    local playerId = Character:GetLocalPlayerId()
+    Archive:SetPlayerData(playerId, Archive.TYPE.Number, "GoldBattleCount", count)
+
+    UI:SetText({106557}, string.format("剩余次数：%d/3", count))
+end
+
+-- 获取黄金赛次数
+function GameUtils.GetGoldBattleCount()
+    local playerId = Character:GetLocalPlayerId()
+    local count = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "GoldBattleCount")
+    if count then
+        return count
+    else
+        return 0
+    end
+end
+
 return GameUtils
