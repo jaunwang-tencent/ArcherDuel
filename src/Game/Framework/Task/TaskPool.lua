@@ -55,10 +55,10 @@ TaskPool.taskcfg = {
 
     { id = 34, taskType = TaskClass.TaskType.Weekly, taskName = "累积赢得10场排位赛", taskDes = "", condition = {type = TaskEvents.BattleWin , param = {10} , wday = 2},  rewards = {WeeklyExp = 1, RewardId = 200002, RewardCount = 1} },                           --周二任务
     { id = 35, taskType = TaskClass.TaskType.Weekly, taskName = "累积参加2次黄金大奖赛", taskDes = "", condition = {type = TaskEvents.GoldBattle , param = {2} , wday = 2},  rewards = {WeeklyExp = 1, RewardId = 100002, RewardCount = 60} },                           --周二任务
-    { id = 36, taskType = TaskClass.TaskType.Weekly, taskName = "领取1次免费金币", taskDes = "", condition = {type = TaskEvents.GainCoin , param = {1} , wday = 2},  rewards = {WeeklyExp = 1, RewardId = 100001, RewardCount = 2000} },                           --周二任务
+    { id = 36, taskType = TaskClass.TaskType.Weekly, taskName = "领取1次免费金币", taskDes = "", condition = {type = TaskEvents.AdCoin , param = {1} , wday = 2},  rewards = {WeeklyExp = 1, RewardId = 100001, RewardCount = 2000} },                           --周二任务
 
     { id = 37, taskType = TaskClass.TaskType.Weekly, taskName = "累积赢得15场排位赛", taskDes = "", condition = {type = TaskEvents.BattleWin , param = {15} , wday = 3},  rewards = {WeeklyExp = 1, RewardId = 200002, RewardCount = 1} },                          --周三任务
-    { id = 38, taskType = TaskClass.TaskType.Weekly, taskName = "领取1次免费钻石", taskDes = "", condition = {type = TaskEvents.GainDiamond , param = {1} , wday = 3},  rewards = {WeeklyExp = 1, RewardId = 100002, RewardCount = 80} },                          --周三任务
+    { id = 38, taskType = TaskClass.TaskType.Weekly, taskName = "领取1次免费钻石", taskDes = "", condition = {type = TaskEvents.AdDiamond , param = {1} , wday = 3},  rewards = {WeeklyExp = 1, RewardId = 100002, RewardCount = 80} },                          --周三任务
     { id = 39, taskType = TaskClass.TaskType.Weekly, taskName = "累计在线10分钟", taskDes = "", condition = {type = TaskEvents.PlayDuration , param = {10} , wday = 3},  rewards = {WeeklyExp = 1, RewardId = 100001, RewardCount = 3000} },                          --周三任务
 
     { id = 40, taskType = TaskClass.TaskType.Weekly, taskName = "累积赢得20场排位赛", taskDes = "", condition = {type = TaskEvents.BattleWin , param = {20} , wday = 4},  rewards = {WeeklyExp = 1, RewardId = 200002, RewardCount = 1} },                          --周四任务
@@ -67,14 +67,14 @@ TaskPool.taskcfg = {
 
     { id = 43, taskType = TaskClass.TaskType.Weekly, taskName = "累积赢得20场排位赛", taskDes = "", condition = {type = TaskEvents.BattleWin , param = {20} , wday = 5},  rewards = {WeeklyExp = 1, RewardId = 200002, RewardCount = 1} },                          --周五任务
     { id = 44, taskType = TaskClass.TaskType.Weekly, taskName = "累积参加2次钻石联赛", taskDes = "", condition = {type = TaskEvents.DiamondBattle , param = {2} , wday = 5},  rewards = {WeeklyExp = 1, RewardId = 100002, RewardCount = 60} },                          --周五任务
-    { id = 45, taskType = TaskClass.TaskType.Weekly, taskName = "领取3次免费金币", taskDes = "", condition = {type = TaskEvents.GainCoin , param = {3} , wday = 5},  rewards = {WeeklyExp = 1, RewardId = 100001, RewardCount = 5000} },                          --周五任务
+    { id = 45, taskType = TaskClass.TaskType.Weekly, taskName = "领取3次免费金币", taskDes = "", condition = {type = TaskEvents.AdCoin , param = {3} , wday = 5},  rewards = {WeeklyExp = 1, RewardId = 100001, RewardCount = 5000} },                          --周五任务
 
     { id = 46, taskType = TaskClass.TaskType.Weekly, taskName = "累积赢得25场排位赛", taskDes = "", condition = {type = TaskEvents.BattleWin , param = {25} , wday = 6},  rewards = {WeeklyExp = 1, RewardId = 200002, RewardCount = 1} },                          --周六任务
     { id = 47, taskType = TaskClass.TaskType.Weekly, taskName = "累积参加3次黄金大奖赛", taskDes = "", condition = {type = TaskEvents.GoldBattle , param = {3} , wday = 6},  rewards = {WeeklyExp = 1, RewardId = 100002, RewardCount = 80} },                          --周六任务
     { id = 48, taskType = TaskClass.TaskType.Weekly, taskName = "累计在线20分钟", taskDes = "", condition = {type = TaskEvents.PlayDuration , param = {20} , wday = 6},  rewards = {WeeklyExp = 1, RewardId = 100001, RewardCount = 5000} },                          --周六任务
 
     { id = 49, taskType = TaskClass.TaskType.Weekly, taskName = "累积赢得25场排位赛", taskDes = "", condition = {type = TaskEvents.BattleWin , param = {25} , wday = 7},  rewards = {WeeklyExp = 1, RewardId = 200002, RewardCount = 1} },                          --周日任务
-    { id = 50, taskType = TaskClass.TaskType.Weekly, taskName = "领取3次免费钻石", taskDes = "", condition = {type = TaskEvents.GainDiamond , param = {3} , wday = 7},  rewards = {WeeklyExp = 1, RewardId = 100002, RewardCount = 80} },                          --周日任务
+    { id = 50, taskType = TaskClass.TaskType.Weekly, taskName = "领取3次免费钻石", taskDes = "", condition = {type = TaskEvents.AdDiamond , param = {3} , wday = 7},  rewards = {WeeklyExp = 1, RewardId = 100002, RewardCount = 80} },                          --周日任务
     { id = 51, taskType = TaskClass.TaskType.Weekly, taskName = "累计在线30分钟", taskDes = "", condition = {type = TaskEvents.PlayDuration , param = {30} , wday = 7},  rewards = {WeeklyExp = 1, RewardId = 100001, RewardCount = 5000} },                          --周日任务
 }
 
