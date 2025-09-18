@@ -433,6 +433,7 @@ end
 --- 播放音效【2D】
 ---@param SFXType 音效类型
 function Player:PlayAudio(SFXType)
+    if self.OnlyShow then return end
     if SFXType then
         Log:PrintLog(string.format("TXPerform(Audio = %d, UID = %d)", SFXType, self.UID))
         Audio:PlaySFXAudio2D(SFXType, 4, 100, 0)

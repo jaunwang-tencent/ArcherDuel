@@ -134,6 +134,8 @@ function SystemFSM:InitSetting()
     UI:SetNativeInterfaceVisible(UI.UIType.Countdown, false)
     UI:SetNativeInterfaceVisible(UI.UIType.Settings, false)
     UI:SetNativeInterfaceVisible(UI.UIType.EmotesAndActions, false)
+    UI:SetNativeInterfaceVisible(UI.UIType.GameSetting, false)
+    UI:SetNativeInterfaceVisible(UI.UIType.MoreSetting, false)
 
     --禁止控制相机
     Camera:SetControlMode(Camera.CONTROL_MODE.None)
