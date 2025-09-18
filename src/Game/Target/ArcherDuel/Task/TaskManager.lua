@@ -280,6 +280,14 @@ Task.TaskType = {
     Weekly = "Weekly",
 }
 
+Task.TaskGo = {
+    [1000] = { GoTab = "Equipment" },   --装备
+    [2000] = { GoTab = "Store" },       --商店
+    [3001] = { GoTab = "Tournament" },  --全球排名赛
+    [3002] = { GoTab = "Tournament", SubTab = "Golden" },  --黄金大奖赛
+    [3003] = { GoTab = "Tournament", SubTab = "Diamond" }   --钻石联赛
+}
+
 function Task:new(id, type, name, description, conditions, rewards)
     local obj = {
         id = id,

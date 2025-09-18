@@ -18,7 +18,7 @@ local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModu
 local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 
 --- 打开
-function FightModule:Open()
+function FightModule:Open(Context)
     self:RegreshBodyUI()
 
     local FightView = UIConfig.FightView
@@ -172,6 +172,14 @@ function FightModule:Close()
         local ButtonID = UIConfig.SevenDays.TaskProgress.Button[index]
         UI:UnRegisterClicked(ButtonID)
     end
+
+    local WeeklyTaskUIID = {105077, 105084, 105091}
+    for k, v in pairs(WeeklyTaskUIID) do
+        local Completed = UI:FindChildWithIndex(v,2) -- 领奖
+        local Button = UI:FindChildWithIndex(v,3) -- 前往按钮
+        UI:UnRegisterClicked(Completed)
+        UI:UnRegisterClicked(Button)
+    end
 end
 
 --- 刷新身体上的数据
@@ -223,16 +231,18 @@ function FightModule:OnClickAd2()
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
-    System:FireGameEvent(_GAME.Events.JumpModule, "Tournament")
+    System:FireGameEvent(_GAME.Events.JumpModule, "Tournament", "Golden")
 end
 
 
 function FightModule:OnDiamond()  --跳转钻石联赛按钮
-    System:FireGameEvent(_GAME.Events.JumpModule, "Tournament")
+    System:FireGameEvent(_GAME.Events.JumpModule, "Tournament", "Diamond")
 end
 
 function FightModule:OnSevenDays()  --七日挑战
     --这里打开七日挑战页面
+
+    UI:SetVisible({UIConfig.SevenDays.ID}, true)
 
     local day = GameUtils.GetWeekDay() -- 获取当前是星期几
 
@@ -546,7 +556,6 @@ function FightModule:RefreshTaskProcesUI()
 end
 
 function FightModule:RefreshWeeklyTaskUI(wday)
-    UI:SetVisible({UIConfig.SevenDays.ID}, true)
     UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)
     local WeeklyTaskUIID = {105077, 105084, 105091}
     local iconIDs = {105075, 105082, 105089}
@@ -585,6 +594,15 @@ function FightModule:RefreshWeeklyTaskUI(wday)
                 UI:SetVisible({Completed}, false)
                 UI:SetVisible({Button}, false)
             else
+                UI:UnRegisterClicked(Button)
+                UI:RegisterClicked(Button,function (ItemUID)
+                    local cfg = UGCS.Target.ArcherDuel.Task.TaskPool.taskcfg[v.id]
+                    if cfg and cfg.taskgo then
+                        local goObj = taskMgr.Task.TaskGo[cfg.taskgo]
+                        UI:SetVisible({UIConfig.SevenDays.ID}, false)
+                        System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                    end
+                end)
                 UI:SetVisible({Finish}, false)
                 UI:SetVisible({Completed}, false)
                 UI:SetVisible({Button}, true)

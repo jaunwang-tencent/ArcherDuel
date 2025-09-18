@@ -12,7 +12,7 @@ local DiamondRankManager = require("Game.Framework.Rank.DiamondRank")
 local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
 
 --- 打开
-function TournamentModule:Open()
+function TournamentModule:Open(Context)
     --寄存玩家数据
     local TournamentView = UIConfig.TournamentView
     local DiamondView = TournamentView.Diamond
@@ -127,12 +127,20 @@ function TournamentModule:Open()
     local view = {106605,106518,107540}
 
     UI:SetVisible(tabUnselected,false)
-    UI:SetVisible({tabUnselected[1]},true)
     UI:SetVisible(view,false)
-    UI:SetVisible({view[1]},true)
+    if Context == "Golden" then
+        UI:SetVisible({view[2]},true)
+        UI:SetVisible({tabUnselected[2]},true)
+    elseif Context == "Diamond" then
+        UI:SetVisible({view[3]},true)
+        UI:SetVisible({tabUnselected[3]},true)
+    else
+        UI:SetVisible({view[1]},true)
+        UI:SetVisible({tabUnselected[1]},true)
+    end
 
     for i, btnId in ipairs(tabBtn) do
-        UI:RegisterPressed(btnId,function (btnId)
+        UI:RegisterClicked(btnId,function (btnId)
             UI:SetVisible({DiamondView.Popup.ID}, false)
             UI:SetVisible(tabUnselected,false)
             UI:SetVisible({tabUnselected[i]},true)

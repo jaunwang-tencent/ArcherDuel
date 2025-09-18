@@ -10,7 +10,7 @@ local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 
 --- 打开
-function TaskModule:Open()
+function TaskModule:Open(Context)
     self:LoadData()
 end
 
@@ -144,6 +144,11 @@ function TaskModule:RefreshTaskUI()
         UI:SetText({TextID}, v.name)
         UI:UnRegisterClicked(BtnID1)
         UI:RegisterClicked(BtnID1,function (ItemUID)
+            local cfg = UGCS.Target.ArcherDuel.Task.TaskPool.taskcfg[v.id]
+            if cfg and cfg.taskgo then
+                local goObj = taskMgr.Task.TaskGo[cfg.taskgo]
+                System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+            end
         end)
         UI:UnRegisterClicked(BtnID2)
         UI:RegisterClicked(BtnID2,function (ItemUID)

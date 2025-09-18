@@ -14,7 +14,7 @@ local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModu
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 
 --- 打开
-function StoreModule:Open()
+function StoreModule:Open(Context)
     --活动页
     self.ScrollItems = {}
     --商铺信息

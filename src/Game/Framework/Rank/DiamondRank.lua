@@ -162,7 +162,7 @@ function DiamondRankManager.GetDiamondRank()
     end
 
     DiamondRankManager.last_update_ts = DataCenter.GetNumber("DiamondRank_LastUpdate", true)
-    if DiamondRankManager.last_update_ts <= 0 then
+    if not DiamondRankManager.last_update_ts or DiamondRankManager.last_update_ts <= 0 then
         DiamondRankManager.last_update_ts = epochZeroTs
     end
 
