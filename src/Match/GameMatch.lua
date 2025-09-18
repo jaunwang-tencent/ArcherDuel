@@ -221,7 +221,7 @@ function GameMatch:BindEvents()
             self.VictoryRewards = nil
         end
 
-        UI:SetVisible({108298},false)
+        UI:SetVisible({108298, 111910},false)
         UI:SetVisible({108048,108056},true)
         TimerManager:AddTimer(2.3,function ()
             UI:SetVisible({111057},true)
@@ -245,12 +245,32 @@ function GameMatch:BindEvents()
         end)
     end)
 
+    local AdTag = "ad_battle_again"
+    --注册广告结束事件
+    System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
+        local LocalPlayerId = Character:GetLocalPlayerId()
+        if AdTag == mark and LocalPlayerId == userId then
+            -- 将消耗的金币和积分返还
+            local score = _GAME.GameUtils.GetPlayerRankScore()
+            score = score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
+            _GAME.GameUtils.SetPlayerRankScore(score)
+            local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+            if curLevel then
+                local coin = _GAME.GameUtils.GetPlayerCoin()
+                _GAME.GameUtils.SetPlayerCoin(coin + curLevel.cost)
+            end
+
+            if _GAME.GameUtils.CanEnterRankBattle() then
+                UI:SetVisible(MatchConfig.Fail_UI, false)
+                System:FireGameEvent(_GAME.Events.StartMatch)
+            end
+        end
+    end)
+
     -- 失败界面点击再来一次
     UI:RegisterClicked(106511, function()
-        if _GAME.GameUtils.CanEnterRankBattle() then
-            UI:SetVisible(MatchConfig.Fail_UI, false)
-            System:FireGameEvent(_GAME.Events.StartMatch)
-        end
+        -- 走IAA流程
+        IAA:LetPlayerWatchAds(AdTag)
     end)
 
     -- 失败界面点击返回大厅

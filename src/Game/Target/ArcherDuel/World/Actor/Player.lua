@@ -303,7 +303,6 @@ function Player:SetFakeCharacterRotation(Rotation)
     FakeCharacter:SetRotation(self.UID, Rotation)
 end
 
-
 -- 获取玩家装备数据
 function Player:SetPlayerHP()
     local equipData = self:GetEquipData()
@@ -684,26 +683,21 @@ function Player:PerformFallback()
     local ChestPosition = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.ChestBone)
     local TargetRotation = Engine:Rotator()
     if FacePosition and ChestPosition then
-        local BodyForword = ChestPosition - FacePosition
+        local BodyForword = FacePosition - ChestPosition -- 倒地时的方向
         BodyForword.Z = 0
-        if math.abs(self.Transform.Rotation.Z) > 90 then
-            BodyForword = -BodyForword
-        end
+        -- if math.abs(self.Transform.Rotation.Z) > 90 then
+        --     BodyForword = -BodyForword
+        -- end
         Log:PrintLog("TXPerform(BodyRotation, BodyForword)", BodyForword)
         local BodyRotation = UMath:ForwardToRotator(BodyForword)
         Log:PrintLog("TXPerform(BodyRotation, 1)", BodyRotation)
-        BodyRotation = BodyRotation - self:GetRotation()
-        if FaceRotation.X <= 0 then
+        if FaceRotation.X > 0 then -- 正面朝上，则起身之后，面朝方向为倒下方向的反方向
             Log:PrintLog("TXPerform(BodyRotation, 2)", BodyRotation)
             BodyRotation.Z = BodyRotation.Z + 180
         end
 
-        if BodyRotation.Z - self.Transform.Rotation.Z > 180 then
-            BodyRotation.Z = BodyRotation.Z -360
-        elseif BodyRotation.Z - self.Transform.Rotation.Z < -180 then
-            BodyRotation.Z = BodyRotation.Z +360
-        end
-        Log:PrintLog("TXPerform(BodyRotation, 3)", BodyRotation)
+        -- BodyRotation = BodyRotation - self:GetRotation()
+        -- Log:PrintLog("TXPerform(BodyRotation, 3)", BodyRotation)
         self:SetFakeCharacterRotation(BodyRotation)
         TargetRotation = BodyRotation
     end
@@ -741,8 +735,7 @@ function Player:PerformFallback()
 end
 
 --- 起身表演
----@param TargetRotation 目标旋转
-function Player:PerformStandup(TargetRotation)
+function Player:PerformStandup(StartRotation)
     --站起来后关闭物理模拟
     --FakeCharacter:EnableSimulatePhysics(self.UID, false)
 
@@ -767,8 +760,15 @@ function Player:PerformStandup(TargetRotation)
             --瞬時旋转
             self:PerformHitOver()
         else
+            if math.abs(Rotation.Z - StartRotation.Z) > 180 then
+                if Rotation.Z > 0 then
+                    StartRotation.Z = StartRotation.Z + 360
+                else
+                    StartRotation.Z = StartRotation.Z - 360
+                end
+            end
             self.StandupTimer2 = UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
-                local BlendRotation = Rotation * Progress + TargetRotation * (1 - Progress)
+                local BlendRotation = Rotation * Progress + StartRotation * (1 - Progress)
                 self:SetFakeCharacterRotation(BlendRotation)
             end, function()
                 self:PerformHitOver()
