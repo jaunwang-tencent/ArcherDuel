@@ -259,16 +259,16 @@ function GameMatch:BindEvents()
         local LocalPlayerId = Character:GetLocalPlayerId()
         if AdTag == mark and LocalPlayerId == userId then
             -- 将消耗的金币和积分返还
-            local score = _GAME.GameUtils.GetPlayerRankScore()
+            local score = GameUtils.GetPlayerRankScore()
             score = score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
-            _GAME.GameUtils.SetPlayerRankScore(score)
-            local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+            GameUtils.SetPlayerRankScore(score)
+            local curLevel = GameUtils.GetRankLevelByScore(score)
             if curLevel then
-                local coin = _GAME.GameUtils.GetPlayerCoin()
-                _GAME.GameUtils.SetPlayerCoin(coin + curLevel.cost)
+                local coin = GameUtils.GetPlayerCoin()
+                GameUtils.SetPlayerCoin(coin + curLevel.cost)
             end
 
-            if _GAME.GameUtils.CanEnterRankBattle() then
+            if GameUtils.CanEnterRankBattle() then
                 UI:SetVisible(MatchConfig.Fail_UI, false)
                 System:FireGameEvent(_GAME.Events.StartMatch)
             end
