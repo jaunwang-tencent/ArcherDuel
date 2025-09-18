@@ -72,10 +72,9 @@ function FightModule:Open()
     end)
 
     --判断是否有可领取的段位奖励
-    if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table") then
-        local RankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table")
-        local RankBoxReward_Table = MiscService:JsonStr2Table(RankBoxReward_Table_Str)
-        if RankBoxReward_Table and #RankBoxReward_Table > 0 then
+    local RankBoxReward_Table = DataCenter.GetTable("RankBoxReward_Table", true)
+    if RankBoxReward_Table then
+        if #RankBoxReward_Table > 0 then
             --段位奖励
             UI:RegisterClicked(CenterView.Rank.Button, function()
                 self:OnRank(RankBoxReward_Table)
@@ -282,7 +281,7 @@ function FightModule:OnMatch()
             UIConfig.FightView.RightView.ID
         }, false)
         System:FireSignEvent(tostring(RandomNumber))
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
+        DataCenter.SetNumber("BattleStage", RandomNumber)
     end
 end
 
@@ -297,7 +296,7 @@ function FightModule:OnGoldMatch()
             UIConfig.FightView.RightView.ID
         }, false)
         System:FireSignEvent(tostring(7))
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 7)
+        DataCenter.SetNumber("BattleStage", 7)
     end
 end
 
@@ -312,7 +311,7 @@ function FightModule:OnDiamondMatch()
             UIConfig.FightView.RightView.ID
         }, false)
         System:FireSignEvent(tostring(8))
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 8)
+        DataCenter.SetNumber("BattleStage", 8)
     end
 end
 
@@ -326,8 +325,7 @@ function FightModule:OnRank(RankBoxReward_Table)
         UI:SetVisible({CenterView.Rank.Image_1}, false)
         UI:SetVisible({CenterView.Rank.Image_2}, false)
     end
-    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+    DataCenter.SetTable("RankBoxReward_Table", RankBoxReward_Table)
 
     local OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
     math.randomseed(TimerManager:GetClock())

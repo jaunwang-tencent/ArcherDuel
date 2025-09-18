@@ -474,8 +474,7 @@ function LobbyModule:RefreshEquipmentData()
     self:RefreshAvatar()
 
     --存档
-    local All_Equipment_Table = MiscService:Table2JsonStr(AllEquipment)
-    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table", All_Equipment_Table)
+    DataCenter.SetTable("AllEquipment", AllEquipment)
 end
 
 --- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】
@@ -787,17 +786,15 @@ function LobbyModule:RuntimeWeeklyRefresh()
     DataCenter.SetNumber("Player_TaskWeeklyExp_Num", 0)
     DataCenter.SetNumber("Player_CollectTaskWeekly_Num", 0)
     local level = _GAME.GameUtils.GetRankLevelByScore(score)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 0)
+    DataCenter.SetNumber("ReachDiamondRank", 0)
 
     --突破段位可领取段位奖励
     local RankBoxReward_Table = {}
-    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+    DataCenter.SetTable("RankBoxReward_Table", RankBoxReward_Table)
 
     --已领取的段位奖励
     local ReceiveRankBoxReward_Table = {}
-    local ReceiveRankBoxReward_Table_Str = MiscService:Table2JsonStr(ReceiveRankBoxReward_Table)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table", ReceiveRankBoxReward_Table_Str)
+    DataCenter.SetTable("ReceiveRankBoxReward_Table", ReceiveRankBoxReward_Table)
 
     --段位奖励发放
     local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"

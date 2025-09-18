@@ -1,6 +1,8 @@
 ﻿local MatchConfig = require("Match.MatchConfig")
 local GoldRewardConfig = require("Match.GoldRewardConfig")
 local TaskEvents = require("Game.Framework.Task.TaskEvents")
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
 local GameMatch = {}
 
@@ -51,19 +53,19 @@ function GameMatch:Init()
 
     --读取保存当前玩家能够使用武器
     self.localWeapons = {}
-    local Equipped_Bow_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Bow_ID")
+    local Equipped_Bow_ID = DataCenter.GetNumber("Equipped_Bow_ID", true)
     if Equipped_Bow_ID and Equipped_Bow_ID > 0 then
         self.localWeapons["Bow"] = Equipped_Bow_ID -- 弓
     else
         self.localWeapons["Bow"] = 61 -- 试玩兜底弓
     end
-    local Equipped_Axe_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Axe_ID")
+    local Equipped_Axe_ID = DataCenter.GetNumber("Equipped_Axe_ID", true)
     if Equipped_Axe_ID and Equipped_Axe_ID > 0 then
         self.localWeapons["Axe"] = Equipped_Axe_ID -- 斧
     else
         self.localWeapons["Axe"] = 77 -- 试玩兜底斧
     end
-    local Equipped_Spear_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Spear_ID")
+    local Equipped_Spear_ID = DataCenter.GetNumber("Equipped_Spear_ID", true)
     if Equipped_Spear_ID and Equipped_Spear_ID > 0 then
         self.localWeapons["Spear"] = Equipped_Spear_ID -- 矛
     else
@@ -72,19 +74,19 @@ function GameMatch:Init()
 
     -- 当前玩家穿戴装备
     self.localEquipments = {}
-    local Equipped_Character_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Character_ID")
+    local Equipped_Character_ID = DataCenter.GetNumber("Equipped_Character_ID", true)
     if Equipped_Character_ID and Equipped_Character_ID > 0 then
         self.localEquipments["Part"] = Equipped_Character_ID
     else
         self.localEquipments["Part"] = 1 -- 试玩兜底
     end
-    local Equipped_Bottoms_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Bottoms_ID")
+    local Equipped_Bottoms_ID = DataCenter.GetNumber("Equipped_Bottoms_ID", true)
     if Equipped_Bottoms_ID and Equipped_Bottoms_ID > 0 then
         self.localEquipments["Bottoms"] = Equipped_Bottoms_ID
     else
         self.localEquipments["Bottoms"] = 50 -- 试玩兜底
     end
-    local Equipped_Top_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Top_ID")
+    local Equipped_Top_ID = DataCenter.GetNumber("Equipped_Top_ID", true)
     if Equipped_Top_ID and Equipped_Top_ID > 0 then
         self.localEquipments["Cloth"] = Equipped_Top_ID
     else
@@ -609,15 +611,12 @@ function GameMatch:OnVictory()
 
             --判断这个段位的宝箱是否领取了
             local isReceive = false
-            if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table") then
-                local ReceiveRankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table")
-                local ReceiveRankBoxReward_Table = MiscService:JsonStr2Table(ReceiveRankBoxReward_Table_Str)
-                if ReceiveRankBoxReward_Table then
-                    for _, v in pairs(ReceiveRankBoxReward_Table) do
-                        if v == newRank.id then
-                            isReceive = true
-                            break
-                        end
+            local ReceiveRankBoxReward_Table = DataCenter.GetTable("ReceiveRankBoxReward_Table", true)
+            if ReceiveRankBoxReward_Table then
+                for _, v in pairs(ReceiveRankBoxReward_Table) do
+                    if v == newRank.id then
+                        isReceive = true
+                        break
                     end
                 end
             end
@@ -625,32 +624,27 @@ function GameMatch:OnVictory()
             --isReceive=true则表示已经领取过宝箱了，不能再重复领取
             if not isReceive then
                 --升阶段了可以领取宝箱了
-                local RankBoxReward_Table
-                if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table") then
-                    local RankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table")
-                    RankBoxReward_Table = MiscService:JsonStr2Table(RankBoxReward_Table_Str)
+                local RankBoxReward_Table = DataCenter.GetTable("RankBoxReward_Table", true)
+                if RankBoxReward_Table then
                     table.insert(RankBoxReward_Table, newRank.id)
-                    RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
                 else
                     RankBoxReward_Table = {newRank.id}
-                    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
                 end
+                DataCenter.SetTable("RankBoxReward_Table", RankBoxReward_Table)
             end
 
             --升到钻石了
             if _GAME.GameUtils.IsReachDiamondRank(newScore) then
                 --判断升钻石的奖励是否已经发放
-                if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank") then
-                    local falg = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank")
+                local falg = DataCenter.GetNumber("ReachDiamondRank", true)
+                if falg then
                     if falg ~= 1 then
                         _GAME.GameUtils.AddPlayerReward(100003, 2)
-                        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 1)
+                        DataCenter.SetNumber("ReachDiamondRank", 1)
                     end
                 else
                     _GAME.GameUtils.AddPlayerReward(100003, 2)
-                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 1)
+                    DataCenter.SetNumber("ReachDiamondRank", 1)
                 end
             end
         end
@@ -663,16 +657,11 @@ function GameMatch:OnVictory()
 
     --发奖励
     local rewards = _GAME.GameUtils.GetRewardsByWin()
-    local AllEquipment
-    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table") then
-        --这里读取玩家的装备 --并进行排序
-        local All_Equipment_Table = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.String, "All_Equipment_Table")
-        --文字转为组
-        AllEquipment = MiscService:JsonStr2Table(All_Equipment_Table)
-    else
-        --没有则初始化
+    local AllEquipment = DataCenter.GetTable("AllEquipment", true)
+    if not AllEquipment then
         AllEquipment = _GAME.GameUtils.DefaultEquipmentData()
     end
+
     for _, EquipmentID in pairs(rewards) do
         local TargetEquipment = AllEquipment[EquipmentID]
         if TargetEquipment.Unlock then
@@ -683,8 +672,7 @@ function GameMatch:OnVictory()
             TargetEquipment.Unlock = true
         end
     end
-    local All_Equipment_Table = MiscService:Table2JsonStr(AllEquipment)
-    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table", All_Equipment_Table)
+    DataCenter.SetTable("AllEquipment", AllEquipment)
 
     self.VictoryRewards = rewards
     Log:PrintLog("VictoryRewards, End: ", self.VictoryRewards[1], self.VictoryRewards[2])

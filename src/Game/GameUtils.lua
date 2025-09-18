@@ -56,15 +56,13 @@ function GameUtils.SetPlayerRankScore(score)
     if score < 0 then
         score = 0
     end
-    local playerId = Character:GetLocalPlayerId()
-    Archive:SetPlayerData(playerId, Archive.TYPE.Number, "Player_BattlePoints_Num", score)
+    UGCS.Target.ArcherDuel.Helper.DataCenter.SetNumber("Player_BattlePoints_Num", score)
 end
 
 -- 保存玩家排位积分
 function GameUtils.GetPlayerRankScore()
-    local playerId = Character:GetLocalPlayerId()
     --加积分
-    local Player_BattlePoints_Num = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "Player_BattlePoints_Num")
+    local Player_BattlePoints_Num = UGCS.Target.ArcherDuel.Helper.DataCenter.GetNumber("Player_BattlePoints_Num", true)
     if Player_BattlePoints_Num then
         return Player_BattlePoints_Num
     else
@@ -76,11 +74,10 @@ end
 function GameUtils.AddPlayerReward(rewardId, addRewardCount)
     local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[rewardId]
     if cfg and cfg.archive then
-        local playerId = Character:GetLocalPlayerId()
         --加积分
-        local Reward_Num = Archive:GetPlayerData(playerId, Archive.TYPE.Number, cfg.archive)
+        local Reward_Num = UGCS.Target.ArcherDuel.Helper.DataCenter.GetNumber(cfg.archive, true)
         Reward_Num = (Reward_Num or 0) + addRewardCount
-        Archive:SetPlayerData(playerId, Archive.TYPE.Number, cfg.archive, Reward_Num)
+        UGCS.Target.ArcherDuel.Helper.DataCenter.SetNumber(cfg.archive, Reward_Num)
 
         System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
     end
@@ -90,8 +87,7 @@ end
 function GameUtils.GetPlayerReward(rewardId)
     local cfg = UGCS.Target.ArcherDuel.Config.ResourceConfig[rewardId]
     if cfg and cfg.archive then
-        local playerId = Character:GetLocalPlayerId()
-        local Reward_Num = Archive:GetPlayerData(playerId, Archive.TYPE.Number, cfg.archive)
+        local Reward_Num = UGCS.Target.ArcherDuel.Helper.DataCenter.GetNumber(cfg.archive, true)
         Reward_Num = (Reward_Num or 0)
         return Reward_Num
     end
@@ -317,14 +313,12 @@ end
 -- 设置玩家金币
 function GameUtils.SetPlayerCoin(coin)
     Log:PrintLog("[GameUtils.SetPlayerCoin] coin" .. coin)
-    local playerId = Character:GetLocalPlayerId()
-    Archive:SetPlayerData(playerId, Archive.TYPE.Number, "Coin", coin)
+    UGCS.Target.ArcherDuel.Helper.DataCenter.SetNumber("Coin", coin)
 end
 
 -- 获取玩家金币
 function GameUtils.GetPlayerCoin()
-    local playerId = Character:GetLocalPlayerId()
-    local Coin = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "Coin")
+    local Coin = UGCS.Target.ArcherDuel.Helper.DataCenter.GetNumber("Coin", true)
     if Coin then
         return Coin
     else
@@ -366,14 +360,12 @@ end
 -- 设置黄金赛次数
 function GameUtils.SetGoldBattleCount(count)
     Log:PrintLog("[GameUtils.SetGoldBattleCount] count" .. count)
-    local playerId = Character:GetLocalPlayerId()
-    Archive:SetPlayerData(playerId, Archive.TYPE.Number, "GoldBattleCount", count)
+    UGCS.Target.ArcherDuel.Helper.DataCenter.SetNumber("GoldBattleCount", count)
 end
 
 -- 获取黄金赛次数
 function GameUtils.GetGoldBattleCount()
-    local playerId = Character:GetLocalPlayerId()
-    local count = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "GoldBattleCount")
+    local count = UGCS.Target.ArcherDuel.Helper.DataCenter.GetNumber("GoldBattleCount", true)
     if count then
         return count
     else
@@ -408,12 +400,12 @@ function GameUtils.ShowGainView(Goods, closeCallback)
         UI:SetText({UIConfig.StoreView.PurchasePopup.Text}, tostring(Goods.Diamond))
         UI:SetVisible({UIConfig.StoreView.PurchasePopup.Text}, true)
     elseif Goods.DiamondScore then
-        local Rank_DiamondScore_Num = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "Rank_DiamondScore_Num")
+        local Rank_DiamondScore_Num = UGCS.Target.ArcherDuel.Helper.DataCenter.GetNumber("Rank_DiamondScore_Num", true)
         if Rank_DiamondScore_Num then
             Rank_DiamondScore_Num = Rank_DiamondScore_Num + Goods.DiamondScore
-            Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "Rank_DiamondScore_Num", Rank_DiamondScore_Num)
+            UGCS.Target.ArcherDuel.Helper.DataCenter.SetNumber("Rank_DiamondScore_Num", Rank_DiamondScore_Num)
         else
-            Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "Rank_DiamondScore_Num", Goods.DiamondScore)
+            UGCS.Target.ArcherDuel.Helper.DataCenter.SetNumber("Rank_DiamondScore_Num", Goods.DiamondScore)
         end
         GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 7)
         UI:SetText({UIConfig.StoreView.PurchasePopup.Text}, tostring(Goods.DiamondScore))

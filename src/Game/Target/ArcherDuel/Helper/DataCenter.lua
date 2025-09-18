@@ -56,7 +56,7 @@ function DataCenter.GetNumber(DataName, SyncData)
         else
             DataValue = NumberData[DataName]
         end
-        return DataValue
+        return DataValue or 0
     end
 end
 

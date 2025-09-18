@@ -1,5 +1,7 @@
 --玩家角色
 local Player = UGCS.RTTI.Class("Player", UGCS.Framework.Actor)
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
 --移动状态
 local EMovement = {
@@ -331,10 +333,11 @@ function Player:GetPlayerHPRate()
     return 0
 end
 
-function Player:GetDefaultData(PlayerID, KeyStr, DefaultValue)
-    local data = Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, KeyStr)
+function Player:GetDefaultData(KeyStr, DefaultValue)
+    local data = DataCenter.GetNumber(KeyStr, true)
     if not data or data == 0 then
         data = DefaultValue
+        DataCenter.SetNumber(KeyStr, data)
     end
     return data
 end
@@ -342,16 +345,15 @@ end
 -- 获取玩家装备数据
 function Player:GetEquipData(ForceUpdate)
     if ForceUpdate or not self.EquipData then
-        local PlayerID = Character:GetLocalPlayerId()
-        local Part_Num = self:GetDefaultData(PlayerID, "Equipped_Character_ID", 1)
-        local Bottoms_Num = self:GetDefaultData(PlayerID, "Equipped_Bottoms_ID", 38)
-        local Cloth_Num = self:GetDefaultData(PlayerID, "Equipped_Top_ID", 15)
-        local Bow_Lv = self:GetDefaultData(PlayerID, "Equipped_Bow_Lv", 1)
-        local Spear_Lv = self:GetDefaultData(PlayerID, "Equipped_Spear_Lv", 1)
-        local Axe_Lv = self:GetDefaultData(PlayerID, "Equipped_Axe_Lv", 1)
-        local Part_Lv = self:GetDefaultData(PlayerID, "Equipped_Part_Lv", 1)
-        local Bottoms_Lv = self:GetDefaultData(PlayerID, "Equipped_Bottoms_Lv", 1)
-        local Cloth_Lv = self:GetDefaultData(PlayerID, "Equipped_Top_Lv", 1)
+        local Part_Num = self:GetDefaultData("Equipped_Character_ID", 1)
+        local Bottoms_Num = self:GetDefaultData("Equipped_Bottoms_ID", 38)
+        local Cloth_Num = self:GetDefaultData("Equipped_Top_ID", 15)
+        local Bow_Lv = self:GetDefaultData("Equipped_Bow_Lv", 1)
+        local Spear_Lv = self:GetDefaultData("Equipped_Spear_Lv", 1)
+        local Axe_Lv = self:GetDefaultData("Equipped_Axe_Lv", 1)
+        local Part_Lv = self:GetDefaultData("Equipped_Part_Lv", 1)
+        local Bottoms_Lv = self:GetDefaultData("Equipped_Bottoms_Lv", 1)
+        local Cloth_Lv = self:GetDefaultData("Equipped_Top_Lv", 1)
 
         local Weapon_Lv
         -- todo self.WeaponType is nil

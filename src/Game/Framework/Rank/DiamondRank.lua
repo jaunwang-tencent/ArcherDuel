@@ -1,6 +1,8 @@
 local DiamondRankManager = {}
 
 local MatchConfig = require("Match.MatchConfig")
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
 local dailyScoreHours = {6, 18} -- 积分时间点
 
@@ -152,16 +154,14 @@ function DiamondRankManager.BuildDiamondRank()
     return DiamondRankData
 end
 
-function DiamondRankManager.GetDiamondRank(PlayerID)
-    local DiamondRank_Table
-    if Archive:HasPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table") then
-        local DiamondRank_Table_Str = Archive:GetPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table")
-        DiamondRank_Table = MiscService:JsonStr2Table(DiamondRank_Table_Str)
-    else
+function DiamondRankManager.GetDiamondRank()
+    local DiamondRank_Table = DataCenter.GetTable("DiamondRank_Table", true)
+    if not DiamondRank_Table then
         DiamondRank_Table = DiamondRankManager.BuildDiamondRank()
+        DataCenter.SetTable("DiamondRank_Table", DiamondRank_Table)
     end
 
-    DiamondRankManager.last_update_ts = Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "DiamondRank_LastUpdate")
+    DiamondRankManager.last_update_ts = DataCenter.GetNumber("DiamondRank_LastUpdate", true)
     if DiamondRankManager.last_update_ts <= 0 then
         DiamondRankManager.last_update_ts = epochZeroTs
     end
@@ -195,7 +195,7 @@ function DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
 
     if isCrossWeek(last_update_ts, nowTs) then
         DiamondRankData = DiamondRankManager.BuildDiamondRank()
-        Archive:SetPlayerData(PlayerID, Archive.TYPE.Number, "Rank_DiamondScore_Num", 0)
+        DataCenter.SetNumber("Rank_DiamondScore_Num", 0)
     end
 
     for _, player in ipairs(DiamondRankData) do
@@ -207,23 +207,20 @@ function DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
 
     table.sort(DiamondRankData, function(a,b) return a.DiamondScore > b.DiamondScore end)
 
-    local DiamondRank_Table_Str = MiscService:Table2JsonStr(DiamondRankData)
-    Archive:SetPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table", DiamondRank_Table_Str)
-    Archive:SetPlayerData(PlayerID, Archive.TYPE.Number, "DiamondRank_LastUpdate", nowTs)
+    DataCenter.SetTable("DiamondRank_Table", DiamondRankData)
+    DataCenter.SetNumber("DiamondRank_LastUpdate", nowTs)
 
     return DiamondRankData
 end
 
 function DiamondRankManager.GetLastWeekDiamondRank(PlayerID)
-    local DiamondRank_Table
-    if Archive:HasPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table") then
-        local DiamondRank_Table_Str = Archive:GetPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table")
-        DiamondRank_Table = MiscService:JsonStr2Table(DiamondRank_Table_Str)
-    else
+    local DiamondRank_Table = DataCenter.GetTable("DiamondRank_Table", true)
+    if not DiamondRank_Table then
         DiamondRank_Table = DiamondRankManager.BuildDiamondRank()
+        DataCenter.SetTable("DiamondRank_Table", DiamondRank_Table)
     end
 
-    DiamondRankManager.last_update_ts = Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "DiamondRank_LastUpdate")
+    DiamondRankManager.last_update_ts = DataCenter.GetNumber("DiamondRank_LastUpdate", true)
     if DiamondRankManager.last_update_ts <= 0 then
         DiamondRankManager.last_update_ts = epochZeroTs
     end

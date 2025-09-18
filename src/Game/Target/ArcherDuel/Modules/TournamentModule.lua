@@ -133,21 +133,21 @@ function TournamentModule:OnMatch()
         --这里打开寻找对局页面
         --生成1到7的随机数字
         local RandomNumber = math.random(1, 6)  --随机海岛和天空
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
+        DataCenter.SetNumber("BattleStage", RandomNumber)
         System:FireSignEvent(tostring(RandomNumber))
     end
 end
 
 function TournamentModule:OnGoldMatch()
     if _GAME.GameUtils.CanEnterGoldBattle() then
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 7)
+        DataCenter.SetNumber("BattleStage", 7)
         System:FireSignEvent(tostring(7))
     end
 end
 
 function TournamentModule:OnDiamondMatch()
     if _GAME.GameUtils.CanEnterDiamondRankBattle() then
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 8)
+        DataCenter.SetNumber("BattleStage", 8)
         System:FireSignEvent(tostring(8))
     end
 end
