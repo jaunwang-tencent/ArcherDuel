@@ -36,6 +36,8 @@ local DefaultBaseData =
     SilverBox = 2,                --银宝箱
     NormalBox = 1,                --普通宝箱
     --其它信息
+    Player_MaxAdFreeWatch_Num = 5,--玩家最大免费观看广告次数
+    Player_HasAdFreeWatch_Num = 0,--玩家已经免费观看广告次数
     Daily_Progress = 1,
     Player_BattlePoints_Num = 0,  --门票
     Player_TaskDailyExp_Num = 0,  --每日任务经验
@@ -130,8 +132,7 @@ function LobbyModule:Update(DeltaTime)
         self._lastDate = {year=year, month=month, day=day}
     else
         if year ~= self._lastDate.year or month ~= self._lastDate.month or day ~= self._lastDate.day then
-            self:RefreshDailyItem()
-            self:RefreshDiamondItem()
+            self:RefreshDaily()
             self:RuntimeDailyRefresh()
             self._lastDate = {year=year, month=month, day=day}
         end
@@ -142,7 +143,7 @@ function LobbyModule:Update(DeltaTime)
         self._lastWeekday = wday
     else
         if wday < self._lastWeekday then -- 因为周一=1，周日=7，周数回到1即跨周
-            self:RefreshLimitItem()
+            self:RefreshWeekly()
             self:RuntimeWeeklyRefresh()
             self._lastWeekday = wday
         else
@@ -213,9 +214,8 @@ function LobbyModule:LoadData()
     if not AllShops then
         DataCenter.SetTable("AllShops", self:DefaultShopData())
         --刷新限定奖池
-        self:RefreshLimitItem()
-        self:RefreshDailyItem()
-        self:RefreshDiamondItem()
+        self:RefreshWeekly()
+        self:RefreshDaily()
     end
 
     local nowStr = MiscService:GetServerTimeToTime()
@@ -229,15 +229,14 @@ function LobbyModule:LoadData()
     if GameUtils.isCrossDay(lastLoginTime) then
         --跨天登录了
         Log:PrintLog("跨天登录了")
-        self:RefreshDailyItem()
-        self:RefreshDiamondItem()
+        self:RefreshDaily()
 
         self:RuntimeDailyRefresh()
     end
     if GameUtils.isCrossWeek(lastLoginTime) then
         --跨周登录了
         Log:PrintLog("跨周登录了")
-        self:RefreshLimitItem()
+        self:RefreshWeekly()
 
         self:RuntimeWeeklyRefresh()
     end
@@ -653,37 +652,9 @@ function LobbyModule:DefaultShopData()
     return AllShops
 end
 
---- 刷新限定奖池【一周】
-function LobbyModule:RefreshLimitItem()
-    --第几周
-    math.randomseed(TimerManager:GetClock())
-    local WeekIndex = math.random(1, 60)
-    local AllShops = DataCenter.GetTable("AllShops")
-    local AllLimitItem = AllShops.LimitItem
-    for _, LimitItem in pairs(AllLimitItem) do
-        local BoxEquipmentIdsSet
-        if LimitItem.Costs[1].GoldBox then
-            BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
-        elseif LimitItem.Costs[1].SilverBox then
-            BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
-        end
-        local Goods = LimitItem.Goods
-        Goods.Equipments = {}
-        if BoxEquipmentIdsSet then
-            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
-            if WeekIndex == 0 then
-                WeekIndex = 1
-            end
-            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
-            for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
-                Goods.Equipments[Index] = { ID = BoxEquipmentId }
-            end
-        end
-    end
-end
-
---- 刷新每日限购【一天】
-function LobbyModule:RefreshDailyItem()
+--- 每日刷新
+function LobbyModule:RefreshDaily()
+    --刷新每日限购
     local AllShops = DataCenter.GetTable("AllShops")
     local AllDailyItem = AllShops.DailyItem
     --概率表
@@ -724,14 +695,44 @@ function LobbyModule:RefreshDailyItem()
         Goods.Equipments = {}
         Goods.Equipments[1] = { ID = EquipmentID }
     end
-end
 
---- 刷新免费砖石【一天】
-function LobbyModule:RefreshDiamondItem()
-    local AllShops = DataCenter.GetTable("AllShops")
+    --刷新免费砖石
     local AllDiamondItem = AllShops.DiamondItem
     AllDiamondItem[1].Costs[1].MaxCollect = 5
     AllDiamondItem[1].Costs[1].HasCollect = 0
+    DataCenter.SetTable("AllShops", AllShops)
+
+    --免费广告观看次数
+    DataCenter.SetNumber("Player_HasAdFreeWatch_Num", 0)
+end
+
+--- 每周刷新
+function LobbyModule:RefreshWeekly()
+    --刷新限定奖池
+    math.randomseed(TimerManager:GetClock())
+    local WeekIndex = math.random(1, 60)
+    local AllShops = DataCenter.GetTable("AllShops")
+    local AllLimitItem = AllShops.LimitItem
+    for _, LimitItem in pairs(AllLimitItem) do
+        local BoxEquipmentIdsSet
+        if LimitItem.Costs[1].GoldBox then
+            BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
+        elseif LimitItem.Costs[1].SilverBox then
+            BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
+        end
+        local Goods = LimitItem.Goods
+        Goods.Equipments = {}
+        if BoxEquipmentIdsSet then
+            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
+            if WeekIndex == 0 then
+                WeekIndex = 1
+            end
+            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
+            for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
+                Goods.Equipments[Index] = { ID = BoxEquipmentId }
+            end
+        end
+    end
 end
 
 --- 刷新商店
@@ -820,7 +821,7 @@ function LobbyModule:RuntimeWeeklyRefresh()
     local Rank_DiamondScore_Num = 90
     if Rank_DiamondScore_Num and Rank_DiamondScore_Num > 0 then
         local DiamondRankManager = require("Game.Framework.Rank.DiamondRank")
-        local DiamondRankData = DiamondRankManager.GetLastWeekPlayerDataDiamondRank(Character:GetLocalPlayerId())
+        local DiamondRankData = DiamondRankManager.GetLastWeekPlayerDataDiamondRank()
         local isRank = false
         local RankNum = 100
         if DiamondRankData and DiamondRankData[#DiamondRankData - 1] and DiamondRankData[#DiamondRankData - 1].DiamondScore and Rank_DiamondScore_Num > DiamondRankData[#DiamondRankData - 1].DiamondScore then

@@ -35,8 +35,6 @@ function StoreModule:Open()
         if LocalPlayerId == userId then
             local CallBack = self.AdFinishCallBack[mark]
             if CallBack then
-                --累计收集次数
-                self:AccumulateCollected()
                 --回调处理
                 CallBack()
             end
@@ -353,7 +351,7 @@ function StoreModule:BuyGood(ShopInfo)
         else
             if Costs.AdTag then
                 --观看广告
-                self:SeeAd(Costs.AdTag, Goods)
+                self:SeeAd(Costs, Goods)
             else
                 --在此弹出看广告弹窗
                 self:ShowAdView(Goods)
@@ -361,7 +359,7 @@ function StoreModule:BuyGood(ShopInfo)
         end
     elseif Costs.AdTag then
         --观看广告
-        self:SeeAd(Costs.AdTag, Goods)
+        self:SeeAd(Costs, Goods)
     --else
         --不可购买
         --UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
@@ -382,7 +380,7 @@ end
 --- 累计收集次数
 ---@param Costs 消耗
 function StoreModule:AccumulateCollected(Costs)
-    if Costs.HasCollect and Costs.MaxCollect then
+    if Costs and Costs.HasCollect and Costs.MaxCollect then
         Costs.HasCollect = Costs.HasCollect + 1
         --刷新视图
         if Costs.CollectTimesUI then
@@ -453,12 +451,22 @@ end
 function StoreModule:ShowAdView(Goods)
     local AdView = UIConfig.AdView
     UI:SetVisible({AdView.ID}, true)
+    local HasCollect = DataCenter.GetNumber("Player_HasAdFreeWatch_Num", true)
+    local MaxCollect = DataCenter.GetNumber("Player_MaxAdFreeWatch_Num")
+    local Text = string.format("%d/%d", MaxCollect - HasCollect, MaxCollect)
+    UI:SetText({AdView.Times}, Text)
 
     UI:RegisterClicked(AdView.AdButton, function()
         ----关闭
         UI:SetVisible({AdView.ID}, false)
         --观看广告
-        self:SeeAd("ad_tag_free", Goods)
+        local Costs = {
+            AdTag = "ad_tag_free",
+            HasCollect = HasCollect,
+            MaxCollect = MaxCollect,
+            CollectTimesUI = AdView.Times
+        }
+        self:SeeAd(Costs, Goods)
         --注销按钮事件
         UI:UnRegisterClicked(AdView.AdButton)
         UI:UnRegisterClicked(AdView.CloseButton)
@@ -475,15 +483,25 @@ function StoreModule:ShowAdView(Goods)
 end
 
 --- 观看广告
----@param AdTag 广告标识
+---@param Costs 广告标识
 ---@param Goods 商品
-function StoreModule:SeeAd(AdTag, Goods)
+function StoreModule:SeeAd(Costs, Goods)
+    local AdTag = Costs.AdTag
     if AdTag then
         local CallBack = self.AdFinishCallBack[AdTag]
         if not CallBack then
             CallBack = function()
+                --累计收集次数
+                self:AccumulateCollected(Costs)
                 --看完广告后，获得物品
-                self:ShowGainView({Ad = AdTag}, Goods)
+                self:ShowGainView(Costs, Goods)
+                if AdTag == "ad_tag_free" then
+                    --刷新全局已观看
+                    DataCenter.SetNumber("Player_HasAdFreeWatch_Num", Costs.HasCollect)
+                else
+                    --刷新商店存档
+                    System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
+                end
             end
             --加入回调
             self.AdFinishCallBack[AdTag] = CallBack

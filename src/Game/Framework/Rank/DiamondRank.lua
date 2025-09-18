@@ -213,14 +213,14 @@ function DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
     return DiamondRankData
 end
 
-function DiamondRankManager.GetLastWeekDiamondRank(PlayerID)
+function DiamondRankManager.GetLastWeekDiamondRank()
     local DiamondRank_Table = DataCenter.GetTable("DiamondRank_Table", true)
     if not DiamondRank_Table then
         DiamondRank_Table = DiamondRankManager.BuildDiamondRank()
         DataCenter.SetTable("DiamondRank_Table", DiamondRank_Table)
     end
 
-    DiamondRankManager.last_update_ts = DataCenter.GetNumber("DiamondRank_LastUpdate", true)
+    DiamondRankManager.last_update_ts = DataCenter.GetNumber("DiamondRank_LastUpdate", true) or 0
     if DiamondRankManager.last_update_ts <= 0 then
         DiamondRankManager.last_update_ts = epochZeroTs
     end
@@ -228,9 +228,9 @@ function DiamondRankManager.GetLastWeekDiamondRank(PlayerID)
     return DiamondRank_Table
 end
 
-function DiamondRankManager.GetLastWeekPlayerDataDiamondRank(PlayerID)
+function DiamondRankManager.GetLastWeekPlayerDataDiamondRank()
     math.randomseed(TimerManager:GetClock())
-    local DiamondRankData = DiamondRankManager.GetLastWeekDiamondRank(PlayerID)
+    local DiamondRankData = DiamondRankManager.GetLastWeekDiamondRank()
 
     local last_update_ts = DiamondRankManager.last_update_ts
 
