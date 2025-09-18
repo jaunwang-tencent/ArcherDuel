@@ -384,23 +384,25 @@ end
 function LobbyModule:SwitchView(ViewName)
     local TitleBar = UIConfig.MainView.TitleBar
     local ViewData = TitleBar[ViewName]
-    --关闭上一页面
-    if self.CurrentViewData then
-        UI:SetVisible({self.CurrentViewData.Selected}, false)
-        UI:SetVisible(self.CurrentViewData.ViewItems, false)
+    if self.CurrentViewData ~= ViewData then
+        --关闭上一页面
+        if self.CurrentViewData then
+            UI:SetVisible({self.CurrentViewData.Selected}, false)
+            UI:SetVisible(self.CurrentViewData.ViewItems, false)
+        end
+
+        --打开当前页面
+        if ViewData then
+            UI:SetVisible({ViewData.Selected},true)
+            UI:SetVisible(ViewData.ViewItems, true)
+        end
+
+        --记录当前视图数据
+        self.CurrentViewData = ViewData
+
+        --子类化操作
+        self:OnSwitchView(ViewName)
     end
-
-    --打开当前页面
-    if ViewData then
-        UI:SetVisible({ViewData.Selected},true)
-        UI:SetVisible(ViewData.ViewItems, true)
-    end
-
-    --记录当前视图数据
-    self.CurrentViewData = ViewData
-
-    --子类化操作
-    self:OnSwitchView(ViewName)
 end
 
 function LobbyModule:OnSwitchView(ViewName)
