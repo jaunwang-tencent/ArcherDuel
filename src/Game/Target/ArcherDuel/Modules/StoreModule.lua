@@ -27,6 +27,21 @@ function StoreModule:Open()
     UI:SetVisible(self.ScrollItems, true)
     --添加到滚动视图
     UI:AddToScrollView(UIConfig.StoreView.Scrollable, self.ScrollItems)
+    --广告结束回调<AdTag, CallBack>
+    self.AdFinishCallBack = {}
+    --注册广告结束事件
+    System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
+        local LocalPlayerId = Character:GetLocalPlayerId()
+        if LocalPlayerId == userId then
+            local CallBack = self.AdFinishCallBack[mark]
+            if CallBack then
+                --累计收集次数
+                self:AccumulateCollected()
+                --回调处理
+                CallBack()
+            end
+        end
+    end)
 end
 
 --- 刷新
@@ -37,6 +52,9 @@ end
 
 --- 关闭
 function StoreModule:Close()
+    --注销广告完成事件
+    System:UnregisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH)
+    self.AdFinishCallBack = {}
     --销毁视图
     local StoreView = UIConfig.StoreView
     UI:RemoveFromScrollView(StoreView.Scrollable, self.ScrollItems)
@@ -461,18 +479,15 @@ end
 ---@param Goods 商品
 function StoreModule:SeeAd(AdTag, Goods)
     if AdTag then
-        --注册广告结束事件
-        System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
-            local LocalPlayerId = Character:GetLocalPlayerId()
-            if AdTag == mark and LocalPlayerId == userId then
-                --累计收集次数
-                self:AccumulateCollected()
-
+        local CallBack = self.AdFinishCallBack[AdTag]
+        if not CallBack then
+            CallBack = function()
                 --看完广告后，获得物品
                 self:ShowGainView({Ad = AdTag}, Goods)
             end
-        end)
-
+            --加入回调
+            self.AdFinishCallBack[AdTag] = CallBack
+        end
         --广告观看
         IAA:LetPlayerWatchAds(AdTag)
     end
