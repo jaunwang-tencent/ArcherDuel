@@ -737,6 +737,8 @@ end
 --- 刷新商店
 function LobbyModule:RefreshStoreData()
     --存档
+    local AllShops = DataCenter.GetTable("AllShops")
+    DataCenter.SetTable("AllShops", AllShops)
 end
 
 --- 刷新通用资源栏
