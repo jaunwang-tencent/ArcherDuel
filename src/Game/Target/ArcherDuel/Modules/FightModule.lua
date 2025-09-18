@@ -2,21 +2,23 @@
 local FightModule = {}
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+--宝箱配置
+local OpenBoxConfig = UGCS.Target.ArcherDuel.Config.OpenBoxConfig
 --段位配置
 local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --装备详情模块
 local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
+--任务管理器
+local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 
 --- 打开
----@param PlayerData 玩家数据
-function FightModule:Open(PlayerData)
-    --寄存玩家数据
-    self.PlayerData = PlayerData
-
+function FightModule:Open()
     self:RegreshBodyUI()
 
     local FightView = UIConfig.FightView
@@ -32,8 +34,8 @@ function FightModule:Open(PlayerData)
         self:OnClickAd2()
     end)
 
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    if _GAME.GameUtils.IsReachGoldRank(score) then
+    local score = GameUtils.GetPlayerRankScore()
+    if GameUtils.IsReachGoldRank(score) then
         local unLock = "#FFFFFF"
         UI:SetImageColor({CenterView.Golden.ID}, unLock)
         UI:SetVisible({CenterView.Golden.Lock}, false)
@@ -47,7 +49,7 @@ function FightModule:Open(PlayerData)
         UI:SetVisible({CenterView.Golden.Lock}, true)
     end
 
-    if _GAME.GameUtils.IsReachDiamondRank(score) then
+    if GameUtils.IsReachDiamondRank(score) then
         local unLock = "#FFFFFF"
         UI:SetImageColor({CenterView.Diamond.ID}, unLock)
         UI:SetVisible({CenterView.Diamond.Lock}, false)
@@ -66,7 +68,7 @@ function FightModule:Open(PlayerData)
         self:OnSevenDays()
     end)
 
-    local level = _GAME.GameUtils.GetRankLevelByScore(score)
+    local level = GameUtils.GetRankLevelByScore(score)
     --寻找对局
     UI:SetText({CenterView.Match.Text}, string.format("%d", level.cost))
     UI:RegisterClicked(CenterView.Match.Button, function()
@@ -74,10 +76,9 @@ function FightModule:Open(PlayerData)
     end)
 
     --判断是否有可领取的段位奖励
-    if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table") then
-        local RankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table")
-        local RankBoxReward_Table = MiscService:JsonStr2Table(RankBoxReward_Table_Str)
-        if RankBoxReward_Table and #RankBoxReward_Table > 0 then
+    local RankBoxReward_Table = DataCenter.GetTable("RankBoxReward_Table", true)
+    if RankBoxReward_Table then
+        if #RankBoxReward_Table > 0 then
             --段位奖励
             UI:RegisterClicked(CenterView.Rank.Button, function()
                 self:OnRank(RankBoxReward_Table)
@@ -171,14 +172,11 @@ function FightModule:Close()
         local ButtonID = UIConfig.SevenDays.TaskProgress.Button[index]
         UI:UnRegisterClicked(ButtonID)
     end
-    
-    self.PlayerData = nil
 end
 
 --- 刷新身体上的数据
 function FightModule:RegreshBodyUI()
     local FightView = UIConfig.FightView
-    local PlayerData = self.PlayerData
     --角色身上的装备
     local EquipmentSlotConfig = {
         [1] = FightView.LeftView.Character,
@@ -188,7 +186,7 @@ function FightModule:RegreshBodyUI()
         [5] = FightView.RightView.Aex,
         [6] = FightView.RightView.Spear,
     }
-    local BodyEquipment = PlayerData.BodyEquipment
+    local BodyEquipment = DataCenter.Get("BodyEquipment")
     for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
          --先注销点击事件
          UI:UnRegisterClicked(EquipmentSlot.Image)
@@ -236,7 +234,7 @@ end
 function FightModule:OnSevenDays()  --七日挑战
     --这里打开七日挑战页面
 
-    local day = _GAME.GameUtils.GetWeekDay() -- 获取当前是星期几
+    local day = GameUtils.GetWeekDay() -- 获取当前是星期几
 
     -- 周活跃进度 UI begin
     self:RefreshTaskProcesUI()
@@ -271,7 +269,7 @@ function FightModule:OnSevenDays()  --七日挑战
 end
 
 function FightModule:OnMatch()
-    if _GAME.GameUtils.CanEnterRankBattle() then
+    if GameUtils.CanEnterRankBattle() then
         --这里打开寻找对局页面
         --生成1到7的随机数字
         local RandomNumber = math.random(1, 6)  --随机海岛和天空
@@ -287,12 +285,12 @@ function FightModule:OnMatch()
             UIConfig.FightView.RightView.ID
         }, false)
         System:FireSignEvent(tostring(RandomNumber))
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", RandomNumber)
+        DataCenter.SetNumber("BattleStage", RandomNumber)
     end
 end
 
 function FightModule:OnGoldMatch()
-    if _GAME.GameUtils.CanEnterGoldBattle() then
+    if GameUtils.CanEnterGoldBattle() then
         --这里要关闭所有页面
         UI:SetVisible({UIConfig.MainView.TitleBar.ID,
             UIConfig.MainView.StoreResourceBar.ID,
@@ -302,12 +300,12 @@ function FightModule:OnGoldMatch()
             UIConfig.FightView.RightView.ID
         }, false)
         System:FireSignEvent(tostring(7))
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 7)
+        DataCenter.SetNumber("BattleStage", 7)
     end
 end
 
 function FightModule:OnDiamondMatch()
-    if _GAME.GameUtils.CanEnterDiamondRankBattle() then
+    if GameUtils.CanEnterDiamondRankBattle() then
         --这里要关闭所有页面
         UI:SetVisible({UIConfig.MainView.TitleBar.ID,
             UIConfig.MainView.StoreResourceBar.ID,
@@ -317,7 +315,7 @@ function FightModule:OnDiamondMatch()
             UIConfig.FightView.RightView.ID
         }, false)
         System:FireSignEvent(tostring(8))
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "BattleStage", 8)
+        DataCenter.SetNumber("BattleStage", 8)
     end
 end
 
@@ -331,10 +329,8 @@ function FightModule:OnRank(RankBoxReward_Table)
         UI:SetVisible({CenterView.Rank.Image_1}, false)
         UI:SetVisible({CenterView.Rank.Image_2}, false)
     end
-    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+    DataCenter.SetTable("RankBoxReward_Table", RankBoxReward_Table)
 
-    local OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
     math.randomseed(TimerManager:GetClock())
     local Weight = 0
 
@@ -350,7 +346,7 @@ function FightModule:OnRank(RankBoxReward_Table)
         for _, v in ipairs(OpenBoxConfig.RankBox[1]) do
             tempWeight = tempWeight + v.Weight
             if random <= tempWeight then
-                local equipmap = _GAME.GameUtils.GetEquipmentMap()
+                local equipmap = GameUtils.GetEquipmentMap()
                 local equipIds = equipmap[v.Grade]
                 if equipIds then
                     return equipIds[math.random(1, #equipIds)]
@@ -457,7 +453,7 @@ function FightModule:OnRank(RankBoxReward_Table)
     --注册领取事件
     UI:RegisterClicked(ThreeItem.Button.ID, function ()
         --获取装备
-        local AllEquipment = self.PlayerData.AllEquipment
+        local AllEquipment = DataCenter.GetTable("AllEquipment")
         for i, Value in pairs(BoxRewards) do
             if i == 1 then
                 local TargetEquipment = AllEquipment[Value]
@@ -470,10 +466,10 @@ function FightModule:OnRank(RankBoxReward_Table)
                 end
             elseif i == 2 then
                 --增加钻石
-                _GAME.GameUtils.AddPlayerReward(100002, Value)
+                GameUtils.AddPlayerReward(100002, Value)
             elseif i == 3 then
                 --增加金币
-                _GAME.GameUtils.AddPlayerReward(100001, Value)
+                GameUtils.AddPlayerReward(100001, Value)
             end
         end
         --刷新装备数据
@@ -497,8 +493,8 @@ function FightModule:OnRank(RankBoxReward_Table)
 end
 
 function FightModule:RefreshTaskProcesUI()
-    local TaskExp = self.PlayerData.BaseData.Player_TaskWeeklyExp_Num
-    local CollectTask = self.PlayerData.BaseData.Player_CollectTaskWeekly_Num
+    local TaskExp = DataCenter.GetNumber("Player_TaskWeeklyExp_Num")
+    local CollectTask = DataCenter.GetNumber("Player_CollectTaskWeekly_Num")
     --local TaskExp = 5
     --local CollectTask = 1
     local winningPoints = {5, 10, 15, 20}
@@ -523,15 +519,15 @@ function FightModule:RefreshTaskProcesUI()
                 UI:SetVisible({ButtonID}, true)
                 UI:UnRegisterClicked(ButtonID)
                 UI:RegisterClicked(ButtonID, function (ButtonID)
-                    self.PlayerData.BaseData.Player_CollectTaskWeekly_Num = self.PlayerData.BaseData.Player_CollectTaskWeekly_Num | (1 << (index - 1))
+                    DataCenter.SetNumber("Player_CollectTaskWeekly_Num", CollectTask | (1 << (index - 1)))
                     if index == 1 then
-                        _GAME.GameUtils.AddPlayerReward(100002, 100)
+                        GameUtils.AddPlayerReward(100002, 100)
                     elseif index == 2 then
-                        _GAME.GameUtils.AddPlayerReward(200003, 1)
+                        GameUtils.AddPlayerReward(200003, 1)
                     elseif index == 3 then
-                        _GAME.GameUtils.AddPlayerReward(200002, 2)
+                        GameUtils.AddPlayerReward(200002, 2)
                     elseif index == 4 then
-                        _GAME.GameUtils.AddPlayerReward(200003, 2)
+                        GameUtils.AddPlayerReward(200003, 2)
                     end
                     self:RefreshTaskProcesUI()
                 end)
@@ -554,7 +550,7 @@ function FightModule:RefreshWeeklyTaskUI(wday)
     UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)
     local WeeklyTaskUIID = {105077, 105084, 105091}
     local iconIDs = {105075, 105082, 105089}
-    local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
+    local taskMgr =TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTaskByWeekly()
     local i = 1
     for _, v in pairs(ret) do
@@ -575,9 +571,9 @@ function FightModule:RefreshWeeklyTaskUI(wday)
                 UI:RegisterClicked(Completed,function (ItemUID)
                     local finishTaskRet = taskMgr:finishTask(v.id)
                     if finishTaskRet == true then
-                        local taskExp = self.PlayerData.BaseData.Player_TaskWeeklyExp_Num
+                        local taskExp = DataCenter.GetNumber("Player_TaskWeeklyExp_Num")
                         if v.rewards and v.rewards.WeeklyExp then
-                            self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = taskExp + v.rewards.WeeklyExp
+                            DataCenter.SetNumber("Player_TaskWeeklyExp_Num", taskExp + v.rewards.WeeklyExp)
                         end
                     end
                     self:RefreshTaskProcesUI()

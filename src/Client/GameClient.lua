@@ -1,7 +1,8 @@
 ﻿local GameClient = {}
 --初始化目标游戏
 require "Game.Target.ArcherDuel.Init"
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
+local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 
 function GameClient:Init()
     Log:PrintLog("[GameClient:Init]")
@@ -17,7 +18,6 @@ function GameClient:OnStart()
 
     self.ArcherDuelApp = UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.App)
 
-    local TaskManager = require "Game.Framework.Task.Task"
     TaskManager:Init()
     
     self._startTime = TimerManager:GetTimeSeconds()

@@ -117,6 +117,10 @@ function Battle:LoadCharacter(Context)
     if SceneResource then
         local LocalPosition = Element:GetPosition(SceneResource.BirthPoint.Local)
         local LocalRotation = Element:GetRotation(SceneResource.BirthPoint.Local)
+        if not self.Config.IsGold then
+            local LocalForward = Element:GetForward(SceneResource.BirthPoint.Local)
+            LocalPosition = LocalPosition - LocalForward * math.random(0, 500) -- 随机后移
+        end
         Element:SetVisibility(SceneResource.BirthPoint.Local, false)
         self.CurrentTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = LocalPosition,
@@ -134,6 +138,10 @@ function Battle:LoadCharacter(Context)
         --对方
         local EnemyPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
         local EnemyRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
+        if not self.Config.IsGold then
+            local EnemyForward = Element:GetForward(SceneResource.BirthPoint.Local)
+            EnemyPosition = EnemyPosition - EnemyForward * math.random(0, 500) -- 随机后移
+        end
         Element:SetVisibility(SceneResource.BirthPoint.Enemy, false)
         self.NextTurn = self:AddActor(UGCS.Target.ArcherDuel.World.Actor.Player, {
             Location = EnemyPosition,

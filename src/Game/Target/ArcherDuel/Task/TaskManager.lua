@@ -1,4 +1,8 @@
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
 -- 条件基类
 local Condition = {}
@@ -328,7 +332,7 @@ function Task:checkCompletion(params)
     end
 
     local allCompleted = true
-    local day = _GAME.GameUtils.GetWeekDay()
+    local day = GameUtils.GetWeekDay()
     for _, condition in ipairs(self.conditions) do
         if self.type == Task.TaskType.Weekly then
             if condition.wday and condition.wday <= day then
@@ -584,17 +588,11 @@ function TaskManager:getActiveTasks()
 end
 
 function TaskManager:LoadSavedTaskData()
-    if not Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable") then
-        return
-    end
-
-    local str = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "TaskDataTable")
-    Log:PrintLog("LoadTaskData",str)
-    local savedData = MiscService:JsonStr2Table(str)
+    local savedData = DataCenter.GetTable("TaskDataTable", true)
     if savedData == nil then
        return
     end
-    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local TaskManagerInstance = UGCS.Target.ArcherDuel.Task.TaskManager:GetInsatnce()
     for _, v in pairs (savedData) do
         local task = TaskManagerInstance:getTask(v.id)
         if task then
@@ -612,7 +610,7 @@ end
 
 function TaskManager:SaveTaskData()
     local saveData = {}
-    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local TaskManagerInstance = UGCS.Target.ArcherDuel.Task.TaskManager:GetInsatnce()
     local tasks = TaskManagerInstance:getActiveTasks()
     for _, v in pairs (tasks) do
         local data = {}
@@ -627,12 +625,11 @@ function TaskManager:SaveTaskData()
         end
         table.insert(saveData, data)
     end
-    local str = MiscService:Table2JsonStr(saveData)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable", str)
+    DataCenter.SetTable("TaskDataTable", saveData)
 end
 
 function TaskManager:Init()
-    local TaskPool = require("Game.Framework.Task.TaskPool")
+    local TaskPool = UGCS.Target.ArcherDuel.Task.TaskPool
     local TaskManagerInstance = TaskPool.BuildTask()
     return TaskManagerInstance
 end

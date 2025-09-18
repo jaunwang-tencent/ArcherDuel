@@ -52,18 +52,26 @@ UGCS.Target.ArcherDuel.Character.States.DeathState = require "Game.Target.Archer
 
 --辅助
 UGCS.Target.ArcherDuel.Helper = {}
-UGCS.Target.ArcherDuel.Helper.GameUtils = require "Game.Target.ArcherDuel.Helper.GameUtils"
 UGCS.Target.ArcherDuel.Helper.DataCenter = require "Game.Target.ArcherDuel.Helper.DataCenter"
+UGCS.Target.ArcherDuel.Helper.GameUtils = require "Game.Target.ArcherDuel.Helper.GameUtils"
+
+--任务
+UGCS.Target.ArcherDuel.Task = {}
+UGCS.Target.ArcherDuel.Task.TaskEvents = require("Game.Target.ArcherDuel.Task.TaskEvents")
+UGCS.Target.ArcherDuel.Task.TaskManager = require("Game.Target.ArcherDuel.Task.TaskManager")
+UGCS.Target.ArcherDuel.Task.TaskPool = require("Game.Target.ArcherDuel.Task.TaskPool")
 
 --游戏世界
 UGCS.Target.ArcherDuel.World = {}
 UGCS.Target.ArcherDuel.World.Actor = {}
+
 --角色
 UGCS.Target.ArcherDuel.World.Actor.Player = require "Game.Target.ArcherDuel.World.Actor.Player"
 UGCS.Target.ArcherDuel.World.Actor.Weapon = require "Game.Target.ArcherDuel.World.Actor.Weapon"
 UGCS.Target.ArcherDuel.World.Actor.Axe = require "Game.Target.ArcherDuel.World.Actor.Axe"
 UGCS.Target.ArcherDuel.World.Actor.Bow = require "Game.Target.ArcherDuel.World.Actor.Bow"
 UGCS.Target.ArcherDuel.World.Actor.Spear = require "Game.Target.ArcherDuel.World.Actor.Spear"
+
 --场景
 UGCS.Target.ArcherDuel.World.Scene = {}
 UGCS.Target.ArcherDuel.World.Scene.Battle = require "Game.Target.ArcherDuel.World.Scene.Battle"

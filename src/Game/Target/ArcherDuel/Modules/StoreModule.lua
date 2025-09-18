@@ -6,16 +6,15 @@ local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --装备详情模块
 local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+--任务事件
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 
 --- 打开
----@param PlayerData 玩家数据
-function StoreModule:Open(PlayerData)
-    --寄存玩家数据
-    self.PlayerData = PlayerData
-
+function StoreModule:Open()
     --活动页
     self.ScrollItems = {}
     --商铺信息
@@ -53,7 +52,6 @@ function StoreModule:Close()
     self.ScrollItems = nil
     self.ShopInfos = nil
     self.GoodInfos = nil
-    self.PlayerData = nil
 end
 
 --- 刷新价格
@@ -61,11 +59,11 @@ end
 ---@param ShopCosts 商铺消耗
 function StoreModule:RefreshPrice(ShopView, ShopCosts)
     --获取当前拥有的砖石数量
-    local CurrentDiamond = self.PlayerData.BaseData.Diamond
+    local CurrentDiamond = DataCenter.GetNumber("Diamond")
     --获取当前拥有的金宝箱数量
-    local CurrentGoldBox = self.PlayerData.BaseData.GoldBox
+    local CurrentGoldBox = DataCenter.GetNumber("GoldBox")
     --获取当前拥有的银宝箱数量
-    local CurrentSilverBox = self.PlayerData.BaseData.SilverBox
+    local CurrentSilverBox = DataCenter.GetNumber("SilverBox")
 
     --砖石&广告类型
     local DiamondStyle = ShopView.DiamondStyle
@@ -220,7 +218,7 @@ function StoreModule:RefreshStore(HoldInfo)
     --加载商城活动
     local Activities = StoreView.Activities
     --获取商店中所有商品
-    local AllShops = self.PlayerData.AllShops
+    local AllShops = DataCenter.GetTable("AllShops")
     local ItemsMap = {
         [1] = AllShops.LimitItem,
         [2] = AllShops.DailyItem,
@@ -262,7 +260,7 @@ function StoreModule:GetEquipmentByGoodInfo(GoodInfo)
     local EquipmentGoods = GoodInfo.Content and GoodInfo.Content.Equipments
     local EquipmentGood = EquipmentGoods and EquipmentGoods[GoodInfo.GoodIndex]
     if EquipmentGood then
-        local AllEquipment = self.PlayerData.AllEquipment
+        local AllEquipment = DataCenter.GetTable("AllEquipment")
         local Equipment = AllEquipment[EquipmentGood.ID]
         return Equipment
     end
@@ -284,22 +282,24 @@ function StoreModule:BuyGood(ShopInfo)
     local ShopContent = ShopInfo.Content
     local Costs = ShopContent.Costs
     local Goods = ShopContent.Goods
-    local BaseData = self.PlayerData.BaseData
     --前置条件检测
     if Costs.HasCollect and Costs.MaxCollect and Costs.HasCollect >= Costs.MaxCollect then
         --超过消耗数量则不允购买
         UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
         return
     end
+    local GoldBox = DataCenter.GetNumber("GoldBox")
+    local SilverBox = DataCenter.GetNumber("SilverBox")
+    local Diamond = DataCenter.GetNumber("Diamond")
     local Success = false
     if Costs.GoldBox then
-        if BaseData.GoldBox >= Costs.GoldBox then
+        if GoldBox >= Costs.GoldBox then
             --消耗金宝箱
-            BaseData.GoldBox = BaseData.GoldBox - Costs.GoldBox
+            DataCenter.SetNumber("GoldBox", GoldBox - Costs.GoldBox)
             Success = true
-        elseif Costs.Diamond and BaseData.Diamond >= Costs.Diamond then
+        elseif Costs.Diamond and Diamond >= Costs.Diamond then
             --消砖石
-            BaseData.Diamond = BaseData.Diamond - Costs.Diamond
+            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
             Success = true
         else
             --在此弹出看广告弹窗
@@ -309,13 +309,13 @@ function StoreModule:BuyGood(ShopInfo)
             self:OpenBox(200003)
         end
     elseif Costs.SilverBox then
-        if BaseData.SilverBox >= Costs.SilverBox then
+        if SilverBox >= Costs.SilverBox then
             --消耗银宝箱
-            BaseData.SilverBox = BaseData.SilverBox - Costs.SilverBox
+            DataCenter.SetNumber("SilverBox", SilverBox - Costs.SilverBox)
             Success = true
-        elseif Costs.Diamond and BaseData.Diamond >= Costs.Diamond then
+        elseif Costs.Diamond and Diamond >= Costs.Diamond then
             --消砖石
-            BaseData.Diamond = BaseData.Diamond - Costs.Diamond
+            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
             Success = true
         else
             --在此弹出看广告弹窗
@@ -326,9 +326,9 @@ function StoreModule:BuyGood(ShopInfo)
         end
     elseif Costs.Diamond then
         --消耗砖石
-        if BaseData.Diamond >= Costs.Diamond then
+        if Diamond >= Costs.Diamond then
             --直接消耗
-            BaseData.Diamond = BaseData.Diamond - Costs.Diamond
+            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
             Success = true
             --获得物品
             self:ShowGainView(Costs, Goods)
@@ -344,9 +344,9 @@ function StoreModule:BuyGood(ShopInfo)
     elseif Costs.AdTag then
         --观看广告
         self:SeeAd(Costs.AdTag, Goods)
-    else
+    --else
         --不可购买
-        UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
+        --UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
     end
 
     if Success then
@@ -383,7 +383,7 @@ function StoreModule:ShowGainView(Costs, Goods)
 
     if Goods.Equipments then
         --获取装备
-        local AllEquipment = self.PlayerData.AllEquipment
+        local AllEquipment = DataCenter.GetTable("AllEquipment")
         for _, Equipment in pairs(Goods.Equipments) do
             local TargetEquipment = AllEquipment[Equipment.ID]
             --累加碎片
@@ -400,8 +400,8 @@ function StoreModule:ShowGainView(Costs, Goods)
         System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
     elseif Goods.Coin then
         --获得金钱，显示金钱
-        local BaseData = self.PlayerData.BaseData
-        BaseData.Coin = BaseData.Coin + Goods.Coin
+        local Coin = DataCenter.GetNumber("Coin")
+        DataCenter.SetNumber("Coin", Coin + Goods.Coin)
 
         --显示部分
         GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 4)
@@ -411,8 +411,8 @@ function StoreModule:ShowGainView(Costs, Goods)
         end
     elseif Goods.Diamond then
         --获得砖石，显示砖石
-        local BaseData = self.PlayerData.BaseData
-        BaseData.Diamond = BaseData.Diamond + Goods.Diamond
+        local Diamond = DataCenter.GetNumber("Diamond")
+        DataCenter.SetNumber("Diamond", Diamond + Goods.Diamond)
 
         --显示部分
         GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 6)
@@ -499,7 +499,7 @@ function StoreModule:OpenBox(BoxID)
     for _, Item in ipairs(ThreeItem.ItemGroup) do
         UI:SetVisible({Item.Icon, Item.Background}, false)
     end
-    local BoxRewards = _GAME.GameUtils.OpenBoxReward(BoxID)
+    local BoxRewards = GameUtils.OpenBoxReward(BoxID)
     UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
 
     UGCS.Framework.Executor.Delay(2.3, function ()
@@ -530,7 +530,7 @@ function StoreModule:OpenBox(BoxID)
     --注册领取事件
     UI:RegisterClicked(ThreeItem.Button.ID, function ()
         --获取装备
-        local AllEquipment = self.PlayerData.AllEquipment
+        local AllEquipment = DataCenter.GetTable("AllEquipment")
         for _, EquipmentID in pairs(BoxRewards) do
             local TargetEquipment = AllEquipment[EquipmentID]
             if TargetEquipment.Unlock then

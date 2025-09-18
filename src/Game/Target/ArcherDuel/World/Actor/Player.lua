@@ -1,5 +1,7 @@
 --玩家角色
 local Player = UGCS.RTTI.Class("Player", UGCS.Framework.Actor)
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
 --移动状态
 local EMovement = {
@@ -301,7 +303,6 @@ function Player:SetFakeCharacterRotation(Rotation)
     FakeCharacter:SetRotation(self.UID, Rotation)
 end
 
-
 -- 获取玩家装备数据
 function Player:SetPlayerHP()
     local equipData = self:GetEquipData()
@@ -331,10 +332,11 @@ function Player:GetPlayerHPRate()
     return 0
 end
 
-function Player:GetDefaultData(PlayerID, KeyStr, DefaultValue)
-    local data = Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, KeyStr)
+function Player:GetDefaultData(KeyStr, DefaultValue)
+    local data = DataCenter.GetNumber(KeyStr, true)
     if not data or data == 0 then
         data = DefaultValue
+        DataCenter.SetNumber(KeyStr, data)
     end
     return data
 end
@@ -342,16 +344,15 @@ end
 -- 获取玩家装备数据
 function Player:GetEquipData(ForceUpdate)
     if ForceUpdate or not self.EquipData then
-        local PlayerID = Character:GetLocalPlayerId()
-        local Part_Num = self:GetDefaultData(PlayerID, "Equipped_Character_ID", 1)
-        local Bottoms_Num = self:GetDefaultData(PlayerID, "Equipped_Bottoms_ID", 38)
-        local Cloth_Num = self:GetDefaultData(PlayerID, "Equipped_Top_ID", 15)
-        local Bow_Lv = self:GetDefaultData(PlayerID, "Equipped_Bow_Lv", 1)
-        local Spear_Lv = self:GetDefaultData(PlayerID, "Equipped_Spear_Lv", 1)
-        local Axe_Lv = self:GetDefaultData(PlayerID, "Equipped_Axe_Lv", 1)
-        local Part_Lv = self:GetDefaultData(PlayerID, "Equipped_Part_Lv", 1)
-        local Bottoms_Lv = self:GetDefaultData(PlayerID, "Equipped_Bottoms_Lv", 1)
-        local Cloth_Lv = self:GetDefaultData(PlayerID, "Equipped_Top_Lv", 1)
+        local Part_Num = self:GetDefaultData("Equipped_Character_ID", 1)
+        local Bottoms_Num = self:GetDefaultData("Equipped_Bottoms_ID", 38)
+        local Cloth_Num = self:GetDefaultData("Equipped_Top_ID", 15)
+        local Bow_Lv = self:GetDefaultData("Equipped_Bow_Lv", 1)
+        local Spear_Lv = self:GetDefaultData("Equipped_Spear_Lv", 1)
+        local Axe_Lv = self:GetDefaultData("Equipped_Axe_Lv", 1)
+        local Part_Lv = self:GetDefaultData("Equipped_Part_Lv", 1)
+        local Bottoms_Lv = self:GetDefaultData("Equipped_Bottoms_Lv", 1)
+        local Cloth_Lv = self:GetDefaultData("Equipped_Top_Lv", 1)
 
         local Weapon_Lv
         -- todo self.WeaponType is nil
@@ -682,26 +683,21 @@ function Player:PerformFallback()
     local ChestPosition = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.ChestBone)
     local TargetRotation = Engine:Rotator()
     if FacePosition and ChestPosition then
-        local BodyForword = ChestPosition - FacePosition
+        local BodyForword = FacePosition - ChestPosition -- 倒地时的方向
         BodyForword.Z = 0
-        if math.abs(self.Transform.Rotation.Z) > 90 then
-            BodyForword = -BodyForword
-        end
+        -- if math.abs(self.Transform.Rotation.Z) > 90 then
+        --     BodyForword = -BodyForword
+        -- end
         Log:PrintLog("TXPerform(BodyRotation, BodyForword)", BodyForword)
         local BodyRotation = UMath:ForwardToRotator(BodyForword)
         Log:PrintLog("TXPerform(BodyRotation, 1)", BodyRotation)
-        BodyRotation = BodyRotation - self:GetRotation()
-        if FaceRotation.X <= 0 then
+        if FaceRotation.X > 0 then -- 正面朝上，则起身之后，面朝方向为倒下方向的反方向
             Log:PrintLog("TXPerform(BodyRotation, 2)", BodyRotation)
             BodyRotation.Z = BodyRotation.Z + 180
         end
 
-        if BodyRotation.Z - self.Transform.Rotation.Z > 180 then
-            BodyRotation.Z = BodyRotation.Z -360
-        elseif BodyRotation.Z - self.Transform.Rotation.Z < -180 then
-            BodyRotation.Z = BodyRotation.Z +360
-        end
-        Log:PrintLog("TXPerform(BodyRotation, 3)", BodyRotation)
+        -- BodyRotation = BodyRotation - self:GetRotation()
+        -- Log:PrintLog("TXPerform(BodyRotation, 3)", BodyRotation)
         self:SetFakeCharacterRotation(BodyRotation)
         TargetRotation = BodyRotation
     end
@@ -739,8 +735,7 @@ function Player:PerformFallback()
 end
 
 --- 起身表演
----@param TargetRotation 目标旋转
-function Player:PerformStandup(TargetRotation)
+function Player:PerformStandup(StartRotation)
     --站起来后关闭物理模拟
     --FakeCharacter:EnableSimulatePhysics(self.UID, false)
 
@@ -765,8 +760,15 @@ function Player:PerformStandup(TargetRotation)
             --瞬時旋转
             self:PerformHitOver()
         else
+            if math.abs(Rotation.Z - StartRotation.Z) > 180 then
+                if Rotation.Z > 0 then
+                    StartRotation.Z = StartRotation.Z + 360
+                else
+                    StartRotation.Z = StartRotation.Z - 360
+                end
+            end
             self.StandupTimer2 = UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
-                local BlendRotation = Rotation * Progress + TargetRotation * (1 - Progress)
+                local BlendRotation = Rotation * Progress + StartRotation * (1 - Progress)
                 self:SetFakeCharacterRotation(BlendRotation)
             end, function()
                 self:PerformHitOver()

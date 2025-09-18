@@ -8,6 +8,9 @@ local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 local OpenBoxConfig = UGCS.Target.ArcherDuel.Config.OpenBoxConfig
 --商品配置
 local GoodsConfig = UGCS.Target.ArcherDuel.Config.GoodsConfig
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --缺省基础数值
 local DefaultBaseData =
@@ -91,7 +94,7 @@ function LobbyModule:Update(DeltaTime)
     local leftStr = string.format("%02d时%02d分", leftHour, leftMin)
 
     -- 当前星期几（假设周一=1, 周日=7）
-    local wday = _GAME.GameUtils.GetWeekDay()
+    local wday = GameUtils.GetWeekDay()
 
     -- 计算距离本周剩余秒数
     -- 一周剩余天数 = 7 - 当前周几
@@ -105,7 +108,7 @@ function LobbyModule:Update(DeltaTime)
 
     local weekLeftStr = string.format("%d天 %02d时", weekLeftDays, weekLeftHours)
 
-    Log:PrintDebug("当前时间:", nowStr, "距今日剩余:", leftStr, "距离本周剩余:", weekLeftStr)
+    print("当前时间:", nowStr, "距今日剩余:", leftStr, "距离本周剩余:", weekLeftStr)
 
     UI:SetText({UIConfig.TaskView.TaskProcesView.Time}, "剩余时间：" .. leftStr)
     UI:SetText({UIConfig.SevenDays.Time, UIConfig.TournamentView.World.CountDown, UIConfig.TournamentView.Gold.CountDown, UIConfig.TournamentView.Diamond.CountDown}, weekLeftStr)
@@ -190,50 +193,25 @@ end
 
 --- 加载玩家数据
 function LobbyModule:LoadData()
-    --1、玩家基础数据
-    self.PlayerData = { }
-    local BaseData = {}
     --加载基础数据
     for ArchiveKey, ArchiveValue in pairs(DefaultBaseData) do
-        local Data
-        if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey) then
-            Data = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey)
-        else
-            Data = ArchiveValue
+        if not DataCenter.GetNumber(ArchiveKey, true) then
+            DataCenter.SetNumber(ArchiveKey, ArchiveValue)
         end
-
-        --写入数据
-        BaseData[ArchiveKey] = Data
     end
-    --测试【砖石，用来购买商品】
-    --BaseData.Coin = 555555
-    self.PlayerData.BaseData = BaseData
 
     --2、装备数据
     --2.1、初始化装备
-    local AllEquipment
-    --Log:PrintLog("LoadData", self.PlayerID)
-    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table") then
-        --这里读取玩家的装备 --并进行排序
-        local All_Equipment_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table")
-        Log:PrintLog("LoadData", All_Equipment_Table)
-        --文字转为组
-        AllEquipment = MiscService:JsonStr2Table(All_Equipment_Table)
-    else
-        --没有则初始化
-        AllEquipment = self:DefaultEquipmentData()
+    local AllEquipment = DataCenter.GetTable("AllEquipment", true)
+    if not AllEquipment then
+        DataCenter.SetTable("AllEquipment", self:DefaultEquipmentData())
     end
-    self.PlayerData.AllEquipment = AllEquipment
     self:RefreshEquipmentData()
 
     --3、商店数据
-    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Shops_Table") then
-        --这里读取玩家的装备 --并进行排序
-        local All_Shops_Table = Archive:GetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Shops_Table")
-        --文字转为组
-        self.PlayerData.AllShops = MiscService:JsonStr2Table(All_Shops_Table)
-    else
-        self.PlayerData.AllShops = self:DefaultShopData()
+    local AllShops = DataCenter.GetTable("AllShops", true)
+    if not AllShops then
+        DataCenter.SetTable("AllShops", self:DefaultShopData())
         --刷新限定奖池
         self:RefreshLimitItem()
         self:RefreshDailyItem()
@@ -243,13 +221,12 @@ function LobbyModule:LoadData()
     local nowStr = MiscService:GetServerTimeToTime()
     local nowTs = MiscService:DateYMDHMSToTime(nowStr)
 
-    local lastLoginTime = self.PlayerData.BaseData.Player_LastLoginTime_Num
+    local lastLoginTime = DataCenter.GetNumber("Player_LastLoginTime_Num")
     if lastLoginTime == nil or lastLoginTime == 0 or lastLoginTime > nowTs then
         lastLoginTime = nowTs - (7 * 24 * 60 * 60)
     end
 
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    if _GAME.GameUtils.isCrossDay(lastLoginTime) then
+    if GameUtils.isCrossDay(lastLoginTime) then
         --跨天登录了
         Log:PrintLog("跨天登录了")
         self:RefreshDailyItem()
@@ -257,15 +234,14 @@ function LobbyModule:LoadData()
 
         self:RuntimeDailyRefresh()
     end
-    if _GAME.GameUtils.isCrossWeek(lastLoginTime) then
+    if GameUtils.isCrossWeek(lastLoginTime) then
         --跨周登录了
         Log:PrintLog("跨周登录了")
         self:RefreshLimitItem()
 
         self:RuntimeWeeklyRefresh()
     end
-
-    self.PlayerData.BaseData.Player_LastLoginTime_Num = nowTs
+    DataCenter.SetNumber("Player_LastLoginTime_Num", nowTs)
 end
 
 --- 角色站街，装备穿戴
@@ -286,7 +262,7 @@ end
 
 --- 刷新外观
 function LobbyModule:RefreshAvatar()
-    local BodyEquipment = self.PlayerData.BodyEquipment
+    local BodyEquipment = DataCenter.Get("BodyEquipment")
     if BodyEquipment then
         local BodyIds = {}
         for _, Equipment in pairs(BodyEquipment) do
@@ -304,23 +280,7 @@ end
 
 --- 保存玩家数据
 function LobbyModule:SaveData()
-    --1、基础数据
-    local BaseData = self.PlayerData.BaseData
-    for ArchiveKey, _ in pairs(BaseData) do
-        local Data = BaseData[ArchiveKey]
-        Archive:SetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey, Data)
-    end
 
-    --2、装备数据
-    local AllEquipment = self.PlayerData.AllEquipment
-    local All_Equipment_Table = MiscService:Table2JsonStr(AllEquipment)
-    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table", All_Equipment_Table)
-    --Log:PrintLog("SaveData", self.PlayerID, All_Equipment_Table)
-
-    --3、商店数据
-    local AllShops = self.PlayerData.AllShops
-    local All_Goods_Table = MiscService:Table2JsonStr(AllShops)
-    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Goods_Table", All_Goods_Table)
 end
 
 --- 初始化视图
@@ -390,7 +350,7 @@ function LobbyModule:OnSwitchView(ViewName)
         TargetModule = UGCS.Target.ArcherDuel.Modules.TournamentModule
     end
     if TargetModule then
-        TargetModule:Open(self.PlayerData)
+        TargetModule:Open()
         self.CurrentModule = TargetModule
     end
 end
@@ -446,8 +406,7 @@ end
 
 --- 刷新装备
 function LobbyModule:RefreshEquipmentData()
-    Log:PrintLog("RefreshEquipmentData")
-    local AllEquipment = self.PlayerData.AllEquipment
+    local AllEquipment = DataCenter.GetTable("AllEquipment")
     --2.2、装备分类
     --按类型分组且品质降序
     local GroupByCategory = {}
@@ -508,12 +467,15 @@ function LobbyModule:RefreshEquipmentData()
             return LHSA.Grade < RHSA.Grade
         end)
     end
-    self.PlayerData.GroupByCategory = GroupByCategory
-    self.PlayerData.GroupByGrade = GroupByGrade
-    self.PlayerData.BodyEquipment = BodyEquipment
+    DataCenter.Put("GroupByCategory", GroupByCategory)
+    DataCenter.Put("GroupByGrade", GroupByGrade)
+    DataCenter.Put("BodyEquipment", BodyEquipment)
     --统计已穿戴装备的ID和等级
     --重新刷新外观
     self:RefreshAvatar()
+
+    --存档
+    DataCenter.SetTable("AllEquipment", AllEquipment)
 end
 
 --- 初始化一套缺省的商店信息【这里需要设计商品配置，包含商品类型、消耗方式信息等】
@@ -696,7 +658,8 @@ function LobbyModule:RefreshLimitItem()
     --第几周
     math.randomseed(TimerManager:GetClock())
     local WeekIndex = math.random(1, 60)
-    local AllLimitItem = self.PlayerData.AllShops.LimitItem
+    local AllShops = DataCenter.GetTable("AllShops")
+    local AllLimitItem = AllShops.LimitItem
     for _, LimitItem in pairs(AllLimitItem) do
         local BoxEquipmentIdsSet
         if LimitItem.Costs[1].GoldBox then
@@ -721,7 +684,8 @@ end
 
 --- 刷新每日限购【一天】
 function LobbyModule:RefreshDailyItem()
-    local AllDailyItem = self.PlayerData.AllShops.DailyItem
+    local AllShops = DataCenter.GetTable("AllShops")
+    local AllDailyItem = AllShops.DailyItem
     --概率表
     local GradeProbability = {}
     local Weight = 0
@@ -750,7 +714,7 @@ function LobbyModule:RefreshDailyItem()
         --根据权重随机一个品质
         local TargetGoodConfig = RandomGoodConfig()
         --编组
-        local GroupByGrade = self.PlayerData.GroupByGrade
+        local GroupByGrade = DataCenter.Get("GroupByGrade")
         local EquipmentGroup = GroupByGrade[TargetGoodConfig.Grade]
         local EquipmentID = EquipmentGroup[math.random(1, #EquipmentGroup)].ID
         DailyItem.Costs[1].MaxCollect = TargetGoodConfig.Times
@@ -764,9 +728,17 @@ end
 
 --- 刷新免费砖石【一天】
 function LobbyModule:RefreshDiamondItem()
-    local AllDiamondItem = self.PlayerData.AllShops.DiamondItem
+    local AllShops = DataCenter.GetTable("AllShops")
+    local AllDiamondItem = AllShops.DiamondItem
     AllDiamondItem[1].Costs[1].MaxCollect = 5
     AllDiamondItem[1].Costs[1].HasCollect = 0
+end
+
+--- 刷新商店
+function LobbyModule:RefreshStoreData()
+    --存档
+    local AllShops = DataCenter.GetTable("AllShops")
+    DataCenter.SetTable("AllShops", AllShops)
 end
 
 --- 刷新通用资源栏
@@ -774,17 +746,15 @@ function LobbyModule:RefreshGeneralResourceBar()
     local MainView = UIConfig.MainView
     local GeneralResourceBar = MainView and MainView.GeneralResourceBar
     if GeneralResourceBar then
-        --玩家基础数据
-        local BaseData = self.PlayerData.BaseData
         --玩家图标
         --目前API侧无法读取玩家图标，暂时使用这个
         --获取头像
         UI:SetImage({GeneralResourceBar.PlayerIcon}, Chat:GetCustomHeadIcon(self.PlayerID))
         --GameUtils.SetImageWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
-        UI:SetText({GeneralResourceBar.Rank.Label}, tostring(BaseData.Rank))
-        UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(BaseData.Coin))
-        UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))
-        UI:SetText({GeneralResourceBar.Securities.Label}, tostring(BaseData.Player_BattlePoints_Num))
+        UI:SetText({GeneralResourceBar.Rank.Label}, tostring(DataCenter.GetNumber("Rank")))
+        UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(DataCenter.GetNumber("Coin")))
+        UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond")))
+        UI:SetText({GeneralResourceBar.Securities.Label}, tostring(DataCenter.GetNumber("Player_BattlePoints_Num")))
     end
 end
 
@@ -793,61 +763,58 @@ function LobbyModule:RefreshStoreResourceBar()
     local MainView = UIConfig.MainView
     local StoreResourceBar = MainView and MainView.StoreResourceBar
     if StoreResourceBar then
-        local BaseData = self.PlayerData.BaseData
-        UI:SetText({StoreResourceBar.GoldBox.Label}, tostring(BaseData.GoldBox))
-        UI:SetText({StoreResourceBar.SilverBox.Label}, tostring(BaseData.SilverBox))
-        UI:SetText({StoreResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))
+        UI:SetText({StoreResourceBar.GoldBox.Label}, tostring(DataCenter.GetNumber("GoldBox")))
+        UI:SetText({StoreResourceBar.SilverBox.Label}, tostring(DataCenter.GetNumber("SilverBox")))
+        UI:SetText({StoreResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond")))
     end
 end
 
 --- 游玩跨天刷新逻辑
 function LobbyModule:RuntimeDailyRefresh()
-    self.PlayerData.BaseData.Player_TaskDailyExp_Num = 0
-    self.PlayerData.BaseData.Player_CollectTaskDaily_Num = 0
+    DataCenter.SetNumber("Player_TaskDailyExp_Num", 0)
+    DataCenter.SetNumber("Player_CollectTaskDaily_Num", 0)
 
-    _GAME.GameUtils.SetGoldBattleCount(3)
+    GameUtils.SetGoldBattleCount(3)
 
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    if _GAME.GameUtils.IsReachDiamondRank(score) then
-        _GAME.GameUtils.AddPlayerReward(100003, 2)
+    local score = GameUtils.GetPlayerRankScore()
+    if GameUtils.IsReachDiamondRank(score) then
+        GameUtils.AddPlayerReward(100003, 2)
     end
 end
 
 --- 游玩跨周刷新逻辑
 function LobbyModule:RuntimeWeeklyRefresh()
-    local score = _GAME.GameUtils.GetPlayerRankScore()
+    local score = GameUtils.GetPlayerRankScore()
     --跨周登录了，重置每周任务经验
-    self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = 0
-    self.PlayerData.BaseData.Player_CollectTaskWeekly_Num = 0
-    local level = _GAME.GameUtils.GetRankLevelByScore(score)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 0)
+    DataCenter.SetNumber("Player_TaskWeeklyExp_Num", 0)
+    DataCenter.SetNumber("Player_CollectTaskWeekly_Num", 0)
+    local level = GameUtils.GetRankLevelByScore(score)
+    DataCenter.SetNumber("ReachDiamondRank", 0)
 
     --突破段位可领取段位奖励
     local RankBoxReward_Table = {}
-    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+    DataCenter.SetTable("RankBoxReward_Table", RankBoxReward_Table)
 
     --已领取的段位奖励
     local ReceiveRankBoxReward_Table = {}
-    local ReceiveRankBoxReward_Table_Str = MiscService:Table2JsonStr(ReceiveRankBoxReward_Table)
-    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table", ReceiveRankBoxReward_Table_Str)
+    DataCenter.SetTable("ReceiveRankBoxReward_Table", ReceiveRankBoxReward_Table)
 
     --段位奖励发放
     local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
     if RewardConfig and RewardConfig.Rank_Rewards[level.base_score] then
         local Reward = RewardConfig.Rank_Rewards[level.base_score]
         for k, v in pairs(Reward) do
-            _GAME.GameUtils.AddPlayerReward(v.id, v.count)
+            GameUtils.AddPlayerReward(v.id, v.count)
         end
     end
 
     -- 掉段逻辑
     if level and level.titleLv <= 3 then
-        _GAME.GameUtils.SetPlayerRankScore(0)
+        GameUtils.SetPlayerRankScore(0)
     else
         local resettitleLv = level.titleLv - 2
-        local titleLvLevel = _GAME.GameUtils.GetRankLevelByTitleLv(resettitleLv)
-        _GAME.GameUtils.SetPlayerRankScore(titleLvLevel.base_score)
+        local titleLvLevel = GameUtils.GetRankLevelByTitleLv(resettitleLv)
+        GameUtils.SetPlayerRankScore(titleLvLevel.base_score)
     end
 
     local Rank_DiamondScore_Num = 90
@@ -877,7 +844,7 @@ function LobbyModule:RuntimeWeeklyRefresh()
             local DiamondRewards = RewardConfig.Diamond_Rewards[RankNum]
             if DiamondRewards then
                 for _, v in pairs(DiamondRewards) do
-                    _GAME.GameUtils.AddPlayerReward(v.id, v.count)
+                    GameUtils.AddPlayerReward(v.id, v.count)
                 end
             end
         end

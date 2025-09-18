@@ -1,6 +1,9 @@
 ﻿local MatchConfig = require("Match.MatchConfig")
 local GoldRewardConfig = require("Match.GoldRewardConfig")
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 local GameMatch = {}
 
@@ -51,19 +54,19 @@ function GameMatch:Init()
 
     --读取保存当前玩家能够使用武器
     self.localWeapons = {}
-    local Equipped_Bow_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Bow_ID")
+    local Equipped_Bow_ID = DataCenter.GetNumber("Equipped_Bow_ID", true)
     if Equipped_Bow_ID and Equipped_Bow_ID > 0 then
         self.localWeapons["Bow"] = Equipped_Bow_ID -- 弓
     else
         self.localWeapons["Bow"] = 61 -- 试玩兜底弓
     end
-    local Equipped_Axe_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Axe_ID")
+    local Equipped_Axe_ID = DataCenter.GetNumber("Equipped_Axe_ID", true)
     if Equipped_Axe_ID and Equipped_Axe_ID > 0 then
         self.localWeapons["Axe"] = Equipped_Axe_ID -- 斧
     else
         self.localWeapons["Axe"] = 77 -- 试玩兜底斧
     end
-    local Equipped_Spear_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Spear_ID")
+    local Equipped_Spear_ID = DataCenter.GetNumber("Equipped_Spear_ID", true)
     if Equipped_Spear_ID and Equipped_Spear_ID > 0 then
         self.localWeapons["Spear"] = Equipped_Spear_ID -- 矛
     else
@@ -72,19 +75,19 @@ function GameMatch:Init()
 
     -- 当前玩家穿戴装备
     self.localEquipments = {}
-    local Equipped_Character_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Character_ID")
+    local Equipped_Character_ID = DataCenter.GetNumber("Equipped_Character_ID", true)
     if Equipped_Character_ID and Equipped_Character_ID > 0 then
         self.localEquipments["Part"] = Equipped_Character_ID
     else
         self.localEquipments["Part"] = 1 -- 试玩兜底
     end
-    local Equipped_Bottoms_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Bottoms_ID")
+    local Equipped_Bottoms_ID = DataCenter.GetNumber("Equipped_Bottoms_ID", true)
     if Equipped_Bottoms_ID and Equipped_Bottoms_ID > 0 then
         self.localEquipments["Bottoms"] = Equipped_Bottoms_ID
     else
         self.localEquipments["Bottoms"] = 50 -- 试玩兜底
     end
-    local Equipped_Top_ID = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.Number, "Equipped_Top_ID")
+    local Equipped_Top_ID = DataCenter.GetNumber("Equipped_Top_ID", true)
     if Equipped_Top_ID and Equipped_Top_ID > 0 then
         self.localEquipments["Cloth"] = Equipped_Top_ID
     else
@@ -104,9 +107,9 @@ function GameMatch:Init()
 
     if self.battleType == BattleType.Gold then
         self:InitGoldMatch()
-        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GoldBattle) -- 参加一次黄金赛
+        System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.GoldBattle) -- 参加一次黄金赛
     elseif self.battleType == BattleType.Diamond then
-        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.DiamondBattle) -- 参加一次钻石赛
+        System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.DiamondBattle) -- 参加一次钻石赛
     end
 
     self:BindEvents()
@@ -151,6 +154,10 @@ local function GetCurrencyIconList()
     return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Currency", CustomProperty.PROPERTY_TYPE.Image)
 end
 
+local function GetEquipmentIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "EquipmentImage", CustomProperty.PROPERTY_TYPE.Image)
+end
+
 -- 绑定事件
 function GameMatch:BindEvents()
     -- 收到开始匹配的事件
@@ -186,7 +193,7 @@ function GameMatch:BindEvents()
 
     -- 胜利界面点击再来一次
     UI:RegisterPressed(108060,function ()
-        if _GAME.GameUtils.CanEnterRankBattle() then
+        if GameUtils.CanEnterRankBattle() then
             UI:ResumeUIAnimation(111057,1)
             UI:SetVisible({108052,108051,108056},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
@@ -208,6 +215,7 @@ function GameMatch:BindEvents()
             local ElementId = System:GetScriptParentID()
             local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
             local equipIconUIs = {108054, 108055}
+            local equipGradeUIs = {111058, 111059}
             for i, v in ipairs(self.VictoryRewards) do
                 local EquipmentData = EquipmentConfig[v]
                 local AssetName = EquipmentData.AssetName or "weapon_icon"
@@ -215,11 +223,13 @@ function GameMatch:BindEvents()
                 local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
                 local IconId = IconIdArray[AssetIndex]
                 UI:SetImage({equipIconUIs[i]}, IconId, true)
+                local EquipmentIconList = GetEquipmentIconList()
+                UI:SetImage({equipGradeUIs[i]}, EquipmentIconList[EquipmentData.Attributes.Grade], true)
             end
             self.VictoryRewards = nil
         end
 
-        UI:SetVisible({108298},false)
+        UI:SetVisible({108298, 111910},false)
         UI:SetVisible({108048,108056},true)
         TimerManager:AddTimer(2.3,function ()
             UI:SetVisible({111057},true)
@@ -243,9 +253,31 @@ function GameMatch:BindEvents()
         end)
     end)
 
+    local AdTag = "ad_battle_again"
+    --注册广告结束事件
+    System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
+        local LocalPlayerId = Character:GetLocalPlayerId()
+        if AdTag == mark and LocalPlayerId == userId then
+            -- 将消耗的金币和积分返还
+            local score = GameUtils.GetPlayerRankScore()
+            score = score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
+            GameUtils.SetPlayerRankScore(score)
+            local curLevel = GameUtils.GetRankLevelByScore(score)
+            if curLevel then
+                local coin = GameUtils.GetPlayerCoin()
+                GameUtils.SetPlayerCoin(coin + curLevel.cost)
+            end
+
+            if GameUtils.CanEnterRankBattle() then
+                UI:SetVisible(MatchConfig.Fail_UI, false)
+                System:FireGameEvent(_GAME.Events.StartMatch)
+            end
+        end
+    end)
+
     -- 失败界面点击再来一次
     UI:RegisterClicked(106511, function()
-        if _GAME.GameUtils.CanEnterRankBattle() then
+        if GameUtils.CanEnterRankBattle() then
             UI:SetVisible(MatchConfig.Fail_UI, false)
             System:FireGameEvent(_GAME.Events.StartMatch)
         end
@@ -360,7 +392,7 @@ function GameMatch:StartMatch()
     -- 随机装备
     BattleRivalInfo.equipments = self:GetRandomEquipments()
     -- 积分
-    local curScore = _GAME.GameUtils.GetPlayerRankScore()
+    local curScore = GameUtils.GetPlayerRankScore()
     BattleRivalInfo.score = curScore + math.random(0, 200)
     -- 头像
     local headIcons = GetHeadIconList()
@@ -381,11 +413,11 @@ function GameMatch:StartMatch()
     self:MathCountDown(MatchInfo)
 
     -- 扣除排位赛金币
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    local score = GameUtils.GetPlayerRankScore()
+    local curLevel = GameUtils.GetRankLevelByScore(score)
     if curLevel then
-        local coin = _GAME.GameUtils.GetPlayerCoin()
-        _GAME.GameUtils.SetPlayerCoin(coin - curLevel.cost)
+        local coin = GameUtils.GetPlayerCoin()
+        GameUtils.SetPlayerCoin(coin - curLevel.cost)
     end
 end
 
@@ -405,13 +437,14 @@ function GameMatch:MathCountDown(MatchInfo)
         local BodyIconList = GetBodyIconList()
         local ClothIconList = GetClothIconList()
         local BottomsIconList = GetBottomsIconList()
+        local EquipmentIconList = GetEquipmentIconList()
         local WeaponConfig = UGCS.Target.ArcherDuel.Config.WeaponConfig
         local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
         -- 自己对战信息
         UI:SetImage({105676}, Chat:GetCustomHeadIcon(self.localPlayerId))
         UI:SetText({105680}, Chat:GetCustomName(self.localPlayerId))
-        local curScore = _GAME.GameUtils.GetPlayerRankScore()
-        local curLevel = _GAME.GameUtils.GetRankLevelByScore(curScore)
+        local curScore = GameUtils.GetPlayerRankScore()
+        local curLevel = GameUtils.GetRankLevelByScore(curScore)
         if curLevel then
             if curLevel.icon and RankIconList[curLevel.icon] then
                 UI:SetImage({105682}, RankIconList[curLevel.icon], true)
@@ -423,49 +456,66 @@ function GameMatch:MathCountDown(MatchInfo)
             UI:SetText({105702}, tostring(curLevel.cost * 2)) 
         end
         local weaponIconIndex, bodyIconIndex, clothIconIndex, bottomIconIndex
-        if WeaponConfig[MatchInfo.BattleWeapon.weaponId] then
-            weaponIconIndex = WeaponConfig[MatchInfo.BattleWeapon.weaponId].AssetIndex
+        local weaponGradeIndex, bodyGradeIndex, clothGradeIndex, bottomGradeIndex
+        if EquipmentConfig[MatchInfo.BattleWeapon.weaponId] then
+            weaponIconIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].AssetIndex
+            weaponGradeIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].Attributes.Grade
         end
         if self.localEquipments["Part"] and EquipmentConfig[self.localEquipments["Part"]] then
             bodyIconIndex = EquipmentConfig[self.localEquipments["Part"]].AssetIndex
+            bodyGradeIndex = EquipmentConfig[self.localEquipments["Part"]].Attributes.Grade
         end
         if self.localEquipments["Cloth"] and EquipmentConfig[self.localEquipments["Cloth"]] then
             clothIconIndex = EquipmentConfig[self.localEquipments["Cloth"]].AssetIndex
+            clothGradeIndex = EquipmentConfig[self.localEquipments["Cloth"]].Attributes.Grade
         end
         if self.localEquipments["Bottoms"] and EquipmentConfig[self.localEquipments["Bottoms"]] then
             bottomIconIndex = EquipmentConfig[self.localEquipments["Bottoms"]].AssetIndex
+            bottomGradeIndex = EquipmentConfig[self.localEquipments["Bottoms"]].Attributes.Grade
         end
         UI:SetImage({105686}, WeaponIconList[weaponIconIndex],true) -- 武器
+        UI:SetImage({110914}, EquipmentIconList[weaponGradeIndex],true) -- 武器底图
         UI:SetImage({105687},BodyIconList[bodyIconIndex],true) -- body
+        UI:SetImage({110917}, EquipmentIconList[bodyGradeIndex],true) -- body底图
         UI:SetImage({105688},ClothIconList[clothIconIndex],true) -- cloth
+        UI:SetImage({110915}, EquipmentIconList[clothGradeIndex],true) -- cloth底图
         UI:SetImage({105689},BottomsIconList[bottomIconIndex],true) -- Bottoms
+        UI:SetImage({110916}, EquipmentIconList[bottomGradeIndex],true) -- Bottoms底图
 
         -- 对方信息
         UI:SetImage({105677}, MatchInfo.BattleRivalInfo.headIcon, true)
         UI:SetText({105685}, MatchInfo.BattleRivalInfo.name)
-        curLevel = _GAME.GameUtils.GetRankLevelByScore(MatchInfo.BattleRivalInfo.score)
+        curLevel = GameUtils.GetRankLevelByScore(MatchInfo.BattleRivalInfo.score)
         if curLevel then
             if curLevel.icon and RankIconList[curLevel.icon] then
                 UI:SetImage({105684}, RankIconList[curLevel.icon], true)
             end
             UI:SetText({105683}, curLevel.name)
         end
-        if WeaponConfig[MatchInfo.BattleRivalInfo.weaponId] then
-            weaponIconIndex = WeaponConfig[MatchInfo.BattleRivalInfo.weaponId].AssetIndex
+        if EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId] then
+            weaponIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId].AssetIndex
+            weaponGradeIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].Attributes.Grade
         end
         if MatchInfo.BattleRivalInfo.equipments["Character"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]] then
             bodyIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].AssetIndex
+            bodyGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].Attributes.Grade
         end
         if MatchInfo.BattleRivalInfo.equipments["Top"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]] then
             clothIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]].AssetIndex
+            clothGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]].Attributes.Grade
         end
         if MatchInfo.BattleRivalInfo.equipments["Bottoms"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]] then
             bottomIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]].AssetIndex
+            bottomGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]].Attributes.Grade
         end
         UI:SetImage({105691},WeaponIconList[weaponIconIndex],true) -- 武器
+        UI:SetImage({110909}, EquipmentIconList[weaponGradeIndex],true) -- 武器底图
         UI:SetImage({105694},BodyIconList[bodyIconIndex],true) -- body
+        UI:SetImage({110912}, EquipmentIconList[bodyGradeIndex],true) -- body底图
         UI:SetImage({105692},ClothIconList[clothIconIndex],true) -- cloth
+        UI:SetImage({110910}, EquipmentIconList[clothGradeIndex],true) -- cloth底图
         UI:SetImage({105693},BottomsIconList[bottomIconIndex],true) -- Bottoms
+        UI:SetImage({110911}, EquipmentIconList[bottomGradeIndex],true) -- Bottoms底图
     end)
 
     -- 动画效果
@@ -536,7 +586,7 @@ local function ShowRankProgress(curScore, newScore)
         UI:SetText({108299}, level.name)
     end
 
-    local curLevel, nextLevel = _GAME.GameUtils.GetRankLevelByScore(curScore)
+    local curLevel, nextLevel = GameUtils.GetRankLevelByScore(curScore)
     if curLevel and nextLevel then
         UI:SetVisible({108302},true)
         SetCurRank(curLevel)
@@ -564,7 +614,7 @@ local function ShowRankProgress(curScore, newScore)
                 TimerManager:AddTimer(0.5, function()
                     SetCurRank(curLevel)
                 end)
-                curLevel, nextLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+                curLevel, nextLevel = GameUtils.GetRankLevelByScore(score)
                 if curLevel and nextLevel then
                     maxProgress = nextLevel.base_score - curLevel.base_score
                     UI:SetProgressMaxValue({108302}, maxProgress)
@@ -590,34 +640,31 @@ end
 -- 普通赛胜利
 function GameMatch:OnVictory()
     --加积分
-    local score = _GAME.GameUtils.GetPlayerRankScore()
+    local score = GameUtils.GetPlayerRankScore()
     -- 加金币
-    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    local curLevel = GameUtils.GetRankLevelByScore(score)
     if curLevel then -- 赢得比赛，获取金币数量为当前段位的2倍
         local addCoin = 2*curLevel.cost
-        local coin = _GAME.GameUtils.GetPlayerCoin()
-        _GAME.GameUtils.SetPlayerCoin(coin + addCoin)
-        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GainCoin, addCoin-curLevel.cost)
+        local coin = GameUtils.GetPlayerCoin()
+        GameUtils.SetPlayerCoin(coin + addCoin)
+        System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.GainCoin, addCoin-curLevel.cost)
     end
 
-    local preRank = _GAME.GameUtils.GetRankLevelByScore(score)
+    local preRank = GameUtils.GetRankLevelByScore(score)
     local newScore = score + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
-    local newRank = _GAME.GameUtils.GetRankLevelByScore(newScore)
+    local newRank = GameUtils.GetRankLevelByScore(newScore)
     Log:PrintLog("[GameMatch:OnVictory] Player_BattlePoints_Num" .. newScore)
     if preRank and newRank then
         if preRank.id < newRank.id then
 
             --判断这个段位的宝箱是否领取了
             local isReceive = false
-            if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table") then
-                local ReceiveRankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table")
-                local ReceiveRankBoxReward_Table = MiscService:JsonStr2Table(ReceiveRankBoxReward_Table_Str)
-                if ReceiveRankBoxReward_Table then
-                    for _, v in pairs(ReceiveRankBoxReward_Table) do
-                        if v == newRank.id then
-                            isReceive = true
-                            break
-                        end
+            local ReceiveRankBoxReward_Table = DataCenter.GetTable("ReceiveRankBoxReward_Table", true)
+            if ReceiveRankBoxReward_Table then
+                for _, v in pairs(ReceiveRankBoxReward_Table) do
+                    if v == newRank.id then
+                        isReceive = true
+                        break
                     end
                 end
             end
@@ -625,54 +672,44 @@ function GameMatch:OnVictory()
             --isReceive=true则表示已经领取过宝箱了，不能再重复领取
             if not isReceive then
                 --升阶段了可以领取宝箱了
-                local RankBoxReward_Table
-                if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table") then
-                    local RankBoxReward_Table_Str = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table")
-                    RankBoxReward_Table = MiscService:JsonStr2Table(RankBoxReward_Table_Str)
+                local RankBoxReward_Table = DataCenter.GetTable("RankBoxReward_Table", true)
+                if RankBoxReward_Table then
                     table.insert(RankBoxReward_Table, newRank.id)
-                    RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
                 else
                     RankBoxReward_Table = {newRank.id}
-                    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
                 end
+                DataCenter.SetTable("RankBoxReward_Table", RankBoxReward_Table)
             end
 
             --升到钻石了
-            if _GAME.GameUtils.IsReachDiamondRank(newScore) then
+            if GameUtils.IsReachDiamondRank(newScore) then
                 --判断升钻石的奖励是否已经发放
-                if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank") then
-                    local falg = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank")
+                local falg = DataCenter.GetNumber("ReachDiamondRank", true)
+                if falg then
                     if falg ~= 1 then
-                        _GAME.GameUtils.AddPlayerReward(100003, 2)
-                        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 1)
+                        GameUtils.AddPlayerReward(100003, 2)
+                        DataCenter.SetNumber("ReachDiamondRank", 1)
                     end
                 else
-                    _GAME.GameUtils.AddPlayerReward(100003, 2)
-                    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 1)
+                    GameUtils.AddPlayerReward(100003, 2)
+                    DataCenter.SetNumber("ReachDiamondRank", 1)
                 end
             end
         end
     end
-    _GAME.GameUtils.SetPlayerRankScore(newScore)
+    GameUtils.SetPlayerRankScore(newScore)
 
     UI:SetVisible({108298},true)
     UI:SetText({108301}, "+"..UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore)
     ShowRankProgress(score, newScore)
 
     --发奖励
-    local rewards = _GAME.GameUtils.GetRewardsByWin()
-    local AllEquipment
-    if Archive:HasPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table") then
-        --这里读取玩家的装备 --并进行排序
-        local All_Equipment_Table = Archive:GetPlayerData(self.localPlayerId, Archive.TYPE.String, "All_Equipment_Table")
-        --文字转为组
-        AllEquipment = MiscService:JsonStr2Table(All_Equipment_Table)
-    else
-        --没有则初始化
-        AllEquipment = _GAME.GameUtils.DefaultEquipmentData()
+    local rewards = GameUtils.GetRewardsByWin()
+    local AllEquipment = DataCenter.GetTable("AllEquipment", true)
+    if not AllEquipment then
+        AllEquipment = GameUtils.DefaultEquipmentData()
     end
+
     for _, EquipmentID in pairs(rewards) do
         local TargetEquipment = AllEquipment[EquipmentID]
         if TargetEquipment.Unlock then
@@ -683,8 +720,7 @@ function GameMatch:OnVictory()
             TargetEquipment.Unlock = true
         end
     end
-    local All_Equipment_Table = MiscService:Table2JsonStr(AllEquipment)
-    Archive:SetPlayerData(self.PlayerID, Archive.TYPE.String, "All_Equipment_Table", All_Equipment_Table)
+    DataCenter.SetTable("AllEquipment", AllEquipment)
 
     self.VictoryRewards = rewards
     Log:PrintLog("VictoryRewards, End: ", self.VictoryRewards[1], self.VictoryRewards[2])
@@ -695,10 +731,10 @@ end
 -- 普通赛失败
 function GameMatch:OnFail()
     --减积分
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    local score = GameUtils.GetPlayerRankScore()
+    local curLevel = GameUtils.GetRankLevelByScore(score)
     Log:PrintLog("[GameMatch:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
-    _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
+    GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
 
     UI:SetVisible({106509}, true)
     UI:SetText({109444}, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore.." 积分")
@@ -739,7 +775,7 @@ function GameMatch:InitGoldMatch()
     end
 
     local headIcons = GetHeadIconList()
-    local curScore = _GAME.GameUtils.GetPlayerRankScore()
+    local curScore = GameUtils.GetPlayerRankScore()
     
     table.insert(self.goldWinnerRivalInfo, {isSelf = true})
     -- 取 7 个不重复的整数
@@ -759,9 +795,9 @@ function GameMatch:InitGoldMatch()
     self:UpdateGoldHead()
 
     -- 扣除一次黄金赛奖励
-    local count = _GAME.GameUtils.GetGoldBattleCount()
+    local count = GameUtils.GetGoldBattleCount()
     if count then
-        _GAME.GameUtils.SetGoldBattleCount(count - 1)
+        GameUtils.SetGoldBattleCount(count - 1)
     end
 end
 
@@ -1518,7 +1554,7 @@ end
 function GameMatch:SaveGoldReward(rank)
     local GoldReward = GoldRewardConfig[rank]
     for i, v in pairs(GoldReward) do
-        _GAME.GameUtils.AddPlayerReward(v.id, v.count)
+        GameUtils.AddPlayerReward(v.id, v.count)
     end
 end
 
@@ -1526,14 +1562,14 @@ end
 
 -- 钻石赛胜利
 function GameMatch:OnDiamondVictory()
-    _GAME.GameUtils.ShowGainView({DiamondScore = 16}, function()
+    GameUtils.ShowGainView({DiamondScore = 16}, function()
         System:FireSignEvent("GoHome")
     end)
 end
 
 -- 钻石赛失败
 function GameMatch:OnDiamondFail()
-    _GAME.GameUtils.ShowGainView({DiamondScore = 8}, function()
+    GameUtils.ShowGainView({DiamondScore = 8}, function()
         System:FireSignEvent("GoHome")
     end)
 end
