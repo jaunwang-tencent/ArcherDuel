@@ -403,6 +403,8 @@ local UIConfig = {
                 EquippedButton = 104190,
                 --升级按钮
                 UpgradeButton = 104191,
+                --升级所需价钱
+                UpgradePrice= 104193
             },
             --已装备不可升级
             EquippedAndNotUpgradable = {
@@ -427,6 +429,8 @@ local UIConfig = {
                 EquipableButton = 104185,
                 --升级按钮
                 UpgradeButton = 104186,
+                --升级所需价钱
+                UpgradePrice= 104189
             },
             --可装备已满级
             EquipableAndMaxLevel = {

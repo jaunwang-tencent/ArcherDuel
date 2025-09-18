@@ -55,6 +55,7 @@ function EquipmentDetailModule:Open(Equipment)
             elseif CurrentPiece >= Upgrade.Piece then
                 --已装备可升级
                 UI:SetVisible({DetailView.EquippedAndUpgradable.ID, UpgradableTip.Icon},true)
+                UI:SetText({DetailView.EquippedAndUpgradable.UpgradePrice}, tostring(Upgrade.Coin))
             else
                 --已装备不可升级
                 UI:SetVisible({DetailView.EquippedAndNotUpgradable.ID},true)
@@ -66,6 +67,7 @@ function EquipmentDetailModule:Open(Equipment)
             elseif CurrentPiece >= Upgrade.Piece then
                 --可装备可升级
                 UI:SetVisible({DetailView.EquipableAndUpgradable.ID, UpgradableTip.Icon},true)
+                UI:SetText({DetailView.EquipableAndUpgradable.UpgradePrice}, tostring(Upgrade.Coin))
             else
                 --可装备不可升级
                 UI:SetVisible({DetailView.EquipableAndNotUpgradable.ID},true)
@@ -241,7 +243,7 @@ function EquipmentDetailModule:OnEquip(Equipment)
     self:Close()
     --刷新UI
     local EquipmentModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
-    EquipmentModule:RefreshUI(self.CurrentCategory)
+    EquipmentModule:RefreshUI()
 end
 
 --- 升级
@@ -266,7 +268,7 @@ function EquipmentDetailModule:OnUpgrade(Equipment)
             self:Open(Equipment)
             --刷新UI
             local EquipmentModule = UGCS.Target.ArcherDuel.Modules.EquipmentModule
-            EquipmentModule:RefreshUI(self.CurrentCategory)
+            EquipmentModule:RefreshUI()
 
             --播放升级特效
             local EquipmentView = UIConfig.EquipmentView

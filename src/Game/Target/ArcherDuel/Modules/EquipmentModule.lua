@@ -148,6 +148,9 @@ function EquipmentModule:RefreshListUI(Category)
     local ListView = EquipmentView and EquipmentView.ListView
     local PlayerData = self.PlayerData
 
+    if not Category then
+        Category = self.CurrentCategory
+    end
     --装备列表
     --拿出全部装备
     local EquipmentGroup
