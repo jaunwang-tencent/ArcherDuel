@@ -27,7 +27,7 @@ function DataCenter.GetPlayerID()
     return PlayerID
 end
 
---- 设置基础数据【写入时务必及时存档】
+--- 设置数值数据【写入时务必及时存档】
 ---@param DataName 数据名称
 ---@param DataValue 数据值
 function DataCenter.SetNumber(DataName, DataValue)
@@ -41,7 +41,7 @@ function DataCenter.SetNumber(DataName, DataValue)
     end
 end
 
---- 获取基础数据
+--- 获取数值数据
 ---@param DataName 数据名称
 ---@param SyncData 是否同步数据
 ---@return DataValue 数据值
@@ -52,6 +52,39 @@ function DataCenter.GetNumber(DataName, SyncData)
         local DataValue
         if SyncData and Archive:HasPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.Number, DataName) then
             DataValue = Archive:GetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.Number, DataName)
+            NumberData[DataName] = DataValue
+        else
+            DataValue = NumberData[DataName]
+        end
+        return DataValue
+    end
+end
+
+--- 获取字符串数据
+---@param DataName 数据名称
+---@param DataValue 数据值
+function DataCenter.SetString(DataName, DataValue)
+    --Log:PrintLog("SetString", DataName, DataValue)
+    local NumberData = PlayerData.NumberData
+    if DataName and DataValue and NumberData then
+        if NumberData then
+            NumberData[DataName] = DataValue
+            Archive:SetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName, DataValue)
+        end
+    end
+end
+
+--- 获取字符串数据
+---@param DataName 数据名称
+---@param SyncData 是否同步数据
+---@return DataValue 数据值
+function DataCenter.GetString(DataName, SyncData)
+    --Log:PrintLog("GetString", DataName, SyncData)
+    local NumberData = PlayerData.NumberData
+    if DataName and NumberData then
+        local DataValue
+        if SyncData and Archive:HasPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName) then
+            DataValue = Archive:GetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName)
             NumberData[DataName] = DataValue
         else
             DataValue = NumberData[DataName]
