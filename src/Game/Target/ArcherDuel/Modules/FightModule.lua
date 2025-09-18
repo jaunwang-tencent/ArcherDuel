@@ -411,7 +411,7 @@ function FightModule:OnRank(RankBoxReward_Table)
         UI:SetVisible({Item.Icon, Item.Background, Item.Text}, false)
     end
     local BoxRewards = {GetOneReward(), GetDiamondCount(), GetGoldCount()}
-    print("BoxRewards: " .. BoxRewards[1] .. ", " .. BoxRewards[2] .. ", " .. BoxRewards[3])
+    Log:PrintDebug("BoxRewards: " .. BoxRewards[1] .. ", " .. BoxRewards[2] .. ", " .. BoxRewards[3])
     UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
 
     UGCS.Framework.Executor.Delay(2.3, function ()

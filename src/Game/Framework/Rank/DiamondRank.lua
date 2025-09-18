@@ -178,18 +178,18 @@ function DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
 
     local last_update_ts = DiamondRankManager.last_update_ts
 
-    print("上次更新时间:", MiscService:TimeStampToDateYMDHMS(last_update_ts))
-    print("当前时间:", nowStr)
+    Log:PrintDebug("上次更新时间:", MiscService:TimeStampToDateYMDHMS(last_update_ts))
+    Log:PrintDebug("当前时间:", nowStr)
 
     -- 计算积分起点
     local start_ts = getAccumStartTimestamp(last_update_ts, nowTs)
-    print("积分累计起点:", MiscService:TimeStampToDateYMDHMS(start_ts))
+    Log:PrintDebug("积分累计起点:", MiscService:TimeStampToDateYMDHMS(start_ts))
 
     -- 获取本次待累计积分时间点
     local pending_points = getPendingScoreTimepoints(start_ts, nowTs)
-    print("本次待累计积分时间点数:", #pending_points)
+    Log:PrintDebug("本次待累计积分时间点数:", #pending_points)
     if #pending_points == 0 then
-        print("无新增积分点，结束")
+        Log:PrintDebug("无新增积分点，结束")
         return DiamondRankData
     end
 
@@ -214,19 +214,72 @@ function DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
     return DiamondRankData
 end
 
+function DiamondRankManager.GetLastWeekDiamondRank(PlayerID)
+    local DiamondRank_Table
+    if Archive:HasPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table") then
+        local DiamondRank_Table_Str = Archive:GetPlayerData(PlayerID, Archive.TYPE.String, "DiamondRank_Table")
+        DiamondRank_Table = MiscService:JsonStr2Table(DiamondRank_Table_Str)
+    else
+        DiamondRank_Table = DiamondRankManager.BuildDiamondRank()
+    end
+
+    DiamondRankManager.last_update_ts = Archive:GetPlayerData(PlayerID, Archive.TYPE.Number, "DiamondRank_LastUpdate")
+    if DiamondRankManager.last_update_ts <= 0 then
+        DiamondRankManager.last_update_ts = epochZeroTs
+    end
+
+    return DiamondRank_Table
+end
+
+function DiamondRankManager.GetLastWeekPlayerDataDiamondRank(PlayerID)
+    math.randomseed(TimerManager:GetClock())
+    local DiamondRankData = DiamondRankManager.GetLastWeekDiamondRank(PlayerID)
+
+    local last_update_ts = DiamondRankManager.last_update_ts
+
+    local lastwday = getWeekDay(last_update_ts)
+    local daysToSunday = 7 - lastwday
+    local dayZeroTimestamp = dateStrToZeroTime(timeToDateStr(last_update_ts))
+    local sundayZeroTimestamp = dayZeroTimestamp + daysToSunday * 24 * 3600
+    local weekEndTimestamp = sundayZeroTimestamp + 86399
+
+    Log:PrintDebug("上次更新时间:", MiscService:TimeStampToDateYMDHMS(last_update_ts))
+    Log:PrintDebug("上周最后一天时间:", MiscService:TimeStampToDateYMDHMS(weekEndTimestamp))
+
+    -- 计算积分起点
+    local start_ts = getAccumStartTimestamp(last_update_ts, weekEndTimestamp)
+    Log:PrintDebug("上周积分累计起点:", MiscService:TimeStampToDateYMDHMS(start_ts))
+
+    -- 获取本次待累计积分时间点
+    local pending_points = getPendingScoreTimepoints(start_ts, weekEndTimestamp)
+    Log:PrintDebug("上周待累计积分时间点数:", #pending_points)
+    if #pending_points == 0 then
+        Log:PrintDebug("上周无新增积分点，结束")
+        return DiamondRankData
+    end
+
+    for _, player in ipairs(DiamondRankData) do
+        player.DiamondScore = accumulateScore(pending_points)
+    end
+
+    table.sort(DiamondRankData, function(a,b) return a.DiamondScore > b.DiamondScore end)
+
+    return DiamondRankData
+end
+
 -- 主示范
 function DiamondRankManager.exampleRun(PlayerID)
     -- 初始化模拟排行榜
     local leaderboard = DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
     if leaderboard == nil then
-        print("排行榜为空")
+        Log:PrintDebug("排行榜为空")
         return
     end
 
-    print("积分榜排名(前10):")
+    Log:PrintDebug("积分榜排名(前10):")
     for i=1,10 do
         local p = leaderboard[i]
-        print(string.format("%d. %s 头像:%s 积分:%d", i, p.name, p.headIcon, p.DiamondScore))
+        Log:PrintDebug(string.format("%d. %s 头像:%s 积分:%d", i, p.name, p.headIcon, p.DiamondScore))
     end
 end
 

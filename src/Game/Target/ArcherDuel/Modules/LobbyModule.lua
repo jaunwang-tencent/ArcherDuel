@@ -105,7 +105,7 @@ function LobbyModule:Update(DeltaTime)
 
     local weekLeftStr = string.format("%d天 %02d时", weekLeftDays, weekLeftHours)
 
-    print("当前时间:", nowStr, "距今日剩余:", leftStr, "距离本周剩余:", weekLeftStr)
+    Log:PrintDebug("当前时间:", nowStr, "距今日剩余:", leftStr, "距离本周剩余:", weekLeftStr)
 
     UI:SetText({UIConfig.TaskView.TaskProcesView.Time}, "剩余时间：" .. leftStr)
     UI:SetText({UIConfig.SevenDays.Time, UIConfig.TournamentView.World.CountDown, UIConfig.TournamentView.Gold.CountDown, UIConfig.TournamentView.Diamond.CountDown}, weekLeftStr)
@@ -129,6 +129,7 @@ function LobbyModule:Update(DeltaTime)
         if year ~= self._lastDate.year or month ~= self._lastDate.month or day ~= self._lastDate.day then
             self:RefreshDailyItem()
             self:RefreshDiamondItem()
+            self:RuntimeDailyRefresh()
             self._lastDate = {year=year, month=month, day=day}
         end
     end
@@ -139,6 +140,7 @@ function LobbyModule:Update(DeltaTime)
     else
         if wday < self._lastWeekday then -- 因为周一=1，周日=7，周数回到1即跨周
             self:RefreshLimitItem()
+            self:RuntimeWeeklyRefresh()
             self._lastWeekday = wday
         else
             self._lastWeekday = wday
@@ -253,53 +255,14 @@ function LobbyModule:LoadData()
         self:RefreshDailyItem()
         self:RefreshDiamondItem()
 
-        self.PlayerData.BaseData.Player_TaskDailyExp_Num = 0
-        self.PlayerData.BaseData.Player_CollectTaskDaily_Num = 0
-
-        _GAME.GameUtils.SetGoldBattleCount(3)
-
-        if _GAME.GameUtils.IsReachDiamondRank(score) then
-            _GAME.GameUtils.AddPlayerReward(100003, 2)
-        end
+        self:RuntimeDailyRefresh()
     end
     if _GAME.GameUtils.isCrossWeek(lastLoginTime) then
         --跨周登录了
         Log:PrintLog("跨周登录了")
         self:RefreshLimitItem()
 
-        --跨周登录了，重置每周任务经验
-        self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = 0
-        self.PlayerData.BaseData.Player_CollectTaskWeekly_Num = 0
-        local level = _GAME.GameUtils.GetRankLevelByScore(score)
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 0)
-
-        --突破段位可领取段位奖励
-        local RankBoxReward_Table = {}
-        local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
-
-        --已领取的段位奖励
-        local ReceiveRankBoxReward_Table = {}
-        local ReceiveRankBoxReward_Table_Str = MiscService:Table2JsonStr(ReceiveRankBoxReward_Table)
-        Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table", ReceiveRankBoxReward_Table_Str)
-
-        --段位奖励发放
-        local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
-        if RewardConfig and RewardConfig.Rank_Rewards[level.base_score] then
-            local Reward = RewardConfig.Rank_Rewards[level.base_score]
-            for k, v in pairs(Reward) do
-                _GAME.GameUtils.AddPlayerReward(v.id, v.count)
-            end
-        end
-
-        -- 掉段逻辑
-        if level and level.titleLv <= 3 then
-            _GAME.GameUtils.SetPlayerRankScore(0)
-        else
-            local resettitleLv = level.titleLv - 2
-            local titleLvLevel = _GAME.GameUtils.GetRankLevelByTitleLv(resettitleLv)
-            _GAME.GameUtils.SetPlayerRankScore(titleLvLevel.base_score)
-        end
+        self:RuntimeWeeklyRefresh()
     end
 
     self.PlayerData.BaseData.Player_LastLoginTime_Num = nowTs
@@ -834,6 +797,90 @@ function LobbyModule:RefreshStoreResourceBar()
         UI:SetText({StoreResourceBar.GoldBox.Label}, tostring(BaseData.GoldBox))
         UI:SetText({StoreResourceBar.SilverBox.Label}, tostring(BaseData.SilverBox))
         UI:SetText({StoreResourceBar.Diamonds.Label}, tostring(BaseData.Diamond))
+    end
+end
+
+--- 游玩跨天刷新逻辑
+function LobbyModule:RuntimeDailyRefresh()
+    self.PlayerData.BaseData.Player_TaskDailyExp_Num = 0
+    self.PlayerData.BaseData.Player_CollectTaskDaily_Num = 0
+
+    _GAME.GameUtils.SetGoldBattleCount(3)
+
+    local score = _GAME.GameUtils.GetPlayerRankScore()
+    if _GAME.GameUtils.IsReachDiamondRank(score) then
+        _GAME.GameUtils.AddPlayerReward(100003, 2)
+    end
+end
+
+--- 游玩跨周刷新逻辑
+function LobbyModule:RuntimeWeeklyRefresh()
+    local score = _GAME.GameUtils.GetPlayerRankScore()
+    --跨周登录了，重置每周任务经验
+    self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = 0
+    self.PlayerData.BaseData.Player_CollectTaskWeekly_Num = 0
+    local level = _GAME.GameUtils.GetRankLevelByScore(score)
+    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "ReachDiamondRank", 0)
+
+    --突破段位可领取段位奖励
+    local RankBoxReward_Table = {}
+    local RankBoxReward_Table_Str = MiscService:Table2JsonStr(RankBoxReward_Table)
+    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "RankBoxReward_Table", RankBoxReward_Table_Str)
+
+    --已领取的段位奖励
+    local ReceiveRankBoxReward_Table = {}
+    local ReceiveRankBoxReward_Table_Str = MiscService:Table2JsonStr(ReceiveRankBoxReward_Table)
+    Archive:SetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "ReceiveRankBoxReward_Table", ReceiveRankBoxReward_Table_Str)
+
+    --段位奖励发放
+    local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
+    if RewardConfig and RewardConfig.Rank_Rewards[level.base_score] then
+        local Reward = RewardConfig.Rank_Rewards[level.base_score]
+        for k, v in pairs(Reward) do
+            _GAME.GameUtils.AddPlayerReward(v.id, v.count)
+        end
+    end
+
+    -- 掉段逻辑
+    if level and level.titleLv <= 3 then
+        _GAME.GameUtils.SetPlayerRankScore(0)
+    else
+        local resettitleLv = level.titleLv - 2
+        local titleLvLevel = _GAME.GameUtils.GetRankLevelByTitleLv(resettitleLv)
+        _GAME.GameUtils.SetPlayerRankScore(titleLvLevel.base_score)
+    end
+
+    local Rank_DiamondScore_Num = 90
+    if Rank_DiamondScore_Num and Rank_DiamondScore_Num > 0 then
+        local DiamondRankManager = require("Game.Framework.Rank.DiamondRank")
+        local DiamondRankData = DiamondRankManager.GetLastWeekPlayerDataDiamondRank(Character:GetLocalPlayerId())
+        local isRank = false
+        local RankNum = 100
+        if DiamondRankData and DiamondRankData[#DiamondRankData - 1] and DiamondRankData[#DiamondRankData - 1].DiamondScore and Rank_DiamondScore_Num > DiamondRankData[#DiamondRankData - 1].DiamondScore then
+            isRank = true
+            table.remove(DiamondRankData, #DiamondRankData)
+            table.insert(DiamondRankData, { DiamondScore = Rank_DiamondScore_Num , isPlayer = true})
+            table.sort(DiamondRankData, function(a,b) return a.DiamondScore > b.DiamondScore end)
+        end
+        for i, v in ipairs(DiamondRankData) do
+            if v.isPlayer then
+                RankNum = i
+            end
+        end
+
+        if isRank then
+            Log:PrintDebug("玩家上周的钻石排名是：" .. RankNum .. "")
+            if RankNum > 6 then
+                --6名开外都按6名的奖励发放
+                RankNum = 6
+            end
+            local DiamondRewards = RewardConfig.Diamond_Rewards[RankNum]
+            if DiamondRewards then
+                for _, v in pairs(DiamondRewards) do
+                    _GAME.GameUtils.AddPlayerReward(v.id, v.count)
+                end
+            end
+        end
     end
 end
 
