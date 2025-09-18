@@ -154,6 +154,10 @@ local function GetCurrencyIconList()
     return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "Currency", CustomProperty.PROPERTY_TYPE.Image)
 end
 
+local function GetEquipmentIconList()
+    return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "EquipmentImage", CustomProperty.PROPERTY_TYPE.Image)
+end
+
 -- 绑定事件
 function GameMatch:BindEvents()
     -- 收到开始匹配的事件
@@ -211,6 +215,7 @@ function GameMatch:BindEvents()
             local ElementId = System:GetScriptParentID()
             local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
             local equipIconUIs = {108054, 108055}
+            local equipGradeUIs = {111058, 111059}
             for i, v in ipairs(self.VictoryRewards) do
                 local EquipmentData = EquipmentConfig[v]
                 local AssetName = EquipmentData.AssetName or "weapon_icon"
@@ -218,6 +223,8 @@ function GameMatch:BindEvents()
                 local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
                 local IconId = IconIdArray[AssetIndex]
                 UI:SetImage({equipIconUIs[i]}, IconId, true)
+                local EquipmentIconList = GetEquipmentIconList()
+                UI:SetImage({equipGradeUIs[i]}, EquipmentIconList[EquipmentData.Attributes.Grade], true)
             end
             self.VictoryRewards = nil
         end
@@ -430,6 +437,7 @@ function GameMatch:MathCountDown(MatchInfo)
         local BodyIconList = GetBodyIconList()
         local ClothIconList = GetClothIconList()
         local BottomsIconList = GetBottomsIconList()
+        local EquipmentIconList = GetEquipmentIconList()
         local WeaponConfig = UGCS.Target.ArcherDuel.Config.WeaponConfig
         local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
         -- 自己对战信息
@@ -448,22 +456,31 @@ function GameMatch:MathCountDown(MatchInfo)
             UI:SetText({105702}, tostring(curLevel.cost * 2)) 
         end
         local weaponIconIndex, bodyIconIndex, clothIconIndex, bottomIconIndex
-        if WeaponConfig[MatchInfo.BattleWeapon.weaponId] then
-            weaponIconIndex = WeaponConfig[MatchInfo.BattleWeapon.weaponId].AssetIndex
+        local weaponGradeIndex, bodyGradeIndex, clothGradeIndex, bottomGradeIndex
+        if EquipmentConfig[MatchInfo.BattleWeapon.weaponId] then
+            weaponIconIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].AssetIndex
+            weaponGradeIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].Attributes.Grade
         end
         if self.localEquipments["Part"] and EquipmentConfig[self.localEquipments["Part"]] then
             bodyIconIndex = EquipmentConfig[self.localEquipments["Part"]].AssetIndex
+            bodyGradeIndex = EquipmentConfig[self.localEquipments["Part"]].Attributes.Grade
         end
         if self.localEquipments["Cloth"] and EquipmentConfig[self.localEquipments["Cloth"]] then
             clothIconIndex = EquipmentConfig[self.localEquipments["Cloth"]].AssetIndex
+            clothGradeIndex = EquipmentConfig[self.localEquipments["Cloth"]].Attributes.Grade
         end
         if self.localEquipments["Bottoms"] and EquipmentConfig[self.localEquipments["Bottoms"]] then
             bottomIconIndex = EquipmentConfig[self.localEquipments["Bottoms"]].AssetIndex
+            bottomGradeIndex = EquipmentConfig[self.localEquipments["Bottoms"]].Attributes.Grade
         end
         UI:SetImage({105686}, WeaponIconList[weaponIconIndex],true) -- 武器
+        UI:SetImage({110914}, EquipmentIconList[weaponGradeIndex],true) -- 武器底图
         UI:SetImage({105687},BodyIconList[bodyIconIndex],true) -- body
+        UI:SetImage({110917}, EquipmentIconList[bodyGradeIndex],true) -- body底图
         UI:SetImage({105688},ClothIconList[clothIconIndex],true) -- cloth
+        UI:SetImage({110915}, EquipmentIconList[clothGradeIndex],true) -- cloth底图
         UI:SetImage({105689},BottomsIconList[bottomIconIndex],true) -- Bottoms
+        UI:SetImage({110916}, EquipmentIconList[bottomGradeIndex],true) -- Bottoms底图
 
         -- 对方信息
         UI:SetImage({105677}, MatchInfo.BattleRivalInfo.headIcon, true)
@@ -475,22 +492,30 @@ function GameMatch:MathCountDown(MatchInfo)
             end
             UI:SetText({105683}, curLevel.name)
         end
-        if WeaponConfig[MatchInfo.BattleRivalInfo.weaponId] then
-            weaponIconIndex = WeaponConfig[MatchInfo.BattleRivalInfo.weaponId].AssetIndex
+        if EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId] then
+            weaponIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId].AssetIndex
+            weaponGradeIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].Attributes.Grade
         end
         if MatchInfo.BattleRivalInfo.equipments["Character"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]] then
             bodyIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].AssetIndex
+            bodyGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].Attributes.Grade
         end
         if MatchInfo.BattleRivalInfo.equipments["Top"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]] then
             clothIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]].AssetIndex
+            clothGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]].Attributes.Grade
         end
         if MatchInfo.BattleRivalInfo.equipments["Bottoms"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]] then
             bottomIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]].AssetIndex
+            bottomGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]].Attributes.Grade
         end
         UI:SetImage({105691},WeaponIconList[weaponIconIndex],true) -- 武器
+        UI:SetImage({110909}, EquipmentIconList[weaponGradeIndex],true) -- 武器底图
         UI:SetImage({105694},BodyIconList[bodyIconIndex],true) -- body
+        UI:SetImage({110912}, EquipmentIconList[bodyGradeIndex],true) -- body底图
         UI:SetImage({105692},ClothIconList[clothIconIndex],true) -- cloth
+        UI:SetImage({110910}, EquipmentIconList[clothGradeIndex],true) -- cloth底图
         UI:SetImage({105693},BottomsIconList[bottomIconIndex],true) -- Bottoms
+        UI:SetImage({110911}, EquipmentIconList[bottomGradeIndex],true) -- Bottoms底图
     end)
 
     -- 动画效果
