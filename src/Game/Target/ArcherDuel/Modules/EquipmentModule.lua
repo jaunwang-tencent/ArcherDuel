@@ -8,15 +8,13 @@ local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 local UpgradeConfig = UGCS.Target.ArcherDuel.Config.UpgradeConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --装备详情模块
 local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
 
 --- 打开
----@param PlayerData 玩家数据
-function EquipmentModule:Open(PlayerData)
-    --寄存玩家数据
-    self.PlayerData = PlayerData
-
+function EquipmentModule:Open()
     local EquipmentView = UIConfig.EquipmentView
     --过滤栏
     local ListView = EquipmentView and EquipmentView.ListView
@@ -85,15 +83,11 @@ function EquipmentModule:Close()
         --先注销点击事件
         UI:UnRegisterClicked(EquipmentSlot.Image)
     end
-
-    --清空玩家数据
-    self.PlayerData = nil
 end
 
 --- 刷新身体上的数据
 function EquipmentModule:RegreshBodyUI()
     local EquipmentView = UIConfig.EquipmentView
-    local PlayerData = self.PlayerData
     --角色身上的装备
     local EquipmentSlotConfig = {
         [1] = EquipmentView.LeftView.Character,
@@ -103,7 +97,7 @@ function EquipmentModule:RegreshBodyUI()
         [5] = EquipmentView.RightView.Axe,
         [6] = EquipmentView.RightView.Spear,
     }
-    local BodyEquipment = PlayerData.BodyEquipment
+    local BodyEquipment = DataCenter.Get("BodyEquipment")
     for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
         --先注销点击事件
         UI:UnRegisterClicked(EquipmentSlot.Image)
@@ -146,8 +140,6 @@ end
 function EquipmentModule:RefreshListUI(Category)
     local EquipmentView = UIConfig.EquipmentView
     local ListView = EquipmentView and EquipmentView.ListView
-    local PlayerData = self.PlayerData
-
     if not Category then
         Category = self.CurrentCategory
     end
@@ -155,10 +147,11 @@ function EquipmentModule:RefreshListUI(Category)
     --拿出全部装备
     local EquipmentGroup
     if Category then
-        EquipmentGroup = PlayerData.GroupByCategory[Category]
+        local GroupByCategory = DataCenter.Get("GroupByCategory")
+        EquipmentGroup = GroupByCategory[Category]
     end
     if not EquipmentGroup then
-        EquipmentGroup = PlayerData.AllEquipment
+        EquipmentGroup = DataCenter.GetTable("AllEquipment")
     end
     --未解锁装备
     local LockedEquipment = {}
@@ -299,10 +292,8 @@ end
 --- 刷新全部
 ---@param Category 装备种类
 function EquipmentModule:RefreshUI(Category)
-    if self.PlayerData then
-        self:RegreshBodyUI()
-        self:RefreshListUI(Category)
-    end
+    self:RegreshBodyUI()
+    self:RefreshListUI(Category)
 end
 
 return EquipmentModule

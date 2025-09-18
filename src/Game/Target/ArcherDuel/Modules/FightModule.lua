@@ -8,15 +8,13 @@ local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --装备详情模块
 local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
 
 --- 打开
----@param PlayerData 玩家数据
-function FightModule:Open(PlayerData)
-    --寄存玩家数据
-    self.PlayerData = PlayerData
-
+function FightModule:Open()
     self:RegreshBodyUI()
 
     local FightView = UIConfig.FightView
@@ -171,14 +169,11 @@ function FightModule:Close()
         local ButtonID = UIConfig.SevenDays.TaskProgress.Button[index]
         UI:UnRegisterClicked(ButtonID)
     end
-    
-    self.PlayerData = nil
 end
 
 --- 刷新身体上的数据
 function FightModule:RegreshBodyUI()
     local FightView = UIConfig.FightView
-    local PlayerData = self.PlayerData
     --角色身上的装备
     local EquipmentSlotConfig = {
         [1] = FightView.LeftView.Character,
@@ -188,7 +183,7 @@ function FightModule:RegreshBodyUI()
         [5] = FightView.RightView.Aex,
         [6] = FightView.RightView.Spear,
     }
-    local BodyEquipment = PlayerData.BodyEquipment
+    local BodyEquipment = DataCenter.Get("BodyEquipment")
     for Category, EquipmentSlot in ipairs(EquipmentSlotConfig) do
          --先注销点击事件
          UI:UnRegisterClicked(EquipmentSlot.Image)
@@ -457,7 +452,7 @@ function FightModule:OnRank(RankBoxReward_Table)
     --注册领取事件
     UI:RegisterClicked(ThreeItem.Button.ID, function ()
         --获取装备
-        local AllEquipment = self.PlayerData.AllEquipment
+        local AllEquipment = DataCenter.GetTable("AllEquipment")
         for i, Value in pairs(BoxRewards) do
             if i == 1 then
                 local TargetEquipment = AllEquipment[Value]
@@ -497,8 +492,8 @@ function FightModule:OnRank(RankBoxReward_Table)
 end
 
 function FightModule:RefreshTaskProcesUI()
-    local TaskExp = self.PlayerData.BaseData.Player_TaskWeeklyExp_Num
-    local CollectTask = self.PlayerData.BaseData.Player_CollectTaskWeekly_Num
+    local TaskExp = DataCenter.GetNumber("Player_TaskWeeklyExp_Num")
+    local CollectTask = DataCenter.GetNumber("Player_CollectTaskWeekly_Num")
     --local TaskExp = 5
     --local CollectTask = 1
     local winningPoints = {5, 10, 15, 20}
@@ -523,7 +518,7 @@ function FightModule:RefreshTaskProcesUI()
                 UI:SetVisible({ButtonID}, true)
                 UI:UnRegisterClicked(ButtonID)
                 UI:RegisterClicked(ButtonID, function (ButtonID)
-                    self.PlayerData.BaseData.Player_CollectTaskWeekly_Num = self.PlayerData.BaseData.Player_CollectTaskWeekly_Num | (1 << (index - 1))
+                    DataCenter.SetNumber("Player_CollectTaskWeekly_Num", CollectTask | (1 << (index - 1)))
                     if index == 1 then
                         _GAME.GameUtils.AddPlayerReward(100002, 100)
                     elseif index == 2 then
@@ -575,9 +570,9 @@ function FightModule:RefreshWeeklyTaskUI(wday)
                 UI:RegisterClicked(Completed,function (ItemUID)
                     local finishTaskRet = taskMgr:finishTask(v.id)
                     if finishTaskRet == true then
-                        local taskExp = self.PlayerData.BaseData.Player_TaskWeeklyExp_Num
+                        local taskExp = DataCenter.GetNumber("Player_TaskWeeklyExp_Num")
                         if v.rewards and v.rewards.WeeklyExp then
-                            self.PlayerData.BaseData.Player_TaskWeeklyExp_Num = taskExp + v.rewards.WeeklyExp
+                            DataCenter.SetNumber("Player_TaskWeeklyExp_Num", taskExp + v.rewards.WeeklyExp)
                         end
                     end
                     self:RefreshTaskProcesUI()

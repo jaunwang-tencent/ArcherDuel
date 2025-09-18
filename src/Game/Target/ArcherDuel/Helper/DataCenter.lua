@@ -8,7 +8,12 @@ local PlayerData = {
     --数值数据
     NumberData = {},
     --表数据
-    TableData = {}
+    TableData = {},
+}
+
+--寄存的运行时数据【不参与存档行为】
+local RuntimeData = {
+
 }
 
 --玩家ID，在同一进程生命周期范围内是不会变得
@@ -26,6 +31,7 @@ end
 ---@param DataName 数据名称
 ---@param DataValue 数据值
 function DataCenter.SetNumber(DataName, DataValue)
+    --Log:PrintLog("SetNumber", DataName, DataValue)
     local NumberData = PlayerData.NumberData
     if DataName and DataValue and NumberData then
         if NumberData then
@@ -40,6 +46,7 @@ end
 ---@param SyncData 是否同步数据
 ---@return DataValue 数据值
 function DataCenter.GetNumber(DataName, SyncData)
+    --Log:PrintLog("GetNumber", DataName, SyncData)
     local NumberData = PlayerData.NumberData
     if DataName and NumberData then
         local DataValue
@@ -86,4 +93,17 @@ function DataCenter.GetTable(DataName, SyncData)
     end
 end
 
+--- 寄存数据
+---@param DataName 数据名称
+---@param DataValue 数据值
+function DataCenter.Put(DataName, DataValue)
+    RuntimeData[DataName] = DataValue
+end
+
+--- 取出数据
+---@param DataName 数据名称
+---@return DatTable 数据值
+function DataCenter.Get(DataName)
+    return RuntimeData[DataName]
+end
 return DataCenter

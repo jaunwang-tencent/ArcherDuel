@@ -8,6 +8,9 @@ local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 local UpgradeConfig = UGCS.Target.ArcherDuel.Config.UpgradeConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+
 local TaskEvents = require("Game.Framework.Task.TaskEvents")
 
 --点击装备详情界面
@@ -230,8 +233,7 @@ end
 ---@param Equipment 装备
 function EquipmentDetailModule:OnEquip(Equipment)
     --拿到已装备
-    local LobbyModule = UGCS.Target.ArcherDuel.Modules.LobbyModule
-    local BodyEquipment = LobbyModule.PlayerData.BodyEquipment
+    local BodyEquipment = DataCenter.Get("BodyEquipment")
     local EquippedEquipment = BodyEquipment[Equipment.Category]
     if EquippedEquipment then
         --卸下装备
@@ -253,14 +255,13 @@ function EquipmentDetailModule:OnUpgrade(Equipment)
     local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
     if Upgrade then
         --扣除资产
-        local LobbyModule = UGCS.Target.ArcherDuel.Modules.LobbyModule
-        local BaseData = LobbyModule.PlayerData.BaseData
-        if BaseData.Coin >= Upgrade.Coin then
+        local Coin = DataCenter.GetNumber("Coin")
+        if Coin >= Upgrade.Coin then
             --扣除碎片
             Equipment.Piece = Equipment.Piece - Upgrade.Piece
             --升级
             Equipment.Level = Equipment.Level + 1
-            BaseData.Coin = BaseData.Coin - Upgrade.Coin
+            DataCenter.SetNumber("Coin", Coin - Upgrade.Coin)
             System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
 
             --刷新数据

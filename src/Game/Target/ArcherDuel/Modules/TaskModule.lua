@@ -1,12 +1,12 @@
 --任务模块
 local TaskModule = {}
-
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+
 --- 打开
----@param PlayerData 玩家数据
-function TaskModule:Open(PlayerData)
-    self.PlayerData = PlayerData
+function TaskModule:Open()
     self:LoadData()
 end
 
@@ -20,8 +20,8 @@ function TaskModule:LoadData()
 end
 
 function TaskModule:RefreshTaskProcesUI()
-    local TaskExp = self.PlayerData.BaseData.Player_TaskDailyExp_Num
-    local CollectTask = self.PlayerData.BaseData.Player_CollectTaskDaily_Num
+    local TaskExp = DataCenter.GetNumber("Player_TaskDailyExp_Num")
+    local CollectTask = DataCenter.GetNumber("Player_CollectTaskDaily_Num")
     local winningPoints = {40, 80, 120, 160, 200, 240}
     local TaskProcesID  = UIConfig.TaskView.TaskProcesView.TaskProces
     for index = 1, 6, 1 do
@@ -42,7 +42,7 @@ function TaskModule:RefreshTaskProcesUI()
                 UI:SetVisible({ButtonID}, true)
                 UI:UnRegisterClicked(ButtonID)
                 UI:RegisterClicked(ButtonID, function (ButtonID)
-                    self.PlayerData.BaseData.Player_CollectTaskDaily_Num = self.PlayerData.BaseData.Player_CollectTaskDaily_Num | (1 << (index - 1))
+                    DataCenter.SetNumber("Player_CollectTaskDaily_Num", CollectTask | (1 << (index - 1)))
                     if index == 1 then
                         _GAME.GameUtils.AddPlayerReward(100002, 10)
                     elseif index == 2 then
@@ -145,9 +145,9 @@ function TaskModule:RefreshTaskUI()
         UI:RegisterClicked(BtnID2,function (ItemUID)
             local finishTaskRet = taskMgr:finishTask(v.id)
             if finishTaskRet == true then
-                local taskExp = self.PlayerData.BaseData.Player_TaskDailyExp_Num
+                local taskExp = DataCenter.GetNumber("Player_TaskDailyExp_Num")
                 if v.rewards and v.rewards.DailyExp then
-                    self.PlayerData.BaseData.Player_TaskDailyExp_Num = taskExp + v.rewards.DailyExp
+                    DataCenter.SetNumber("Player_TaskDailyExp_Num", taskExp + v.rewards.DailyExp)
                 end
                 UI:SetVisible({ItemUID}, false)
                 table.remove(Task_Gap_All,k)

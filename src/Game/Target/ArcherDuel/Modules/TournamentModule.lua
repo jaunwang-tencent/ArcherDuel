@@ -2,14 +2,14 @@
 local TournamentModule = {}
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
 local DiamondRankManager = require("Game.Framework.Rank.DiamondRank")
 
 --- 打开
----@param PlayerData 玩家数据
-function TournamentModule:Open(PlayerData)
+function TournamentModule:Open()
     --寄存玩家数据
-    self.PlayerData = PlayerData
     local TournamentView = UIConfig.TournamentView
 
     --注册Table标签
@@ -19,7 +19,7 @@ function TournamentModule:Open(PlayerData)
     UI:SetVisible(Rank_Scroll, true)
 
     local DiamondRankPlayerList = {}
-    local Rank_DiamondScore_Num = Archive:GetPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.Number, "Rank_DiamondScore_Num")
+    local Rank_DiamondScore_Num = DataCenter.GetNumber("Rank_DiamondScore_Num")
     local DiamondRankData = DiamondRankManager.GetPlayerDataDiamondRank(Character:GetLocalPlayerId())
     local isRank = false
     local RankNum = 100
