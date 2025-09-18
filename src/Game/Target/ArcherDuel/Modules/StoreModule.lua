@@ -135,6 +135,7 @@ function StoreModule:RefreshShop(ShopGroup, ShopItem, HoldInfo)
                     }
                     --注册商铺按钮事件
                     UI:RegisterClicked(ShopSlot.ID, function()
+                        --触发一次购买行为【刷新存档】
                         self:BuyGood(ShopInfo)
                     end)
                     table.insert(self.ShopInfos, ShopInfo)
@@ -355,6 +356,8 @@ function StoreModule:BuyGood(ShopInfo)
         self:RefreshStore(false)
         --刷新商店资源
         System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
+        --刷新商店存档
+        System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
     end
 end
 

@@ -180,35 +180,4 @@ function GameUtils.SetImageWithEquipment(IconUI, Equipment)
     end
 end
 
---- 设置玩家基础数据
----@param DataName 数据名称
----@param DataValue 数据值
-function GameUtils.SetPlayerBaseData(DataName, DataValue)
-    if DataName and DataValue then
-        local LobbyModule = UGCS.Target.ArcherDuel.Modules.LobbyModule
-        local PlayerData = LobbyModule.PlayerData
-        local BaseData = PlayerData and PlayerData.BaseData
-        if BaseData then
-            BaseData[DataName] = DataValue
-            --及时存档
-            Archive:SetPlayerData(LobbyModule.PlayerID, Archive.TYPE.String, DataName, DataValue)
-        end
-    end
-end
-
---- 获取玩家基础数据
----@param DataName 数据名称
----@return DataValue 数据值
-function GameUtils.GetPlayerBaseData(DataName)
-    if DataName then
-        local LobbyModule = UGCS.Target.ArcherDuel.Modules.LobbyModule
-        local PlayerData = LobbyModule.PlayerData
-        local BaseData = PlayerData and PlayerData.BaseData
-        if BaseData then
-            local DataValue = BaseData[DataName]
-            return DataValue
-        end
-    end
-end
-
 return GameUtils

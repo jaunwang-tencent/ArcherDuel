@@ -53,6 +53,7 @@ UGCS.Target.ArcherDuel.Character.States.DeathState = require "Game.Target.Archer
 --辅助
 UGCS.Target.ArcherDuel.Helper = {}
 UGCS.Target.ArcherDuel.Helper.GameUtils = require "Game.Target.ArcherDuel.Helper.GameUtils"
+UGCS.Target.ArcherDuel.Helper.DataCenter = require "Game.Target.ArcherDuel.Helper.DataCenter"
 
 --游戏世界
 UGCS.Target.ArcherDuel.World = {}
