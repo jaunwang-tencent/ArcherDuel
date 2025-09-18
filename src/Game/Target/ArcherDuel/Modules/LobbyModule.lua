@@ -304,7 +304,7 @@ function LobbyModule:InitView()
     UI:SetVisible({UIConfig.StoreView.Activities[4].CountDown}, false)
 end
 
-function LobbyModule:SwitchView(ViewName)
+function LobbyModule:SwitchView(ViewName, Context)
     local TitleBar = UIConfig.MainView.TitleBar
     local ViewData = TitleBar[ViewName]
     if self.CurrentViewData ~= ViewData then
@@ -324,11 +324,11 @@ function LobbyModule:SwitchView(ViewName)
         self.CurrentViewData = ViewData
 
         --子类化操作
-        self:OnSwitchView(ViewName)
+        self:OnSwitchView(ViewName, Context)
     end
 end
 
-function LobbyModule:OnSwitchView(ViewName)
+function LobbyModule:OnSwitchView(ViewName, Context)
     if self.CurrentModule then
         self.CurrentModule:Close()
         self.CurrentModule = nil
@@ -350,15 +350,15 @@ function LobbyModule:OnSwitchView(ViewName)
         TargetModule = UGCS.Target.ArcherDuel.Modules.TournamentModule
     end
     if TargetModule then
-        TargetModule:Open()
+        TargetModule:Open(Context)
         self.CurrentModule = TargetModule
     end
 end
 
 function LobbyModule:RegisterGameEvent()
     --跳转商城
-    System:RegisterGameEvent(_GAME.Events.JumpModule, function(ModuleName)
-        self:SwitchView(ModuleName)
+    System:RegisterGameEvent(_GAME.Events.JumpModule, function(ModuleName, Context)
+        self:SwitchView(ModuleName, Context)
     end)
 
     --刷新资源
