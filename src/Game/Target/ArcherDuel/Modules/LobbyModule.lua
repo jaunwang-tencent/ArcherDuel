@@ -342,8 +342,9 @@ end
 --- 保存玩家数据
 function LobbyModule:SaveData()
     --1、基础数据
-    for ArchiveKey, _ in pairs(DefaultBaseData) do
-        local Data = self.PlayerData.BaseData[ArchiveKey]
+    local BaseData = self.PlayerData.BaseData
+    for ArchiveKey, _ in pairs(BaseData) do
+        local Data = BaseData[ArchiveKey]
         Archive:SetPlayerData(self.PlayerID, Archive.TYPE.Number, ArchiveKey, Data)
     end
 
