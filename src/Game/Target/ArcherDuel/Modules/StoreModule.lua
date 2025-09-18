@@ -10,6 +10,7 @@ local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --装备详情模块
 local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
+--任务事件
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 
 --- 打开
@@ -343,9 +344,9 @@ function StoreModule:BuyGood(ShopInfo)
     elseif Costs.AdTag then
         --观看广告
         self:SeeAd(Costs.AdTag, Goods)
-    else
+    --else
         --不可购买
-        UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
+        --UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
     end
 
     if Success then
