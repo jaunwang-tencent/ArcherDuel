@@ -6,7 +6,7 @@ local SceneConfigTable = UGCS.Target.ArcherDuel.Config.SceneConfig
 local WeaponConfigTable = UGCS.Target.ArcherDuel.Config.WeaponConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 
 --- 打开
 ---@param Context 上下文【透传数据】

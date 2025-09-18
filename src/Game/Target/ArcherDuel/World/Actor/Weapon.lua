@@ -1,4 +1,4 @@
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 --武器
 local Weapon = UGCS.RTTI.Class("Weapon", UGCS.Framework.Actor)
 --辅助API

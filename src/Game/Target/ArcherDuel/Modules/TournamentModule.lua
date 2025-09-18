@@ -4,6 +4,8 @@ local TournamentModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 local DiamondRankManager = require("Game.Framework.Rank.DiamondRank")
 
@@ -66,8 +68,8 @@ function TournamentModule:Open()
     end
     UI:AddToScrollView(DiamondView.ScrollView, DiamondRankPlayerList)
 
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    local level = _GAME.GameUtils.GetRankLevelByScore(score)
+    local score = GameUtils.GetPlayerRankScore()
+    local level = GameUtils.GetRankLevelByScore(score)
     UI:SetImageColor({TournamentView.World.Image_1}, "#FFFFFF")
     UI:SetImageColor({TournamentView.World.Image_2}, "#FFFFFF")
     UI:SetImageColor({TournamentView.World.Image_3}, "#FFFFFF")
@@ -109,7 +111,7 @@ function TournamentModule:Open()
     end
 
     -- 刷新黄金赛次数
-    local count = _GAME.GameUtils.GetGoldBattleCount()
+    local count = GameUtils.GetGoldBattleCount()
     UI:SetText({106557}, string.format("剩余次数：%d/3", count))
 
     --进入排位赛
@@ -129,7 +131,7 @@ function TournamentModule:Open()
 end
 
 function TournamentModule:OnMatch()
-    if _GAME.GameUtils.CanEnterRankBattle() then
+    if GameUtils.CanEnterRankBattle() then
         --这里打开寻找对局页面
         --生成1到7的随机数字
         local RandomNumber = math.random(1, 6)  --随机海岛和天空
@@ -139,14 +141,14 @@ function TournamentModule:OnMatch()
 end
 
 function TournamentModule:OnGoldMatch()
-    if _GAME.GameUtils.CanEnterGoldBattle() then
+    if GameUtils.CanEnterGoldBattle() then
         DataCenter.SetNumber("BattleStage", 7)
         System:FireSignEvent(tostring(7))
     end
 end
 
 function TournamentModule:OnDiamondMatch()
-    if _GAME.GameUtils.CanEnterDiamondRankBattle() then
+    if GameUtils.CanEnterDiamondRankBattle() then
         DataCenter.SetNumber("BattleStage", 8)
         System:FireSignEvent(tostring(8))
     end

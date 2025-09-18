@@ -10,7 +10,7 @@ local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --装备详情模块
 local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 
 --- 打开
 function StoreModule:Open()
@@ -498,7 +498,7 @@ function StoreModule:OpenBox(BoxID)
     for _, Item in ipairs(ThreeItem.ItemGroup) do
         UI:SetVisible({Item.Icon, Item.Background}, false)
     end
-    local BoxRewards = _GAME.GameUtils.OpenBoxReward(BoxID)
+    local BoxRewards = GameUtils.OpenBoxReward(BoxID)
     UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
 
     UGCS.Framework.Executor.Delay(2.3, function ()

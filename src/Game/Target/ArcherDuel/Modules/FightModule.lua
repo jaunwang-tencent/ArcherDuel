@@ -2,6 +2,8 @@
 local FightModule = {}
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+--宝箱配置
+local OpenBoxConfig = UGCS.Target.ArcherDuel.Config.OpenBoxConfig
 --段位配置
 local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 --UI配置
@@ -12,6 +14,8 @@ local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --装备详情模块
 local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
+--任务管理器
+local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 
 --- 打开
 function FightModule:Open()
@@ -30,8 +34,8 @@ function FightModule:Open()
         self:OnClickAd2()
     end)
 
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    if _GAME.GameUtils.IsReachGoldRank(score) then
+    local score = GameUtils.GetPlayerRankScore()
+    if GameUtils.IsReachGoldRank(score) then
         local unLock = "#FFFFFF"
         UI:SetImageColor({CenterView.Golden.ID}, unLock)
         UI:SetVisible({CenterView.Golden.Lock}, false)
@@ -45,7 +49,7 @@ function FightModule:Open()
         UI:SetVisible({CenterView.Golden.Lock}, true)
     end
 
-    if _GAME.GameUtils.IsReachDiamondRank(score) then
+    if GameUtils.IsReachDiamondRank(score) then
         local unLock = "#FFFFFF"
         UI:SetImageColor({CenterView.Diamond.ID}, unLock)
         UI:SetVisible({CenterView.Diamond.Lock}, false)
@@ -64,7 +68,7 @@ function FightModule:Open()
         self:OnSevenDays()
     end)
 
-    local level = _GAME.GameUtils.GetRankLevelByScore(score)
+    local level = GameUtils.GetRankLevelByScore(score)
     --寻找对局
     UI:SetText({CenterView.Match.Text}, string.format("%d", level.cost))
     UI:RegisterClicked(CenterView.Match.Button, function()
@@ -230,7 +234,7 @@ end
 function FightModule:OnSevenDays()  --七日挑战
     --这里打开七日挑战页面
 
-    local day = _GAME.GameUtils.GetWeekDay() -- 获取当前是星期几
+    local day = GameUtils.GetWeekDay() -- 获取当前是星期几
 
     -- 周活跃进度 UI begin
     self:RefreshTaskProcesUI()
@@ -265,7 +269,7 @@ function FightModule:OnSevenDays()  --七日挑战
 end
 
 function FightModule:OnMatch()
-    if _GAME.GameUtils.CanEnterRankBattle() then
+    if GameUtils.CanEnterRankBattle() then
         --这里打开寻找对局页面
         --生成1到7的随机数字
         local RandomNumber = math.random(1, 6)  --随机海岛和天空
@@ -286,7 +290,7 @@ function FightModule:OnMatch()
 end
 
 function FightModule:OnGoldMatch()
-    if _GAME.GameUtils.CanEnterGoldBattle() then
+    if GameUtils.CanEnterGoldBattle() then
         --这里要关闭所有页面
         UI:SetVisible({UIConfig.MainView.TitleBar.ID,
             UIConfig.MainView.StoreResourceBar.ID,
@@ -301,7 +305,7 @@ function FightModule:OnGoldMatch()
 end
 
 function FightModule:OnDiamondMatch()
-    if _GAME.GameUtils.CanEnterDiamondRankBattle() then
+    if GameUtils.CanEnterDiamondRankBattle() then
         --这里要关闭所有页面
         UI:SetVisible({UIConfig.MainView.TitleBar.ID,
             UIConfig.MainView.StoreResourceBar.ID,
@@ -327,7 +331,6 @@ function FightModule:OnRank(RankBoxReward_Table)
     end
     DataCenter.SetTable("RankBoxReward_Table", RankBoxReward_Table)
 
-    local OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
     math.randomseed(TimerManager:GetClock())
     local Weight = 0
 
@@ -343,7 +346,7 @@ function FightModule:OnRank(RankBoxReward_Table)
         for _, v in ipairs(OpenBoxConfig.RankBox[1]) do
             tempWeight = tempWeight + v.Weight
             if random <= tempWeight then
-                local equipmap = _GAME.GameUtils.GetEquipmentMap()
+                local equipmap = GameUtils.GetEquipmentMap()
                 local equipIds = equipmap[v.Grade]
                 if equipIds then
                     return equipIds[math.random(1, #equipIds)]
@@ -463,10 +466,10 @@ function FightModule:OnRank(RankBoxReward_Table)
                 end
             elseif i == 2 then
                 --增加钻石
-                _GAME.GameUtils.AddPlayerReward(100002, Value)
+                GameUtils.AddPlayerReward(100002, Value)
             elseif i == 3 then
                 --增加金币
-                _GAME.GameUtils.AddPlayerReward(100001, Value)
+                GameUtils.AddPlayerReward(100001, Value)
             end
         end
         --刷新装备数据
@@ -518,13 +521,13 @@ function FightModule:RefreshTaskProcesUI()
                 UI:RegisterClicked(ButtonID, function (ButtonID)
                     DataCenter.SetNumber("Player_CollectTaskWeekly_Num", CollectTask | (1 << (index - 1)))
                     if index == 1 then
-                        _GAME.GameUtils.AddPlayerReward(100002, 100)
+                        GameUtils.AddPlayerReward(100002, 100)
                     elseif index == 2 then
-                        _GAME.GameUtils.AddPlayerReward(200003, 1)
+                        GameUtils.AddPlayerReward(200003, 1)
                     elseif index == 3 then
-                        _GAME.GameUtils.AddPlayerReward(200002, 2)
+                        GameUtils.AddPlayerReward(200002, 2)
                     elseif index == 4 then
-                        _GAME.GameUtils.AddPlayerReward(200003, 2)
+                        GameUtils.AddPlayerReward(200003, 2)
                     end
                     self:RefreshTaskProcesUI()
                 end)
@@ -547,7 +550,7 @@ function FightModule:RefreshWeeklyTaskUI(wday)
     UI:SetVisible({UIConfig.SevenDays.DayTask.ID}, true)
     local WeeklyTaskUIID = {105077, 105084, 105091}
     local iconIDs = {105075, 105082, 105089}
-    local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
+    local taskMgr =TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTaskByWeekly()
     local i = 1
     for _, v in pairs(ret) do

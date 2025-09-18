@@ -1,9 +1,13 @@
 
 local TaskPool = {}
+local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
+local TaskClass = TaskManager.Task
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
-local TaskClass = require("Game.Framework.Task.Task").Task
-
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 TaskPool.taskcfg = {
     { id = 1, taskType = TaskClass.TaskType.Daily, taskName = "登录游戏", taskDes = "登录游戏", condition = {type = TaskEvents.LoginGame , param = {1} },  rewards = {DailyExp = 10}, column = 1 },
@@ -79,31 +83,24 @@ TaskPool.taskcfg = {
 }
 
 function TaskPool.BuildTask()
-    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local TaskManagerInstance = TaskManager:GetInsatnce()
     local playerId = Character:GetLocalPlayerId()
     local nowStr = MiscService:GetServerTimeToTime()
     local nowTs = MiscService:DateYMDHMSToTime(nowStr)
 
-    local lastTaskRefreshTime
-    if Archive:HasPlayerData(playerId, Archive.TYPE.Number, "Player_LastTaskRefreshTime_Num") then
-        lastTaskRefreshTime = Archive:GetPlayerData(playerId, Archive.TYPE.Number, "lastTaskRefreshTime")
-    else
-        lastTaskRefreshTime = nowTs - (7 * 24 * 60 * 60)
-    end
+    local lastTaskRefreshTime = DataCenter.GetNumber("Player_LastTaskRefreshTime_Num", true)
     if lastTaskRefreshTime == nil or lastTaskRefreshTime == 0 or lastTaskRefreshTime > nowTs then
         lastTaskRefreshTime = nowTs - (7 * 24 * 60 * 60)
+        DataCenter.SetNumber("Player_LastTaskRefreshTime_Num", lastTaskRefreshTime)
     end
 
     --加载存档中任务数据
     local saveDataKV
-    if Archive:HasPlayerData(Character:GetLocalPlayerId(), Archive.TYPE.String, "TaskDataTable") then
-        local str = Archive:GetPlayerData(playerId, Archive.TYPE.String, "TaskDataTable")
-        local savedData = MiscService:JsonStr2Table(str)
-        if savedData then
-            saveDataKV = {}
-            for _, v in pairs(savedData) do
-                saveDataKV[v.id] = v
-            end
+    local savedData = DataCenter.GetTable("TaskDataTable", true)
+    if savedData then
+        saveDataKV = {}
+        for _, v in pairs(savedData) do
+            saveDataKV[v.id] = v
         end
     end
 
@@ -134,23 +131,23 @@ function TaskPool.BuildTask()
         lastTaskRefreshTime = nowTs - (7 * 24 * 60 * 60)
     end
 
-    if _GAME.GameUtils.isCrossDay(lastTaskRefreshTime) then
+    if GameUtils.isCrossDay(lastTaskRefreshTime) then
         --跨天登录了
         TaskPool.RefreshDailyTask(saveDataKV)
     end
-    if _GAME.GameUtils.isCrossWeek(lastTaskRefreshTime) then
+    if GameUtils.isCrossWeek(lastTaskRefreshTime) then
         --跨周登录了
         TaskPool.RefreshWeeklyTask(saveDataKV)
     end
 
-    Archive:SetPlayerData(playerId, Archive.TYPE.Number, "lastTaskRefreshTime")
+    DataCenter.SetNumber("Player_LastTaskRefreshTime_Num", lastTaskRefreshTime)
 
     return TaskManagerInstance
 end
 
 function TaskPool.RefreshDailyTask(saveDataKV)
     math.randomseed(TimerManager:GetClock())
-    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local TaskManagerInstance = TaskManager:GetInsatnce()
     if saveDataKV then
         for _, v in pairs(saveDataKV) do
             local Quest = TaskManagerInstance:getTask(v.id)
@@ -184,7 +181,7 @@ function TaskPool.RefreshDailyTask(saveDataKV)
 end
 
 function TaskPool.RefreshWeeklyTask(saveDataKV)
-    local TaskManagerInstance = UGCS.Framework.TaskManager:GetInsatnce()
+    local TaskManagerInstance = TaskManager:GetInsatnce()
     if saveDataKV then
         for _, v in pairs(saveDataKV) do
             local Quest = TaskManagerInstance:getTask(v.id)

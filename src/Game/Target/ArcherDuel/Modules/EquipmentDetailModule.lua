@@ -11,7 +11,7 @@ local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 
 --点击装备详情界面
 function EquipmentDetailModule:Open(Equipment)

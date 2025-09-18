@@ -1,8 +1,9 @@
 ﻿local MatchConfig = require("Match.MatchConfig")
 local GoldRewardConfig = require("Match.GoldRewardConfig")
-local TaskEvents = require("Game.Framework.Task.TaskEvents")
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 local GameMatch = {}
 
@@ -106,9 +107,9 @@ function GameMatch:Init()
 
     if self.battleType == BattleType.Gold then
         self:InitGoldMatch()
-        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GoldBattle) -- 参加一次黄金赛
+        System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.GoldBattle) -- 参加一次黄金赛
     elseif self.battleType == BattleType.Diamond then
-        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.DiamondBattle) -- 参加一次钻石赛
+        System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.DiamondBattle) -- 参加一次钻石赛
     end
 
     self:BindEvents()
@@ -188,7 +189,7 @@ function GameMatch:BindEvents()
 
     -- 胜利界面点击再来一次
     UI:RegisterPressed(108060,function ()
-        if _GAME.GameUtils.CanEnterRankBattle() then
+        if GameUtils.CanEnterRankBattle() then
             UI:ResumeUIAnimation(111057,1)
             UI:SetVisible({108052,108051,108056},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
@@ -269,8 +270,10 @@ function GameMatch:BindEvents()
 
     -- 失败界面点击再来一次
     UI:RegisterClicked(106511, function()
-        -- 走IAA流程
-        IAA:LetPlayerWatchAds(AdTag)
+        if GameUtils.CanEnterRankBattle() then
+            UI:SetVisible(MatchConfig.Fail_UI, false)
+            System:FireGameEvent(_GAME.Events.StartMatch)
+        end
     end)
 
     -- 失败界面点击返回大厅
@@ -382,7 +385,7 @@ function GameMatch:StartMatch()
     -- 随机装备
     BattleRivalInfo.equipments = self:GetRandomEquipments()
     -- 积分
-    local curScore = _GAME.GameUtils.GetPlayerRankScore()
+    local curScore = GameUtils.GetPlayerRankScore()
     BattleRivalInfo.score = curScore + math.random(0, 200)
     -- 头像
     local headIcons = GetHeadIconList()
@@ -403,11 +406,11 @@ function GameMatch:StartMatch()
     self:MathCountDown(MatchInfo)
 
     -- 扣除排位赛金币
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    local score = GameUtils.GetPlayerRankScore()
+    local curLevel = GameUtils.GetRankLevelByScore(score)
     if curLevel then
-        local coin = _GAME.GameUtils.GetPlayerCoin()
-        _GAME.GameUtils.SetPlayerCoin(coin - curLevel.cost)
+        local coin = GameUtils.GetPlayerCoin()
+        GameUtils.SetPlayerCoin(coin - curLevel.cost)
     end
 end
 
@@ -432,8 +435,8 @@ function GameMatch:MathCountDown(MatchInfo)
         -- 自己对战信息
         UI:SetImage({105676}, Chat:GetCustomHeadIcon(self.localPlayerId))
         UI:SetText({105680}, Chat:GetCustomName(self.localPlayerId))
-        local curScore = _GAME.GameUtils.GetPlayerRankScore()
-        local curLevel = _GAME.GameUtils.GetRankLevelByScore(curScore)
+        local curScore = GameUtils.GetPlayerRankScore()
+        local curLevel = GameUtils.GetRankLevelByScore(curScore)
         if curLevel then
             if curLevel.icon and RankIconList[curLevel.icon] then
                 UI:SetImage({105682}, RankIconList[curLevel.icon], true)
@@ -465,7 +468,7 @@ function GameMatch:MathCountDown(MatchInfo)
         -- 对方信息
         UI:SetImage({105677}, MatchInfo.BattleRivalInfo.headIcon, true)
         UI:SetText({105685}, MatchInfo.BattleRivalInfo.name)
-        curLevel = _GAME.GameUtils.GetRankLevelByScore(MatchInfo.BattleRivalInfo.score)
+        curLevel = GameUtils.GetRankLevelByScore(MatchInfo.BattleRivalInfo.score)
         if curLevel then
             if curLevel.icon and RankIconList[curLevel.icon] then
                 UI:SetImage({105684}, RankIconList[curLevel.icon], true)
@@ -558,7 +561,7 @@ local function ShowRankProgress(curScore, newScore)
         UI:SetText({108299}, level.name)
     end
 
-    local curLevel, nextLevel = _GAME.GameUtils.GetRankLevelByScore(curScore)
+    local curLevel, nextLevel = GameUtils.GetRankLevelByScore(curScore)
     if curLevel and nextLevel then
         UI:SetVisible({108302},true)
         SetCurRank(curLevel)
@@ -586,7 +589,7 @@ local function ShowRankProgress(curScore, newScore)
                 TimerManager:AddTimer(0.5, function()
                     SetCurRank(curLevel)
                 end)
-                curLevel, nextLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+                curLevel, nextLevel = GameUtils.GetRankLevelByScore(score)
                 if curLevel and nextLevel then
                     maxProgress = nextLevel.base_score - curLevel.base_score
                     UI:SetProgressMaxValue({108302}, maxProgress)
@@ -612,19 +615,19 @@ end
 -- 普通赛胜利
 function GameMatch:OnVictory()
     --加积分
-    local score = _GAME.GameUtils.GetPlayerRankScore()
+    local score = GameUtils.GetPlayerRankScore()
     -- 加金币
-    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    local curLevel = GameUtils.GetRankLevelByScore(score)
     if curLevel then -- 赢得比赛，获取金币数量为当前段位的2倍
         local addCoin = 2*curLevel.cost
-        local coin = _GAME.GameUtils.GetPlayerCoin()
-        _GAME.GameUtils.SetPlayerCoin(coin + addCoin)
-        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.GainCoin, addCoin-curLevel.cost)
+        local coin = GameUtils.GetPlayerCoin()
+        GameUtils.SetPlayerCoin(coin + addCoin)
+        System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.GainCoin, addCoin-curLevel.cost)
     end
 
-    local preRank = _GAME.GameUtils.GetRankLevelByScore(score)
+    local preRank = GameUtils.GetRankLevelByScore(score)
     local newScore = score + UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore
-    local newRank = _GAME.GameUtils.GetRankLevelByScore(newScore)
+    local newRank = GameUtils.GetRankLevelByScore(newScore)
     Log:PrintLog("[GameMatch:OnVictory] Player_BattlePoints_Num" .. newScore)
     if preRank and newRank then
         if preRank.id < newRank.id then
@@ -654,32 +657,32 @@ function GameMatch:OnVictory()
             end
 
             --升到钻石了
-            if _GAME.GameUtils.IsReachDiamondRank(newScore) then
+            if GameUtils.IsReachDiamondRank(newScore) then
                 --判断升钻石的奖励是否已经发放
                 local falg = DataCenter.GetNumber("ReachDiamondRank", true)
                 if falg then
                     if falg ~= 1 then
-                        _GAME.GameUtils.AddPlayerReward(100003, 2)
+                        GameUtils.AddPlayerReward(100003, 2)
                         DataCenter.SetNumber("ReachDiamondRank", 1)
                     end
                 else
-                    _GAME.GameUtils.AddPlayerReward(100003, 2)
+                    GameUtils.AddPlayerReward(100003, 2)
                     DataCenter.SetNumber("ReachDiamondRank", 1)
                 end
             end
         end
     end
-    _GAME.GameUtils.SetPlayerRankScore(newScore)
+    GameUtils.SetPlayerRankScore(newScore)
 
     UI:SetVisible({108298},true)
     UI:SetText({108301}, "+"..UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore)
     ShowRankProgress(score, newScore)
 
     --发奖励
-    local rewards = _GAME.GameUtils.GetRewardsByWin()
+    local rewards = GameUtils.GetRewardsByWin()
     local AllEquipment = DataCenter.GetTable("AllEquipment", true)
     if not AllEquipment then
-        AllEquipment = _GAME.GameUtils.DefaultEquipmentData()
+        AllEquipment = GameUtils.DefaultEquipmentData()
     end
 
     for _, EquipmentID in pairs(rewards) do
@@ -703,10 +706,10 @@ end
 -- 普通赛失败
 function GameMatch:OnFail()
     --减积分
-    local score = _GAME.GameUtils.GetPlayerRankScore()
-    local curLevel = _GAME.GameUtils.GetRankLevelByScore(score)
+    local score = GameUtils.GetPlayerRankScore()
+    local curLevel = GameUtils.GetRankLevelByScore(score)
     Log:PrintLog("[GameMatch:OnFail] Player_BattlePoints_Num" .. score, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
-    _GAME.GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
+    GameUtils.SetPlayerRankScore(score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore)
 
     UI:SetVisible({106509}, true)
     UI:SetText({109444}, UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore.." 积分")
@@ -747,7 +750,7 @@ function GameMatch:InitGoldMatch()
     end
 
     local headIcons = GetHeadIconList()
-    local curScore = _GAME.GameUtils.GetPlayerRankScore()
+    local curScore = GameUtils.GetPlayerRankScore()
     
     table.insert(self.goldWinnerRivalInfo, {isSelf = true})
     -- 取 7 个不重复的整数
@@ -767,9 +770,9 @@ function GameMatch:InitGoldMatch()
     self:UpdateGoldHead()
 
     -- 扣除一次黄金赛奖励
-    local count = _GAME.GameUtils.GetGoldBattleCount()
+    local count = GameUtils.GetGoldBattleCount()
     if count then
-        _GAME.GameUtils.SetGoldBattleCount(count - 1)
+        GameUtils.SetGoldBattleCount(count - 1)
     end
 end
 
@@ -1526,7 +1529,7 @@ end
 function GameMatch:SaveGoldReward(rank)
     local GoldReward = GoldRewardConfig[rank]
     for i, v in pairs(GoldReward) do
-        _GAME.GameUtils.AddPlayerReward(v.id, v.count)
+        GameUtils.AddPlayerReward(v.id, v.count)
     end
 end
 
@@ -1534,14 +1537,14 @@ end
 
 -- 钻石赛胜利
 function GameMatch:OnDiamondVictory()
-    _GAME.GameUtils.ShowGainView({DiamondScore = 16}, function()
+    GameUtils.ShowGainView({DiamondScore = 16}, function()
         System:FireSignEvent("GoHome")
     end)
 end
 
 -- 钻石赛失败
 function GameMatch:OnDiamondFail()
-    _GAME.GameUtils.ShowGainView({DiamondScore = 8}, function()
+    GameUtils.ShowGainView({DiamondScore = 8}, function()
         System:FireSignEvent("GoHome")
     end)
 end

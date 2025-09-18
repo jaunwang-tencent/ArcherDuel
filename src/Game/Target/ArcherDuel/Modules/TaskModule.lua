@@ -4,6 +4,10 @@ local TaskModule = {}
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
+--任务管理器
+local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 
 --- 打开
 function TaskModule:Open()
@@ -44,17 +48,17 @@ function TaskModule:RefreshTaskProcesUI()
                 UI:RegisterClicked(ButtonID, function (ButtonID)
                     DataCenter.SetNumber("Player_CollectTaskDaily_Num", CollectTask | (1 << (index - 1)))
                     if index == 1 then
-                        _GAME.GameUtils.AddPlayerReward(100002, 10)
+                        GameUtils.AddPlayerReward(100002, 10)
                     elseif index == 2 then
-                        _GAME.GameUtils.AddPlayerReward(100002, 15)
+                        GameUtils.AddPlayerReward(100002, 15)
                     elseif index == 3 then
-                        _GAME.GameUtils.AddPlayerReward(100002, 30)
+                        GameUtils.AddPlayerReward(100002, 30)
                     elseif index == 4 then
-                        _GAME.GameUtils.AddPlayerReward(100002, 40)
+                        GameUtils.AddPlayerReward(100002, 40)
                     elseif index == 5 then
-                        _GAME.GameUtils.AddPlayerReward(100002, 55)
+                        GameUtils.AddPlayerReward(100002, 55)
                     elseif index == 6 then
-                        _GAME.GameUtils.AddPlayerReward(200003, 1)
+                        GameUtils.AddPlayerReward(200003, 1)
                     end
                     self:RefreshTaskProcesUI()
                 end)
@@ -73,7 +77,7 @@ end
 
 function TaskModule:RefreshTaskUI()
     self:RefreshTaskProcesUI()
-    local taskMgr = UGCS.Framework.TaskManager:GetInsatnce()
+    local taskMgr = TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTaskByDaily()
     local arr = {}
     for _, v in pairs(ret) do
