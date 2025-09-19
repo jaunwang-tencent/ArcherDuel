@@ -372,8 +372,6 @@ function StoreModule:BuyGood(ShopInfo)
         self:RefreshStore(false)
         --刷新商店资源
         System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
-        --刷新商店存档
-        System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
     end
 end
 
@@ -387,6 +385,12 @@ function StoreModule:AccumulateCollected(Costs)
             local Text = string.format("%d/%d", Costs.MaxCollect - Costs.HasCollect, Costs.MaxCollect)
             UI:SetText({Costs.CollectTimesUI}, Text)
         end
+        if Costs.AdTag == "ad_tag_free" then
+            --免费刷新全局已观看
+            DataCenter.SetNumber("Player_HasAdFreeWatch_Num", Costs.HasCollect)
+        end
+        --刷新商店存档
+        System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
     end
 end
 
@@ -495,13 +499,6 @@ function StoreModule:SeeAd(Costs, Goods)
                 self:AccumulateCollected(Costs)
                 --看完广告后，获得物品
                 self:ShowGainView(Costs, Goods)
-                if AdTag == "ad_tag_free" then
-                    --刷新全局已观看
-                    DataCenter.SetNumber("Player_HasAdFreeWatch_Num", Costs.HasCollect)
-                else
-                    --刷新商店存档
-                    System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
-                end
             end
             --加入回调
             self.AdFinishCallBack[AdTag] = CallBack

@@ -3,8 +3,8 @@
 --A:因为元件脚本的生命周期进局限于单个场景！无法在运行时共享跨场景的述求，并且能解决试玩模式下存档问题
 local DataCenter = {}
 
---玩家数据
-local PlayerData = {
+--归档数据
+local ArchiveData = {
     --数值数据
     NumberData = {},
     --表数据
@@ -27,12 +27,18 @@ function DataCenter.GetPlayerID()
     return PlayerID
 end
 
+--- 重置数据中心
+function DataCenter.Reset()
+    ArchiveData = {}
+    RuntimeData = {}
+end
+
 --- 设置数值数据【写入时务必及时存档】
 ---@param DataName 数据名称
 ---@param DataValue 数据值
 function DataCenter.SetNumber(DataName, DataValue)
     --Log:PrintLog("SetNumber", DataName, DataValue)
-    local NumberData = PlayerData.NumberData
+    local NumberData = ArchiveData.NumberData
     if DataName and DataValue and NumberData then
         if NumberData then
             NumberData[DataName] = DataValue
@@ -47,7 +53,7 @@ end
 ---@return DataValue 数据值
 function DataCenter.GetNumber(DataName, SyncData)
     --Log:PrintLog("GetNumber", DataName, SyncData)
-    local NumberData = PlayerData.NumberData
+    local NumberData = ArchiveData.NumberData
     if DataName and NumberData then
         local DataValue
         if SyncData and Archive:HasPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.Number, DataName) then
@@ -65,7 +71,7 @@ end
 ---@param DataValue 数据值
 function DataCenter.SetString(DataName, DataValue)
     --Log:PrintLog("SetString", DataName, DataValue)
-    local NumberData = PlayerData.NumberData
+    local NumberData = ArchiveData.NumberData
     if DataName and DataValue and NumberData then
         if NumberData then
             NumberData[DataName] = DataValue
@@ -80,7 +86,7 @@ end
 ---@return DataValue 数据值
 function DataCenter.GetString(DataName, SyncData)
     --Log:PrintLog("GetString", DataName, SyncData)
-    local NumberData = PlayerData.NumberData
+    local NumberData = ArchiveData.NumberData
     if DataName and NumberData then
         local DataValue
         if SyncData and Archive:HasPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName) then
@@ -97,7 +103,7 @@ end
 ---@param DataName 数据名称
 ---@param DataValue 数据值
 function DataCenter.SetTable(DataName, DataValue)
-    local TableData = PlayerData.TableData
+    local TableData = ArchiveData.TableData
     if DataName and DataValue and TableData then
         if TableData then
             TableData[DataName] = DataValue
@@ -112,7 +118,7 @@ end
 ---@param SyncData 是否同步数据
 ---@return DatTable 数据值
 function DataCenter.GetTable(DataName, SyncData)
-    local TableData = PlayerData and PlayerData.TableData
+    local TableData = ArchiveData.TableData
     if DataName and TableData then
         local DataValue
         if SyncData and Archive:HasPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName) then

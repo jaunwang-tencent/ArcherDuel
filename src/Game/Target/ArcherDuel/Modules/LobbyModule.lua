@@ -206,6 +206,7 @@ function LobbyModule:LoadData()
     local AllEquipment = DataCenter.GetTable("AllEquipment", true)
     if not AllEquipment then
         DataCenter.SetTable("AllEquipment", self:DefaultEquipmentData())
+        Log:PrintLog("xxxxxxxxxxxxx")
     end
     self:RefreshEquipmentData()
 
