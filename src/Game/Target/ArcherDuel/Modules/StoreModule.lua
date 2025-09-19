@@ -275,17 +275,18 @@ end
 ---@param GoodInfo 商品信息
 function StoreModule:GetEquipmentByGoodInfo(GoodInfo)
     --装备
-    local EquipmentGood
+    local EquipmentID
     if GoodInfo.Content then
         if GoodInfo.Content.Equipments and GoodInfo.GoodIndex then
-            EquipmentGood = GoodInfo.Content.Equipments[GoodInfo.GoodIndex]
+            local EquipmentGood = GoodInfo.Content.Equipments[GoodInfo.GoodIndex]
+            EquipmentID = EquipmentGood.ID
         else
-            EquipmentGood = GoodInfo.Content.Equipment
+            EquipmentID = GoodInfo.Content.EquipmentID
         end
     end
-    if EquipmentGood then
+    if EquipmentID then
         local AllEquipment = DataCenter.GetTable("AllEquipment")
-        local Equipment = AllEquipment[EquipmentGood.ID]
+        local Equipment = AllEquipment and AllEquipment[EquipmentID]
         return Equipment
     end
 end
@@ -398,9 +399,10 @@ function StoreModule:BuyGood(Costs, Goods)
 end
 
 --- 观看广告
----@param Costs 消耗
----@param Goods 商品
-function StoreModule:SeeAd(Costs, Goods)
+---@param Costs 消耗【参见：LobbyModule:DefaultShopData()中的Costs】
+---@param Goods 商品【格式：{ EquipmentID = 5 } or { Diamond = 60 } or { Coin = 1200 }】
+---@param OnFinish 观看结束
+function StoreModule:SeeAd(Costs, Goods, OnFinish)
     local AdTag = Costs.AdTag
     if AdTag then
         local CallBack = self.AdFinishCallBack[AdTag]
@@ -410,6 +412,10 @@ function StoreModule:SeeAd(Costs, Goods)
                 self:AccumulateCollected(Costs)
                 --看完广告后，获得物品
                 self:ShowGainView(Costs, Goods)
+                --抛出结束事件
+                if OnFinish then
+                    OnFinish()
+                end
             end
             --加入回调
             self.AdFinishCallBack[AdTag] = CallBack
@@ -543,13 +549,13 @@ function StoreModule:ShowGainView(Costs, Goods)
     --播放背景动效
     UI:PlayUIAnimation(GainView.BackgroundEffect, 1, 0)
 
-    local Converted, GoodsEquipment, GoodsCoin, GoodsDiamond = false, Goods.Equipment, Goods.Coin, Goods.Diamond
-    if GoodsEquipment then
+    local Converted, EquipmentID, GoodsCoin, GoodsDiamond = false, Goods.EquipmentID, Goods.Coin, Goods.Diamond
+    if EquipmentID then
         --获取装备
         local AllEquipment = DataCenter.GetTable("AllEquipment")
-        local TargetEquipment = AllEquipment[GoodsEquipment.ID]
+        local TargetEquipment = AllEquipment[EquipmentID]
         --获取装备升级信息
-        local Attributes = EquipmentConfig[GoodsEquipment.ID].Attributes
+        local Attributes = EquipmentConfig[EquipmentID].Attributes
         local GradeUpgradeConfig = UpgradeConfig[Attributes.Grade]
         if TargetEquipment.Level < 5 then
             local TotalUpgradePiece = 0
