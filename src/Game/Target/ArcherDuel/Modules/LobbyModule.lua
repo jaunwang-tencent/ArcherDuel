@@ -506,6 +506,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
+                BoxID = 200003,
                 --从宝箱配置中去拿
                 Equipments = {}
             }
@@ -530,6 +531,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
+                BoxID = 200002,
                 --从宝箱配置中去拿
                 Equipments = {}
             }

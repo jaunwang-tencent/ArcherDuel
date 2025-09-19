@@ -152,7 +152,7 @@ function StoreModule:RefreshShop(ShopGroup, ShopItem, HoldInfo)
                     --注册商铺按钮事件
                     UI:RegisterClicked(ShopSlot.ID, function()
                         --触发一次购买行为【刷新存档】
-                        self:BuyGood(ShopInfo)
+                        self:BuyGood(ShopInfo.Content.Costs, ShopInfo.Content.Goods)
                     end)
                     table.insert(self.ShopInfos, ShopInfo)
                 end
@@ -300,12 +300,29 @@ function StoreModule:GoodDetail(GoodInfo)
     end
 end
 
+--- 累计收集次数
+---@param Costs 消耗
+function StoreModule:AccumulateCollected(Costs)
+    if Costs and Costs.HasCollect and Costs.MaxCollect then
+        Costs.HasCollect = Costs.HasCollect + 1
+        --刷新视图
+        if Costs.CollectTimesUI then
+            local Text = string.format("%d/%d", Costs.MaxCollect - Costs.HasCollect, Costs.MaxCollect)
+            UI:SetText({Costs.CollectTimesUI}, Text)
+        end
+        if Costs.AdTag == "ad_tag_free" then
+            --免费刷新全局已观看
+            DataCenter.SetNumber("Player_HasAdFreeWatch_Num", Costs.HasCollect)
+        end
+        --刷新商店存档
+        System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
+    end
+end
+
 --- 购买商品
----@param ShopInfo 商铺信息
-function StoreModule:BuyGood(ShopInfo)
-    local ShopContent = ShopInfo.Content
-    local Costs = ShopContent.Costs
-    local Goods = ShopContent.Goods
+---@param Costs 消耗
+---@param Goods 商品
+function StoreModule:BuyGood(Costs, Goods)
     --前置条件检测
     if Costs.HasCollect and Costs.MaxCollect and Costs.HasCollect >= Costs.MaxCollect then
         --超过消耗数量则不允购买
@@ -330,7 +347,7 @@ function StoreModule:BuyGood(ShopInfo)
             self:ShowAdView(Goods)
         end
         if Success then
-            self:OpenBox(200003)
+            self:OpenBox(Goods.BoxID)
         end
     elseif Costs.SilverBox then
         if SilverBox >= Costs.SilverBox then
@@ -346,7 +363,7 @@ function StoreModule:BuyGood(ShopInfo)
             self:ShowAdView(Goods)
         end
         if Success then
-            self:OpenBox(200002)
+            self:OpenBox(Goods.BoxID)
         end
     elseif Costs.Diamond then
         --消耗砖石
@@ -368,9 +385,6 @@ function StoreModule:BuyGood(ShopInfo)
     elseif Costs.AdTag then
         --观看广告
         self:SeeAd(Costs, Goods)
-    --else
-        --不可购买
-        --UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
     end
 
     if Success then
@@ -383,27 +397,8 @@ function StoreModule:BuyGood(ShopInfo)
     end
 end
 
---- 累计收集次数
----@param Costs 消耗
-function StoreModule:AccumulateCollected(Costs)
-    if Costs and Costs.HasCollect and Costs.MaxCollect then
-        Costs.HasCollect = Costs.HasCollect + 1
-        --刷新视图
-        if Costs.CollectTimesUI then
-            local Text = string.format("%d/%d", Costs.MaxCollect - Costs.HasCollect, Costs.MaxCollect)
-            UI:SetText({Costs.CollectTimesUI}, Text)
-        end
-        if Costs.AdTag == "ad_tag_free" then
-            --免费刷新全局已观看
-            DataCenter.SetNumber("Player_HasAdFreeWatch_Num", Costs.HasCollect)
-        end
-        --刷新商店存档
-        System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
-    end
-end
-
 --- 观看广告
----@param Costs 广告标识
+---@param Costs 消耗
 ---@param Goods 商品
 function StoreModule:SeeAd(Costs, Goods)
     local AdTag = Costs.AdTag
@@ -425,7 +420,6 @@ function StoreModule:SeeAd(Costs, Goods)
 end
 
 --- 显示广告视图，通过看广告来获取砖石【免费获取，每天固定数量】
----@param AdTag 广告标识
 ---@param Goods 物品
 function StoreModule:ShowAdView(Goods)
     local AdView = UIConfig.AdView

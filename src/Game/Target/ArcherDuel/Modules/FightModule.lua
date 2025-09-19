@@ -221,13 +221,15 @@ function FightModule:RegreshBodyUI()
 end
 
 function FightModule:OnClickAd1()
-    --TODO：广告
-    --IAA:LetPlayerWatchAds()
+    --看广告获得宝箱
+    --StoreModule:SeeAd(Costs, Goods)
+    UI:ShowMessageTip("看广告获得宝箱")
 end
 
 function FightModule:OnClickAd2()
-    --TODO：广告
-    --IAA:LetPlayerWatchAds()
+    --看广告获得砖石
+    --StoreModule:SeeAd(Costs, Goods)
+    UI:ShowMessageTip("看广告获得砖石")
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
