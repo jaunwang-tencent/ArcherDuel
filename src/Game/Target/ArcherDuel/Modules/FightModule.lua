@@ -180,6 +180,9 @@ function FightModule:Close()
         UI:UnRegisterClicked(Completed)
         UI:UnRegisterClicked(Button)
     end
+
+    UI:UnRegisterClicked(UIConfig.BoxView.ThreeItem.ItemGroup[2].AdButton)
+    UI:UnRegisterClicked(UIConfig.BoxView.ThreeItem.ItemGroup[3].AdButton)
 end
 
 --- 刷新身体上的数据
@@ -468,6 +471,37 @@ function FightModule:OnRank(RankBoxReward_Table)
             UGCS.Framework.Executor.Delay(0.5, function()
                 UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},true)
                 UI:SetVisible({ThreeItem.ItemGroup[2].Text, ThreeItem.ItemGroup[3].Text},true)
+                UI:SetVisible({ThreeItem.ItemGroup[2].ad, ThreeItem.ItemGroup[3].ad},true)
+                UI:RegisterClicked(ThreeItem.ItemGroup[2].AdButton,function()
+                    Log:PrintLog("看广告获取钻石数量" .. BoxRewards[2])
+
+                    local callback = function()
+                        local BoxItem = ThreeItem.ItemGroup[2]
+                        UI:SetText({BoxItem.Text}, tostring(BoxRewards[2] * 3))
+                        UI:SetVisible({BoxItem.ad},false)
+                        BoxRewards[2] = BoxRewards[2] * 3
+                    end
+
+                    local Costs = {
+                        AdTag = "ad_tag_free_three_diamond"
+                    }
+                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, callback)
+                end)
+                UI:RegisterClicked(ThreeItem.ItemGroup[3].AdButton,function()
+                    Log:PrintLog("看广告获取黄金数量" .. BoxRewards[3])
+
+                    local callback = function()
+                        local BoxItem = ThreeItem.ItemGroup[3]
+                        UI:SetText({BoxItem.Text}, tostring(BoxRewards[3] * 3))
+                        UI:SetVisible({BoxItem.ad},false)
+                        BoxRewards[3] = BoxRewards[3] * 3
+                    end
+
+                    local Costs = {
+                        AdTag = "ad_tag_free_three_coin"
+                    }
+                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, callback)
+                end)
             end)
         end)
     end)
@@ -508,6 +542,7 @@ function FightModule:OnRank(RankBoxReward_Table)
         end
         UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
         UI:SetVisible({ThreeItem.ItemGroup[1].Text, ThreeItem.ItemGroup[2].Text, ThreeItem.ItemGroup[3].Text},false)
+        UI:SetVisible({ThreeItem.ItemGroup[2].ad, ThreeItem.ItemGroup[3].ad},false)
 
         --注销事件
         UI:UnRegisterClicked(ThreeItem.Button.ID)
