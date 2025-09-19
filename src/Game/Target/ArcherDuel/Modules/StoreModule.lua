@@ -120,108 +120,125 @@ function StoreModule:RefreshPrice(ShopView, ShopCosts)
 end
 
 --- 刷新商铺【一般地购买某个商品只有一种途径（一个按钮），但不排除会有多个购买途径，比如限定奖池，可以开宝箱、也可以观看广告】
----@param ShopGroup 商铺视图组
+---@param ShopSlot 商铺槽
 ---@param ShopItem 商铺数据项
 ---@param HoldInfo 持有信息
-function StoreModule:RefreshShop(ShopGroup, ShopItem, HoldInfo)
+function StoreModule:RefreshShop(ShopSlot, ShopItem, HoldInfo)
     local ShopGoods = ShopItem and ShopItem.Goods
-    if ShopGroup and ShopGoods then
-        for ShopIndex, ShopSlot in pairs(ShopGroup) do
-            --消耗信息
-            local ShopCosts = ShopItem.Costs[ShopIndex]
-            --处理商铺
-            if ShopCosts and ShopGoods then
-                --刷新价格
-                self:RefreshPrice(ShopSlot, ShopCosts)
+    if ShopSlot and ShopGoods then
+        --消耗信息
+        local ShopCosts = ShopItem.Costs
+        --处理商铺
+        if ShopCosts and ShopGoods then
+            --刷新价格
+            self:RefreshPrice(ShopSlot, ShopCosts)
 
-                --持有信息
-                if HoldInfo then
-                    local ShopInfo = {
-                        --寄存商铺视图，以便刷新
-                        ShopView = ShopSlot,
-                        --商铺点击
-                        SlotID = ShopSlot.ID,
-                        --商铺内容
-                        Content = {
-                            Costs = ShopCosts,
-                            Goods = ShopGoods
-                        }
-                    }
-                    --注册商铺按钮事件
-                    UI:RegisterClicked(ShopSlot.ID, function()
-                        --触发一次购买行为【刷新存档】
-                        self:BuyGood(ShopInfo.Content.Costs, ShopInfo.Content.Goods)
-                    end)
-                    table.insert(self.ShopInfos, ShopInfo)
-                end
+            --持有信息
+            if HoldInfo then
+                local ShopInfo = {
+                    --寄存商铺视图，以便刷新
+                    ShopView = ShopSlot,
+                    --商铺点击
+                    SlotID = ShopSlot.ID,
+                    --商品消耗
+                    Costs = ShopCosts,
+                    --商铺商品
+                    Goods = ShopGoods
+                }
+                --注册商铺按钮事件
+                UI:RegisterClicked(ShopSlot.ID, function()
+                    --触发一次购买行为【刷新存档】
+                    self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
+                end)
+                table.insert(self.ShopInfos, ShopInfo)
             end
         end
     end
 end
 
 --- 刷新商品
----@param GoodGroup 商品视图组
+---@param GoodSlot 商品槽
 ---@param ShopItem 商铺数据项
 ---@param HoldInfo 持有信息
-function StoreModule:RefreshGood(GoodGroup, ShopItem, HoldInfo)
+function StoreModule:RefreshGood(GoodSlot, ShopItem, HoldInfo)
     --处理商品
     local ShopGoods = ShopItem.Goods
-    if GoodGroup then
-        for GoodIndex, GoodSlot in pairs(GoodGroup) do
-            local GoodInfo = {
-                --寄存商品视图，以便刷新
-                GoodView = GoodSlot,
-                --商品点击
-                SlotID = GoodSlot.ID,
-                --商品索引
-                GoodIndex = GoodIndex,
-                --商品内容
-                Content = ShopGoods
-            }
-            local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
-            if Equipment then
-                --装备
-                GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
-                --装备品质
-                if GoodSlot.Background then
-                    local EquipmentData = EquipmentConfig[Equipment.ID]
-                    GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+    if GoodSlot then
+        local GoodInfo = {
+            --寄存商品视图，以便刷新
+            GoodView = GoodSlot,
+            --商品点击
+            SlotID = GoodSlot.ID,
+            --商品内容
+            Goods = ShopGoods
+        }
+        local Equipment = self:GetEquipmentByID(ShopGoods.EquipmentID)
+        if Equipment then
+            --装备
+            GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
+            --装备品质
+            if GoodSlot.Background then
+                local EquipmentData = EquipmentConfig[Equipment.ID]
+                GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+            end
+        else
+            if not GoodSlot.IconLock then
+                if ShopGoods.Coin then
+                    --显示金币
+                    GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
+                elseif ShopGoods.Diamond then
+                    --显示砖石
+                    GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
                 end
-            else
-                if not GoodSlot.IconLock then
-                    if ShopGoods.Coin then
-                        --显示金币
-                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
-                    elseif ShopGoods.Diamond then
-                        --显示砖石
-                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
+            end
+        end
+        --装备槽
+        local EquipmentSlots = GoodSlot.EquipmentSlots
+        local EquipmentIDs = ShopGoods.EquipmentIDs
+        if EquipmentIDs then
+            for EquipmentIndex, EquipmentID in ipairs(EquipmentIDs) do
+                Equipment = self:GetEquipmentByID(EquipmentID)
+                if Equipment then
+                    local EquipmentSlot = EquipmentSlots[EquipmentIndex]
+                    --装备
+                    GameUtils.SetImageWithEquipment(EquipmentSlot, Equipment)
+                end
+            end
+        end
+        --点击次数
+        if GoodSlot.Times then
+            --消耗信息【这种情况下是一一映射】
+            local ShopCosts = ShopItem.Costs
+            --寄存收集次数，即便刷新
+            ShopCosts.CollectTimesUI = GoodSlot.Times
+            local Text = string.format("%d/%d", ShopCosts.MaxCollect - ShopCosts.HasCollect, ShopCosts.MaxCollect)
+            UI:SetText({GoodSlot.Times}, Text)
+        end
+        --商品数量
+        if GoodSlot.Count then
+            local Value = ShopGoods.Coin or ShopGoods.Diamond
+            local Text = tostring(Value)
+            UI:SetText({GoodSlot.Count}, Text)
+        end
+
+        --持有信息
+        if HoldInfo then
+            --注册商品点击装备槽事件
+            if EquipmentSlots and EquipmentIDs then
+                for SlotIndex, EquipmentSlot in ipairs(EquipmentSlots) do
+                    local EquipmentID = EquipmentIDs[SlotIndex]
+                    if EquipmentID then
+                        UI:RegisterClicked(EquipmentSlot, function()
+                            --装备
+                            Equipment = self:GetEquipmentByID(EquipmentID)
+                            if Equipment then
+                                EquipmentDetailModule:Open(Equipment)
+                            end
+                        end)
                     end
                 end
             end
-            --点击次数
-            if GoodSlot.Times then
-                --消耗信息【这种情况下是一一映射】
-                local ShopCosts = ShopItem.Costs[GoodIndex]
-                --寄存收集次数，即便刷新
-                ShopCosts.CollectTimesUI = GoodSlot.Times
-                local Text = string.format("%d/%d", ShopCosts.MaxCollect - ShopCosts.HasCollect, ShopCosts.MaxCollect)
-                UI:SetText({GoodSlot.Times}, Text)
-            end
-            --商品数量
-            if GoodSlot.Count then
-                local Value = ShopGoods.Coin or ShopGoods.Diamond
-                local Text = tostring(Value)
-                UI:SetText({GoodSlot.Count}, Text)
-            end
-
-            --持有信息
-            if HoldInfo then
-                --注册商品点击事件
-                UI:RegisterClicked(GoodInfo.SlotID, function()
-                    self:GoodDetail(GoodInfo)
-                end)
-                table.insert(self.GoodInfos, GoodInfo)
-            end
+            table.insert(self.GoodInfos, GoodInfo)
         end
     end
 end
@@ -256,13 +273,13 @@ function StoreModule:RefreshStore(HoldInfo)
         local ShopItems = ItemsMap[ActivityIndex]
         if ShopItems then
             for ViewIndex, ShopItem in ipairs(ShopItems) do
-                local ViewSlot = Activity.Views[ViewIndex]
-                if ViewSlot then
+                local ActivityView = Activity.Views[ViewIndex]
+                if ActivityView then
                     --刷新商铺
-                    self:RefreshShop(ViewSlot.ShopGroup, ShopItem, HoldInfo)
+                    self:RefreshShop(ActivityView.ShopSlot, ShopItem, HoldInfo)
 
                     --刷新商品
-                    self:RefreshGood(ViewSlot.GoodGroup, ShopItem, HoldInfo)
+                    self:RefreshGood(ActivityView.GoodSlot, ShopItem, HoldInfo)
                 end
             end
         end
@@ -270,32 +287,12 @@ function StoreModule:RefreshStore(HoldInfo)
 end
 
 --- 获取指定商品信息对应的装备数据
----@param GoodInfo 商品信息
-function StoreModule:GetEquipmentByGoodInfo(GoodInfo)
-    --装备
-    local EquipmentID
-    if GoodInfo.Content then
-        if GoodInfo.Content.Equipments and GoodInfo.GoodIndex then
-            local EquipmentGood = GoodInfo.Content.Equipments[GoodInfo.GoodIndex]
-            EquipmentID = EquipmentGood.ID
-        else
-            EquipmentID = GoodInfo.Content.EquipmentID
-        end
-    end
+---@param EquipmentID 装备ID
+function StoreModule:GetEquipmentByID(EquipmentID)
     if EquipmentID then
         local AllEquipment = DataCenter.GetTable("AllEquipment")
         local Equipment = AllEquipment and AllEquipment[EquipmentID]
         return Equipment
-    end
-end
-
---- 商品详情
----@param GoodInfo 商品信息
-function StoreModule:GoodDetail(GoodInfo)
-    --装备
-    local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
-    if Equipment then
-        EquipmentDetailModule:Open(Equipment)
     end
 end
 
@@ -325,7 +322,6 @@ function StoreModule:BuyGood(Costs, Goods)
     --前置条件检测
     if Costs.HasCollect and Costs.MaxCollect and Costs.HasCollect >= Costs.MaxCollect then
         --超过消耗数量则不允购买
-        --UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
         return
     end
     local GoldBox = DataCenter.GetNumber("GoldBox")

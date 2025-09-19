@@ -491,51 +491,61 @@ function LobbyModule:DefaultShopData()
         [1] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗一个黄金宝箱【约定：关系或】
-                    GoldBox = 1,
-                    --或者600个砖石
-                    Diamond = 600,
-                },
-                [2] = {
-                    --广告资源
-                    AdTag = "ad_tag_gold_box",
-                    --广告冷却时间
-                    AdCoolTime = 24 * 3600,
-                    --点击时间戳
-                    ClickTimestamp = 0
-                }
+                --消耗一个黄金宝箱【约定：关系或】
+                GoldBox = 1,
+                --或者600个砖石
+                Diamond = 600,
             },
             --商品
             Goods = {
                 BoxID = 200003,
                 --从宝箱配置中去拿
-                Equipments = {}
+                EquipmentIDs = {}
             }
         },
         [2] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗一个白银宝箱【约定：关系或】
-                    SilverBox = 1,
-                    --或者600个砖石
-                    Diamond = 180,
-                },
-                [2] = {
-                    --广告资源
-                    AdTag = "ad_tag_silver_box",
-                    --广告冷却时间
-                    AdCoolTime = 24 * 3600,
-                    --点击时间戳
-                    ClickTimestamp = 0
-                }
+                --广告资源
+                AdTag = "ad_tag_gold_box",
+                --广告冷却时间
+                AdCoolTime = 24 * 3600,
+                --点击时间戳
+                ClickTimestamp = 0
+            },
+            --商品
+            Goods = {
+                GoldBox = 1
+            }
+        },
+        [3] = {
+            --费用
+            Costs = {
+                --消耗一个白银宝箱【约定：关系或】
+                SilverBox = 1,
+                --或者600个砖石
+                Diamond = 180,
             },
             --商品
             Goods = {
                 BoxID = 200002,
                 --从宝箱配置中去拿
-                Equipments = {}
+                EquipmentIDs = {}
+            }
+        },
+        [4] = {
+            --费用
+            Costs = {
+                --广告资源
+                AdTag = "ad_tag_silver_box",
+                --广告冷却时间
+                AdCoolTime = 24 * 3600,
+                --点击时间戳
+                ClickTimestamp = 0
+            },
+            --商品
+            Goods = {
+                SilverBox = 1,
             }
         },
     }
@@ -544,14 +554,12 @@ function LobbyModule:DefaultShopData()
         [1] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗100个砖石
-                    Diamond = 100,
-                    --最大收集次数
-                    MaxCollect = 5,
-                    --已收集次数
-                    HasCollect = 0
-                }
+                --消耗100个砖石
+                Diamond = 100,
+                --最大收集次数
+                MaxCollect = 5,
+                --已收集次数
+                HasCollect = 0
             },
             --商品
             Goods = {
@@ -561,14 +569,12 @@ function LobbyModule:DefaultShopData()
         [2] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗50个砖石
-                    Diamond = 50,
-                    --最大收集次数
-                    MaxCollect = 5,
-                    --已收集次数
-                    HasCollect = 0
-                }
+                --消耗50个砖石
+                Diamond = 50,
+                --最大收集次数
+                MaxCollect = 5,
+                --已收集次数
+                HasCollect = 0
             },
             --商品
             Goods = {
@@ -578,14 +584,12 @@ function LobbyModule:DefaultShopData()
         [3] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗100个砖石
-                    Diamond = 600,
-                    --最大收集次数
-                    MaxCollect = 5,
-                    --已收集次数
-                    HasCollect = 0
-                }
+                --消耗100个砖石
+                Diamond = 600,
+                --最大收集次数
+                MaxCollect = 5,
+                --已收集次数
+                HasCollect = 0
             },
             --商品
             Goods = {
@@ -619,10 +623,8 @@ function LobbyModule:DefaultShopData()
         [1] = {
             --费用
             Costs = {
-                [1] = {
-                    --广告资源
-                    AdTag = "ad_tag_coin",
-                }
+                --广告资源
+                AdTag = "ad_tag_coin",
             },
             --商品
             Goods = {
@@ -632,10 +634,8 @@ function LobbyModule:DefaultShopData()
         [2] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗12000个砖石
-                    Diamond = 1000,
-                }
+                --消耗12000个砖石
+                Diamond = 1000,
             },
             --商品
             Goods = {
@@ -645,10 +645,8 @@ function LobbyModule:DefaultShopData()
         [3] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗4200个砖石
-                    Diamond = 4200,
-                }
+                --消耗4200个砖石
+                Diamond = 4200,
             },
             --商品
             Goods = {
@@ -696,17 +694,17 @@ function LobbyModule:RefreshDaily()
         local GroupByGrade = DataCenter.Get("GroupByGrade")
         local EquipmentGroup = GroupByGrade[TargetGoodConfig.Grade]
         local EquipmentID = EquipmentGroup[math.random(1, #EquipmentGroup)].ID
-        DailyItem.Costs[1].MaxCollect = TargetGoodConfig.Times
-        DailyItem.Costs[1].HasCollect = 0
-        DailyItem.Costs[1].Diamond = TargetGoodConfig.Price
+        DailyItem.Costs.MaxCollect = TargetGoodConfig.Times
+        DailyItem.Costs.HasCollect = 0
+        DailyItem.Costs.Diamond = TargetGoodConfig.Price
         local Goods = DailyItem.Goods
         Goods.EquipmentID = EquipmentID
     end
 
     --刷新免费砖石
     local AllDiamondItem = AllShops.DiamondItem
-    AllDiamondItem[1].Costs[1].MaxCollect = 5
-    AllDiamondItem[1].Costs[1].HasCollect = 0
+    AllDiamondItem[1].Costs.MaxCollect = 5
+    AllDiamondItem[1].Costs.HasCollect = 0
     DataCenter.SetTable("AllShops", AllShops)
 
     --免费广告观看次数
@@ -725,18 +723,20 @@ function LobbyModule:RefreshWeekly()
     local AllLimitItem = AllShops.LimitItem
     for _, LimitItem in pairs(AllLimitItem) do
         local BoxEquipmentIdsSet
-        if LimitItem.Costs[1].GoldBox then
+        if LimitItem.Costs.GoldBox then
             BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
-        elseif LimitItem.Costs[1].SilverBox then
+        elseif LimitItem.Costs.SilverBox then
             BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
         end
+
+        --装备槽【主要用于物品展示】
         local Goods = LimitItem.Goods
-        Goods.Equipments = {}
+        Goods.EquipmentIDs = {}
         if BoxEquipmentIdsSet then
             WeeklyIndex = (WeeklyIndex % #BoxEquipmentIdsSet) + 1
             local BoxEquipmentIds = BoxEquipmentIdsSet[WeeklyIndex]
             for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
-                Goods.Equipments[Index] = { ID = BoxEquipmentId }
+                Goods.EquipmentIDs[Index] = BoxEquipmentId
             end
         end
     end
