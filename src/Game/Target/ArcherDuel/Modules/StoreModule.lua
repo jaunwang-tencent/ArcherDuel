@@ -410,13 +410,14 @@ function StoreModule:SeeAd(Costs, Goods, OnFinish)
         local CallBack = self.AdFinishCallBack[AdTag]
         if not CallBack then
             CallBack = function()
-                --累计收集次数
-                self:AccumulateCollected(Costs)
-                --看完广告后，获得物品
-                self:ShowGainView(Costs, Goods)
-                --抛出结束事件
                 if OnFinish then
+                    --使用自定义结束事件
                     OnFinish()
+                else
+                    --累计收集次数
+                    self:AccumulateCollected(Costs)
+                    --看完广告后，获得物品
+                    self:ShowGainView(Costs, Goods)
                 end
             end
             --加入回调
