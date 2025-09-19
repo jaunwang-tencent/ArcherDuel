@@ -450,7 +450,7 @@ function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
         --广告观看
         IAA:LetPlayerWatchAds(AdTag)
         --PC端开发，可以打开这句话来模拟广告结束事件，已完成
-        CallBack()
+        --CallBack()
     end
 end
 
