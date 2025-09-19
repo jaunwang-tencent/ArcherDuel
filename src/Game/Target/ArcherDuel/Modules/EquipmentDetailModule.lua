@@ -133,26 +133,33 @@ function EquipmentDetailModule:Open(Equipment)
         UI:SetVisible({AttributeLabel},true)
     end
 
+    local AttributeInfo = DetailView.AttributeInfo
+    local AttributeList = {
+        [1] = { Describe = "头部额外增伤", Value = string.format("+%d%%", Attributes.HeadShotIncrease) },
+        [2] = { Describe = "躯干额外增伤", Value = string.format("+%d%%", Attributes.BodyShotIncrease) },
+        [3] = { Describe = "头部额外减伤", Value = string.format("-%d%%", Attributes.HeadShotReduction) },
+        [4] = { Describe = "躯干额外减伤", Value = string.format("-%d%%", Attributes.BodyShotReduction) },
+        [5] = { Describe = "伤害减免", Value = string.format("-%d%%", Attributes.DamageReduction) },
+    }
+    local DescribeIndex
     if Attributes.HeadShotIncrease ~= 0 then
-        UI:SetVisible({DetailView.AttributeInfo.ID},true)
-        UI:SetText({DetailView.AttributeInfo.Describe},"头部额外增伤")
-        UI:SetText({DetailView.AttributeInfo.Value}, Attributes.HeadShotIncrease.."%")
+        DescribeIndex = 1
     elseif Attributes.BodyShotIncrease ~= 0 then
-        UI:SetVisible({DetailView.AttributeInfo.ID},true)
-        UI:SetText({DetailView.AttributeInfo.Describe},"躯干额外增伤")
-        UI:SetText({DetailView.AttributeInfo.Value}, Attributes.BodyShotIncrease.."%")
+        DescribeIndex = 2
     elseif Attributes.HeadShotReduction ~= 0 then
-        UI:SetVisible({DetailView.AttributeInfo.ID},true)
-        UI:SetText({DetailView.AttributeInfo.Describe},"头部额外减伤")
-        UI:SetText({DetailView.AttributeInfo.Value}, Attributes.HeadShotReduction.."%")
+        DescribeIndex = 3
     elseif Attributes.BodyShotReduction ~= 0 then
-        UI:SetVisible({DetailView.AttributeInfo.ID},true)
-        UI:SetText({DetailView.AttributeInfo.Describe},"躯干额外减伤")
-        UI:SetText({DetailView.AttributeInfo.Value}, Attributes.BodyShotReduction.."%")
+        DescribeIndex = 4
     elseif Attributes.DamageReduction ~= 0 then
-        UI:SetVisible({DetailView.AttributeInfo.ID},true)
-        UI:SetText({DetailView.AttributeInfo.Describe},"伤害减免")
-        UI:SetText({DetailView.AttributeInfo.Value}, Attributes.DamageReduction.."%")
+        DescribeIndex = 5
+    end
+    if DescribeIndex then
+        UI:SetVisible({AttributeInfo.ID}, true)
+        local AttributeItem = AttributeList[DescribeIndex]
+        UI:SetText({AttributeInfo.Describe}, AttributeItem.Describe)
+        UI:SetText({AttributeInfo.Value}, AttributeItem.Value)
+    else
+        UI:SetVisible({AttributeInfo.ID}, false)
     end
 
     --【其它信息，待填充】
