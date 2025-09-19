@@ -494,7 +494,7 @@ function GameMatch:MathCountDown(MatchInfo)
         end
         if EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId] then
             weaponIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId].AssetIndex
-            weaponGradeIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].Attributes.Grade
+            weaponGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId].Attributes.Grade
         end
         if MatchInfo.BattleRivalInfo.equipments["Character"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]] then
             bodyIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].AssetIndex
