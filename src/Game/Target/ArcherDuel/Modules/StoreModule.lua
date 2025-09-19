@@ -10,8 +10,6 @@ local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
---装备详情模块
-local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
 --任务事件
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 
@@ -258,7 +256,7 @@ function StoreModule:RefreshGood(GoodSlot, ShopItem, HoldInfo)
                             --装备
                             Equipment = self:GetEquipmentByID(EquipmentID)
                             if Equipment then
-                                EquipmentDetailModule:Open(Equipment)
+                                UGCS.Target.ArcherDuel.Modules.EquipmentModule:OpenDetail(Equipment)
                             end
                         end)
                     end
