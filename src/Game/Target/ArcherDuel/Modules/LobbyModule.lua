@@ -131,6 +131,8 @@ function LobbyModule:Update(DeltaTime)
         self._lastDate = {year=year, month=month, day=day}
     else
         if year ~= self._lastDate.year or month ~= self._lastDate.month or day ~= self._lastDate.day then
+            --在线并且跨天了，要刷新最后登录时间，避免重复刷新
+            DataCenter.SetNumber("Player_LastLoginTime_Num", nowTs)
             self:RefreshDaily()
             self:RuntimeDailyRefresh()
             self._lastDate = {year=year, month=month, day=day}
