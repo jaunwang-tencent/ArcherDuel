@@ -231,7 +231,7 @@ function FightModule:OnClickAd1()
     local Goods = {
         BoxID = 200001
     }
-    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods)
+    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true)
 end
 
 function FightModule:OnClickAd2()
@@ -242,7 +242,7 @@ function FightModule:OnClickAd2()
     local Goods = {
         Diamond = 60
     }
-    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods)
+    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true)
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
@@ -485,7 +485,7 @@ function FightModule:OnRank(RankBoxReward_Table)
                     local Costs = {
                         AdTag = "ad_tag_free_three_diamond"
                     }
-                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, callback)
+                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
                 end)
                 UI:RegisterClicked(ThreeItem.ItemGroup[3].AdButton,function()
                     Log:PrintLog("看广告获取黄金数量" .. BoxRewards[3])
@@ -500,7 +500,7 @@ function FightModule:OnRank(RankBoxReward_Table)
                     local Costs = {
                         AdTag = "ad_tag_free_three_coin"
                     }
-                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, callback)
+                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
                 end)
             end)
         end)

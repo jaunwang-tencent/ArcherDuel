@@ -375,7 +375,7 @@ function StoreModule:BuyGood(Costs, Goods)
         else
             if Costs.AdTag then
                 --观看广告
-                self:SeeAd(Costs, Goods)
+                self:SeeAd(Costs, Goods, true)
             else
                 --在此弹出看广告弹窗
                 self:ShowAdView(Goods)
@@ -383,7 +383,7 @@ function StoreModule:BuyGood(Costs, Goods)
         end
     elseif Costs.AdTag then
         --观看广告
-        self:SeeAd(Costs, Goods)
+        self:SeeAd(Costs, Goods, true)
     end
 
     if Success then
@@ -399,8 +399,9 @@ end
 --- 观看广告
 ---@param Costs 消耗【参见：LobbyModule:DefaultShopData()中的Costs】
 ---@param Goods 商品【格式：{ EquipmentID = 5 } or { Diamond = 60 } or { Coin = 1200 }】
+---@param NeedGain 需要获得
 ---@param OnFinish 观看结束
-function StoreModule:SeeAd(Costs, Goods, OnFinish)
+function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
     local AdTag = Costs.AdTag
     if AdTag then
         --广告结束回调<AdTag, CallBack>
@@ -413,7 +414,8 @@ function StoreModule:SeeAd(Costs, Goods, OnFinish)
                 if OnFinish then
                     --使用自定义结束事件
                     OnFinish()
-                else
+                end
+                if NeedGain then
                     --累计收集次数
                     self:AccumulateCollected(Costs)
                     --看完广告后，获得物品
@@ -448,7 +450,7 @@ function StoreModule:ShowAdView(Goods)
             MaxCollect = MaxCollect,
             CollectTimesUI = AdView.Times
         }
-        self:SeeAd(Costs, Goods)
+        self:SeeAd(Costs, Goods, true)
         --注销按钮事件
         UI:UnRegisterClicked(AdView.AdButton)
         UI:UnRegisterClicked(AdView.CloseButton)
