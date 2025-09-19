@@ -391,15 +391,16 @@ function LobbyModule:DefaultEquipmentData()
         }
         --基础数据名称
         local IDName = string.format("Equipped_%s_ID", EquipmentData.TypeName)
+        local LvName = string.format("Equipped_%s_Lv", EquipmentData.TypeName)
         local TargetID = DefaultBaseData[IDName]
         if TargetID == ID then
             Equipment.Unlock = true
             Equipment.Equipped = true
             Equipment.Piece = 10    --缺省十个
             Equipment.Level = 3     --缺省三级
+            DataCenter.SetNumber(IDName, Equipment.ID)
+            DataCenter.SetNumber(LvName, Equipment.Level)
         end
-        local LvName = string.format("Equipped_%s_Lv", EquipmentData.TypeName)
-        DefaultBaseData[LvName] = Equipment.Level
         AllEquipment[ID] = Equipment
     end
     return AllEquipment
@@ -454,9 +455,9 @@ function LobbyModule:RefreshEquipmentData()
             --刷新基础数据
             if EquipmentData then
                 local IDName = string.format("Equipped_%s_ID", EquipmentData.TypeName)
-                DefaultBaseData[IDName] = Equipment.ID
                 local LvName = string.format("Equipped_%s_Lv", EquipmentData.TypeName)
-                DefaultBaseData[LvName] = Equipment.Level
+                DataCenter.SetNumber(IDName, Equipment.ID)
+                DataCenter.SetNumber(LvName, Equipment.Level)
             end
         end
     end
