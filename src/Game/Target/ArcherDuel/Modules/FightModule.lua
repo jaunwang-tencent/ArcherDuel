@@ -12,8 +12,6 @@ local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
---装备详情模块
-local EquipmentDetailModule = UGCS.Target.ArcherDuel.Modules.EquipmentDetailModule
 --任务管理器
 local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 
@@ -219,7 +217,8 @@ function FightModule:RegreshBodyUI()
         if Equipment then
              --点击装备事件
              UI:RegisterClicked(EquipmentSlot.Image, function()
-                EquipmentDetailModule:Open(Equipment)
+                --装备详情模块
+                UGCS.Target.ArcherDuel.Modules.EquipmentModule:OpenDetail(Equipment)
             end)
             --设置等级
             UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
