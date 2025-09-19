@@ -1488,7 +1488,7 @@ local UIConfig = {
             Background = 111040
         },
         --金币槽
-        CoinSlot = {
+        ResourceSlot = {
             ID = 115196,
             --图标
             Icon = 115189,

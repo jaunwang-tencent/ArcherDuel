@@ -423,6 +423,8 @@ function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
         end
         --广告观看
         IAA:LetPlayerWatchAds(AdTag)
+        --测试
+        --CallBack()
     end
 end
 
@@ -545,11 +547,10 @@ end
 function StoreModule:ShowGainView(Costs, Goods)
     local GainView = UIConfig.GainView
     local GoodSlot = GainView.GoodSlot
-    local CoinSlot = GainView.CoinSlot
+    local ResourceSlot = GainView.ResourceSlot
     UI:SetVisible({GainView.ID}, true)
     --播放背景动效
     UI:PlayUIAnimation(GainView.BackgroundEffect, 1, 0)
-
     local Converted, EquipmentID, GoodsCoin, GoodsDiamond = false, Goods.EquipmentID, Goods.Coin, Goods.Diamond
     if EquipmentID then
         --获取装备
@@ -581,7 +582,7 @@ function StoreModule:ShowGainView(Costs, Goods)
         else
             --显示物品
             UI:SetVisible({GoodSlot.ID}, true)
-            UI:SetVisible({CoinSlot.ID}, false)
+            UI:SetVisible({ResourceSlot.ID}, false)
 
             --累加碎片
             TargetEquipment.Piece = TargetEquipment.Piece + 1
@@ -597,7 +598,7 @@ function StoreModule:ShowGainView(Costs, Goods)
         end
     end
     --金币和砖石
-    if GoodsCoin or GoodsDiamond then
+    if GoodsCoin or GoodsDiamond or Goods.GoldBox or Goods.SilverBox then
         local ExecuteShowResource = function()
             if GoodsCoin then
                 --获得金钱，显示金钱
@@ -606,8 +607,8 @@ function StoreModule:ShowGainView(Costs, Goods)
                 DataCenter.SetNumber("Coin", Coin)
 
                 --显示部分
-                GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 4)
-                UI:SetText({CoinSlot.Count}, tostring(GoodsCoin))
+                GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 4)
+                UI:SetText({ResourceSlot.Count}, tostring(GoodsCoin))
                 if Costs and Costs.AdTag then
                     System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
                 end
@@ -618,11 +619,29 @@ function StoreModule:ShowGainView(Costs, Goods)
                 DataCenter.SetNumber("Diamond", Diamond)
 
                 --显示部分
-                GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 6)
-                UI:SetText({CoinSlot.Count}, tostring(GoodsDiamond))
+                GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 6)
+                UI:SetText({ResourceSlot.Count}, tostring(GoodsDiamond))
                 if Costs and Costs.AdTag then
                     System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
                 end
+            elseif Goods.GoldBox then
+                --金宝箱
+                local GoldBox = DataCenter.GetNumber("GoldBox", true)
+                DataCenter.SetNumber("GoldBox", GoldBox + Goods.GoldBox)
+
+                --显示部分
+                GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 1)
+                UI:SetText({ResourceSlot.Count}, tostring(Goods.GoldBox))
+                System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
+            elseif Goods.SilverBox then
+                --银宝箱
+                local SilverBox = DataCenter.GetNumber("SilverBox", true)
+                DataCenter.SetNumber("SilverBox", SilverBox + Goods.SilverBox)
+
+                --显示部分
+                GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 2)
+                UI:SetText({ResourceSlot.Count}, tostring(Goods.SilverBox))
+                System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
             end
         end
 
@@ -630,17 +649,17 @@ function StoreModule:ShowGainView(Costs, Goods)
         UI:SetVisible({GoodSlot.ID}, false)
         if Converted then
             --转化动画
-            UI:SetVisible({CoinSlot.ID, CoinSlot.Background}, true)
+            UI:SetVisible({ResourceSlot.ID, ResourceSlot.Background}, true)
              --播放翻盘动画
-            UI:PlayUIAnimation(CoinSlot.Background, 1, 0)
+            UI:PlayUIAnimation(ResourceSlot.Background, 1, 0)
             --延迟显示资源和数量
             UGCS.Framework.Executor.Delay(0.2, function()
-                UI:SetVisible({CoinSlot.Count, CoinSlot.Icon}, true)
+                UI:SetVisible({ResourceSlot.Count, ResourceSlot.Icon}, true)
                 ExecuteShowResource()
             end)
         else
             --立即显示
-            UI:SetVisible({CoinSlot.ID, CoinSlot.Count, CoinSlot.Icon, CoinSlot.Background}, true)
+            UI:SetVisible({ResourceSlot.ID, ResourceSlot.Background, ResourceSlot.Count, ResourceSlot.Icon}, true)
             ExecuteShowResource()
         end
     end
