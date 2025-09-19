@@ -139,7 +139,7 @@ function Battle:LoadCharacter(Context)
         local EnemyPosition = Element:GetPosition(SceneResource.BirthPoint.Enemy)
         local EnemyRotation = Element:GetRotation(SceneResource.BirthPoint.Enemy)
         if not self.Config.IsGold then
-            local EnemyForward = Element:GetForward(SceneResource.BirthPoint.Local)
+            local EnemyForward = Element:GetForward(SceneResource.BirthPoint.Enemy)
             EnemyPosition = EnemyPosition - EnemyForward * math.random(0, 500) -- 随机后移
         end
         Element:SetVisibility(SceneResource.BirthPoint.Enemy, false)
