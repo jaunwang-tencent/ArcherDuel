@@ -108,13 +108,13 @@ function LobbyModule:Update(DeltaTime)
 
     local weekLeftDays = math.floor(weekSecondsLeft / (24 * 3600))
     local weekLeftHours = math.floor((weekSecondsLeft % (24 * 3600)) / 3600)
-
     local weekLeftStr = string.format("%d天 %02d时", weekLeftDays, weekLeftHours)
 
     print("当前时间:", nowStr, "距今日剩余:", leftStr, "距离本周剩余:", weekLeftStr)
 
     UI:SetText({UIConfig.TaskView.TaskProcesView.Time}, "剩余时间：" .. leftStr)
-    UI:SetText({UIConfig.SevenDays.Time, UIConfig.TournamentView.World.CountDown, UIConfig.TournamentView.Gold.CountDown, UIConfig.TournamentView.Diamond.CountDown}, weekLeftStr)
+    local TournamentView = UIConfig.TournamentView
+    UI:SetText({UIConfig.SevenDays.Time, TournamentView.World.CountDown, TournamentView.Gold.CountDown, TournamentView.Diamond.CountDown}, weekLeftStr)
     UI:SetText({105035}, weekLeftStr)
 
      --商城视图
@@ -229,14 +229,14 @@ function LobbyModule:LoadData()
         lastLoginTime = nowTs - (7 * 24 * 60 * 60)
     end
 
-    if GameUtils.isCrossDay(lastLoginTime) then
+    if GameUtils.IsCrossDay(lastLoginTime) then
         --跨天登录了
         Log:PrintLog("跨天登录了")
         self:RefreshDaily()
 
         self:RuntimeDailyRefresh()
     end
-    if GameUtils.isCrossWeek(lastLoginTime) then
+    if GameUtils.IsCrossWeek(lastLoginTime) then
         --跨周登录了
         Log:PrintLog("跨周登录了")
         self:RefreshWeekly()

@@ -112,7 +112,7 @@ local function accumulateScore(pending_points)
     return add
 end
 
-local function isCrossWeek(ts1, ts2)
+local function IsCrossWeek(ts1, ts2)
     return getMondayZeroTs(ts1) ~= getMondayZeroTs(ts2)
 end
 
@@ -193,7 +193,7 @@ function DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
         return DiamondRankData
     end
 
-    if isCrossWeek(last_update_ts, nowTs) then
+    if IsCrossWeek(last_update_ts, nowTs) then
         DiamondRankData = DiamondRankManager.BuildDiamondRank()
         DataCenter.SetNumber("Rank_DiamondScore_Num", 0)
     end
