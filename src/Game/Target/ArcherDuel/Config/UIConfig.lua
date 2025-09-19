@@ -1511,8 +1511,10 @@ local UIConfig = {
     --获得视图【购买】
     GainView = {
         ID = 111046,
-        --点击继续
+        --点击继续【再来一局】
         CloseButton = 111043,
+        --背景光【播放动画】
+        BackgroundEffect = 111228,
         --物品槽
         GoodSlot = {
             ID = 111052,
@@ -1520,7 +1522,17 @@ local UIConfig = {
             Icon = 111051,
             --背景图
             Background = 111040
-        }
+        },
+        --金币槽
+        CoinSlot = {
+            ID = 115196,
+            --图标
+            Icon = 115189,
+            --背景图
+            Background = 115165,
+            --金币数量
+            Count = 115190
+        },
     },
     --广告视图【砖石不足时弹出】
     AdView = {

@@ -31,7 +31,6 @@ local DefaultBaseData =
     --资产信息
     Coin = 5000,                  --金币
     Diamond = 1000,               --砖石
-    Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
     GoldBox = 2,                  --金宝箱
     SilverBox = 2,                --银宝箱
     NormalBox = 1,                --普通宝箱
@@ -206,7 +205,6 @@ function LobbyModule:LoadData()
     local AllEquipment = DataCenter.GetTable("AllEquipment", true)
     if not AllEquipment then
         DataCenter.SetTable("AllEquipment", self:DefaultEquipmentData())
-        Log:PrintLog("xxxxxxxxxxxxx")
     end
     self:RefreshEquipmentData()
 
@@ -751,8 +749,7 @@ function LobbyModule:RefreshGeneralResourceBar()
         --目前API侧无法读取玩家图标，暂时使用这个
         --获取头像
         UI:SetImage({GeneralResourceBar.PlayerIcon}, Chat:GetCustomHeadIcon(self.PlayerID))
-        --GameUtils.SetImageWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
-        UI:SetText({GeneralResourceBar.Rank.Label}, tostring(DataCenter.GetNumber("Rank")))
+        UI:SetText({GeneralResourceBar.Rank.Label}, tostring(2))
         UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(DataCenter.GetNumber("Coin")))
         UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond")))
         UI:SetText({GeneralResourceBar.Securities.Label}, tostring(DataCenter.GetNumber("Player_BattlePoints_Num")))
