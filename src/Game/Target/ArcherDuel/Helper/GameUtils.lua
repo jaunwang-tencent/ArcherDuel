@@ -520,26 +520,28 @@ end
 --- 获取格式化时间差
 ---@param DeltaTime 时间戳
 function GameUtils.GetFormatTime(DeltaTime)
-    -- 格式化当天剩余时间时分秒
-    local LeftDays = math.floor(DeltaTime / (24 * 3600))
-    local LeftHour = math.floor(DeltaTime / 3600)
-    local FormatTime
-    if LeftDays > 0 then
-        FormatTime = string.format("%d天 %02d时", LeftDays, LeftHour)
-    else
-        local LeftMin = math.floor((DeltaTime % 3600) / 60)
-        if LeftHour > 0 then
-            FormatTime = string.format("%02d时%02d分", LeftHour, LeftMin)
+    if DeltaTime and DeltaTime > 0 then
+        -- 格式化当天剩余时间时分秒
+        local LeftDays = math.floor(DeltaTime / (24 * 3600))
+        local LeftHour = math.floor(DeltaTime / 3600)
+        local FormatTime
+        if LeftDays > 0 then
+            FormatTime = string.format("%d天 %02d时", LeftDays, LeftHour)
         else
-            local LeftSec = math.floor(DeltaTime % 60)
-            if LeftMin > 0 then
-                FormatTime = string.format("%02d分%02d秒", LeftMin, LeftSec)
+            local LeftMin = math.floor((DeltaTime % 3600) / 60)
+            if LeftHour > 0 then
+                FormatTime = string.format("%02d时%02d分", LeftHour, LeftMin)
             else
-                FormatTime = string.format("%02d秒", LeftSec)
+                local LeftSec = math.floor(DeltaTime % 60)
+                if LeftMin > 0 then
+                    FormatTime = string.format("%02d分%02d秒", LeftMin, LeftSec)
+                else
+                    FormatTime = string.format("%02d秒", LeftSec)
+                end
             end
         end
+        return FormatTime
     end
-    return FormatTime
 end
 ----------------------------------时间相关----------------------------------
 

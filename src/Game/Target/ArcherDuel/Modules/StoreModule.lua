@@ -106,12 +106,19 @@ function StoreModule:RefreshPrice(ShopSlot, ShopCosts)
     --限时倒计时
     local LimitStyle = ShopSlot.LimitStyle
     if LimitStyle and ShopCosts.ClickTimestamp then
-        UI:SetVisible({LimitStyle.Icon}, false)
-        UI:SetVisible({LimitStyle.CDTime}, true)
         local NowTimestamp = GameUtils.GetNowTimestamp()
         local DeltaTime = ShopCosts.AdCoolTime - NowTimestamp + ShopCosts.ClickTimestamp - 1
         local FormatTime = GameUtils.GetFormatTime(DeltaTime)
-        UI:SetText({LimitStyle.CDTime}, FormatTime)
+        if FormatTime then
+            UI:SetVisible({LimitStyle.Icon}, false)
+            UI:SetVisible({LimitStyle.CDTime}, true)
+            UI:SetText({LimitStyle.CDTime}, FormatTime)
+        else
+            --清空点击时刻
+            ShopCosts.ClickTimestamp = nil
+            UI:SetVisible({LimitStyle.Icon}, true)
+            UI:SetVisible({LimitStyle.CDTime}, false)
+        end
     end
 
     --宝箱类型
@@ -165,7 +172,9 @@ function StoreModule:RefreshShop(ShopSlot, ShopItem, HoldInfo)
                 --注册商铺按钮事件
                 UI:RegisterClicked(ShopSlot.ID, function()
                     --触发一次购买行为【刷新存档】
-                    self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
+                    if not ShopCosts.ClickTimestamp then
+                        self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
+                    end
                 end)
                 table.insert(self.ShopInfos, ShopInfo)
             end
