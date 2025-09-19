@@ -9627,7 +9627,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 610,
+                    Root = 6109,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 },
