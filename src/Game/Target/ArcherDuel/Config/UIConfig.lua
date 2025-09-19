@@ -128,6 +128,7 @@ local UIConfig = {
             --段位
             Rank = {
                 ID = 101854,
+				Icon = 101851,
                 Label = 101853
             },
             --金币
