@@ -166,9 +166,10 @@ function LobbyModule:Close()
     UI:SetVisible({TitleBar.ID}, false)
 
     --注册菜单事件
-    for _, ViewData in pairs(TitleBar) do
-        if type(ViewData) == "table" and ViewData.Unselected then
-            UI:UnRegisterClicked(ViewData.Unselected)
+    local Buttons = TitleBar.Buttons
+    for _, ButtonData in pairs(Buttons) do
+        if ButtonData.Unselected then
+            UI:UnRegisterClicked(ButtonData.Unselected)
         end
     end
 
@@ -290,9 +291,11 @@ function LobbyModule:InitView()
     UI:SetVisible({TitleBar.ID}, true)
 
     --注册菜单事件
-    for ViewName, ViewData in pairs(TitleBar) do
-        if type(ViewData) == "table" and ViewData.Unselected then
-            UI:RegisterClicked(ViewData.Unselected, function()
+    local Buttons = TitleBar.Buttons
+    for ViewName, ButtonData in pairs(Buttons) do
+        if ButtonData.Unselected then
+            UI:SetVisible({ButtonData.Selected}, false)
+            UI:RegisterClicked(ButtonData.Unselected, function()
                 self:SwitchView(ViewName)
             end)
         end
@@ -303,23 +306,23 @@ function LobbyModule:InitView()
 end
 
 function LobbyModule:SwitchView(ViewName, Context)
-    local TitleBar = UIConfig.MainView.TitleBar
-    local ViewData = TitleBar[ViewName]
-    if self.CurrentViewData ~= ViewData then
+    local Buttons = UIConfig.MainView.TitleBar.Buttons
+    local ButtonData = Buttons[ViewName]
+    if self.CurrentButtonData ~= ButtonData then
         --关闭上一页面
-        if self.CurrentViewData then
-            UI:SetVisible({self.CurrentViewData.Selected}, false)
-            UI:SetVisible(self.CurrentViewData.ViewItems, false)
+        if self.CurrentButtonData then
+            UI:SetVisible({self.CurrentButtonData.Selected}, false)
+            UI:SetVisible(self.CurrentButtonData.ViewItems, false)
         end
 
         --打开当前页面
-        if ViewData then
-            UI:SetVisible({ViewData.Selected},true)
-            UI:SetVisible(ViewData.ViewItems, true)
+        if ButtonData then
+            UI:SetVisible({ButtonData.Selected}, true)
+            UI:SetVisible(ButtonData.ViewItems, true)
         end
 
         --记录当前视图数据
-        self.CurrentViewData = ViewData
+        self.CurrentButtonData = ButtonData
 
         --子类化操作
         self:OnSwitchView(ViewName, Context)

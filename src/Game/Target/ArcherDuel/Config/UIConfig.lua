@@ -64,59 +64,62 @@ local UIConfig = {
         --主题栏
         TitleBar = {
             ID = 100531,
-            --任务
-            Task = {
-                --命中
-                Selected = 103769,
-                --未命中
-                Unselected = 100523,
-                --视图子项
-                ViewItems = {
-                    100528, 100599
-                }
-            },
-            --装备
-            Equipment = {
-                --命中
-                Selected = 103771,
-                --未命中
-                Unselected = 100522,
-                --视图子项
-                ViewItems = {
-                    100528, 104495, 104496, 100571
-                }
-            },
-            --对决
-            Fight = {
-                --命中
-                Selected = 103773,
-                --未命中
-                Unselected = 100526,
-                --视图子项
-                ViewItems = {
-                    100528, 104220, 104219, 101121
-                }
-            },
-            --商店
-            Store = {
-                --命中
-                Selected = 103775,
-                --未命中
-                Unselected = 100524,
-                --视图子项
-                ViewItems = {
-                    107845,110208
-                }
-            },
-            --锦标赛
-            Tournament = {
-                --命中
-                Selected = 103777,
-                --未命中
-                Unselected = 100525,
-                --视图子项
-                ViewItems = {
-                    106562, 106605, 106518, 107540
+            --按钮
+            Buttons = {
+                --任务
+                Task = {
+                    --命中
+                    Selected = 103769,
+                    --未命中
+                    Unselected = 100523,
+                    --视图子项
+                    ViewItems = {
+                        100528, 100599
+                    }
+                },
+                --装备
+                Equipment = {
+                    --命中
+                    Selected = 103771,
+                    --未命中
+                    Unselected = 100522,
+                    --视图子项
+                    ViewItems = {
+                        100528, 104495, 104496, 100571
+                    }
+                },
+                --对决
+                Fight = {
+                    --命中
+                    Selected = 103773,
+                    --未命中
+                    Unselected = 100526,
+                    --视图子项
+                    ViewItems = {
+                        100528, 104220, 104219, 101121
+                    }
+                },
+                --商店
+                Store = {
+                    --命中
+                    Selected = 103775,
+                    --未命中
+                    Unselected = 100524,
+                    --视图子项
+                    ViewItems = {
+                        107845,110208
+                    }
+                },
+                --锦标赛
+                Tournament = {
+                    --命中
+                    Selected = 103777,
+                    --未命中
+                    Unselected = 100525,
+                    --视图子项
+                    ViewItems = {
+                        106562, 106605, 106518, 107540
+                    }
                 }
             }
         },
