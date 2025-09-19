@@ -142,10 +142,20 @@ function TournamentModule:Open(Context)
     for i, btnId in ipairs(tabBtn) do
         UI:RegisterClicked(btnId,function (btnId)
             UI:SetVisible({DiamondView.Popup.ID}, false)
-            UI:SetVisible(tabUnselected,false)
-            UI:SetVisible({tabUnselected[i]},true)
-            UI:SetVisible(view,false)
-            UI:SetVisible({view[i]},true)
+            for j, v in pairs(tabUnselected) do
+                if j == i then
+                    UI:SetVisible({v},true)
+                else
+                    UI:SetVisible({v},false)
+                end
+            end
+            for j, v in pairs(view) do
+                if j == i then
+                    UI:SetVisible({v},true)
+                else
+                    UI:SetVisible({v},false)
+                end
+            end
         end)
     end
 
