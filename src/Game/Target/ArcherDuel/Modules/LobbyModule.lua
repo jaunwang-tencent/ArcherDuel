@@ -598,14 +598,12 @@ function LobbyModule:DefaultShopData()
         [1] = {
             --费用【约定：关系或】
             Costs = {
-                [1] = {
-                    --广告资源
-                    AdTag = "ad_tag_diamond",
-                    --最大收集次数
-                    MaxCollect = 5,
-                    --已收集次数
-                    HasCollect = 0
-                }
+                --广告资源
+                AdTag = "ad_tag_diamond",
+                --最大收集次数
+                MaxCollect = 5,
+                --已收集次数
+                HasCollect = 0
             },
             --商品
             Goods = {
@@ -699,8 +697,8 @@ function LobbyModule:RefreshDaily()
 
     --刷新免费砖石
     local AllDiamondItem = AllShops.DiamondItem
-    AllDiamondItem[1].Costs.MaxCollect = 5
-    AllDiamondItem[1].Costs.HasCollect = 0
+    AllDiamondItem.Costs.MaxCollect = 5
+    AllDiamondItem.Costs.HasCollect = 0
     DataCenter.SetTable("AllShops", AllShops)
 
     --免费广告观看次数
