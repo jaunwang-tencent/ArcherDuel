@@ -29,13 +29,11 @@ function StoreModule:Open(Context)
     UI:SetVisible(self.ScrollItems, true)
     --添加到滚动视图
     UI:AddToScrollView(UIConfig.StoreView.Scrollable, self.ScrollItems)
-    --广告结束回调<AdTag, CallBack>
-    self.AdFinishCallBack = {}
     --注册广告结束事件
     System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
         local LocalPlayerId = Character:GetLocalPlayerId()
         if LocalPlayerId == userId then
-            local CallBack = self.AdFinishCallBack[mark]
+            local CallBack = self.AdFinishCallBack and self.AdFinishCallBack[mark]
             if CallBack then
                 --回调处理
                 CallBack()
@@ -54,7 +52,7 @@ end
 function StoreModule:Close()
     --注销广告完成事件
     System:UnregisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH)
-    self.AdFinishCallBack = {}
+    self.AdFinishCallBack = nil
     --销毁视图
     local StoreView = UIConfig.StoreView
     UI:RemoveFromScrollView(StoreView.Scrollable, self.ScrollItems)
@@ -405,6 +403,10 @@ end
 function StoreModule:SeeAd(Costs, Goods, OnFinish)
     local AdTag = Costs.AdTag
     if AdTag then
+        --广告结束回调<AdTag, CallBack>
+        if not self.AdFinishCallBack then
+            self.AdFinishCallBack = {}
+        end
         local CallBack = self.AdFinishCallBack[AdTag]
         if not CallBack then
             CallBack = function()

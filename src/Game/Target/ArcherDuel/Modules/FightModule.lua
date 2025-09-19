@@ -222,14 +222,24 @@ end
 
 function FightModule:OnClickAd1()
     --看广告获得宝箱
-    --StoreModule:SeeAd(Costs, Goods)
-    UI:ShowMessageTip("看广告获得宝箱")
+    local Costs = {
+        AdTag = "ad_tag_free_box"
+    }
+    local Goods = {
+        BoxID = 200001
+    }
+    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods)
 end
 
 function FightModule:OnClickAd2()
     --看广告获得砖石
-    --StoreModule:SeeAd(Costs, Goods)
-    UI:ShowMessageTip("看广告获得砖石")
+    local Costs = {
+        AdTag = "ad_tag_free_diamond"
+    }
+    local Goods = {
+        Diamond = 60
+    }
+    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods)
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
