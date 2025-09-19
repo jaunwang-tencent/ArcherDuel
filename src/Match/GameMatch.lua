@@ -457,30 +457,40 @@ function GameMatch:MathCountDown(MatchInfo)
         end
         local weaponIconIndex, bodyIconIndex, clothIconIndex, bottomIconIndex
         local weaponGradeIndex, bodyGradeIndex, clothGradeIndex, bottomGradeIndex
+        local weaponLevel, bodyLevel, clothLevel, bottomLevel
         if EquipmentConfig[MatchInfo.BattleWeapon.weaponId] then
             weaponIconIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].AssetIndex
             weaponGradeIndex = EquipmentConfig[MatchInfo.BattleWeapon.weaponId].Attributes.Grade
+            local IDName = string.format("Equipped_%s_Lv", EquipmentConfig[MatchInfo.BattleWeapon.weaponId].TypeName)
+            weaponLevel = DataCenter.GetNumber(IDName, true) or 1
         end
         if self.localEquipments["Part"] and EquipmentConfig[self.localEquipments["Part"]] then
             bodyIconIndex = EquipmentConfig[self.localEquipments["Part"]].AssetIndex
             bodyGradeIndex = EquipmentConfig[self.localEquipments["Part"]].Attributes.Grade
+            bodyLevel = DataCenter.GetNumber("Equipped_Part_Lv", true) or 1
         end
         if self.localEquipments["Cloth"] and EquipmentConfig[self.localEquipments["Cloth"]] then
             clothIconIndex = EquipmentConfig[self.localEquipments["Cloth"]].AssetIndex
             clothGradeIndex = EquipmentConfig[self.localEquipments["Cloth"]].Attributes.Grade
+            clothLevel = DataCenter.GetNumber("Equipped_Cloth_Lv", true) or 1
         end
         if self.localEquipments["Bottoms"] and EquipmentConfig[self.localEquipments["Bottoms"]] then
             bottomIconIndex = EquipmentConfig[self.localEquipments["Bottoms"]].AssetIndex
             bottomGradeIndex = EquipmentConfig[self.localEquipments["Bottoms"]].Attributes.Grade
+            bottomLevel = DataCenter.GetNumber("Equipped_Bottoms_Lv", true) or 1
         end
         UI:SetImage({105686}, WeaponIconList[weaponIconIndex],true) -- 武器
         UI:SetImage({110914}, EquipmentIconList[weaponGradeIndex],true) -- 武器底图
+        UI:SetText({116393}, string.format("等级%d", weaponLevel )) -- 武器等级
         UI:SetImage({105687},BodyIconList[bodyIconIndex],true) -- body
         UI:SetImage({110917}, EquipmentIconList[bodyGradeIndex],true) -- body底图
+        UI:SetText({116394}, string.format("等级%d", bodyLevel)) -- body等级
         UI:SetImage({105688},ClothIconList[clothIconIndex],true) -- cloth
         UI:SetImage({110915}, EquipmentIconList[clothGradeIndex],true) -- cloth底图
+        UI:SetText({116395}, string.format("等级%d", clothLevel)) -- cloth等级
         UI:SetImage({105689},BottomsIconList[bottomIconIndex],true) -- Bottoms
         UI:SetImage({110916}, EquipmentIconList[bottomGradeIndex],true) -- Bottoms底图
+        UI:SetText({116396}, string.format("等级%d", bottomLevel)) -- Bottoms等级
 
         -- 对方信息
         UI:SetImage({105677}, MatchInfo.BattleRivalInfo.headIcon, true)
@@ -495,27 +505,43 @@ function GameMatch:MathCountDown(MatchInfo)
         if EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId] then
             weaponIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId].AssetIndex
             weaponGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.weaponId].Attributes.Grade
+            weaponLevel = weaponLevel + math.random(-1, 1)
+            weaponLevel = math.min(weaponLevel, 5)
+            weaponLevel = math.max(weaponLevel, 1)
         end
         if MatchInfo.BattleRivalInfo.equipments["Character"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]] then
             bodyIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].AssetIndex
             bodyGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Character"]].Attributes.Grade
+            bodyLevel = bodyLevel +  math.random(-1, 1)
+            bodyLevel = math.min(bodyLevel, 5)
+            bodyLevel = math.max(bodyLevel, 1)
         end
         if MatchInfo.BattleRivalInfo.equipments["Top"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]] then
             clothIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]].AssetIndex
             clothGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Top"]].Attributes.Grade
+            clothLevel = clothLevel +  math.random(-1, 1)
+            clothLevel = math.min(clothLevel, 5)
+            clothLevel = math.max(clothLevel, 1)
         end
         if MatchInfo.BattleRivalInfo.equipments["Bottoms"] and EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]] then
             bottomIconIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]].AssetIndex
             bottomGradeIndex = EquipmentConfig[MatchInfo.BattleRivalInfo.equipments["Bottoms"]].Attributes.Grade
+            bottomLevel = bottomLevel +  math.random(-1, 1)
+            bottomLevel = math.min(bottomLevel, 5)
+            bottomLevel = math.max(bottomLevel, 1)
         end
         UI:SetImage({105691},WeaponIconList[weaponIconIndex],true) -- 武器
         UI:SetImage({110909}, EquipmentIconList[weaponGradeIndex],true) -- 武器底图
+        UI:SetText({116389}, string.format("等级%d", weaponLevel)) -- 武器等级
         UI:SetImage({105694},BodyIconList[bodyIconIndex],true) -- body
         UI:SetImage({110912}, EquipmentIconList[bodyGradeIndex],true) -- body底图
+        UI:SetText({116390}, string.format("等级%d", bodyLevel)) -- body等级
         UI:SetImage({105692},ClothIconList[clothIconIndex],true) -- cloth
         UI:SetImage({110910}, EquipmentIconList[clothGradeIndex],true) -- cloth底图
+        UI:SetText({116391}, string.format("等级%d", clothLevel)) -- cloth等级
         UI:SetImage({105693},BottomsIconList[bottomIconIndex],true) -- Bottoms
         UI:SetImage({110911}, EquipmentIconList[bottomGradeIndex],true) -- Bottoms底图
+        UI:SetText({116392}, string.format("等级%d", bottomLevel)) -- Bottoms等级
     end)
 
     -- 动画效果
