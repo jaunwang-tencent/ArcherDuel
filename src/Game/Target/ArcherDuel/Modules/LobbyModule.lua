@@ -755,9 +755,9 @@ function LobbyModule:RefreshGeneralResourceBar()
         local level = GameUtils.GetRankLevelByScore(score)
         UI:SetText({GeneralResourceBar.Rank.Label}, level.name)
         GameUtils.SetImageWithAsset(GeneralResourceBar.Rank.Icon, "Rank", level.icon)
-        UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(DataCenter.GetNumber("Coin")))
-        UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond")))
-        UI:SetText({GeneralResourceBar.Securities.Label}, tostring(DataCenter.GetNumber("Player_BattlePoints_Num")))
+        UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(DataCenter.GetNumber("Coin") or 0))
+        UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond") or 0))
+        UI:SetText({GeneralResourceBar.Securities.Label}, tostring(DataCenter.GetNumber("Ticket") or 0))
     end
 end
 
@@ -766,9 +766,9 @@ function LobbyModule:RefreshStoreResourceBar()
     local MainView = UIConfig.MainView
     local StoreResourceBar = MainView and MainView.StoreResourceBar
     if StoreResourceBar then
-        UI:SetText({StoreResourceBar.GoldBox.Label}, tostring(DataCenter.GetNumber("GoldBox")))
-        UI:SetText({StoreResourceBar.SilverBox.Label}, tostring(DataCenter.GetNumber("SilverBox")))
-        UI:SetText({StoreResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond")))
+        UI:SetText({StoreResourceBar.GoldBox.Label}, tostring(DataCenter.GetNumber("GoldBox") or 0))
+        UI:SetText({StoreResourceBar.SilverBox.Label}, tostring(DataCenter.GetNumber("SilverBox") or 0))
+        UI:SetText({StoreResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond") or 0))
     end
 end
 
