@@ -27,21 +27,25 @@ function FightModule:Open(Context)
     --广告1按钮监听
     local Player_HasAdFreeWatchBox = DataCenter.GetNumber("Player_HasAdFreeWatchBox", true)
     if Player_HasAdFreeWatchBox == 0 then
+        UI:SetVisible({CenterView.Ad_1.Mask}, false)
         UI:RegisterClicked(CenterView.Ad_1.ID, function()
             self:OnClickAd1()
         end)
     else
-        --TODO:显示遮罩，屏蔽【广告1按钮监听】
+        --显示遮罩，屏蔽【广告1按钮监听】
+        UI:SetVisible({CenterView.Ad_1.Mask}, true)
     end
 
     --广告2按钮监听
     local Player_HasAdFreeWatchDiamond = DataCenter.GetNumber("Player_HasAdFreeWatchDiamond", true)
-    if Player_HasAdFreeWatchDiamond then
+    if Player_HasAdFreeWatchDiamond == 0 then
+        UI:SetVisible({CenterView.Ad_2.Mask}, false)
         UI:RegisterClicked(CenterView.Ad_2.ID, function()
             self:OnClickAd2()
         end)
     else
-        --TODO:显示遮罩，屏蔽【广告1按钮监听】
+        --显示遮罩，屏蔽【广告1按钮监听】
+        UI:SetVisible({CenterView.Ad_2.Mask}, true)
     end
 
     local score = GameUtils.GetPlayerRankScore()
@@ -241,10 +245,12 @@ function FightModule:OnClickAd1()
     local Goods = {
         BoxID = 200001
     }
+    local Ad_1 = UIConfig.FightView.CenterView.Ad_1
     UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true, function()
         DataCenter.SetNumber("Player_HasAdFreeWatchBox", 1)
-        UI:UnRegisterClicked(UIConfig.FightView.CenterView.Ad_1.ID)
-        --TODO:显示遮罩，屏蔽【广告1按钮监听】
+        UI:UnRegisterClicked(Ad_1.ID)
+        --显示遮罩，屏蔽【广告1按钮监听】
+        UI:SetVisible({Ad_1.Mask}, true)
     end)
 end
 
@@ -256,10 +262,12 @@ function FightModule:OnClickAd2()
     local Goods = {
         Diamond = 60
     }
+    local Ad_2 = UIConfig.FightView.CenterView.Ad_2
     UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true, function()
         DataCenter.SetNumber("Player_HasAdFreeWatchDiamond", 1)
-        UI:UnRegisterClicked(UIConfig.FightView.CenterView.Ad_2.ID)
-        --TODO:显示遮罩，屏蔽【广告2按钮监听】
+        UI:UnRegisterClicked(Ad_2.ID)
+        --显示遮罩，屏蔽【广告2按钮监听】
+        UI:SetVisible({Ad_2.Mask}, true)
     end)
 end
 
