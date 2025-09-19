@@ -313,8 +313,9 @@ function GameUtils.OpenBoxReward(boxId)
     math.randomseed(TimerManager:GetClock())
     local function getReward()
         local random = math.random(1, Weight)
+        local _Weight = 0
         for i, v in ipairs(BoxConfig) do
-            Weight = Weight + v.Weight
+            _Weight = _Weight + v.Weight
             if random <= Weight then
                 if v.EquipIds then -- 有指认装备，直接从指认装备中取
                     return v.EquipIds[math.random(1, #v.EquipIds)]
