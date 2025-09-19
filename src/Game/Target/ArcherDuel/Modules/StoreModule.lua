@@ -608,10 +608,13 @@ function StoreModule:ShowGainView(Costs, Goods)
             UI:SetVisible({GoodSlot.ID}, true)
             UI:SetVisible({ResourceSlot.ID}, false)
 
-            --累加碎片
-            TargetEquipment.Piece = TargetEquipment.Piece + 1
-            --解锁
-            TargetEquipment.Unlock = true
+            if TargetEquipment.Unlock then
+                --累加碎片
+                TargetEquipment.Piece = TargetEquipment.Piece + 1
+            else
+                --解锁
+                TargetEquipment.Unlock = true
+            end
 
             --显示部分
             GameUtils.SetImageWithEquipment(GoodSlot.Icon, TargetEquipment)
