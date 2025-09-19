@@ -339,7 +339,6 @@ end
 
 function GameUtils.DefaultEquipmentData()
     --没有则初始化
-    local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
     local AllEquipment = {}
     local InitEquippedID = { [1] = true, [15] = true, [38] = true, [61] = true, [77] = true, [93] = true }
     for ID, Data in pairs(EquipmentConfig) do
@@ -506,6 +505,8 @@ function GameUtils.IsCrossDay(lastLoginTs)
     return lastYear ~= nowYear or lastMonth ~= nowMonth or lastDay ~= nowDay
 end
 
+--- 跨周判断
+---@param lastLoginTs any
 function GameUtils.IsCrossWeek(lastLoginTs)
     if not lastLoginTs then return true end
 
@@ -514,6 +515,31 @@ function GameUtils.IsCrossWeek(lastLoginTs)
     local nowMonday = getMondayTimestamp(NowTimestamp)
 
     return lastMonday ~= nowMonday
+end
+
+--- 获取格式化时间差
+---@param DeltaTime 时间戳
+function GameUtils.GetFormatTime(DeltaTime)
+    -- 格式化当天剩余时间时分秒
+    local LeftDays = math.floor(DeltaTime / (24 * 3600))
+    local LeftHour = math.floor(DeltaTime / 3600)
+    local FormatTime
+    if LeftDays > 0 then
+        FormatTime = string.format("%d天 %02d时", LeftDays, LeftHour)
+    else
+        local LeftMin = math.floor((DeltaTime % 3600) / 60)
+        if LeftHour > 0 then
+            FormatTime = string.format("%02d时%02d分", LeftHour, LeftMin)
+        else
+            local LeftSec = math.floor(DeltaTime % 60)
+            if LeftMin > 0 then
+                FormatTime = string.format("%02d分%02d秒", LeftMin, LeftSec)
+            else
+                FormatTime = string.format("%02d秒", LeftSec)
+            end
+        end
+    end
+    return FormatTime
 end
 ----------------------------------时间相关----------------------------------
 

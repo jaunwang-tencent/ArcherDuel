@@ -788,7 +788,7 @@ local UIConfig = {
                             --限时类型
                             LimitStyle = {
                                 --获取图标
-                                Image = 111353,
+                                Icon = 111353,
                                 --倒计时
                                 CDTime = 111354,
                             },
@@ -962,7 +962,7 @@ local UIConfig = {
                     },
                     [3] = {
                         --按钮槽
-                        ShopGroup = {
+                        ShopSlot = {
                             ID = 110310,
                             --看广告方式
                             AdStyle = 115161,

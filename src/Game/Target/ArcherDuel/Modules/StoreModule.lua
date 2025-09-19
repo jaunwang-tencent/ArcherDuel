@@ -40,12 +40,18 @@ function StoreModule:Open(Context)
             end
         end
     end)
+    self.AccumulateTimestamp = 0
 end
 
 --- 刷新
 ---@param DeltaTime 时间戳
 function StoreModule:Update(DeltaTime)
-    
+    self.AccumulateTimestamp = self.AccumulateTimestamp + DeltaTime
+    --一分钟刷新一次
+    if self.AccumulateTimestamp > 60 then
+        self.AccumulateTimestamp = 0
+        self:RefreshStore(false)
+    end
 end
 
 --- 关闭
@@ -71,9 +77,9 @@ function StoreModule:Close()
 end
 
 --- 刷新价格
----@param ShopView 商铺视图
+---@param ShopSlot 商铺槽
 ---@param ShopCosts 商铺消耗
-function StoreModule:RefreshPrice(ShopView, ShopCosts)
+function StoreModule:RefreshPrice(ShopSlot, ShopCosts)
     --获取当前拥有的砖石数量
     local CurrentDiamond = DataCenter.GetNumber("Diamond")
     --获取当前拥有的金宝箱数量
@@ -82,10 +88,10 @@ function StoreModule:RefreshPrice(ShopView, ShopCosts)
     local CurrentSilverBox = DataCenter.GetNumber("SilverBox")
 
     --砖石&广告类型
-    local DiamondStyle = ShopView.DiamondStyle
-    local AdStyle = ShopView.AdStyle
+    local DiamondStyle = ShopSlot.DiamondStyle
+    local AdStyle = ShopSlot.AdStyle
     if DiamondStyle and AdStyle then
-        if ShopCosts.Diamond and (CurrentDiamond > ShopCosts.Diamond or not ShopCosts.AdTag) then
+        if ShopCosts.Diamond and (CurrentDiamond >= ShopCosts.Diamond or not ShopCosts.AdTag) then
             --当前玩家拥有消耗砖石数量时，使用砖石购买方式
             UI:SetVisible({DiamondStyle.Icon, DiamondStyle.Price}, true)
             UI:SetText({DiamondStyle.Price}, tostring(ShopCosts.Diamond))
@@ -97,8 +103,19 @@ function StoreModule:RefreshPrice(ShopView, ShopCosts)
         end
     end
 
+    --限时倒计时
+    local LimitStyle = ShopSlot.LimitStyle
+    if LimitStyle and ShopCosts.ClickTimestamp then
+        UI:SetVisible({LimitStyle.Icon}, false)
+        UI:SetVisible({LimitStyle.CDTime}, true)
+        local NowTimestamp = GameUtils.GetNowTimestamp()
+        local DeltaTime = ShopCosts.AdCoolTime - NowTimestamp + ShopCosts.ClickTimestamp - 1
+        local FormatTime = GameUtils.GetFormatTime(DeltaTime)
+        UI:SetText({LimitStyle.CDTime}, FormatTime)
+    end
+
     --宝箱类型
-    local BoxStyle = ShopView.BoxStyle
+    local BoxStyle = ShopSlot.BoxStyle
     if BoxStyle then
         if ShopCosts.GoldBox and CurrentGoldBox >= ShopCosts.GoldBox then
             --金宝箱
@@ -667,6 +684,11 @@ function StoreModule:ShowGainView(Costs, Goods)
     UI:RegisterClicked(GainView.CloseButton, function()
         UI:SetVisible({GainView.ID}, false)
         UI:StopUIAnimation(GainView.BackgroundEffect)
+        if Costs.AdCoolTime then
+            Costs.ClickTimestamp = GameUtils.GetNowTimestamp()
+        end
+        --刷新价格
+        self:RefreshStore(false)
         --注销按钮事件
         UI:UnRegisterClicked(GainView.CloseButton)
     end)

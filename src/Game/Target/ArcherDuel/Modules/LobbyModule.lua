@@ -510,8 +510,6 @@ function LobbyModule:DefaultShopData()
                 AdTag = "ad_tag_gold_box",
                 --广告冷却时间
                 AdCoolTime = 24 * 3600,
-                --点击时间戳
-                ClickTimestamp = 0
             },
             --商品
             Goods = {
@@ -540,8 +538,6 @@ function LobbyModule:DefaultShopData()
                 AdTag = "ad_tag_silver_box",
                 --广告冷却时间
                 AdCoolTime = 24 * 3600,
-                --点击时间戳
-                ClickTimestamp = 0
             },
             --商品
             Goods = {
