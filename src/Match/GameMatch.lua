@@ -277,10 +277,8 @@ function GameMatch:BindEvents()
 
     -- 失败界面点击再来一次
     UI:RegisterClicked(106511, function()
-        if GameUtils.CanEnterRankBattle() then
-            UI:SetVisible(MatchConfig.Fail_UI, false)
-            System:FireGameEvent(_GAME.Events.StartMatch)
-        end
+        -- 走IAA流程
+        IAA:LetPlayerWatchAds(AdTag)
     end)
 
     -- 失败界面点击返回大厅
