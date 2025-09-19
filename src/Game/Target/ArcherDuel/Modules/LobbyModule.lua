@@ -35,8 +35,10 @@ local DefaultBaseData =
     SilverBox = 2,                --银宝箱
     NormalBox = 1,                --普通宝箱
     --其它信息
-    Player_MaxAdFreeWatch_Num = 5,--玩家最大免费观看广告次数
-    Player_HasAdFreeWatch_Num = 0,--玩家已经免费观看广告次数
+    Player_MaxAdFreeWatch_Num = 5,  --玩家最大免费观看广告次数
+    Player_HasAdFreeWatch_Num = 0,  --玩家已经免费观看广告次数
+    Player_HasAdFreeWatchBox = 0,   --玩家已经免费观看广告次数
+    Player_HasAdFreeWatchDiamond = 0,   --玩家已经免费观看广告次数
     Daily_Progress = 1,
     Player_BattlePoints_Num = 0,  --门票
     Player_TaskDailyExp_Num = 0,  --每日任务经验
@@ -131,6 +133,8 @@ function LobbyModule:Update(DeltaTime)
         self._lastDate = {year=year, month=month, day=day}
     else
         if year ~= self._lastDate.year or month ~= self._lastDate.month or day ~= self._lastDate.day then
+            --在线并且跨天了，要刷新最后登录时间，避免重复刷新
+            DataCenter.SetNumber("Player_LastLoginTime_Num", nowTs)
             self:RefreshDaily()
             self:RuntimeDailyRefresh()
             self._lastDate = {year=year, month=month, day=day}
@@ -164,9 +168,10 @@ function LobbyModule:Close()
     UI:SetVisible({TitleBar.ID}, false)
 
     --注册菜单事件
-    for _, ViewData in pairs(TitleBar) do
-        if type(ViewData) == "table" and ViewData.Unselected then
-            UI:UnRegisterClicked(ViewData.Unselected)
+    local Buttons = TitleBar.Buttons
+    for _, ButtonData in pairs(Buttons) do
+        if ButtonData.Unselected then
+            UI:UnRegisterClicked(ButtonData.Unselected)
         end
     end
 
@@ -212,9 +217,8 @@ function LobbyModule:LoadData()
     local AllShops = DataCenter.GetTable("AllShops", true)
     if not AllShops then
         DataCenter.SetTable("AllShops", self:DefaultShopData())
-        --刷新限定奖池
-        self:RefreshWeekly()
         self:RefreshDaily()
+        self:RefreshWeekly()
     end
 
     local nowStr = MiscService:GetServerTimeToTime()
@@ -289,9 +293,11 @@ function LobbyModule:InitView()
     UI:SetVisible({TitleBar.ID}, true)
 
     --注册菜单事件
-    for ViewName, ViewData in pairs(TitleBar) do
-        if type(ViewData) == "table" and ViewData.Unselected then
-            UI:RegisterClicked(ViewData.Unselected, function()
+    local Buttons = TitleBar.Buttons
+    for ViewName, ButtonData in pairs(Buttons) do
+        if ButtonData.Unselected then
+            UI:SetVisible({ButtonData.Selected}, false)
+            UI:RegisterClicked(ButtonData.Unselected, function()
                 self:SwitchView(ViewName)
             end)
         end
@@ -302,23 +308,23 @@ function LobbyModule:InitView()
 end
 
 function LobbyModule:SwitchView(ViewName, Context)
-    local TitleBar = UIConfig.MainView.TitleBar
-    local ViewData = TitleBar[ViewName]
-    if self.CurrentViewData ~= ViewData then
+    local Buttons = UIConfig.MainView.TitleBar.Buttons
+    local ButtonData = Buttons[ViewName]
+    if self.CurrentButtonData ~= ButtonData then
         --关闭上一页面
-        if self.CurrentViewData then
-            UI:SetVisible({self.CurrentViewData.Selected}, false)
-            UI:SetVisible(self.CurrentViewData.ViewItems, false)
+        if self.CurrentButtonData then
+            UI:SetVisible({self.CurrentButtonData.Selected}, false)
+            UI:SetVisible(self.CurrentButtonData.ViewItems, false)
         end
 
         --打开当前页面
-        if ViewData then
-            UI:SetVisible({ViewData.Selected},true)
-            UI:SetVisible(ViewData.ViewItems, true)
+        if ButtonData then
+            UI:SetVisible({ButtonData.Selected}, true)
+            UI:SetVisible(ButtonData.ViewItems, true)
         end
 
         --记录当前视图数据
-        self.CurrentViewData = ViewData
+        self.CurrentButtonData = ButtonData
 
         --子类化操作
         self:OnSwitchView(ViewName, Context)
@@ -387,15 +393,16 @@ function LobbyModule:DefaultEquipmentData()
         }
         --基础数据名称
         local IDName = string.format("Equipped_%s_ID", EquipmentData.TypeName)
+        local LvName = string.format("Equipped_%s_Lv", EquipmentData.TypeName)
         local TargetID = DefaultBaseData[IDName]
         if TargetID == ID then
             Equipment.Unlock = true
             Equipment.Equipped = true
             Equipment.Piece = 10    --缺省十个
             Equipment.Level = 3     --缺省三级
+            DataCenter.SetNumber(IDName, Equipment.ID)
+            DataCenter.SetNumber(LvName, Equipment.Level)
         end
-        local LvName = string.format("Equipped_%s_Lv", EquipmentData.TypeName)
-        DefaultBaseData[LvName] = Equipment.Level
         AllEquipment[ID] = Equipment
     end
     return AllEquipment
@@ -450,9 +457,9 @@ function LobbyModule:RefreshEquipmentData()
             --刷新基础数据
             if EquipmentData then
                 local IDName = string.format("Equipped_%s_ID", EquipmentData.TypeName)
-                DefaultBaseData[IDName] = Equipment.ID
                 local LvName = string.format("Equipped_%s_Lv", EquipmentData.TypeName)
-                DefaultBaseData[LvName] = Equipment.Level
+                DataCenter.SetNumber(IDName, Equipment.ID)
+                DataCenter.SetNumber(LvName, Equipment.Level)
             end
         end
     end
@@ -484,49 +491,61 @@ function LobbyModule:DefaultShopData()
         [1] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗一个黄金宝箱【约定：关系或】
-                    GoldBox = 1,
-                    --或者600个砖石
-                    Diamond = 600,
-                },
-                [2] = {
-                    --广告资源
-                    AdTag = "ad_tag_gold_box",
-                    --广告冷却时间
-                    AdCoolTime = 24 * 3600,
-                    --点击时间戳
-                    ClickTimestamp = 0
-                }
+                --消耗一个黄金宝箱【约定：关系或】
+                GoldBox = 1,
+                --或者600个砖石
+                Diamond = 600,
             },
             --商品
             Goods = {
+                BoxID = 200003,
                 --从宝箱配置中去拿
-                Equipments = {}
+                EquipmentIDs = {}
             }
         },
         [2] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗一个白银宝箱【约定：关系或】
-                    SilverBox = 1,
-                    --或者600个砖石
-                    Diamond = 180,
-                },
-                [2] = {
-                    --广告资源
-                    AdTag = "ad_tag_silver_box",
-                    --广告冷却时间
-                    AdCoolTime = 24 * 3600,
-                    --点击时间戳
-                    ClickTimestamp = 0
-                }
+                --广告资源
+                AdTag = "ad_tag_gold_box",
+                --广告冷却时间
+                AdCoolTime = 24 * 3600,
+                --点击时间戳
+                ClickTimestamp = 0
             },
             --商品
             Goods = {
+                GoldBox = 1
+            }
+        },
+        [3] = {
+            --费用
+            Costs = {
+                --消耗一个白银宝箱【约定：关系或】
+                SilverBox = 1,
+                --或者600个砖石
+                Diamond = 180,
+            },
+            --商品
+            Goods = {
+                BoxID = 200002,
                 --从宝箱配置中去拿
-                Equipments = {}
+                EquipmentIDs = {}
+            }
+        },
+        [4] = {
+            --费用
+            Costs = {
+                --广告资源
+                AdTag = "ad_tag_silver_box",
+                --广告冷却时间
+                AdCoolTime = 24 * 3600,
+                --点击时间戳
+                ClickTimestamp = 0
+            },
+            --商品
+            Goods = {
+                SilverBox = 1,
             }
         },
     }
@@ -535,52 +554,46 @@ function LobbyModule:DefaultShopData()
         [1] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗100个砖石
-                    Diamond = 100,
-                    --最大收集次数
-                    MaxCollect = 5,
-                    --已收集次数
-                    HasCollect = 0
-                }
+                --消耗100个砖石
+                Diamond = 100,
+                --最大收集次数
+                MaxCollect = 5,
+                --已收集次数
+                HasCollect = 0
             },
             --商品
             Goods = {
-                Equipments = {}
+                EquipmentID = 0
             }
         },
         [2] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗50个砖石
-                    Diamond = 50,
-                    --最大收集次数
-                    MaxCollect = 5,
-                    --已收集次数
-                    HasCollect = 0
-                }
+                --消耗50个砖石
+                Diamond = 50,
+                --最大收集次数
+                MaxCollect = 5,
+                --已收集次数
+                HasCollect = 0
             },
             --商品
             Goods = {
-                Equipments = {}
+                EquipmentID = 0
             }
         },
         [3] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗100个砖石
-                    Diamond = 600,
-                    --最大收集次数
-                    MaxCollect = 5,
-                    --已收集次数
-                    HasCollect = 0
-                }
+                --消耗100个砖石
+                Diamond = 600,
+                --最大收集次数
+                MaxCollect = 5,
+                --已收集次数
+                HasCollect = 0
             },
             --商品
             Goods = {
-                Equipments = {}
+                EquipmentID = 0
             }
         }
     }
@@ -610,10 +623,8 @@ function LobbyModule:DefaultShopData()
         [1] = {
             --费用
             Costs = {
-                [1] = {
-                    --广告资源
-                    AdTag = "ad_tag_coin",
-                }
+                --广告资源
+                AdTag = "ad_tag_coin",
             },
             --商品
             Goods = {
@@ -623,10 +634,8 @@ function LobbyModule:DefaultShopData()
         [2] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗12000个砖石
-                    Diamond = 1000,
-                }
+                --消耗12000个砖石
+                Diamond = 1000,
             },
             --商品
             Goods = {
@@ -636,10 +645,8 @@ function LobbyModule:DefaultShopData()
         [3] = {
             --费用
             Costs = {
-                [1] = {
-                    --消耗4200个砖石
-                    Diamond = 4200,
-                }
+                --消耗4200个砖石
+                Diamond = 4200,
             },
             --商品
             Goods = {
@@ -678,7 +685,8 @@ function LobbyModule:RefreshDaily()
         end
         return GoodsConfig[TargetGrade]
     end
-    math.randomseed(TimerManager:GetClock())
+    local DailyTimeStamp = TimerManager:GetClock()
+    math.randomseed(DailyTimeStamp)
     for _, DailyItem in pairs(AllDailyItem) do
         --根据权重随机一个品质
         local TargetGoodConfig = RandomGoodConfig()
@@ -686,48 +694,49 @@ function LobbyModule:RefreshDaily()
         local GroupByGrade = DataCenter.Get("GroupByGrade")
         local EquipmentGroup = GroupByGrade[TargetGoodConfig.Grade]
         local EquipmentID = EquipmentGroup[math.random(1, #EquipmentGroup)].ID
-        DailyItem.Costs[1].MaxCollect = TargetGoodConfig.Times
-        DailyItem.Costs[1].HasCollect = 0
-        DailyItem.Costs[1].Diamond = TargetGoodConfig.Price
+        DailyItem.Costs.MaxCollect = TargetGoodConfig.Times
+        DailyItem.Costs.HasCollect = 0
+        DailyItem.Costs.Diamond = TargetGoodConfig.Price
         local Goods = DailyItem.Goods
-        Goods.Equipments = {}
-        Goods.Equipments[1] = { ID = EquipmentID }
+        Goods.EquipmentID = EquipmentID
     end
 
     --刷新免费砖石
     local AllDiamondItem = AllShops.DiamondItem
-    AllDiamondItem[1].Costs[1].MaxCollect = 5
-    AllDiamondItem[1].Costs[1].HasCollect = 0
+    AllDiamondItem[1].Costs.MaxCollect = 5
+    AllDiamondItem[1].Costs.HasCollect = 0
     DataCenter.SetTable("AllShops", AllShops)
 
     --免费广告观看次数
     DataCenter.SetNumber("Player_HasAdFreeWatch_Num", 0)
+    DataCenter.SetNumber("Player_HasAdFreeWatchBox", 0)
+    DataCenter.SetNumber("Player_HasAdFreeWatchDiamond", 0)
 end
 
 --- 每周刷新
 function LobbyModule:RefreshWeekly()
     --刷新限定奖池
-    math.randomseed(TimerManager:GetClock())
-    local WeekIndex = math.random(1, 60)
+    local WeeklyTimeStamp = TimerManager:GetClock()
+    math.randomseed(WeeklyTimeStamp)
+    local WeeklyIndex = math.random(1, 60)
     local AllShops = DataCenter.GetTable("AllShops")
     local AllLimitItem = AllShops.LimitItem
     for _, LimitItem in pairs(AllLimitItem) do
         local BoxEquipmentIdsSet
-        if LimitItem.Costs[1].GoldBox then
+        if LimitItem.Costs.GoldBox then
             BoxEquipmentIdsSet = OpenBoxConfig.GoldBox[3].EquipIds
-        elseif LimitItem.Costs[1].SilverBox then
+        elseif LimitItem.Costs.SilverBox then
             BoxEquipmentIdsSet = OpenBoxConfig.SilverBox[3].EquipIds
         end
+
+        --装备槽【主要用于物品展示】
         local Goods = LimitItem.Goods
-        Goods.Equipments = {}
+        Goods.EquipmentIDs = {}
         if BoxEquipmentIdsSet then
-            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
-            if WeekIndex == 0 then
-                WeekIndex = 1
-            end
-            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
+            WeeklyIndex = (WeeklyIndex % #BoxEquipmentIdsSet) + 1
+            local BoxEquipmentIds = BoxEquipmentIdsSet[WeeklyIndex]
             for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
-                Goods.Equipments[Index] = { ID = BoxEquipmentId }
+                Goods.EquipmentIDs[Index] = BoxEquipmentId
             end
         end
     end
@@ -753,9 +762,9 @@ function LobbyModule:RefreshGeneralResourceBar()
         local level = GameUtils.GetRankLevelByScore(score)
         UI:SetText({GeneralResourceBar.Rank.Label}, level.name)
         GameUtils.SetImageWithAsset(GeneralResourceBar.Rank.Icon, "Rank", level.icon)
-        UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(DataCenter.GetNumber("Coin")))
-        UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond")))
-        UI:SetText({GeneralResourceBar.Securities.Label}, tostring(DataCenter.GetNumber("Player_BattlePoints_Num")))
+        UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(DataCenter.GetNumber("Coin") or 0))
+        UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond") or 0))
+        UI:SetText({GeneralResourceBar.Securities.Label}, tostring(DataCenter.GetNumber("Ticket") or 0))
     end
 end
 
@@ -764,9 +773,9 @@ function LobbyModule:RefreshStoreResourceBar()
     local MainView = UIConfig.MainView
     local StoreResourceBar = MainView and MainView.StoreResourceBar
     if StoreResourceBar then
-        UI:SetText({StoreResourceBar.GoldBox.Label}, tostring(DataCenter.GetNumber("GoldBox")))
-        UI:SetText({StoreResourceBar.SilverBox.Label}, tostring(DataCenter.GetNumber("SilverBox")))
-        UI:SetText({StoreResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond")))
+        UI:SetText({StoreResourceBar.GoldBox.Label}, tostring(DataCenter.GetNumber("GoldBox") or 0))
+        UI:SetText({StoreResourceBar.SilverBox.Label}, tostring(DataCenter.GetNumber("SilverBox") or 0))
+        UI:SetText({StoreResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond") or 0))
     end
 end
 

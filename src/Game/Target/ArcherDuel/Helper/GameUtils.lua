@@ -180,7 +180,6 @@ end
 function GameUtils.SetImageWithEquipment(IconUI, Equipment)
     --装备配置
     if Equipment then
-        local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
         local EquipmentData = EquipmentConfig[Equipment.ID]
         local AssetName = EquipmentData.AssetName or "weapon_icon"
         local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID

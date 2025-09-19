@@ -1079,12 +1079,12 @@ local SceneConfig = {
                     Density = 15,
                     --可移动物体列表
                     MovableList  = {
-                        [6228] = true,
-                        [6229] = true,
-                        [6230] = true,
-                        [6231] = true,
-                        [6232] = true,
-                        [6233] = true,
+                        [6225] = true,
+                        [6226] = true,
+                        [6227] = true,
+                        [6222] = true,
+                        [6223] = true,
+                        [6224] = true,
                     },
                     --掉落速度【单位：米每秒】
                     DropOffset = Engine.Vector(0, 0, -10000),
@@ -1092,7 +1092,6 @@ local SceneConfig = {
                     ExplosionEffect = 8,
                     --活体列表【命中后直接瞬移，播放爆炸效果】
                     BodyList = {
-                        [661] = true,
                     }
                 },
             },
@@ -1156,8 +1155,8 @@ local SceneConfig = {
                     Density = 15,
                     --可移动物体列表
                     MovableList  = {
-                        [6226] = true,
-                        [6227] = true,
+                        [6220] = true,
+                        [6221] = true,
                     },
                     --掉落速度【单位：米每秒】
                     DropOffset = Engine.Vector(0, 0, -10000),
@@ -1195,8 +1194,8 @@ local SceneConfig = {
                     MovableList  = {
                         [6218] = true,
                         [6219] = true,
-                        [6224] = true,
-                        [6225] = true,
+                        [6228] = true,
+                        [6229] = true,
                     },
                     --掉落速度【单位：米每秒】
                     DropOffset = Engine.Vector(0, 0, -10000),

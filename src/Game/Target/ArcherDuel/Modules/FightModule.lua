@@ -25,14 +25,28 @@ function FightModule:Open(Context)
     local CenterView = FightView and FightView.CenterView
 
     --广告1按钮监听
-    UI:RegisterClicked(CenterView.Ad_1.ID, function()
-        self:OnClickAd1()
-    end)
+    local Player_HasAdFreeWatchBox = DataCenter.GetNumber("Player_HasAdFreeWatchBox", true)
+    if Player_HasAdFreeWatchBox == 0 then
+        UI:SetVisible({CenterView.Ad_1.Mask}, false)
+        UI:RegisterClicked(CenterView.Ad_1.ID, function()
+            self:OnClickAd1()
+        end)
+    else
+        --显示遮罩，屏蔽【广告1按钮监听】
+        UI:SetVisible({CenterView.Ad_1.Mask}, true)
+    end
 
     --广告2按钮监听
-    UI:RegisterClicked(CenterView.Ad_2.ID, function()
-        self:OnClickAd2()
-    end)
+    local Player_HasAdFreeWatchDiamond = DataCenter.GetNumber("Player_HasAdFreeWatchDiamond", true)
+    if Player_HasAdFreeWatchDiamond == 0 then
+        UI:SetVisible({CenterView.Ad_2.Mask}, false)
+        UI:RegisterClicked(CenterView.Ad_2.ID, function()
+            self:OnClickAd2()
+        end)
+    else
+        --显示遮罩，屏蔽【广告1按钮监听】
+        UI:SetVisible({CenterView.Ad_2.Mask}, true)
+    end
 
     local score = GameUtils.GetPlayerRankScore()
     if GameUtils.IsReachGoldRank(score) then
@@ -180,6 +194,9 @@ function FightModule:Close()
         UI:UnRegisterClicked(Completed)
         UI:UnRegisterClicked(Button)
     end
+
+    UI:UnRegisterClicked(UIConfig.BoxView.ThreeItem.ItemGroup[2].AdButton)
+    UI:UnRegisterClicked(UIConfig.BoxView.ThreeItem.ItemGroup[3].AdButton)
 end
 
 --- 刷新身体上的数据
@@ -221,13 +238,37 @@ function FightModule:RegreshBodyUI()
 end
 
 function FightModule:OnClickAd1()
-    --TODO：广告
-    --IAA:LetPlayerWatchAds()
+    --看广告获得宝箱
+    local Costs = {
+        AdTag = "ad_tag_free_box"
+    }
+    local Goods = {
+        BoxID = 200001
+    }
+    local Ad_1 = UIConfig.FightView.CenterView.Ad_1
+    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true, function()
+        DataCenter.SetNumber("Player_HasAdFreeWatchBox", 1)
+        UI:UnRegisterClicked(Ad_1.ID)
+        --显示遮罩，屏蔽【广告1按钮监听】
+        UI:SetVisible({Ad_1.Mask}, true)
+    end)
 end
 
 function FightModule:OnClickAd2()
-    --TODO：广告
-    --IAA:LetPlayerWatchAds()
+    --看广告获得砖石
+    local Costs = {
+        AdTag = "ad_tag_free_diamond"
+    }
+    local Goods = {
+        Diamond = 60
+    }
+    local Ad_2 = UIConfig.FightView.CenterView.Ad_2
+    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true, function()
+        DataCenter.SetNumber("Player_HasAdFreeWatchDiamond", 1)
+        UI:UnRegisterClicked(Ad_2.ID)
+        --显示遮罩，屏蔽【广告2按钮监听】
+        UI:SetVisible({Ad_2.Mask}, true)
+    end)
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
@@ -456,6 +497,37 @@ function FightModule:OnRank(RankBoxReward_Table)
             UGCS.Framework.Executor.Delay(0.5, function()
                 UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},true)
                 UI:SetVisible({ThreeItem.ItemGroup[2].Text, ThreeItem.ItemGroup[3].Text},true)
+                UI:SetVisible({ThreeItem.ItemGroup[2].ad, ThreeItem.ItemGroup[3].ad},true)
+                UI:RegisterClicked(ThreeItem.ItemGroup[2].AdButton,function()
+                    Log:PrintLog("看广告获取钻石数量" .. BoxRewards[2])
+
+                    local callback = function()
+                        local BoxItem = ThreeItem.ItemGroup[2]
+                        UI:SetText({BoxItem.Text}, tostring(BoxRewards[2] * 3))
+                        UI:SetVisible({BoxItem.ad},false)
+                        BoxRewards[2] = BoxRewards[2] * 3
+                    end
+
+                    local Costs = {
+                        AdTag = "ad_tag_free_three_diamond"
+                    }
+                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
+                end)
+                UI:RegisterClicked(ThreeItem.ItemGroup[3].AdButton,function()
+                    Log:PrintLog("看广告获取黄金数量" .. BoxRewards[3])
+
+                    local callback = function()
+                        local BoxItem = ThreeItem.ItemGroup[3]
+                        UI:SetText({BoxItem.Text}, tostring(BoxRewards[3] * 3))
+                        UI:SetVisible({BoxItem.ad},false)
+                        BoxRewards[3] = BoxRewards[3] * 3
+                    end
+
+                    local Costs = {
+                        AdTag = "ad_tag_free_three_coin"
+                    }
+                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
+                end)
             end)
         end)
     end)
@@ -496,6 +568,7 @@ function FightModule:OnRank(RankBoxReward_Table)
         end
         UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
         UI:SetVisible({ThreeItem.ItemGroup[1].Text, ThreeItem.ItemGroup[2].Text, ThreeItem.ItemGroup[3].Text},false)
+        UI:SetVisible({ThreeItem.ItemGroup[2].ad, ThreeItem.ItemGroup[3].ad},false)
 
         --注销事件
         UI:UnRegisterClicked(ThreeItem.Button.ID)
@@ -599,8 +672,25 @@ function FightModule:RefreshWeeklyTaskUI(wday)
                     local cfg = UGCS.Target.ArcherDuel.Task.TaskPool.taskcfg[v.id]
                     if cfg and cfg.taskgo then
                         local goObj = taskMgr.Task.TaskGo[cfg.taskgo]
-                        UI:SetVisible({UIConfig.SevenDays.ID}, false)
-                        System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                        local score = GameUtils.GetPlayerRankScore()
+                        if goObj.SubTab == "Golden" then
+                            if GameUtils.IsReachGoldRank(score) then
+                                System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                                UI:SetVisible({UIConfig.SevenDays.ID}, false)
+                            else
+                                UI:ShowMessageTip("达到黄金段位，才能进入黄金赛")
+                            end
+                        elseif goObj.SubTab == "Diamond" then
+                            if GameUtils.IsReachDiamondRank(score) then
+                                System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                                UI:SetVisible({UIConfig.SevenDays.ID}, false)
+                            else
+                                UI:ShowMessageTip("达到钻石段位，才能进入钻石赛")
+                            end
+                        else
+                            System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                            UI:SetVisible({UIConfig.SevenDays.ID}, false)
+                        end
                     end
                 end)
                 UI:SetVisible({Finish}, false)

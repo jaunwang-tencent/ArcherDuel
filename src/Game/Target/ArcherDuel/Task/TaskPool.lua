@@ -85,7 +85,6 @@ TaskPool.taskcfg = {
 
 function TaskPool.BuildTask()
     local TaskManagerInstance = TaskManager:GetInsatnce()
-    local playerId = Character:GetLocalPlayerId()
     local nowStr = MiscService:GetServerTimeToTime()
     local nowTs = MiscService:DateYMDHMSToTime(nowStr)
 
@@ -141,7 +140,7 @@ function TaskPool.BuildTask()
         TaskPool.RefreshWeeklyTask(saveDataKV)
     end
 
-    DataCenter.SetNumber("Player_LastTaskRefreshTime_Num", lastTaskRefreshTime)
+    DataCenter.SetNumber("Player_LastTaskRefreshTime_Num", nowTs)
 
     return TaskManagerInstance
 end

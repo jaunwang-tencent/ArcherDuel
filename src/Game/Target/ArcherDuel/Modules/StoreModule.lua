@@ -2,6 +2,8 @@
 local StoreModule = {}
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+--升级配置
+local UpgradeConfig = UGCS.Target.ArcherDuel.Config.UpgradeConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 --辅助API
@@ -27,13 +29,11 @@ function StoreModule:Open(Context)
     UI:SetVisible(self.ScrollItems, true)
     --添加到滚动视图
     UI:AddToScrollView(UIConfig.StoreView.Scrollable, self.ScrollItems)
-    --广告结束回调<AdTag, CallBack>
-    self.AdFinishCallBack = {}
     --注册广告结束事件
     System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
         local LocalPlayerId = Character:GetLocalPlayerId()
         if LocalPlayerId == userId then
-            local CallBack = self.AdFinishCallBack[mark]
+            local CallBack = self.AdFinishCallBack and self.AdFinishCallBack[mark]
             if CallBack then
                 --回调处理
                 CallBack()
@@ -52,7 +52,7 @@ end
 function StoreModule:Close()
     --注销广告完成事件
     System:UnregisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH)
-    self.AdFinishCallBack = {}
+    self.AdFinishCallBack = nil
     --销毁视图
     local StoreView = UIConfig.StoreView
     UI:RemoveFromScrollView(StoreView.Scrollable, self.ScrollItems)
@@ -120,108 +120,125 @@ function StoreModule:RefreshPrice(ShopView, ShopCosts)
 end
 
 --- 刷新商铺【一般地购买某个商品只有一种途径（一个按钮），但不排除会有多个购买途径，比如限定奖池，可以开宝箱、也可以观看广告】
----@param ShopGroup 商铺视图组
+---@param ShopSlot 商铺槽
 ---@param ShopItem 商铺数据项
 ---@param HoldInfo 持有信息
-function StoreModule:RefreshShop(ShopGroup, ShopItem, HoldInfo)
+function StoreModule:RefreshShop(ShopSlot, ShopItem, HoldInfo)
     local ShopGoods = ShopItem and ShopItem.Goods
-    if ShopGroup and ShopGoods then
-        for ShopIndex, ShopSlot in pairs(ShopGroup) do
-            --消耗信息
-            local ShopCosts = ShopItem.Costs[ShopIndex]
-            --处理商铺
-            if ShopCosts and ShopGoods then
-                --刷新价格
-                self:RefreshPrice(ShopSlot, ShopCosts)
+    if ShopSlot and ShopGoods then
+        --消耗信息
+        local ShopCosts = ShopItem.Costs
+        --处理商铺
+        if ShopCosts and ShopGoods then
+            --刷新价格
+            self:RefreshPrice(ShopSlot, ShopCosts)
 
-                --持有信息
-                if HoldInfo then
-                    local ShopInfo = {
-                        --寄存商铺视图，以便刷新
-                        ShopView = ShopSlot,
-                        --商铺点击
-                        SlotID = ShopSlot.ID,
-                        --商铺内容
-                        Content = {
-                            Costs = ShopCosts,
-                            Goods = ShopGoods
-                        }
-                    }
-                    --注册商铺按钮事件
-                    UI:RegisterClicked(ShopSlot.ID, function()
-                        --触发一次购买行为【刷新存档】
-                        self:BuyGood(ShopInfo)
-                    end)
-                    table.insert(self.ShopInfos, ShopInfo)
-                end
+            --持有信息
+            if HoldInfo then
+                local ShopInfo = {
+                    --寄存商铺视图，以便刷新
+                    ShopView = ShopSlot,
+                    --商铺点击
+                    SlotID = ShopSlot.ID,
+                    --商品消耗
+                    Costs = ShopCosts,
+                    --商铺商品
+                    Goods = ShopGoods
+                }
+                --注册商铺按钮事件
+                UI:RegisterClicked(ShopSlot.ID, function()
+                    --触发一次购买行为【刷新存档】
+                    self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
+                end)
+                table.insert(self.ShopInfos, ShopInfo)
             end
         end
     end
 end
 
 --- 刷新商品
----@param GoodGroup 商品视图组
+---@param GoodSlot 商品槽
 ---@param ShopItem 商铺数据项
 ---@param HoldInfo 持有信息
-function StoreModule:RefreshGood(GoodGroup, ShopItem, HoldInfo)
+function StoreModule:RefreshGood(GoodSlot, ShopItem, HoldInfo)
     --处理商品
     local ShopGoods = ShopItem.Goods
-    if GoodGroup then
-        for GoodIndex, GoodSlot in pairs(GoodGroup) do
-            local GoodInfo = {
-                --寄存商品视图，以便刷新
-                GoodView = GoodSlot,
-                --商品点击
-                SlotID = GoodSlot.ID,
-                --商品索引
-                GoodIndex = GoodIndex,
-                --商品内容
-                Content = ShopGoods
-            }
-            local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
-            if Equipment then
-                --装备
-                GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
-                --装备品质
-                if GoodSlot.Background then
-                    local EquipmentData = EquipmentConfig[Equipment.ID]
-                    GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+    if GoodSlot then
+        local GoodInfo = {
+            --寄存商品视图，以便刷新
+            GoodView = GoodSlot,
+            --商品点击
+            SlotID = GoodSlot.ID,
+            --商品内容
+            Goods = ShopGoods
+        }
+        local Equipment = self:GetEquipmentByID(ShopGoods.EquipmentID)
+        if Equipment then
+            --装备
+            GameUtils.SetImageWithEquipment(GoodSlot.ID, Equipment)
+            --装备品质
+            if GoodSlot.Background then
+                local EquipmentData = EquipmentConfig[Equipment.ID]
+                GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", EquipmentData.Attributes.Grade)
+            end
+        else
+            if not GoodSlot.IconLock then
+                if ShopGoods.Coin then
+                    --显示金币
+                    GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
+                elseif ShopGoods.Diamond then
+                    --显示砖石
+                    GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
                 end
-            else
-                if not GoodSlot.IconLock then
-                    if ShopGoods.Coin then
-                        --显示金币
-                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 4)
-                    elseif ShopGoods.Diamond then
-                        --显示砖石
-                        GameUtils.SetImageWithAsset(GoodSlot.ID, "Currency", 6)
+            end
+        end
+        --装备槽
+        local EquipmentSlots = GoodSlot.EquipmentSlots
+        local EquipmentIDs = ShopGoods.EquipmentIDs
+        if EquipmentIDs then
+            for EquipmentIndex, EquipmentID in ipairs(EquipmentIDs) do
+                Equipment = self:GetEquipmentByID(EquipmentID)
+                if Equipment then
+                    local EquipmentSlot = EquipmentSlots[EquipmentIndex]
+                    --装备
+                    GameUtils.SetImageWithEquipment(EquipmentSlot, Equipment)
+                end
+            end
+        end
+        --点击次数
+        if GoodSlot.Times then
+            --消耗信息【这种情况下是一一映射】
+            local ShopCosts = ShopItem.Costs
+            --寄存收集次数，即便刷新
+            ShopCosts.CollectTimesUI = GoodSlot.Times
+            local Text = string.format("%d/%d", ShopCosts.MaxCollect - ShopCosts.HasCollect, ShopCosts.MaxCollect)
+            UI:SetText({GoodSlot.Times}, Text)
+        end
+        --商品数量
+        if GoodSlot.Count then
+            local Value = ShopGoods.Coin or ShopGoods.Diamond
+            local Text = tostring(Value)
+            UI:SetText({GoodSlot.Count}, Text)
+        end
+
+        --持有信息
+        if HoldInfo then
+            --注册商品点击装备槽事件
+            if EquipmentSlots and EquipmentIDs then
+                for SlotIndex, EquipmentSlot in ipairs(EquipmentSlots) do
+                    local EquipmentID = EquipmentIDs[SlotIndex]
+                    if EquipmentID then
+                        UI:RegisterClicked(EquipmentSlot, function()
+                            --装备
+                            Equipment = self:GetEquipmentByID(EquipmentID)
+                            if Equipment then
+                                EquipmentDetailModule:Open(Equipment)
+                            end
+                        end)
                     end
                 end
             end
-            --点击次数
-            if GoodSlot.Times then
-                --消耗信息【这种情况下是一一映射】
-                local ShopCosts = ShopItem.Costs[GoodIndex]
-                --寄存收集次数，即便刷新
-                ShopCosts.CollectTimesUI = GoodSlot.Times
-                local Text = string.format("%d/%d", ShopCosts.MaxCollect - ShopCosts.HasCollect, ShopCosts.MaxCollect)
-                UI:SetText({GoodSlot.Times}, Text)
-            end
-            --商品数量
-            if GoodSlot.Count then
-                local Value = ShopGoods.Coin or ShopGoods.Diamond
-                local Text = tostring(Value)
-                UI:SetText({GoodSlot.Count}, Text)
-            end
-
-            --持有信息
-            if HoldInfo then
-                --注册商品点击事件
-                UI:RegisterClicked(GoodInfo.SlotID, function()
-                    self:GoodDetail(GoodInfo)
-                end)
-                table.insert(self.GoodInfos, GoodInfo)
-            end
+            table.insert(self.GoodInfos, GoodInfo)
         end
     end
 end
@@ -256,13 +273,13 @@ function StoreModule:RefreshStore(HoldInfo)
         local ShopItems = ItemsMap[ActivityIndex]
         if ShopItems then
             for ViewIndex, ShopItem in ipairs(ShopItems) do
-                local ViewSlot = Activity.Views[ViewIndex]
-                if ViewSlot then
+                local ActivityView = Activity.Views[ViewIndex]
+                if ActivityView then
                     --刷新商铺
-                    self:RefreshShop(ViewSlot.ShopGroup, ShopItem, HoldInfo)
+                    self:RefreshShop(ActivityView.ShopSlot, ShopItem, HoldInfo)
 
                     --刷新商品
-                    self:RefreshGood(ViewSlot.GoodGroup, ShopItem, HoldInfo)
+                    self:RefreshGood(ActivityView.GoodSlot, ShopItem, HoldInfo)
                 end
             end
         end
@@ -270,108 +287,12 @@ function StoreModule:RefreshStore(HoldInfo)
 end
 
 --- 获取指定商品信息对应的装备数据
----@param GoodInfo 商品信息
-function StoreModule:GetEquipmentByGoodInfo(GoodInfo)
-    --装备
-    local EquipmentGoods = GoodInfo.Content and GoodInfo.Content.Equipments
-    local EquipmentGood = EquipmentGoods and EquipmentGoods[GoodInfo.GoodIndex]
-    if EquipmentGood then
+---@param EquipmentID 装备ID
+function StoreModule:GetEquipmentByID(EquipmentID)
+    if EquipmentID then
         local AllEquipment = DataCenter.GetTable("AllEquipment")
-        local Equipment = AllEquipment[EquipmentGood.ID]
+        local Equipment = AllEquipment and AllEquipment[EquipmentID]
         return Equipment
-    end
-end
-
---- 商品详情
----@param GoodInfo 商品信息
-function StoreModule:GoodDetail(GoodInfo)
-    --装备
-    local Equipment = self:GetEquipmentByGoodInfo(GoodInfo)
-    if Equipment then
-        EquipmentDetailModule:Open(Equipment)
-    end
-end
-
---- 购买商品
----@param ShopInfo 商铺信息
-function StoreModule:BuyGood(ShopInfo)
-    local ShopContent = ShopInfo.Content
-    local Costs = ShopContent.Costs
-    local Goods = ShopContent.Goods
-    --前置条件检测
-    if Costs.HasCollect and Costs.MaxCollect and Costs.HasCollect >= Costs.MaxCollect then
-        --超过消耗数量则不允购买
-        UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
-        return
-    end
-    local GoldBox = DataCenter.GetNumber("GoldBox")
-    local SilverBox = DataCenter.GetNumber("SilverBox")
-    local Diamond = DataCenter.GetNumber("Diamond")
-    local Success = false
-    if Costs.GoldBox then
-        if GoldBox >= Costs.GoldBox then
-            --消耗金宝箱
-            DataCenter.SetNumber("GoldBox", GoldBox - Costs.GoldBox)
-            Success = true
-        elseif Costs.Diamond and Diamond >= Costs.Diamond then
-            --消砖石
-            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
-            Success = true
-        else
-            --在此弹出看广告弹窗
-            self:ShowAdView(Goods)
-        end
-        if Success then
-            self:OpenBox(200003)
-        end
-    elseif Costs.SilverBox then
-        if SilverBox >= Costs.SilverBox then
-            --消耗银宝箱
-            DataCenter.SetNumber("SilverBox", SilverBox - Costs.SilverBox)
-            Success = true
-        elseif Costs.Diamond and Diamond >= Costs.Diamond then
-            --消砖石
-            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
-            Success = true
-        else
-            --在此弹出看广告弹窗
-            self:ShowAdView(Goods)
-        end
-        if Success then
-            self:OpenBox(200002)
-        end
-    elseif Costs.Diamond then
-        --消耗砖石
-        if Diamond >= Costs.Diamond then
-            --直接消耗
-            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
-            Success = true
-            --获得物品
-            self:ShowGainView(Costs, Goods)
-        else
-            if Costs.AdTag then
-                --观看广告
-                self:SeeAd(Costs, Goods)
-            else
-                --在此弹出看广告弹窗
-                self:ShowAdView(Goods)
-            end
-        end
-    elseif Costs.AdTag then
-        --观看广告
-        self:SeeAd(Costs, Goods)
-    --else
-        --不可购买
-        --UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
-    end
-
-    if Success then
-        --累计消耗
-        self:AccumulateCollected(Costs)
-        --刷新价格
-        self:RefreshStore(false)
-        --刷新商店资源
-        System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
     end
 end
 
@@ -394,79 +315,120 @@ function StoreModule:AccumulateCollected(Costs)
     end
 end
 
---- 显示获得视图
----@param Costs 消耗,目前有四种途径获得商品 {Ad = tag} or {Diamond = 1} or {GoldBox = 1} or {SilverBox = 1}
----@param Goods 物品
-function StoreModule:ShowGainView(Costs, Goods)
-    local GainView = UIConfig.GainView
-    local GoodSlot = GainView.GoodSlot
-    local CoinSlot = GainView.CoinSlot
-    UI:SetVisible({GainView.ID}, true)
-
-    if Goods.Equipments then
-        --显示物品
-        UI:SetVisible({GoodSlot.ID}, true)
-        UI:SetVisible({CoinSlot.ID}, false)
-        --获取装备
-        local AllEquipment = DataCenter.GetTable("AllEquipment")
-        for _, Equipment in pairs(Goods.Equipments) do
-            local TargetEquipment = AllEquipment[Equipment.ID]
-            --累加碎片
-            TargetEquipment.Piece = TargetEquipment.Piece + 1
-            --解锁
-            TargetEquipment.Unlock = true
-
-            --显示部分
-            GameUtils.SetImageWithEquipment(GainView.GoodSlot.Icon, Equipment)
-            local Attributes = EquipmentConfig[Equipment.ID].Attributes
-            GameUtils.SetImageWithAsset(GainView.GoodSlot.Background, "EquipmentImage", Attributes.Grade)
-        end
-        --刷新装备数据
-        System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
-        --TODO：当装备已满时，转化成金币
-    else
-        --显示资源
-        UI:SetVisible({GoodSlot.ID}, false)
-        UI:SetVisible({CoinSlot.ID}, true)
-        if Goods.Coin then
-            --获得金钱，显示金钱
-            local Coin = DataCenter.GetNumber("Coin")
-            Coin = Coin + Goods.Coin
-            DataCenter.SetNumber("Coin", Coin)
-
-            --显示部分
-            GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 4)
-            UI:SetText({CoinSlot.Count}, tostring(Coin))
-            if Costs and Costs.AdTag then
-                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
-            end
-        elseif Goods.Diamond then
-            --获得砖石，显示砖石
-            local Diamond = DataCenter.GetNumber("Diamond")
-            Diamond = Diamond + Goods.Diamond
-            DataCenter.SetNumber("Diamond", Diamond)
-
-            --显示部分
-            GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 6)
-            UI:SetText({CoinSlot.Count}, tostring(Diamond))
-            if Costs and Costs.AdTag then
-                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
-            end
-        end
+--- 购买商品
+---@param Costs 消耗
+---@param Goods 商品
+function StoreModule:BuyGood(Costs, Goods)
+    --前置条件检测
+    if Costs.HasCollect and Costs.MaxCollect and Costs.HasCollect >= Costs.MaxCollect then
+        --超过消耗数量则不允购买
+        return
     end
-    --播放背景动效
-    UI:PlayUIAnimation(GainView.BackgroundEffect, 1, 0)
-    --设置物品图标
-    UI:RegisterClicked(GainView.CloseButton, function()
-        UI:SetVisible({GainView.ID}, false)
-        UI:StopUIAnimation(GainView.BackgroundEffect)
-        --注销按钮事件
-        UI:UnRegisterClicked(GainView.CloseButton)
-    end)
+    local GoldBox = DataCenter.GetNumber("GoldBox")
+    local SilverBox = DataCenter.GetNumber("SilverBox")
+    local Diamond = DataCenter.GetNumber("Diamond")
+    local Success = false
+    if Costs.GoldBox then
+        if GoldBox >= Costs.GoldBox then
+            --消耗金宝箱
+            DataCenter.SetNumber("GoldBox", GoldBox - Costs.GoldBox)
+            Success = true
+        elseif Costs.Diamond and Diamond >= Costs.Diamond then
+            --消砖石
+            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
+            Success = true
+        else
+            --在此弹出看广告弹窗
+            self:ShowAdView(Goods)
+        end
+        if Success then
+            self:OpenBox(Goods.BoxID)
+        end
+    elseif Costs.SilverBox then
+        if SilverBox >= Costs.SilverBox then
+            --消耗银宝箱
+            DataCenter.SetNumber("SilverBox", SilverBox - Costs.SilverBox)
+            Success = true
+        elseif Costs.Diamond and Diamond >= Costs.Diamond then
+            --消砖石
+            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
+            Success = true
+        else
+            --在此弹出看广告弹窗
+            self:ShowAdView(Goods)
+        end
+        if Success then
+            self:OpenBox(Goods.BoxID)
+        end
+    elseif Costs.Diamond then
+        --消耗砖石
+        if Diamond >= Costs.Diamond then
+            --直接消耗
+            DataCenter.SetNumber("Diamond", Diamond - Costs.Diamond)
+            Success = true
+            --获得物品
+            self:ShowGainView(Costs, Goods)
+        else
+            if Costs.AdTag then
+                --观看广告
+                self:SeeAd(Costs, Goods, true)
+            else
+                --在此弹出看广告弹窗
+                self:ShowAdView(Goods)
+            end
+        end
+    elseif Costs.AdTag then
+        --观看广告
+        self:SeeAd(Costs, Goods, true)
+    end
+
+    if Success then
+        --累计消耗
+        self:AccumulateCollected(Costs)
+        --刷新价格
+        self:RefreshStore(false)
+        --刷新商店资源
+        System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
+    end
+end
+
+--- 观看广告
+---@param Costs 消耗【参见：LobbyModule:DefaultShopData()中的Costs】
+---@param Goods 商品【格式：{ EquipmentID = 5 } or { Diamond = 60 } or { Coin = 1200 }】
+---@param NeedGain 需要获得
+---@param OnFinish 观看结束
+function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
+    local AdTag = Costs.AdTag
+    if AdTag then
+        --广告结束回调<AdTag, CallBack>
+        if not self.AdFinishCallBack then
+            self.AdFinishCallBack = {}
+        end
+        local CallBack = self.AdFinishCallBack[AdTag]
+        if not CallBack then
+            CallBack = function()
+                if OnFinish then
+                    --使用自定义结束事件
+                    OnFinish()
+                end
+                if NeedGain then
+                    --累计收集次数
+                    self:AccumulateCollected(Costs)
+                    --看完广告后，获得物品
+                    self:ShowGainView(Costs, Goods)
+                end
+            end
+            --加入回调
+            self.AdFinishCallBack[AdTag] = CallBack
+        end
+        --广告观看
+        IAA:LetPlayerWatchAds(AdTag)
+        --测试
+        --CallBack()
+    end
 end
 
 --- 显示广告视图，通过看广告来获取砖石【免费获取，每天固定数量】
----@param AdTag 广告标识
 ---@param Goods 物品
 function StoreModule:ShowAdView(Goods)
     local AdView = UIConfig.AdView
@@ -486,7 +448,7 @@ function StoreModule:ShowAdView(Goods)
             MaxCollect = MaxCollect,
             CollectTimesUI = AdView.Times
         }
-        self:SeeAd(Costs, Goods)
+        self:SeeAd(Costs, Goods, true)
         --注销按钮事件
         UI:UnRegisterClicked(AdView.AdButton)
         UI:UnRegisterClicked(AdView.CloseButton)
@@ -500,28 +462,6 @@ function StoreModule:ShowAdView(Goods)
         UI:UnRegisterClicked(AdView.AdButton)
         UI:UnRegisterClicked(AdView.CloseButton)
     end)
-end
-
---- 观看广告
----@param Costs 广告标识
----@param Goods 商品
-function StoreModule:SeeAd(Costs, Goods)
-    local AdTag = Costs.AdTag
-    if AdTag then
-        local CallBack = self.AdFinishCallBack[AdTag]
-        if not CallBack then
-            CallBack = function()
-                --累计收集次数
-                self:AccumulateCollected(Costs)
-                --看完广告后，获得物品
-                self:ShowGainView(Costs, Goods)
-            end
-            --加入回调
-            self.AdFinishCallBack[AdTag] = CallBack
-        end
-        --广告观看
-        IAA:LetPlayerWatchAds(AdTag)
-    end
 end
 
 --- 打开宝箱
@@ -599,6 +539,137 @@ function StoreModule:OpenBox(BoxID)
         UI:UnRegisterClicked(ThreeItem.Button.ID)
     end)
     return BoxRewards
+end
+
+--- 显示获得视图
+---@param Costs 消耗,目前有四种途径获得商品 {Ad = tag} or {Diamond = 1} or {GoldBox = 1} or {SilverBox = 1}
+---@param Goods 物品
+function StoreModule:ShowGainView(Costs, Goods)
+    local GainView = UIConfig.GainView
+    local GoodSlot = GainView.GoodSlot
+    local ResourceSlot = GainView.ResourceSlot
+    UI:SetVisible({GainView.ID}, true)
+    --播放背景动效
+    UI:PlayUIAnimation(GainView.BackgroundEffect, 1, 0)
+    local Converted, EquipmentID, GoodsCoin, GoodsDiamond = false, Goods.EquipmentID, Goods.Coin, Goods.Diamond
+    if EquipmentID then
+        --获取装备
+        local AllEquipment = DataCenter.GetTable("AllEquipment")
+        local TargetEquipment = AllEquipment[EquipmentID]
+        --获取装备升级信息
+        local Attributes = EquipmentConfig[EquipmentID].Attributes
+        local GradeUpgradeConfig = UpgradeConfig[Attributes.Grade]
+        if TargetEquipment.Level < 5 then
+            local TotalUpgradePiece = 0
+            for Level = TargetEquipment.Level, 4 do
+                local Upgrade = GradeUpgradeConfig[Level]
+                TotalUpgradePiece = TotalUpgradePiece + Upgrade.Piece
+            end
+            if TotalUpgradePiece <= TargetEquipment.Piece then
+                --当前拥有碎片数量过升级所需碎片总量时，则转化为金币
+                Converted = true
+            end
+        else
+            --满级也需要转化为金币
+            Converted = true
+        end
+        if Converted then
+            local CoinConvertConfig = {
+                200, 300, 500, 800
+            }
+            --转换成币
+            GoodsCoin = CoinConvertConfig[TargetEquipment.Level]
+        else
+            --显示物品
+            UI:SetVisible({GoodSlot.ID}, true)
+            UI:SetVisible({ResourceSlot.ID}, false)
+
+            --累加碎片
+            TargetEquipment.Piece = TargetEquipment.Piece + 1
+            --解锁
+            TargetEquipment.Unlock = true
+
+            --显示部分
+            GameUtils.SetImageWithEquipment(GoodSlot.Icon, TargetEquipment)
+            GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", Attributes.Grade)
+
+            --刷新装备数据
+            System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
+        end
+    end
+    --金币和砖石
+    if GoodsCoin or GoodsDiamond or Goods.GoldBox or Goods.SilverBox then
+        local ExecuteShowResource = function()
+            if GoodsCoin then
+                --获得金钱，显示金钱
+                local Coin = DataCenter.GetNumber("Coin")
+                Coin = Coin + GoodsCoin
+                DataCenter.SetNumber("Coin", Coin)
+
+                --显示部分
+                GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 4)
+                UI:SetText({ResourceSlot.Count}, tostring(GoodsCoin))
+                if Costs and Costs.AdTag then
+                    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
+                end
+            elseif GoodsDiamond then
+                --获得砖石，显示砖石
+                local Diamond = DataCenter.GetNumber("Diamond")
+                Diamond = Diamond + GoodsDiamond
+                DataCenter.SetNumber("Diamond", Diamond)
+
+                --显示部分
+                GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 6)
+                UI:SetText({ResourceSlot.Count}, tostring(GoodsDiamond))
+                if Costs and Costs.AdTag then
+                    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
+                end
+            elseif Goods.GoldBox then
+                --金宝箱
+                local GoldBox = DataCenter.GetNumber("GoldBox", true)
+                DataCenter.SetNumber("GoldBox", GoldBox + Goods.GoldBox)
+
+                --显示部分
+                GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 1)
+                UI:SetText({ResourceSlot.Count}, tostring(Goods.GoldBox))
+                System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
+            elseif Goods.SilverBox then
+                --银宝箱
+                local SilverBox = DataCenter.GetNumber("SilverBox", true)
+                DataCenter.SetNumber("SilverBox", SilverBox + Goods.SilverBox)
+
+                --显示部分
+                GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 2)
+                UI:SetText({ResourceSlot.Count}, tostring(Goods.SilverBox))
+                System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
+            end
+        end
+
+        --显示资源
+        UI:SetVisible({GoodSlot.ID}, false)
+        if Converted then
+            --转化动画
+            UI:SetVisible({ResourceSlot.ID, ResourceSlot.Background}, true)
+             --播放翻盘动画
+            UI:PlayUIAnimation(ResourceSlot.Background, 1, 0)
+            --延迟显示资源和数量
+            UGCS.Framework.Executor.Delay(0.2, function()
+                UI:SetVisible({ResourceSlot.Count, ResourceSlot.Icon}, true)
+                ExecuteShowResource()
+            end)
+        else
+            --立即显示
+            UI:SetVisible({ResourceSlot.ID, ResourceSlot.Background, ResourceSlot.Count, ResourceSlot.Icon}, true)
+            ExecuteShowResource()
+        end
+    end
+    --设置物品图标
+    UI:RegisterClicked(GainView.CloseButton, function()
+        UI:SetVisible({GainView.ID}, false)
+        UI:StopUIAnimation(GainView.BackgroundEffect)
+        --注销按钮事件
+        UI:UnRegisterClicked(GainView.CloseButton)
+    end)
 end
 
 return StoreModule
