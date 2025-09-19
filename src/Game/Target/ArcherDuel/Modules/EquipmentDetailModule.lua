@@ -25,14 +25,14 @@ function EquipmentDetailModule:Open(Equipment)
         EquipmentDetailModule:Close()
     end)
 
-     --修改名字
-     local EquipmentData = EquipmentConfig[Equipment.ID]
-     UI:SetText({DetailView.Title}, EquipmentData.NickName)
+    --修改名字
+    local EquipmentData = EquipmentConfig[Equipment.ID]
+    UI:SetText({DetailView.Title}, EquipmentData.NickName)
 
-     local CurrentPiece = Equipment.Piece
-     local Attributes = EquipmentConfig[Equipment.ID].Attributes
-     local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
-     UI:SetVisible({
+    local CurrentPiece = Equipment.Piece
+    local Attributes = EquipmentConfig[Equipment.ID].Attributes
+    local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
+    UI:SetVisible({
         DetailView.EquippedAndMaxLevel.ID,
         DetailView.EquippedAndUpgradable.ID,
         DetailView.EquippedAndNotUpgradable.ID,

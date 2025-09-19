@@ -2,6 +2,8 @@
 local StoreModule = {}
 --UI配置
 local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
+--升级配置
+local UpgradeConfig = UGCS.Target.ArcherDuel.Config.UpgradeConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 --辅助API
@@ -273,8 +275,14 @@ end
 ---@param GoodInfo 商品信息
 function StoreModule:GetEquipmentByGoodInfo(GoodInfo)
     --装备
-    local EquipmentGoods = GoodInfo.Content and GoodInfo.Content.Equipments
-    local EquipmentGood = EquipmentGoods and EquipmentGoods[GoodInfo.GoodIndex]
+    local EquipmentGood
+    if GoodInfo.Content then
+        if GoodInfo.Content.Equipments and GoodInfo.GoodIndex then
+            EquipmentGood = GoodInfo.Content.Equipments[GoodInfo.GoodIndex]
+        else
+            EquipmentGood = GoodInfo.Content.Equipment
+        end
+    end
     if EquipmentGood then
         local AllEquipment = DataCenter.GetTable("AllEquipment")
         local Equipment = AllEquipment[EquipmentGood.ID]
@@ -394,75 +402,26 @@ function StoreModule:AccumulateCollected(Costs)
     end
 end
 
---- 显示获得视图
----@param Costs 消耗,目前有四种途径获得商品 {Ad = tag} or {Diamond = 1} or {GoldBox = 1} or {SilverBox = 1}
----@param Goods 物品
-function StoreModule:ShowGainView(Costs, Goods)
-    local GainView = UIConfig.GainView
-    local GoodSlot = GainView.GoodSlot
-    local CoinSlot = GainView.CoinSlot
-    UI:SetVisible({GainView.ID}, true)
-
-    if Goods.Equipments then
-        --显示物品
-        UI:SetVisible({GoodSlot.ID}, true)
-        UI:SetVisible({CoinSlot.ID}, false)
-        --获取装备
-        local AllEquipment = DataCenter.GetTable("AllEquipment")
-        for _, Equipment in pairs(Goods.Equipments) do
-            local TargetEquipment = AllEquipment[Equipment.ID]
-            --累加碎片
-            TargetEquipment.Piece = TargetEquipment.Piece + 1
-            --解锁
-            TargetEquipment.Unlock = true
-
-            --显示部分
-            GameUtils.SetImageWithEquipment(GainView.GoodSlot.Icon, Equipment)
-            local Attributes = EquipmentConfig[Equipment.ID].Attributes
-            GameUtils.SetImageWithAsset(GainView.GoodSlot.Background, "EquipmentImage", Attributes.Grade)
-        end
-        --刷新装备数据
-        System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
-        --TODO：当装备已满时，转化成金币
-    else
-        --显示资源
-        UI:SetVisible({GoodSlot.ID}, false)
-        UI:SetVisible({CoinSlot.ID}, true)
-        if Goods.Coin then
-            --获得金钱，显示金钱
-            local Coin = DataCenter.GetNumber("Coin")
-            Coin = Coin + Goods.Coin
-            DataCenter.SetNumber("Coin", Coin)
-
-            --显示部分
-            GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 4)
-            UI:SetText({CoinSlot.Count}, tostring(Coin))
-            if Costs and Costs.AdTag then
-                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
+--- 观看广告
+---@param Costs 广告标识
+---@param Goods 商品
+function StoreModule:SeeAd(Costs, Goods)
+    local AdTag = Costs.AdTag
+    if AdTag then
+        local CallBack = self.AdFinishCallBack[AdTag]
+        if not CallBack then
+            CallBack = function()
+                --累计收集次数
+                self:AccumulateCollected(Costs)
+                --看完广告后，获得物品
+                self:ShowGainView(Costs, Goods)
             end
-        elseif Goods.Diamond then
-            --获得砖石，显示砖石
-            local Diamond = DataCenter.GetNumber("Diamond")
-            Diamond = Diamond + Goods.Diamond
-            DataCenter.SetNumber("Diamond", Diamond)
-
-            --显示部分
-            GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 6)
-            UI:SetText({CoinSlot.Count}, tostring(Diamond))
-            if Costs and Costs.AdTag then
-                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
-            end
+            --加入回调
+            self.AdFinishCallBack[AdTag] = CallBack
         end
+        --广告观看
+        IAA:LetPlayerWatchAds(AdTag)
     end
-    --播放背景动效
-    UI:PlayUIAnimation(GainView.BackgroundEffect, 1, 0)
-    --设置物品图标
-    UI:RegisterClicked(GainView.CloseButton, function()
-        UI:SetVisible({GainView.ID}, false)
-        UI:StopUIAnimation(GainView.BackgroundEffect)
-        --注销按钮事件
-        UI:UnRegisterClicked(GainView.CloseButton)
-    end)
 end
 
 --- 显示广告视图，通过看广告来获取砖石【免费获取，每天固定数量】
@@ -500,28 +459,6 @@ function StoreModule:ShowAdView(Goods)
         UI:UnRegisterClicked(AdView.AdButton)
         UI:UnRegisterClicked(AdView.CloseButton)
     end)
-end
-
---- 观看广告
----@param Costs 广告标识
----@param Goods 商品
-function StoreModule:SeeAd(Costs, Goods)
-    local AdTag = Costs.AdTag
-    if AdTag then
-        local CallBack = self.AdFinishCallBack[AdTag]
-        if not CallBack then
-            CallBack = function()
-                --累计收集次数
-                self:AccumulateCollected(Costs)
-                --看完广告后，获得物品
-                self:ShowGainView(Costs, Goods)
-            end
-            --加入回调
-            self.AdFinishCallBack[AdTag] = CallBack
-        end
-        --广告观看
-        IAA:LetPlayerWatchAds(AdTag)
-    end
 end
 
 --- 打开宝箱
@@ -599,6 +536,120 @@ function StoreModule:OpenBox(BoxID)
         UI:UnRegisterClicked(ThreeItem.Button.ID)
     end)
     return BoxRewards
+end
+
+--- 显示获得视图
+---@param Costs 消耗,目前有四种途径获得商品 {Ad = tag} or {Diamond = 1} or {GoldBox = 1} or {SilverBox = 1}
+---@param Goods 物品
+function StoreModule:ShowGainView(Costs, Goods)
+    local GainView = UIConfig.GainView
+    local GoodSlot = GainView.GoodSlot
+    local CoinSlot = GainView.CoinSlot
+    UI:SetVisible({GainView.ID}, true)
+    --播放背景动效
+    UI:PlayUIAnimation(GainView.BackgroundEffect, 1, 0)
+
+    local Converted, GoodsEquipment, GoodsCoin, GoodsDiamond = false, Goods.Equipment, Goods.Coin, Goods.Diamond
+    if GoodsEquipment then
+        --获取装备
+        local AllEquipment = DataCenter.GetTable("AllEquipment")
+        local TargetEquipment = AllEquipment[GoodsEquipment.ID]
+        --获取装备升级信息
+        local Attributes = EquipmentConfig[GoodsEquipment.ID].Attributes
+        local GradeUpgradeConfig = UpgradeConfig[Attributes.Grade]
+        if GoodsEquipment.Level < 5 then
+            local TotalUpgradePiece = 0
+            for Level = GoodsEquipment.Level, 4 do
+                local Upgrade = GradeUpgradeConfig[Level]
+                TotalUpgradePiece = TotalUpgradePiece + Upgrade.Piece
+            end
+            if TotalUpgradePiece <= TargetEquipment.Piece then
+                --当前拥有碎片数量过升级所需碎片总量时，则转化为金币
+                Converted = true
+            end
+        else
+            --满级也需要转化为金币
+            Converted = true
+        end
+        if Converted then
+            local CoinConvertConfig = {
+                200, 300, 500, 800
+            }
+            --转换成币
+            GoodsCoin = CoinConvertConfig[GoodsEquipment.Level]
+        else
+            --显示物品
+            UI:SetVisible({GoodSlot.ID}, true)
+            UI:SetVisible({CoinSlot.ID}, false)
+
+            --累加碎片
+            TargetEquipment.Piece = TargetEquipment.Piece + 1
+            --解锁
+            TargetEquipment.Unlock = true
+
+            --显示部分
+            GameUtils.SetImageWithEquipment(GoodSlot.Icon, GoodsEquipment)
+            GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", Attributes.Grade)
+
+            --刷新装备数据
+            System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
+        end
+    end
+    --金币和砖石
+    if GoodsCoin or GoodsDiamond then
+        local ExecuteShowResource = function()
+            if GoodsCoin then
+                --获得金钱，显示金钱
+                local Coin = DataCenter.GetNumber("Coin")
+                Coin = Coin + GoodsCoin
+                DataCenter.SetNumber("Coin", Coin)
+
+                --显示部分
+                GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 4)
+                UI:SetText({CoinSlot.Count}, tostring(GoodsCoin))
+                if Costs and Costs.AdTag then
+                    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
+                end
+            elseif GoodsDiamond then
+                --获得砖石，显示砖石
+                local Diamond = DataCenter.GetNumber("Diamond")
+                Diamond = Diamond + GoodsDiamond
+                DataCenter.SetNumber("Diamond", Diamond)
+
+                --显示部分
+                GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 6)
+                UI:SetText({CoinSlot.Count}, tostring(GoodsDiamond))
+                if Costs and Costs.AdTag then
+                    System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
+                end
+            end
+        end
+
+        --显示资源
+        UI:SetVisible({GoodSlot.ID}, false)
+        if Converted then
+            --转化动画
+            UI:SetVisible({CoinSlot.ID, CoinSlot.Background}, true)
+             --播放翻盘动画
+            UI:PlayUIAnimation(CoinSlot.Background, 1, 0)
+            --延迟显示资源和数量
+            UGCS.Framework.Executor.Delay(0.2, function()
+                UI:SetVisible({CoinSlot.Count, CoinSlot.Icon}, true)
+                ExecuteShowResource()
+            end)
+        else
+            --立即显示
+            UI:SetVisible({CoinSlot.ID, CoinSlot.Count, CoinSlot.Icon, CoinSlot.Background}, true)
+            ExecuteShowResource()
+        end
+    end
+    --设置物品图标
+    UI:RegisterClicked(GainView.CloseButton, function()
+        UI:SetVisible({GainView.ID}, false)
+        UI:StopUIAnimation(GainView.BackgroundEffect)
+        --注销按钮事件
+        UI:UnRegisterClicked(GainView.CloseButton)
+    end)
 end
 
 return StoreModule

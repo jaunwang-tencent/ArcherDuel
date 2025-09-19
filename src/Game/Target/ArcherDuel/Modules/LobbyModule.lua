@@ -548,7 +548,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {}
+                Equipment = {}
             }
         },
         [2] = {
@@ -565,7 +565,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {}
+                Equipment = {}
             }
         },
         [3] = {
@@ -582,7 +582,7 @@ function LobbyModule:DefaultShopData()
             },
             --商品
             Goods = {
-                Equipments = {}
+                Equipment = {}
             }
         }
     }
@@ -692,8 +692,8 @@ function LobbyModule:RefreshDaily()
         DailyItem.Costs[1].HasCollect = 0
         DailyItem.Costs[1].Diamond = TargetGoodConfig.Price
         local Goods = DailyItem.Goods
-        Goods.Equipments = {}
-        Goods.Equipments[1] = { ID = EquipmentID }
+        Goods.Equipment = {}
+        Goods.Equipment = { ID = EquipmentID }
     end
 
     --刷新免费砖石
