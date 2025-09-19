@@ -95,13 +95,14 @@ function TournamentModule:Open(Context)
 
     local score = GameUtils.GetPlayerRankScore()
     local level = GameUtils.GetRankLevelByScore(score)
-    UI:SetImageColor({TournamentView.World.Image_1}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_2}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_3}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_4}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_5}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_6}, "#FFFFFF")
+    for i = 1, 6, 1 do
+        UI:SetImageColor({TournamentView.World["Image_"..i]}, "#FFFFFF")
+        UI:SetVisible({TournamentView.World["Image_Avatar_"..i]}, false)
+    end
     UI:SetImageColor({TournamentView.World["Image_"..level.titleLv]}, "#58DEFF")
+    UI:SetImage({TournamentView.World["Image_Avatar_"..level.titleLv]}, Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()))
+    UI:SetVisible({TournamentView.World["Image_Avatar_"..level.titleLv]}, true)
+
 
     UI:SetText({106676}, tostring(level.cost))
     --本玩家Rank_8

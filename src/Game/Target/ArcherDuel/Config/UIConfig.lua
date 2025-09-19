@@ -1070,7 +1070,7 @@ local UIConfig = {
             --倒计时
             CountDown = 106555,
             --玩家头像1
-            Image = 115581,
+            Image_Avatar_1 = 115581,
             --玩家头像2
             Image_Avatar_2 = 115580,
             --玩家头像3
