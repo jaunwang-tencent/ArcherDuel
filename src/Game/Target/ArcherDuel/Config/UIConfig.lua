@@ -183,7 +183,9 @@ local UIConfig = {
                 --背景图
                 Background = 110835,
                 --进度条文本
-                ProgressText = 111287
+                ProgressText = 111287,
+                --升级图标
+                Upgradable = 116363,
             },
             --上衣
             Top = {
@@ -193,7 +195,9 @@ local UIConfig = {
                 --背景图
                 Background = 110834,
                 --进度条文本
-                ProgressText = 111288
+                ProgressText = 111288,
+                --升级图标
+                Upgradable = 116374,
             },
             --发型
             Bottoms = {
@@ -203,7 +207,9 @@ local UIConfig = {
                 --背景图
                 Background = 110833,
                 --进度条文本
-                ProgressText = 111290
+                ProgressText = 111290,
+                --升级图标
+                Upgradable = 116375,
             }
         },
         --右视图
@@ -217,7 +223,9 @@ local UIConfig = {
                 --背景图
                 Background = 110847,
                 --进度条文本
-                ProgressText = 111291
+                ProgressText = 111291,
+                --升级图标
+                Upgradable = 116386,
             },
             -- 手斧
             Axe = {
@@ -228,7 +236,9 @@ local UIConfig = {
                 --背景图
                 Background = 110846,
                 --进度条文本
-                ProgressText = 111292
+                ProgressText = 111292,
+                --升级图标
+                Upgradable = 116387,
             },
             -- 长矛
             Spear = {
@@ -239,7 +249,9 @@ local UIConfig = {
                 --背景图
                 Background = 110845,
                 --进度条文本
-                ProgressText = 111293
+                ProgressText = 111293,
+                --升级图标
+                Upgradable = 116388,
             }
         },
         --列表视图

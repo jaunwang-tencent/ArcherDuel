@@ -118,6 +118,11 @@ function EquipmentModule:RegreshBodyUI()
                 --碎片相关
                 local CurrentPiece = Equipment.Piece
                 local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
+                if CurrentPiece >= Upgrade.Piece then
+                    UI:SetVisible({EquipmentSlot.Upgradable}, true)
+                else
+                    UI:SetVisible({EquipmentSlot.Upgradable}, false)
+                end
                 UI:SetProgressMaxValue({EquipmentSlot.Progress}, Upgrade.Piece)
                 UI:SetProgressCurrentValue({EquipmentSlot.Progress}, CurrentPiece)
                 UI:SetText({EquipmentSlot.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
