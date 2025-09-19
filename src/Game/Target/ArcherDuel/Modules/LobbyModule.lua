@@ -35,8 +35,10 @@ local DefaultBaseData =
     SilverBox = 2,                --银宝箱
     NormalBox = 1,                --普通宝箱
     --其它信息
-    Player_MaxAdFreeWatch_Num = 5,--玩家最大免费观看广告次数
-    Player_HasAdFreeWatch_Num = 0,--玩家已经免费观看广告次数
+    Player_MaxAdFreeWatch_Num = 5,  --玩家最大免费观看广告次数
+    Player_HasAdFreeWatch_Num = 0,  --玩家已经免费观看广告次数
+    Player_HasAdFreeWatchBox = 0,   --玩家已经免费观看广告次数
+    Player_HasAdFreeWatchDiamond = 0,   --玩家已经免费观看广告次数
     Daily_Progress = 1,
     Player_BattlePoints_Num = 0,  --门票
     Player_TaskDailyExp_Num = 0,  --每日任务经验
@@ -709,6 +711,8 @@ function LobbyModule:RefreshDaily()
 
     --免费广告观看次数
     DataCenter.SetNumber("Player_HasAdFreeWatch_Num", 0)
+    DataCenter.SetNumber("Player_HasAdFreeWatchBox", 0)
+    DataCenter.SetNumber("Player_HasAdFreeWatchDiamond", 0)
 end
 
 --- 每周刷新

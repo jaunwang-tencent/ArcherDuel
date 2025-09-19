@@ -25,14 +25,24 @@ function FightModule:Open(Context)
     local CenterView = FightView and FightView.CenterView
 
     --广告1按钮监听
-    UI:RegisterClicked(CenterView.Ad_1.ID, function()
-        self:OnClickAd1()
-    end)
+    local Player_HasAdFreeWatchBox = DataCenter.GetNumber("Player_HasAdFreeWatchBox", true)
+    if Player_HasAdFreeWatchBox == 0 then
+        UI:RegisterClicked(CenterView.Ad_1.ID, function()
+            self:OnClickAd1()
+        end)
+    else
+        --TODO:显示遮罩，屏蔽【广告1按钮监听】
+    end
 
     --广告2按钮监听
-    UI:RegisterClicked(CenterView.Ad_2.ID, function()
-        self:OnClickAd2()
-    end)
+    local Player_HasAdFreeWatchDiamond = DataCenter.GetNumber("Player_HasAdFreeWatchDiamond", true)
+    if Player_HasAdFreeWatchDiamond then
+        UI:RegisterClicked(CenterView.Ad_2.ID, function()
+            self:OnClickAd2()
+        end)
+    else
+        --TODO:显示遮罩，屏蔽【广告1按钮监听】
+    end
 
     local score = GameUtils.GetPlayerRankScore()
     if GameUtils.IsReachGoldRank(score) then
@@ -231,7 +241,11 @@ function FightModule:OnClickAd1()
     local Goods = {
         BoxID = 200001
     }
-    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true)
+    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true, function()
+        DataCenter.SetNumber("Player_HasAdFreeWatchBox", 1)
+        UI:UnRegisterClicked(UIConfig.FightView.CenterView.Ad_1.ID)
+        --TODO:显示遮罩，屏蔽【广告1按钮监听】
+    end)
 end
 
 function FightModule:OnClickAd2()
@@ -242,7 +256,11 @@ function FightModule:OnClickAd2()
     local Goods = {
         Diamond = 60
     }
-    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true)
+    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, Goods, true, function()
+        DataCenter.SetNumber("Player_HasAdFreeWatchDiamond", 1)
+        UI:UnRegisterClicked(UIConfig.FightView.CenterView.Ad_2.ID)
+        --TODO:显示遮罩，屏蔽【广告2按钮监听】
+    end)
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
