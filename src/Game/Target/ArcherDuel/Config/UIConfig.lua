@@ -261,10 +261,11 @@ local UIConfig = {
             TableBar = {
                 --全部
                 All = {
+                    Category = 0,
                     --命中
                     Selected = 104035,
                     --未命中
-                    Unselected = 110756
+                    Unselected = 110756,
                 },
                 --角色
                 Character = {
