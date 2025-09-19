@@ -372,8 +372,6 @@ function StoreModule:BuyGood(ShopInfo)
         self:RefreshStore(false)
         --刷新商店资源
         System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
-        --刷新商店存档
-        System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
     end
 end
 
@@ -387,6 +385,12 @@ function StoreModule:AccumulateCollected(Costs)
             local Text = string.format("%d/%d", Costs.MaxCollect - Costs.HasCollect, Costs.MaxCollect)
             UI:SetText({Costs.CollectTimesUI}, Text)
         end
+        if Costs.AdTag == "ad_tag_free" then
+            --免费刷新全局已观看
+            DataCenter.SetNumber("Player_HasAdFreeWatch_Num", Costs.HasCollect)
+        end
+        --刷新商店存档
+        System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
     end
 end
 
@@ -395,9 +399,14 @@ end
 ---@param Goods 物品
 function StoreModule:ShowGainView(Costs, Goods)
     local GainView = UIConfig.GainView
+    local GoodSlot = GainView.GoodSlot
+    local CoinSlot = GainView.CoinSlot
     UI:SetVisible({GainView.ID}, true)
 
     if Goods.Equipments then
+        --显示物品
+        UI:SetVisible({GoodSlot.ID}, true)
+        UI:SetVisible({CoinSlot.ID}, false)
         --获取装备
         local AllEquipment = DataCenter.GetTable("AllEquipment")
         for _, Equipment in pairs(Goods.Equipments) do
@@ -414,32 +423,43 @@ function StoreModule:ShowGainView(Costs, Goods)
         end
         --刷新装备数据
         System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
-    elseif Goods.Coin then
-        --获得金钱，显示金钱
-        local Coin = DataCenter.GetNumber("Coin")
-        DataCenter.SetNumber("Coin", Coin + Goods.Coin)
+        --TODO：当装备已满时，转化成金币
+    else
+        --显示资源
+        UI:SetVisible({GoodSlot.ID}, false)
+        UI:SetVisible({CoinSlot.ID}, true)
+        if Goods.Coin then
+            --获得金钱，显示金钱
+            local Coin = DataCenter.GetNumber("Coin")
+            Coin = Coin + Goods.Coin
+            DataCenter.SetNumber("Coin", Coin)
 
-        --显示部分
-        GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 4)
+            --显示部分
+            GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 4)
+            UI:SetText({CoinSlot.Count}, tostring(Coin))
+            if Costs and Costs.AdTag then
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
+            end
+        elseif Goods.Diamond then
+            --获得砖石，显示砖石
+            local Diamond = DataCenter.GetNumber("Diamond")
+            Diamond = Diamond + Goods.Diamond
+            DataCenter.SetNumber("Diamond", Diamond)
 
-        if Costs and Costs.AdTag then
-            System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
-        end
-    elseif Goods.Diamond then
-        --获得砖石，显示砖石
-        local Diamond = DataCenter.GetNumber("Diamond")
-        DataCenter.SetNumber("Diamond", Diamond + Goods.Diamond)
-
-        --显示部分
-        GameUtils.SetImageWithAsset(GainView.GoodSlot.Icon, "Currency", 6)
-        if Costs and Costs.AdTag then
-            System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
+            --显示部分
+            GameUtils.SetImageWithAsset(CoinSlot.Icon, "Currency", 6)
+            UI:SetText({CoinSlot.Count}, tostring(Diamond))
+            if Costs and Costs.AdTag then
+                System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
+            end
         end
     end
-
+    --播放背景动效
+    UI:PlayUIAnimation(GainView.BackgroundEffect, 1, 0)
     --设置物品图标
     UI:RegisterClicked(GainView.CloseButton, function()
         UI:SetVisible({GainView.ID}, false)
+        UI:StopUIAnimation(GainView.BackgroundEffect)
         --注销按钮事件
         UI:UnRegisterClicked(GainView.CloseButton)
     end)
@@ -495,13 +515,6 @@ function StoreModule:SeeAd(Costs, Goods)
                 self:AccumulateCollected(Costs)
                 --看完广告后，获得物品
                 self:ShowGainView(Costs, Goods)
-                if AdTag == "ad_tag_free" then
-                    --刷新全局已观看
-                    DataCenter.SetNumber("Player_HasAdFreeWatch_Num", Costs.HasCollect)
-                else
-                    --刷新商店存档
-                    System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
-                end
             end
             --加入回调
             self.AdFinishCallBack[AdTag] = CallBack

@@ -31,7 +31,6 @@ local DefaultBaseData =
     --资产信息
     Coin = 5000,                  --金币
     Diamond = 1000,               --砖石
-    Rank = 1,                     --段位[可以被score&RankInfoConfig计算出]
     GoldBox = 2,                  --金宝箱
     SilverBox = 2,                --银宝箱
     NormalBox = 1,                --普通宝箱
@@ -750,8 +749,10 @@ function LobbyModule:RefreshGeneralResourceBar()
         --目前API侧无法读取玩家图标，暂时使用这个
         --获取头像
         UI:SetImage({GeneralResourceBar.PlayerIcon}, Chat:GetCustomHeadIcon(self.PlayerID))
-        --GameUtils.SetImageWithAsset(GeneralResourceBar.PlayerIcon, "avatar", 1)
-        UI:SetText({GeneralResourceBar.Rank.Label}, tostring(DataCenter.GetNumber("Rank")))
+        local score = GameUtils.GetPlayerRankScore()
+        local level = GameUtils.GetRankLevelByScore(score)
+        UI:SetText({GeneralResourceBar.Rank.Label}, level.name)
+        GameUtils.SetImageWithAsset(GeneralResourceBar.Rank.Icon, "Rank", level.icon)
         UI:SetText({GeneralResourceBar.GoldCoins.Label}, tostring(DataCenter.GetNumber("Coin")))
         UI:SetText({GeneralResourceBar.Diamonds.Label}, tostring(DataCenter.GetNumber("Diamond")))
         UI:SetText({GeneralResourceBar.Securities.Label}, tostring(DataCenter.GetNumber("Player_BattlePoints_Num")))
@@ -823,9 +824,11 @@ function LobbyModule:RuntimeWeeklyRefresh()
         local DiamondRankData = DiamondRankManager.GetLastWeekPlayerDataDiamondRank()
         local isRank = false
         local RankNum = 100
-        if DiamondRankData and DiamondRankData[#DiamondRankData - 1] and DiamondRankData[#DiamondRankData - 1].DiamondScore and Rank_DiamondScore_Num > DiamondRankData[#DiamondRankData - 1].DiamondScore then
+        local DiamondRankCount = DiamondRankData and #DiamondRankData or 0
+        local DiamondRankItem = DiamondRankData and DiamondRankData[DiamondRankCount - 1]
+        if DiamondRankItem and DiamondRankItem.DiamondScore and Rank_DiamondScore_Num > DiamondRankItem.DiamondScore then
             isRank = true
-            table.remove(DiamondRankData, #DiamondRankData)
+            table.remove(DiamondRankData, DiamondRankCount)
             table.insert(DiamondRankData, { DiamondScore = Rank_DiamondScore_Num , isPlayer = true})
             table.sort(DiamondRankData, function(a,b) return a.DiamondScore > b.DiamondScore end)
         end
