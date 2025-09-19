@@ -145,9 +145,24 @@ function TaskModule:RefreshTaskUI()
         UI:UnRegisterClicked(BtnID1)
         UI:RegisterClicked(BtnID1,function (ItemUID)
             local cfg = UGCS.Target.ArcherDuel.Task.TaskPool.taskcfg[v.id]
+            local score = GameUtils.GetPlayerRankScore()
             if cfg and cfg.taskgo then
                 local goObj = taskMgr.Task.TaskGo[cfg.taskgo]
-                System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                if goObj.SubTab == "Golden" then
+                    if GameUtils.IsReachGoldRank(score) then
+                        System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                    else
+                        UI:ShowMessageTip("达到黄金段位，才能进入黄金赛")
+                    end
+                elseif goObj.SubTab == "Diamond" then
+                    if GameUtils.IsReachDiamondRank(score) then
+                        System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                    else
+                        UI:ShowMessageTip("达到钻石段位，才能进入钻石赛")
+                    end
+                else
+                    System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                end
             end
         end)
         UI:UnRegisterClicked(BtnID2)

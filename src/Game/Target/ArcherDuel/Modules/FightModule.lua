@@ -599,8 +599,25 @@ function FightModule:RefreshWeeklyTaskUI(wday)
                     local cfg = UGCS.Target.ArcherDuel.Task.TaskPool.taskcfg[v.id]
                     if cfg and cfg.taskgo then
                         local goObj = taskMgr.Task.TaskGo[cfg.taskgo]
-                        UI:SetVisible({UIConfig.SevenDays.ID}, false)
-                        System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                        local score = GameUtils.GetPlayerRankScore()
+                        if goObj.SubTab == "Golden" then
+                            if GameUtils.IsReachGoldRank(score) then
+                                System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                                UI:SetVisible({UIConfig.SevenDays.ID}, false)
+                            else
+                                UI:ShowMessageTip("达到黄金段位，才能进入黄金赛")
+                            end
+                        elseif goObj.SubTab == "Diamond" then
+                            if GameUtils.IsReachDiamondRank(score) then
+                                System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                                UI:SetVisible({UIConfig.SevenDays.ID}, false)
+                            else
+                                UI:ShowMessageTip("达到钻石段位，才能进入钻石赛")
+                            end
+                        else
+                            System:FireGameEvent(_GAME.Events.JumpModule, goObj.GoTab, goObj.SubTab)
+                            UI:SetVisible({UIConfig.SevenDays.ID}, false)
+                        end
                     end
                 end)
                 UI:SetVisible({Finish}, false)

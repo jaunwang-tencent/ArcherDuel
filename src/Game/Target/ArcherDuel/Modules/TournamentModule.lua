@@ -95,13 +95,14 @@ function TournamentModule:Open(Context)
 
     local score = GameUtils.GetPlayerRankScore()
     local level = GameUtils.GetRankLevelByScore(score)
-    UI:SetImageColor({TournamentView.World.Image_1}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_2}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_3}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_4}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_5}, "#FFFFFF")
-    UI:SetImageColor({TournamentView.World.Image_6}, "#FFFFFF")
+    for i = 1, 6, 1 do
+        UI:SetImageColor({TournamentView.World["Image_"..i]}, "#FFFFFF")
+        UI:SetVisible({TournamentView.World["Image_Avatar_"..i]}, false)
+    end
     UI:SetImageColor({TournamentView.World["Image_"..level.titleLv]}, "#58DEFF")
+    UI:SetImage({TournamentView.World["Image_Avatar_"..level.titleLv]}, Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()))
+    UI:SetVisible({TournamentView.World["Image_Avatar_"..level.titleLv]}, true)
+
 
     UI:SetText({106676}, tostring(level.cost))
     --本玩家Rank_8
@@ -142,18 +143,37 @@ function TournamentModule:Open(Context)
     for i, btnId in ipairs(tabBtn) do
         UI:RegisterClicked(btnId,function (btnId)
             UI:SetVisible({DiamondView.Popup.ID}, false)
-            for j, v in pairs(tabUnselected) do
-                if j == i then
-                    UI:SetVisible({v},true)
+            local isRet = false
+            if i == 2 then
+                if GameUtils.IsReachGoldRank(score) then
+                    isRet = true
                 else
-                    UI:SetVisible({v},false)
+                    UI:ShowMessageTip("达到黄金段位，才能进入黄金赛")
                 end
-            end
-            for j, v in pairs(view) do
-                if j == i then
-                    UI:SetVisible({v},true)
+            elseif i == 3 then
+                if GameUtils.IsReachDiamondRank(score) then
+                    isRet = true
                 else
-                    UI:SetVisible({v},false)
+                    UI:ShowMessageTip("达到钻石段位，才能进入钻石赛")
+                end
+            else
+                isRet = true
+            end
+
+            if isRet then
+                for j, v in pairs(tabUnselected) do
+                    if j == i then
+                        UI:SetVisible({v},true)
+                    else
+                        UI:SetVisible({v},false)
+                    end
+                end
+                for j, v in pairs(view) do
+                    if j == i then
+                        UI:SetVisible({v},true)
+                    else
+                        UI:SetVisible({v},false)
+                    end
                 end
             end
         end)
