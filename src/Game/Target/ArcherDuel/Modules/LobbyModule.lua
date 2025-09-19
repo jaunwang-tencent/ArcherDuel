@@ -214,9 +214,8 @@ function LobbyModule:LoadData()
     local AllShops = DataCenter.GetTable("AllShops", true)
     if not AllShops then
         DataCenter.SetTable("AllShops", self:DefaultShopData())
-        --刷新限定奖池
-        self:RefreshWeekly()
         self:RefreshDaily()
+        self:RefreshWeekly()
     end
 
     local nowStr = MiscService:GetServerTimeToTime()
@@ -680,7 +679,8 @@ function LobbyModule:RefreshDaily()
         end
         return GoodsConfig[TargetGrade]
     end
-    math.randomseed(TimerManager:GetClock())
+    local DailyTimeStamp = TimerManager:GetClock()
+    math.randomseed(DailyTimeStamp)
     for _, DailyItem in pairs(AllDailyItem) do
         --根据权重随机一个品质
         local TargetGoodConfig = RandomGoodConfig()
@@ -709,8 +709,9 @@ end
 --- 每周刷新
 function LobbyModule:RefreshWeekly()
     --刷新限定奖池
-    math.randomseed(TimerManager:GetClock())
-    local WeekIndex = math.random(1, 60)
+    local WeeklyTimeStamp = TimerManager:GetClock()
+    math.randomseed(WeeklyTimeStamp)
+    local WeeklyIndex = math.random(1, 60)
     local AllShops = DataCenter.GetTable("AllShops")
     local AllLimitItem = AllShops.LimitItem
     for _, LimitItem in pairs(AllLimitItem) do
@@ -723,11 +724,8 @@ function LobbyModule:RefreshWeekly()
         local Goods = LimitItem.Goods
         Goods.Equipments = {}
         if BoxEquipmentIdsSet then
-            WeekIndex = WeekIndex % #BoxEquipmentIdsSet
-            if WeekIndex == 0 then
-                WeekIndex = 1
-            end
-            local BoxEquipmentIds = BoxEquipmentIdsSet[WeekIndex]
+            WeeklyIndex = (WeeklyIndex % #BoxEquipmentIdsSet) + 1
+            local BoxEquipmentIds = BoxEquipmentIdsSet[WeeklyIndex]
             for Index, BoxEquipmentId in ipairs(BoxEquipmentIds) do
                 Goods.Equipments[Index] = { ID = BoxEquipmentId }
             end

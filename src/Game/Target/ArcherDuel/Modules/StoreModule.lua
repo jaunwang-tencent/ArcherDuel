@@ -309,7 +309,7 @@ function StoreModule:BuyGood(ShopInfo)
     --前置条件检测
     if Costs.HasCollect and Costs.MaxCollect and Costs.HasCollect >= Costs.MaxCollect then
         --超过消耗数量则不允购买
-        UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
+        --UI:ShowMessageTip("Cant Buy:" .. ShopInfo.SlotID)
         return
     end
     local GoldBox = DataCenter.GetNumber("GoldBox")
@@ -557,9 +557,9 @@ function StoreModule:ShowGainView(Costs, Goods)
         --获取装备升级信息
         local Attributes = EquipmentConfig[GoodsEquipment.ID].Attributes
         local GradeUpgradeConfig = UpgradeConfig[Attributes.Grade]
-        if GoodsEquipment.Level < 5 then
+        if TargetEquipment.Level < 5 then
             local TotalUpgradePiece = 0
-            for Level = GoodsEquipment.Level, 4 do
+            for Level = TargetEquipment.Level, 4 do
                 local Upgrade = GradeUpgradeConfig[Level]
                 TotalUpgradePiece = TotalUpgradePiece + Upgrade.Piece
             end
@@ -576,7 +576,7 @@ function StoreModule:ShowGainView(Costs, Goods)
                 200, 300, 500, 800
             }
             --转换成币
-            GoodsCoin = CoinConvertConfig[GoodsEquipment.Level]
+            GoodsCoin = CoinConvertConfig[TargetEquipment.Level]
         else
             --显示物品
             UI:SetVisible({GoodSlot.ID}, true)
@@ -588,7 +588,7 @@ function StoreModule:ShowGainView(Costs, Goods)
             TargetEquipment.Unlock = true
 
             --显示部分
-            GameUtils.SetImageWithEquipment(GoodSlot.Icon, GoodsEquipment)
+            GameUtils.SetImageWithEquipment(GoodSlot.Icon, TargetEquipment)
             GameUtils.SetImageWithAsset(GoodSlot.Background, "EquipmentImage", Attributes.Grade)
 
             --刷新装备数据
