@@ -821,9 +821,11 @@ function LobbyModule:RuntimeWeeklyRefresh()
         local DiamondRankData = DiamondRankManager.GetLastWeekPlayerDataDiamondRank()
         local isRank = false
         local RankNum = 100
-        if DiamondRankData and DiamondRankData[#DiamondRankData - 1] and DiamondRankData[#DiamondRankData - 1].DiamondScore and Rank_DiamondScore_Num > DiamondRankData[#DiamondRankData - 1].DiamondScore then
+        local DiamondRankCount = DiamondRankData and #DiamondRankData or 0
+        local DiamondRankItem = DiamondRankData and DiamondRankData[DiamondRankCount - 1]
+        if DiamondRankItem and DiamondRankItem.DiamondScore and Rank_DiamondScore_Num > DiamondRankItem.DiamondScore then
             isRank = true
-            table.remove(DiamondRankData, #DiamondRankData)
+            table.remove(DiamondRankData, DiamondRankCount)
             table.insert(DiamondRankData, { DiamondScore = Rank_DiamondScore_Num , isPlayer = true})
             table.sort(DiamondRankData, function(a,b) return a.DiamondScore > b.DiamondScore end)
         end
