@@ -394,10 +394,18 @@ function GameUtils.GetRewardsByWin()
     return rewards
 end
 
+----------------------------------时间相关----------------------------------
 local function getYMD(timestamp)
     local year = MiscService:TimeStampToTime(timestamp, MiscService.ETimeUnit.Year)
     local month = MiscService:TimeStampToTime(timestamp, MiscService.ETimeUnit.Month)
     local day = MiscService:TimeStampToTime(timestamp, MiscService.ETimeUnit.Day)
+    return year, month, day
+end
+
+local function getDate()
+    local year = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Year)
+    local month= MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Month)
+    local day  = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Day)
     return year, month, day
 end
 
@@ -458,37 +466,56 @@ end
 
 --获取当前是星期几
 function GameUtils.GetWeekDay()
-    local year = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Year)
-    local month= MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Month)
-    local day  = MiscService:GetServerTimeToTime(MiscService.ETimeUnit.Day)
+    local year, month, day = getDate()
     local weekDay = dayOfWeek(year, month, day)
     return weekDay
 end
 
+--- 获取当前时刻
+function GameUtils.GetNowTimestamp()
+    local ServerTimeToTime = MiscService:GetServerTimeToTime()
+    local NowTimestamp = MiscService:DateYMDHMSToTime(ServerTimeToTime)
+    return NowTimestamp
+end
+
+--- 获取当日零点时刻
+function GameUtils.GetTodayZeroTimestamp()
+    -- 当前年月日
+    local year, month, day = getDate()
+
+    -- 当日0点时间戳
+    local ZeroTimestamp = MiscService:DateYMDHMSToTime(string.format("%04d-%02d-%02d 00:00:00", year, month, day))
+    return ZeroTimestamp
+end
+
+--- 获取本周一零点时刻
+function GameUtils.GetMondayZeroTimestamp()
+    local NowTimestamp = GameUtils.GetNowTimestamp()
+    local MondayTimestamp = getMondayTimestamp(NowTimestamp)
+    return MondayTimestamp
+end
+
 -- 跨天判断
-function GameUtils.isCrossDay(lastLoginTs)
+function GameUtils.IsCrossDay(lastLoginTs)
     if not lastLoginTs then return true end
 
-    local nowStr = MiscService:GetServerTimeToTime()
-    local nowTs = MiscService:DateYMDHMSToTime(nowStr)
-
+    local NowTimestamp = GameUtils.GetNowTimestamp()
     local lastYear, lastMonth, lastDay = getYMD(lastLoginTs)
-    local nowYear, nowMonth, nowDay = getYMD(nowTs)
+    local nowYear, nowMonth, nowDay = getYMD(NowTimestamp)
 
     return lastYear ~= nowYear or lastMonth ~= nowMonth or lastDay ~= nowDay
 end
 
-function GameUtils.isCrossWeek(lastLoginTs)
+function GameUtils.IsCrossWeek(lastLoginTs)
     if not lastLoginTs then return true end
 
-    local nowStr = MiscService:GetServerTimeToTime()
-    local nowTs = MiscService:DateYMDHMSToTime(nowStr)
-
+    local NowTimestamp = GameUtils.GetNowTimestamp()
     local lastMonday = getMondayTimestamp(lastLoginTs)
-    local nowMonday = getMondayTimestamp(nowTs)
+    local nowMonday = getMondayTimestamp(NowTimestamp)
 
     return lastMonday ~= nowMonday
 end
+----------------------------------时间相关----------------------------------
 
 -- 设置玩家金币
 function GameUtils.SetPlayerCoin(coin)

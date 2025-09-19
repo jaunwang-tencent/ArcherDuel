@@ -131,11 +131,11 @@ function TaskPool.BuildTask()
         lastTaskRefreshTime = nowTs - (7 * 24 * 60 * 60)
     end
 
-    if GameUtils.isCrossDay(lastTaskRefreshTime) then
+    if GameUtils.IsCrossDay(lastTaskRefreshTime) then
         --跨天登录了
         TaskPool.RefreshDailyTask(saveDataKV)
     end
-    if GameUtils.isCrossWeek(lastTaskRefreshTime) then
+    if GameUtils.IsCrossWeek(lastTaskRefreshTime) then
         --跨周登录了
         TaskPool.RefreshWeeklyTask(saveDataKV)
     end
