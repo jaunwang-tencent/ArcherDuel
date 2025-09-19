@@ -697,8 +697,8 @@ function LobbyModule:RefreshDaily()
 
     --刷新免费砖石
     local AllDiamondItem = AllShops.DiamondItem
-    AllDiamondItem.Costs.MaxCollect = 5
-    AllDiamondItem.Costs.HasCollect = 0
+    AllDiamondItem[1].Costs.MaxCollect = 5
+    AllDiamondItem[1].Costs.HasCollect = 0
     DataCenter.SetTable("AllShops", AllShops)
 
     --免费广告观看次数
