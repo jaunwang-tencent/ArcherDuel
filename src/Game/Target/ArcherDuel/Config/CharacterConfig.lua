@@ -52,6 +52,8 @@ local CharacterConfig = {
             LowerDegree = 14,
             --角度上限（打头）【单位：角度】
             UpperDegree = 19,
+            --AI命中区间【单位：角度】
+            AIAimSpread = 5,
             --标准间距【单位：米】
             StandardDistance = 50,
             --瞄准系数

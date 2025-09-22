@@ -333,7 +333,9 @@ function BattleModule:GetAIAimPitchDegree()
         local AimSetting = self.CharacterConfig.AimSetting
         if AimSetting then
             local LowerDegree, UpperDegree = GameUtils.ComputeHitRange(AimSetting, Displacement)
-            local PitchDegree = math.random(math.floor(LowerDegree * 10) - 50, math.floor(UpperDegree * 10) + 50) * 0.1
+            local LowerDegree2 = LowerDegree - AimSetting.AIAimSpread
+            local UpperDegree2 = UpperDegree + AimSetting.AIAimSpread
+            local PitchDegree = UMath:GetRandomFloat(LowerDegree2, UpperDegree2)
             Log:PrintLog(string.format("GetAIAimPitchDegree(PitchDegree=%f)", PitchDegree))
             return PitchDegree
         end
