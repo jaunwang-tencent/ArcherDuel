@@ -546,6 +546,90 @@ function GameUtils.GetFormatTime(DeltaTime)
 end
 ----------------------------------时间相关----------------------------------
 
+----------------------------------概率相关----------------------------------
+--- 随机配置
+---@param WeightConfig 带权重的配置
+function GameUtils.RandomConfig(WeightConfig)
+    local Weight = 0
+    local ProbabilityTable = {}
+    local ConfigIndex = 0
+    if WeightConfig then
+        for _, Config in ipairs(WeightConfig) do
+            Weight = Weight + Config.Weight
+            ConfigIndex = ConfigIndex + 1
+            ProbabilityTable[ConfigIndex] = {
+                Weight = Weight,
+                Config = Config
+            }
+        end
+    end
+    --摇骰子
+    local RandomValue = math.random(1, Weight)
+    local TargetConfig
+    local MinValue = 0
+    local MaxValue
+    for _, ProbabilityItem in ipairs(ProbabilityTable) do
+        MaxValue = ProbabilityItem.Weight
+        if RandomValue >= MinValue and RandomValue <= MaxValue then
+            TargetConfig = ProbabilityItem.Config
+            break
+        end
+        MinValue = MaxValue
+    end
+    return TargetConfig
+end
+
+--- 随机宝箱
+---@param BoxID 宝箱ID
+---@param Count 装备数量
+function GameUtils.RandomBox(BoxID, Count)
+    local BoxConfig
+    if BoxID == 200002 then -- 高级宝箱
+        BoxConfig = OpenBoxConfig.SilverBox
+    elseif BoxID == 200003 then -- 极品宝箱
+        BoxConfig = OpenBoxConfig.GoldBox
+    else
+        return
+    end
+    --周
+    local WeeklyTimeStamp = GameUtils.GetMondayZeroTimestamp()
+    math.randomseed(WeeklyTimeStamp)
+    local WeeklyIndex = math.random(1, 60)
+
+    --装备
+    local Seed = GameUtils.GetNowTimestamp()
+    math.randomseed(Seed)
+    local EquipmentIds = {}
+    Count = Count or 1
+    for _ = 1, Count do
+        local TargetConfig= GameUtils.RandomConfig(BoxConfig)
+        if TargetConfig then
+            local BoxEquipmentIds
+            --存在指定装备
+            if TargetConfig.EquipIds then
+                WeeklyIndex = (WeeklyIndex % #TargetConfig.EquipIds) + 1
+                --找到指定周的装备ID
+                BoxEquipmentIds = TargetConfig.EquipIds[WeeklyIndex]
+            else
+                --找到全部指定品质的装备
+                local GroupByGrade = DataCenter.Get("GroupByGrade")
+                local Equipments = GroupByGrade[TargetConfig.Grade]
+                BoxEquipmentIds = {}
+                for _, Equipment in pairs(Equipments) do
+                    table.insert(BoxEquipmentIds, Equipment.ID)
+                end
+            end
+
+            --在指定装备配置中随机出三个出来
+            local TotalCount = #BoxEquipmentIds
+            local RandomIndex = math.random(1, TotalCount)
+            table.insert(EquipmentIds, BoxEquipmentIds[RandomIndex])
+        end
+    end
+    return EquipmentIds
+end
+----------------------------------概率相关----------------------------------
+
 -- 设置玩家金币
 function GameUtils.SetPlayerCoin(coin)
     Log:PrintLog("[GameUtils.SetPlayerCoin] coin" .. coin)

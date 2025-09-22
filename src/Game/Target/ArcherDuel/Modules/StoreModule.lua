@@ -509,7 +509,7 @@ function StoreModule:OpenBox(BoxID)
     for _, Item in ipairs(ThreeItem.ItemGroup) do
         UI:SetVisible({Item.Icon, Item.Background}, false)
     end
-    local BoxRewards = GameUtils.OpenBoxReward(BoxID)
+    local BoxRewards = GameUtils.RandomBox(BoxID, 3)
     UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
 
     UGCS.Framework.Executor.Delay(2.3, function ()
