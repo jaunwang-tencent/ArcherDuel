@@ -29,11 +29,11 @@ local DefaultBaseData =
     Equipped_Axe_Lv = 1,
     Equipped_Spear_Lv = 1,
     --资产信息
-    Coin = 5000,                  --金币
-    Diamond = 1000,               --砖石
-    GoldBox = 2,                  --金宝箱
-    SilverBox = 2,                --银宝箱
-    NormalBox = 1,                --普通宝箱
+    Coin = 1000,                  --金币
+    Diamond = 30,               --砖石
+    GoldBox = 0,                  --金宝箱
+    SilverBox = 0,                --银宝箱
+    NormalBox = 0,                --普通宝箱
     --其它信息
     Player_MaxAdFreeWatch_Num = 5,  --玩家最大免费观看广告次数
     Player_HasAdFreeWatch_Num = 0,  --玩家已经免费观看广告次数

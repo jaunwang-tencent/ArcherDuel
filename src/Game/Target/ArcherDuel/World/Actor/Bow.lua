@@ -106,7 +106,7 @@ function Bow:RefreshBowString(Progress)
             local P3 = Element:GetPosition(self.Dummys.Down)
             local P2 = (P1 + P3) * 0.5
             local Offset = UMath:GetNormalize(P2 - Root)
-            P2 = P2 + Offset * Progress * 100
+            P2 = P2 + Offset * Progress * 80
             if self.String then
                 Particle:UpdateChainParticle(self.String.First, P1, P2)
                 Particle:UpdateChainParticle(self.String.Second, P2, P3)
@@ -117,7 +117,7 @@ function Bow:RefreshBowString(Progress)
                         local instanceId = WeaponResource.Projectile.Root -- 将场景的中的箭借用
                         Element:SetForward(instanceId,Element:GetForward(self.UID))
                         Element:BindingToElement(instanceId,self.UID)
-                        Element:SetPosition(instanceId, Engine.Vector(250, 100, -50), Element.COORDINATE.Part)
+                        Element:SetPosition(instanceId, Engine.Vector(200, 30, -50), Element.COORDINATE.Part)
                         Element:SetRotation(instanceId, Engine.Rotator(90, 0, 0), Element.COORDINATE.Part)
                         self.bBindArrow = true
                     end

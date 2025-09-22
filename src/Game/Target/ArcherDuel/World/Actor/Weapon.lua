@@ -590,6 +590,18 @@ function Weapon:GetSpawnerPosition()
     return SpawnerPosition
 end
 
+--- 投掷物创建
+---@param ProjectileInstance 投掷物实例
+function Weapon:OnSpawnProjectile(ProjectileInstance)
+
+end
+
+--- 投掷物销毁
+---@param ProjectileInstance 投掷物实例
+function Weapon:OnDestroyProjectile(ProjectileInstance)
+
+end
+
 --- 武器发射投掷物
 ---@param PitchDegree 发射角度
 function Weapon:SpawnProjectile(PitchDegree)
@@ -627,6 +639,8 @@ function Weapon:SpawnProjectile(PitchDegree)
 
         --管理投掷物
         self.Projectiles[ElementID] = ProjectileData.Root
+        --投掷物创建完成
+        self:OnSpawnProjectile(self.ProjectileInstance)
     end)
 end
 
@@ -733,6 +747,7 @@ function Weapon:HitTarget(ElementID, Result)
         self.Projectiles[ProjectileElementID] = nil
     end
     Particle:StopParticle(self.ProjectileInstance.EffectID)
+    self:OnDestroyProjectile(self.ProjectileInstance)
     self.ProjectileInstance = nil
     self.LastProjectilePosition = nil
 end
