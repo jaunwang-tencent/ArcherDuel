@@ -136,6 +136,9 @@ function BattleModule:OnTouchPressed(_, Y)
     self.OnPressY = Y
     local Player = self.BattleScene:GetCurrentTurnPlayer()
     if Player and Player:IsControlled() then
+        if Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 2 then --判定是否是新手教程
+            System:FireSignEvent("TutorialbRestart_2_Off")
+        end
         --只有主控角色才能执行用户输入
         self.PitchDegree = self:GetPitchDegree(Y)
         self:AdjustPitchCursor(self.PitchDegree)

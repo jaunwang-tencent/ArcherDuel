@@ -55,6 +55,10 @@ function FightModule:Open(Context)
         UI:RegisterClicked(CenterView.Golden.ID, function()
             self:OnGolden()
         end)
+        --新手教程判定
+        if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 4 then
+            System:FireSignEvent("TutorialbRestart_4")
+        end
     else
         local lock = "#8E8E8E"
         UI:SetImageColor({CenterView.Golden.ID}, lock)
@@ -69,6 +73,9 @@ function FightModule:Open(Context)
         UI:RegisterClicked(CenterView.Diamond.ID, function()
             self:OnDiamond()
         end)
+        if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 5 then
+            System:FireSignEvent("TutorialbRestart_5")
+        end
     else
         local lock = "#8E8E8E"
         UI:SetImageColor({CenterView.Diamond.ID}, lock)
@@ -274,16 +281,31 @@ function FightModule:OnClickAd2()
 end
 
 function FightModule:OnGolden()  --跳转黄金联赛按钮
+
     System:FireGameEvent(_GAME.Events.JumpModule, "Tournament", "Golden")
+    if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 4 then
+        System:FireSignEvent("TutorialbRestart_4_Off")
+        Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",5)
+    end
 end
 
 
 function FightModule:OnDiamond()  --跳转钻石联赛按钮
     System:FireGameEvent(_GAME.Events.JumpModule, "Tournament", "Diamond")
+    if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 5 then
+        System:FireSignEvent("TutorialbRestart_5_Off")
+        Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",6)
+    end
 end
 
 function FightModule:OnSevenDays()  --七日挑战
     --这里打开七日挑战页面
+    if Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 3 then
+        Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",4)
+        System:FireSignEvent("TutorialbRestart_3_Off")
+        System:FireSignEvent("七日挑战逻辑")
+    end
+
 
     UI:SetVisible({UIConfig.SevenDays.ID}, true)
 
@@ -322,7 +344,11 @@ function FightModule:OnSevenDays()  --七日挑战
 end
 
 function FightModule:OnMatch()
+
     if GameUtils.CanEnterRankBattle() then
+        if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 1 then
+            System:FireSignEvent("TutorialbRestart_1_Off")
+        end
         --这里打开寻找对局页面
         --生成1到7的随机数字
         local RandomNumber = math.random(1, 6)  --随机海岛和天空
