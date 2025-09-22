@@ -378,8 +378,8 @@ function Player:GetEquipData(ForceUpdate)
         -- 身体伤害倍率
         local body_damageRate = 1
         if self.WeaponConfig ~= nil then
-            head_damageRate = self.WeaponConfig.Attributes.HeadShotIncrease
-            body_damageRate = self.WeaponConfig.Attributes.BodyShotIncrease
+            head_damageRate = self.WeaponConfig.Attributes.HeadShotIncrease + self.WeaponConfig.Attributes.ShotIncrease
+            body_damageRate = self.WeaponConfig.Attributes.BodyShotIncrease + self.WeaponConfig.Attributes.ShotIncrease
             if PartConfig ~= nil then
                 damage = self.WeaponConfig.Attributes.Attack + self.WeaponConfig.Attributes.Growth * ( Weapon_Lv - 1)
                             + PartConfig.Attributes.Attack + PartConfig.Attributes.Growth * ( Part_Lv - 1)
