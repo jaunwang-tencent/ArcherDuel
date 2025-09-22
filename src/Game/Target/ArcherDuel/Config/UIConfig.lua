@@ -750,8 +750,10 @@ local UIConfig = {
                             ID = 110330,
                             --限时类型
                             LimitStyle = {
-                                --获取图标
-                                Icon = 111352,
+                                --获取
+                                GainUI = 111352,
+                                --限时
+                                LimitUI = 111351,
                                 --倒计时
                                 CDTime = 111351,
                             },
@@ -788,8 +790,10 @@ local UIConfig = {
                             ID = 110334,
                             --限时类型
                             LimitStyle = {
-                                --获取图标
-                                Icon = 111353,
+                                --获取
+                                GainUI = 111353,
+                                --限时
+                                LimitUI = 111354,
                                 --倒计时
                                 CDTime = 111354,
                             },
@@ -896,8 +900,15 @@ local UIConfig = {
                         ShopSlot = {
                             --按钮  注释：观看广告按钮
                             ID = 110284,
-                            --广告提示
-                            AdStyle = 111336,
+                            --限时类型
+                            LimitStyle = {
+                                --获取
+                                GainUI = 111336,
+                                --限时
+                                LimitUI = 116402,
+                                --倒计时
+                                CDTime = 116400,
+                            },
                         },
                         --商品槽
                         GoodSlot = {
