@@ -10,6 +10,8 @@ local UpgradeConfig = UGCS.Target.ArcherDuel.Config.UpgradeConfig
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+--任务事件
+local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 
 --- 打开
 function EquipmentModule:Open()
