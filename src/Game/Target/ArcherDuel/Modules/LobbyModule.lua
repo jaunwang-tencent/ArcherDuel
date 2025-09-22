@@ -679,7 +679,8 @@ function LobbyModule:RefreshDaily()
         end
         return GoodsConfig[TargetGrade]
     end
-    local DailyTimeStamp = TimerManager:GetClock()
+    local DailyTimeStamp = GameUtils.GetTodayZeroTimestamp()
+    Log:PrintLog("DailyTimeStamp = ", DailyTimeStamp)
     math.randomseed(DailyTimeStamp)
     for _, DailyItem in pairs(AllDailyItem) do
         --根据权重随机一个品质
@@ -710,7 +711,8 @@ end
 --- 每周刷新
 function LobbyModule:RefreshWeekly()
     --刷新限定奖池
-    local WeeklyTimeStamp = TimerManager:GetClock()
+    local WeeklyTimeStamp = GameUtils.GetMondayZeroTimestamp()
+    Log:PrintLog("WeeklyTimeStamp = ", WeeklyTimeStamp)
     math.randomseed(WeeklyTimeStamp)
     local WeeklyIndex = math.random(1, 60)
     local AllShops = DataCenter.GetTable("AllShops")
