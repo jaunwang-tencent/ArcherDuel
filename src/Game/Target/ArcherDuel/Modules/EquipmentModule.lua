@@ -427,6 +427,7 @@ function EquipmentModule:OpenDetail(Equipment)
         [3] = { Describe = "头部额外减伤", Value = string.format("-%d%%", Attributes.HeadShotReduction) },
         [4] = { Describe = "躯干额外减伤", Value = string.format("-%d%%", Attributes.BodyShotReduction) },
         [5] = { Describe = "伤害减免", Value = string.format("-%d%%", Attributes.DamageReduction) },
+        [6] = { Describe = "额外增伤", Value = string.format("+%d%%", Attributes.ShotIncrease) },
     }
     local DescribeIndex
     if Attributes.HeadShotIncrease ~= 0 then
@@ -439,6 +440,8 @@ function EquipmentModule:OpenDetail(Equipment)
         DescribeIndex = 4
     elseif Attributes.DamageReduction ~= 0 then
         DescribeIndex = 5
+    elseif Attributes.ShotIncrease ~= 0 then
+        DescribeIndex = 6
     end
     if DescribeIndex then
         UI:SetVisible({AttributeInfo.ID}, true)
