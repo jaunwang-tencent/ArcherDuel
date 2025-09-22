@@ -94,6 +94,11 @@ function SystemFSM:OnCreate(Context)
     -- 战斗开始
     self.bRestart = false
     System:RegisterGameEvent(_GAME.Events.BattleStart, function()
+        --判定是否要进入新手教程
+        if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 1 then
+            System:FireSignEvent("TutorialbRestart_2")
+            Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",2)
+        end
         if self.bRestart then
             self:SwitchState(UGCS.Target.ArcherDuel.Room.States.LoadingState, Context)
         else
@@ -136,7 +141,6 @@ function SystemFSM:InitSetting()
     UI:SetNativeInterfaceVisible(UI.UIType.EmotesAndActions, false)
     UI:SetNativeInterfaceVisible(UI.UIType.GameSetting, false)
     UI:SetNativeInterfaceVisible(UI.UIType.MoreSetting, false)
-
     --禁止控制相机
     Camera:SetControlMode(Camera.CONTROL_MODE.None)
 end

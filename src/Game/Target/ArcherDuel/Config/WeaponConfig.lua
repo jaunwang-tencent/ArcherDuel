@@ -26,8 +26,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -35,8 +33,6 @@ local WeaponConfig = {
                     Root = 7598,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -149,7 +145,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 1937,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -292,8 +288,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -301,8 +295,6 @@ local WeaponConfig = {
                     Root = 3595,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -415,7 +407,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2019,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -558,8 +550,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -567,8 +557,6 @@ local WeaponConfig = {
                     Root = 3674,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -681,7 +669,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2168,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -824,8 +812,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -833,8 +819,6 @@ local WeaponConfig = {
                     Root = 3767,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -947,7 +931,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2243,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -1090,8 +1074,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -1099,8 +1081,6 @@ local WeaponConfig = {
                     Root = 3855,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -1213,7 +1193,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2319,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -1356,8 +1336,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -1365,8 +1343,6 @@ local WeaponConfig = {
                     Root = 3921,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -1479,7 +1455,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2415,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -1622,8 +1598,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -1631,8 +1605,6 @@ local WeaponConfig = {
                     Root = 4092,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -1745,7 +1717,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2462,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -1888,8 +1860,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -1897,8 +1867,6 @@ local WeaponConfig = {
                     Root = 4704,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -2011,7 +1979,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2647,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -2154,8 +2122,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -2163,8 +2129,6 @@ local WeaponConfig = {
                     Root = 5383,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -2277,7 +2241,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2729,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -2360,7 +2324,7 @@ local WeaponConfig = {
             --手持物特效
             -- HeldItem = { ID = 333, Offset = Engine.Vector(0, 0, 0), Size = 8 },
             --投掷物特效
-            Projectile = { ID = 279, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            Projectile = { ID = 279, Offset = Engine.Vector(-500, 0, 0), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -2420,8 +2384,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -2429,8 +2391,6 @@ local WeaponConfig = {
                     Root =5878,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -2543,7 +2503,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 2973,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -2624,9 +2584,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 285, Offset = Engine.Vector(0, 0, 0), Size = 8 },
+             HeldItem = { ID = 305, Offset = Engine.Vector(0, 0, 0), Size = 8 },
             --投掷物特效
-            Projectile = { ID = 305, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            Projectile = { ID = 275, Offset = Engine.Vector(-500, 0, 0), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -2686,8 +2646,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -2695,8 +2653,6 @@ local WeaponConfig = {
                     Root = 5501,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -2809,7 +2765,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 3089,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -2892,7 +2848,7 @@ local WeaponConfig = {
             --手持物特效
             -- HeldItem = { ID = 333, Offset = Engine.Vector(0, 0, 0), Size = 8 },
             --投掷物特效
-            Projectile = { ID = 282, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            Projectile = { ID = 282, Offset = Engine.Vector(-500, 0, 0), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -2952,8 +2908,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -2961,8 +2915,6 @@ local WeaponConfig = {
                     Root = 4039,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -3075,7 +3027,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 3300,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -3158,7 +3110,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 303, Offset = Engine.Vector(0, 0, 0), Size = 8 },
             --投掷物特效
-            Projectile = { ID = 273, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            Projectile = { ID = 273, Offset = Engine.Vector(-500, 0, 0), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -3218,8 +3170,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -3227,8 +3177,6 @@ local WeaponConfig = {
                     Root = 6032,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -3341,7 +3289,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 3457,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -3424,7 +3372,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 311, Offset = Engine.Vector(0, 0, 0), Size = 8 },
             --投掷物特效
-            Projectile = { ID = 281, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            Projectile = { ID = 281, Offset = Engine.Vector(-500, 0, 0), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -3484,8 +3432,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -3493,8 +3439,6 @@ local WeaponConfig = {
                     Root = 5752,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -3607,7 +3551,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 3621,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -3690,7 +3634,7 @@ local WeaponConfig = {
             --手持物特效
             -- HeldItem = { ID = 333, Offset = Engine.Vector(0, 0, 0), Size = 8 },
             --投掷物特效
-            Projectile = { ID = 281, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            Projectile = { ID = 276, Offset = Engine.Vector(-500, 0, 0), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -3750,8 +3694,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -3759,8 +3701,6 @@ local WeaponConfig = {
                     Root = 4230,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -3873,7 +3813,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 3662,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -3956,7 +3896,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 307, Offset = Engine.Vector(0, 0, 0), Size = 8 },
             --投掷物特效
-            Projectile = { ID = 277, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            Projectile = { ID = 277, Offset = Engine.Vector(-500, 0, 0), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -4016,8 +3956,6 @@ local WeaponConfig = {
                     Spring = 272,
                     --左手拿弓
                     BindBone = Prop_L,
-                    --特效数据
-                    Effect = { ID = 333, Offset = Engine.Vector(50, 0, 0), Size = 5 }
                 },
                 --投射物
                 Projectile = {
@@ -4025,8 +3963,6 @@ local WeaponConfig = {
                     Root = 4520,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
-                    --特效数据
-                    Effect = { ID = 269, Offset = Engine.Vector(-500, 0, 0), Size = 5 }
                 }
             },
             --雪地
@@ -4139,7 +4075,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 876,
+                    Root = 4011,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
@@ -4220,9 +4156,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 312, Offset = Engine.Vector(0, 0, 0), Size = 8 },
+             HeldItem = { ID = 304, Offset = Engine.Vector(0, 0, 0), Size = 8 },
             --投掷物特效
-            Projectile = { ID = 274, Offset = Engine.Vector(-500, 0, 0), Size = 5 },
+            Projectile = { ID = 274, Offset = Engine.Vector(-500, 0, 0), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -6191,9 +6127,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 331, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
+             HeldItem = { ID = 329, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
             --投掷物特效
-            Projectile = { ID = 301, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            Projectile = { ID = 299, Offset = Engine.Vector(500, 0, 300), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -6412,7 +6348,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 325, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
             --投掷物特效
-            Projectile = { ID = 295, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            Projectile = { ID = 295, Offset = Engine.Vector(500, 0, 300), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -6629,9 +6565,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 326, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
+             HeldItem = { ID = 332, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
             --投掷物特效
-            Projectile = { ID = 296, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            Projectile = { ID = 302, Offset = Engine.Vector(500, 0, 300), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -6850,7 +6786,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 323, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
             --投掷物特效
-            Projectile = { ID = 293, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            Projectile = { ID = 293, Offset = Engine.Vector(500, 0, 300), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -7067,9 +7003,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 327, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
+             HeldItem = { ID = 331, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
             --投掷物特效
-            Projectile = { ID = 297, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            Projectile = { ID = 301, Offset = Engine.Vector(500, 0, 300), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -7288,7 +7224,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 326, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
             --投掷物特效
-            Projectile = { ID = 294, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            Projectile = { ID = 296, Offset = Engine.Vector(500, 0, 300), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -7505,9 +7441,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 335, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
+             HeldItem = { ID = 327, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
             --投掷物特效
-            Projectile = { ID = 271, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            Projectile = { ID = 297, Offset = Engine.Vector(500, 0, 300), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -7726,7 +7662,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 324, Offset = Engine.Vector(50, 500, -200), Rotation = Engine.Rotator(90, -90, 0), Size = 14 },
             --投掷物特效
-            Projectile = { ID = 294, Offset = Engine.Vector(500, 0, 300), Size = 5 },
+            Projectile = { ID = 294, Offset = Engine.Vector(500, 0, 300), Size = 10 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -9553,7 +9489,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID =319, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
             --投掷物特效
-            Projectile = { ID = 289 , Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            Projectile = { ID = 289 , Offset = Engine.Vector(-1500, 0, 0), Size = 15 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -9756,7 +9692,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 315, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
             --投掷物特效
-            Projectile = { ID = 285, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            Projectile = { ID = 285, Offset = Engine.Vector(-1500, 0, 0), Size = 15 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -9957,9 +9893,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-            -- HeldItem = { ID = 334, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
+             HeldItem = { ID = 322, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
             --投掷物特效
-            Projectile = { ID = 292, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            Projectile = { ID = 292, Offset = Engine.Vector(-1500, 0, 0), Size = 15 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -10160,9 +10096,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 320, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
+             HeldItem = { ID = 313, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
             --投掷物特效
-            Projectile = { ID = 290, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            Projectile = { ID = 283, Offset = Engine.Vector(-1500, 0, 0), Size = 15 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -10365,7 +10301,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 321, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
             --投掷物特效
-            Projectile = { ID = 291, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            Projectile = { ID = 291, Offset = Engine.Vector(-1500, 0, 0), Size = 15 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -10566,9 +10502,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 334, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
+             HeldItem = { ID = 316, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
             --投掷物特效
-            Projectile = { ID = 286, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            Projectile = { ID = 286, Offset = Engine.Vector(-1500, 0, 0), Size = 15 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -10769,9 +10705,9 @@ local WeaponConfig = {
         --特效设置
         Effects = {
             --手持物特效
-             HeldItem = { ID = 313, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
+             HeldItem = { ID = 317, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
             --投掷物特效
-            Projectile = { ID = 283, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            Projectile = { ID = 287, Offset = Engine.Vector(-1500, 0, 0), Size = 15 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效
@@ -10974,7 +10910,7 @@ local WeaponConfig = {
             --手持物特效
              HeldItem = { ID = 314, Offset = Engine.Vector(0, -800, 0), Rotation = Engine.Rotator(-90,0,0),  Size = 8 },
             --投掷物特效
-            Projectile = { ID = 284, Offset = Engine.Vector(-1500, 0, 0), Size = 5 },
+            Projectile = { ID = 284, Offset = Engine.Vector(-1500, 0, 0), Size = 15 },
             --爆炸特效
             Explosion = { ID = 8, Offset = Engine.Vector(0, 0, 0), Size = 1 },
             --命中特效

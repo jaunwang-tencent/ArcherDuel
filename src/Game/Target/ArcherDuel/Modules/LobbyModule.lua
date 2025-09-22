@@ -204,7 +204,12 @@ function LobbyModule:LoadData()
             DataCenter.SetNumber(ArchiveKey, ArchiveValue)
         end
     end
-
+    --判定是否需要开启七日引导
+    if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 2 then
+        System:FireSignEvent("TutorialbRestart_3")
+        Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",3)
+    end
+    Log:PrintDebug("[就是这里]")
     --2、装备数据
     --2.1、初始化装备
     local AllEquipment = DataCenter.GetTable("AllEquipment", true)
@@ -255,10 +260,19 @@ function LobbyModule:CharacterStandby()
     local Location = Element:GetPosition(StandbyHoldeSceneId)
     local Rotation = Element:GetRotation(StandbyHoldeSceneId)
     self.StandbyUID = FakeCharacter:CreateCharacter(Location, Rotation, Engine.Vector(1, 1, 1), false)
-
+    UI:SetVisible({116408},true)
     --本地角色【影视相机：SceneId = 436】
     UGCS.Framework.Executor.Delay(1, function ()
         System:FireSignEvent("启动相机",{self.PlayerID})
+        if not Archive:HasPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") then
+            System:FireSignEvent("TutorialbRestart_1")
+            Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",1)
+        end
+        --判定是否在试玩
+        if not Archive:HasPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") then
+            System:FireSignEvent("TutorialbRestart_1_Off")
+            Log:PrintDebug("现在在试玩")
+        end
     end)
 end
 
