@@ -108,17 +108,16 @@ function StoreModule:RefreshPrice(ShopSlot, ShopCosts)
         local DeltaTime = ShopCosts.AdCoolTime - NowTimestamp + ShopCosts.ClickTimestamp - 1
         local FormatTime = GameUtils.GetFormatTime(DeltaTime)
         if FormatTime then
-            UI:SetVisible({LimitStyle.Icon}, false)
-            UI:SetVisible({LimitStyle.CDTime}, true)
+            UI:SetVisible({LimitStyle.GainUI}, false)
+            UI:SetVisible({LimitStyle.LimitUI}, true)
             UI:SetText({LimitStyle.CDTime}, FormatTime)
         else
             --清空点击时刻
             ShopCosts.ClickTimestamp = nil
-            UI:SetVisible({LimitStyle.Icon}, true)
-            UI:SetVisible({LimitStyle.CDTime}, false)
+            UI:SetVisible({LimitStyle.GainUI}, true)
+            UI:SetVisible({LimitStyle.LimitUI}, false)
         end
     end
-
     --宝箱类型
     local BoxStyle = ShopSlot.BoxStyle
     if BoxStyle then
@@ -509,7 +508,7 @@ function StoreModule:OpenBox(BoxID)
     for _, Item in ipairs(ThreeItem.ItemGroup) do
         UI:SetVisible({Item.Icon, Item.Background}, false)
     end
-    local BoxRewards = GameUtils.OpenBoxReward(BoxID)
+    local BoxRewards = GameUtils.RandomBox(BoxID, 3)
     UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
 
     UGCS.Framework.Executor.Delay(2.3, function ()
@@ -695,7 +694,19 @@ function StoreModule:ShowGainView(Costs, Goods)
         UI:SetVisible({GainView.ID}, false)
         UI:StopUIAnimation(GainView.BackgroundEffect)
         if Costs.AdCoolTime then
-            Costs.ClickTimestamp = GameUtils.GetNowTimestamp()
+            local NeedRecordTimestamp
+            if Costs.HasCollect and Costs.MaxCollect then
+                if Costs.HasCollect >= Costs.MaxCollect then
+                    NeedRecordTimestamp = true
+                else
+                    NeedRecordTimestamp = false
+                end
+            else
+                NeedRecordTimestamp = true
+            end
+            if NeedRecordTimestamp then
+                Costs.ClickTimestamp = GameUtils.GetNowTimestamp()
+            end
         end
         --刷新价格
         self:RefreshStore(false)

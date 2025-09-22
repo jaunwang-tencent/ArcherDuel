@@ -29,11 +29,11 @@ local DefaultBaseData =
     Equipped_Axe_Lv = 1,
     Equipped_Spear_Lv = 1,
     --资产信息
-    Coin = 5000,                  --金币
-    Diamond = 1000,               --砖石
-    GoldBox = 2,                  --金宝箱
-    SilverBox = 2,                --银宝箱
-    NormalBox = 1,                --普通宝箱
+    Coin = 1000,                  --金币
+    Diamond = 30,               --砖石
+    GoldBox = 0,                  --金宝箱
+    SilverBox = 0,                --银宝箱
+    NormalBox = 0,                --普通宝箱
     --其它信息
     Player_MaxAdFreeWatch_Num = 5,  --玩家最大免费观看广告次数
     Player_HasAdFreeWatch_Num = 0,  --玩家已经免费观看广告次数
@@ -499,8 +499,6 @@ function LobbyModule:DefaultShopData()
             --商品
             Goods = {
                 BoxID = 200003,
-                --从宝箱配置中去拿
-                EquipmentIDs = {}
             }
         },
         [2] = {
@@ -527,8 +525,6 @@ function LobbyModule:DefaultShopData()
             --商品
             Goods = {
                 BoxID = 200002,
-                --从宝箱配置中去拿
-                EquipmentIDs = {}
             }
         },
         [4] = {
@@ -600,6 +596,8 @@ function LobbyModule:DefaultShopData()
             Costs = {
                 --广告资源
                 AdTag = "ad_tag_diamond",
+                --广告冷却时间
+                AdCoolTime = 24 * 3600,
                 --最大收集次数
                 MaxCollect = 5,
                 --已收集次数
@@ -679,7 +677,8 @@ function LobbyModule:RefreshDaily()
         end
         return GoodsConfig[TargetGrade]
     end
-    local DailyTimeStamp = TimerManager:GetClock()
+    local DailyTimeStamp = GameUtils.GetTodayZeroTimestamp()
+    Log:PrintLog("DailyTimeStamp = ", DailyTimeStamp)
     math.randomseed(DailyTimeStamp)
     for _, DailyItem in pairs(AllDailyItem) do
         --根据权重随机一个品质
@@ -710,7 +709,8 @@ end
 --- 每周刷新
 function LobbyModule:RefreshWeekly()
     --刷新限定奖池
-    local WeeklyTimeStamp = TimerManager:GetClock()
+    local WeeklyTimeStamp = GameUtils.GetMondayZeroTimestamp()
+    Log:PrintLog("WeeklyTimeStamp = ", WeeklyTimeStamp)
     math.randomseed(WeeklyTimeStamp)
     local WeeklyIndex = math.random(1, 60)
     local AllShops = DataCenter.GetTable("AllShops")

@@ -95,13 +95,16 @@ function FightModule:Open(Context)
             UI:RegisterClicked(CenterView.Rank.Button, function()
                 self:OnRank(RankBoxReward_Table)
             end)
+            System:FireSignEvent("BoxAnimation", {Character:GetLocalPlayerId()})
             UI:SetVisible({CenterView.Rank.Image_1}, true)
             UI:SetVisible({CenterView.Rank.Image_2}, true)
         else
+            System:FireSignEvent("BoxAnimationStop", {Character:GetLocalPlayerId()})
             UI:SetVisible({CenterView.Rank.Image_1}, false)
             UI:SetVisible({CenterView.Rank.Image_2}, false)
         end
     else
+        System:FireSignEvent("BoxAnimationStop", {Character:GetLocalPlayerId()})
         UI:SetVisible({CenterView.Rank.Image_1}, false)
         UI:SetVisible({CenterView.Rank.Image_2}, false)
     end
@@ -376,6 +379,7 @@ function FightModule:OnRank(RankBoxReward_Table)
         local FightView = UIConfig.FightView
         local CenterView = FightView and FightView.CenterView
         UI:UnRegisterClicked(CenterView.Rank.Button)
+        System:FireSignEvent("BoxAnimationStop", {Character:GetLocalPlayerId()})
         UI:SetVisible({CenterView.Rank.Image_1}, false)
         UI:SetVisible({CenterView.Rank.Image_2}, false)
     end
