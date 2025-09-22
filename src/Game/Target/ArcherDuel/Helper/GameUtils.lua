@@ -316,7 +316,7 @@ function GameUtils.OpenBoxReward(boxId)
         local _Weight = 0
         for i, v in ipairs(BoxConfig) do
             _Weight = _Weight + v.Weight
-            if random <= Weight then
+            if random <= _Weight then
                 if v.EquipIds then -- 有指认装备，直接从指认装备中取
                     return v.EquipIds[math.random(1, #v.EquipIds)]
                 else -- 没有指认装备，从装备池中取
