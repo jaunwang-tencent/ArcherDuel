@@ -195,7 +195,7 @@ function GameMatch:BindEvents()
     UI:RegisterPressed(108060,function ()
         if GameUtils.CanEnterRankBattle() then
             UI:ResumeUIAnimation(111057,1)
-            UI:SetVisible({108052,108051,108056},false)
+            UI:SetVisible({108052,108051,108056,115200,115242},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
             System:FireGameEvent(_GAME.Events.StartMatch)
         end
@@ -204,42 +204,60 @@ function GameMatch:BindEvents()
     -- 胜利界面点击返回大厅
     UI:RegisterPressed(108059,function ()
         UI:ResumeUIAnimation(111057,1)
-        UI:SetVisible({108052,108051,108056},false)
+        UI:SetVisible({108052,108051,108056,115200,115242},false)
         UI:SetVisible(MatchConfig.Victory_UI, false)
         System:FireSignEvent("GoHome")
     end)
 
     -- 开箱表演动画
     UI:RegisterPressed(108303,function ()
-        self:ShowRankReward()
+        UI:SetVisible({108298, 111910},false)
+        self:ShowRankReward(true)
     end)
 
-    local AdTag = "ad_battle_again"
+    local reward_AdTag = "ad_reward_again"
+    local battle_AdTag = "ad_battle_again"
+
     --注册广告结束事件
     System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
         local LocalPlayerId = Character:GetLocalPlayerId()
-        if AdTag == mark and LocalPlayerId == userId then
-            -- 将消耗的金币和积分返还
-            local score = GameUtils.GetPlayerRankScore()
-            score = score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
-            GameUtils.SetPlayerRankScore(score)
-            local curLevel = GameUtils.GetRankLevelByScore(score)
-            if curLevel then
-                local coin = GameUtils.GetPlayerCoin()
-                GameUtils.SetPlayerCoin(coin + curLevel.cost)
-            end
+        if LocalPlayerId == userId then
+            if battle_AdTag == mark then
+                -- 将消耗的金币和积分返还
+                local score = GameUtils.GetPlayerRankScore()
+                score = score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
+                GameUtils.SetPlayerRankScore(score)
+                local curLevel = GameUtils.GetRankLevelByScore(score)
+                if curLevel then
+                    local coin = GameUtils.GetPlayerCoin()
+                    GameUtils.SetPlayerCoin(coin + curLevel.cost)
+                end
 
-            if GameUtils.CanEnterRankBattle() then
-                UI:SetVisible(MatchConfig.Fail_UI, false)
-                System:FireGameEvent(_GAME.Events.StartMatch)
+                if GameUtils.CanEnterRankBattle() then
+                    UI:SetVisible(MatchConfig.Fail_UI, false)
+                    System:FireGameEvent(_GAME.Events.StartMatch)
+                end
+            elseif reward_AdTag == mark then
+                UI:ResumeUIAnimation(111057,1)
+                UI:SetVisible({108052,108051,108056,115200,115242},false)
+                UI:SetVisible(MatchConfig.Victory_UI, false)
+                TimerManager:AddFrame(3, function()
+                    self:ShowRankReward(false)
+                end)
             end
         end
+    end)
+    
+    -- 点击再次开启宝箱
+    UI:RegisterPressed(108058,function ()
+        -- -- 走IAA流程
+        IAA:LetPlayerWatchAds(reward_AdTag)
     end)
 
     -- 失败界面点击再来一次
     UI:RegisterClicked(106511, function()
         -- 走IAA流程
-        IAA:LetPlayerWatchAds(AdTag)
+        IAA:LetPlayerWatchAds(battle_AdTag)
     end)
 
     -- 失败界面点击返回大厅
@@ -623,7 +641,7 @@ local function ShowRankProgress(curScore, newScore)
 end
 
 -- 排位赛胜利奖励展示
-function GameMatch:ShowRankReward()
+function GameMatch:ShowRankReward(showAdBtn)
     --发奖励
     local rewards = GameUtils.GetRewardsByWin()
     local AllEquipment = DataCenter.GetTable("AllEquipment", true)
@@ -631,9 +649,8 @@ function GameMatch:ShowRankReward()
         AllEquipment = GameUtils.DefaultEquipmentData()
     end
 
-    local Converted = false
-    for _, EquipmentID in pairs(rewards) do
-        local GoodsCoin = nil
+    local Converted, GoodsCoins = false, {}
+    for i, EquipmentID in ipairs(rewards) do
         local TargetEquipment = AllEquipment[EquipmentID]
         if TargetEquipment.Unlock then
             --累加碎片
@@ -667,7 +684,7 @@ function GameMatch:ShowRankReward()
                 200, 300, 500, 800
             }
             --转换成币
-            GoodsCoin = CoinConvertConfig[TargetEquipment.Level]
+            GoodsCoins[i] = CoinConvertConfig[TargetEquipment.Level]
         else
             if TargetEquipment.Unlock then
                 --累加碎片
@@ -677,25 +694,12 @@ function GameMatch:ShowRankReward()
                 TargetEquipment.Unlock = true
             end
         end
-
-        --金币和砖石
-        if GoodsCoin then
-            local ExecuteShowResource = function()
-                if GoodsCoin then
-                    --获得金钱，显示金钱
-                    local Coin = DataCenter.GetNumber("Coin")
-                    Coin = Coin + GoodsCoin
-                    DataCenter.SetNumber("Coin", Coin)
-                end
-            end
-        end
     end
     DataCenter.SetTable("AllEquipment", AllEquipment)
 
     self.VictoryRewards = rewards
     Log:PrintLog("VictoryRewards, End: ", self.VictoryRewards[1], self.VictoryRewards[2])
 
-    
     if self.VictoryRewards ~= nil then
         local ElementId = System:GetScriptParentID()
         local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
@@ -714,37 +718,52 @@ function GameMatch:ShowRankReward()
         self.VictoryRewards = nil
     end
 
-    UI:SetVisible({108298, 111910},false)
+    local coinUIs = {
+        root = {115200, 115242},
+        text = {115199, 115241},
+        icon = {115198, 115240},
+        bg = {115197, 115239},
+    }
     UI:SetVisible({108048,108056},true)
     TimerManager:AddTimer(2.3,function ()
         UI:SetVisible({111057},true)
         UI:PlayUIAnimation(111057,1,0)
         TimerManager:AddTimer(1.6,function ()
             UI:PauseUIAnimation(111057,1)
+            if Converted and #GoodsCoins > 0 then
+                UI:SetVisible({111057}, false)
+                for i, v in ipairs(GoodsCoins) do
+                    --转化动画
+                    UI:SetVisible({coinUIs.root[i], coinUIs.bg[i], coinUIs.text[i], coinUIs.icon[i]}, true)
+                    --播放翻盘动画
+                    UI:PlayUIAnimation(coinUIs.bg[i], 1, 0)
+                    --获得金钱，显示金钱
+                    UI:SetText({coinUIs.text[i]}, tostring(v))
+                    local Coin = DataCenter.GetNumber("Coin")
+                    Coin = Coin + v
+                    DataCenter.SetNumber("Coin", Coin)
+                end
+            else
+                UI:SetVisible(coinUIs.root, false)
+            end
         end)
         UI:SetVisible({108052,108051},true)
         UI:PlayUIAnimation(108051,1,0)
         UI:PlayUIAnimation(108052,1,0)
     end)
-    TimerManager:AddTimer(3.05,function ()
+    TimerManager:AddTimer(3,function ()
         UI:EffectPausePlay(108056)
-        if Converted then
-            -- --转化动画
-            -- UI:SetVisible({ResourceSlot.ID, ResourceSlot.Background}, true)
-            -- --播放翻盘动画
-            -- UI:PlayUIAnimation(ResourceSlot.Background, 1, 0)
-            -- --延迟显示资源和数量
-            -- UGCS.Framework.Executor.Delay(0.2, function()
-            --     UI:SetVisible({ResourceSlot.Count, ResourceSlot.Icon}, true)
-            --     ExecuteShowResource()
-            -- end)
-        end
-        TimerManager:AddTimer(1.25,function ()
-            UI:SetVisible({108057},true)
-            UI:PlayUIAnimation(108058,1,0)
-            TimerManager:AddTimer(2,function ()
-                UI:SetVisible({108480},true)
-            end)
+        TimerManager:AddTimer(1.2,function ()
+            if showAdBtn then
+                UI:SetVisible({108057, 108058},true)
+                UI:PlayUIAnimation(108058,1,0)
+                TimerManager:AddTimer(2,function ()
+                    UI:SetVisible({108057,108480,108059,108060},true)
+                end)
+            else
+                UI:SetVisible({108057,108480,108059,108060},true)
+                UI:SetVisible({108058},false)
+            end
         end)
     end)
 end
