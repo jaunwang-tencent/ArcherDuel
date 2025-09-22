@@ -487,6 +487,43 @@ function StoreModule:ShowAdView(Goods)
     end)
 end
 
+
+--- 将装备转换为金币
+---@param EquipmentID 装备标识
+function StoreModule:ConvertCoinByEquipment(EquipmentID)
+    if EquipmentID then
+        local Converted = false
+        --获取装备
+        local AllEquipment = DataCenter.GetTable("AllEquipment")
+        local TargetEquipment = AllEquipment[EquipmentID]
+        --获取装备升级信息
+        local Attributes = EquipmentConfig[EquipmentID].Attributes
+        local GradeUpgradeConfig = UpgradeConfig[Attributes.Grade]
+        if TargetEquipment.Level < 5 then
+            local TotalUpgradePiece = 0
+            for Level = TargetEquipment.Level, 4 do
+                local Upgrade = GradeUpgradeConfig[Level]
+                TotalUpgradePiece = TotalUpgradePiece + Upgrade.Piece
+            end
+            if TotalUpgradePiece <= TargetEquipment.Piece then
+                --当前拥有碎片数量过升级所需碎片总量时，则转化为金币
+                Converted = true
+            end
+        else
+            --满级也需要转化为金币
+            Converted = true
+        end
+        if Converted then
+            local CoinConvertConfig = {
+                200, 300, 500, 800
+            }
+            --转换成币
+            local GoodsCoin = CoinConvertConfig[TargetEquipment.Level]
+            return GoodsCoin
+        end
+    end
+end
+
 --- 打开宝箱
 ---@param BoxID 宝箱Id
 function StoreModule:OpenBox(BoxID)
@@ -529,6 +566,21 @@ function StoreModule:OpenBox(BoxID)
         --播到1.6秒暂停播放
         UGCS.Framework.Executor.Delay(1.6, function()
             UI:PauseUIAnimation(ThreeItem.ItemGroupID, 1)
+            --结束之后表演翻拍
+            --[[在此处表现翻牌动作
+            for RewardIndex, EquipmentID in ipairs(BoxRewards) do
+                local ConvertCoin = self:ConvertCoinByEquipment(EquipmentID)
+                if ConvertCoin then
+                    --转换成币
+                    local BoxItem = ThreeItem.ItemGroup[RewardIndex]
+                    --转化动画
+                    UI:SetVisible({BoxItem.Icon_1, BoxItem.Icon_2, BoxItem.Text}, true)
+                    --播放翻盘动画
+                    UI:PlayUIAnimation(BoxItem.Icon_1, 1, 0)
+                    UI:SetText({BoxItem.Text}, tostring(ConvertCoin))
+                end
+            end
+            --]]
             --当表演完成之后才显示领取按钮
             UGCS.Framework.Executor.Delay(0.5, function()
                 UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},true)
@@ -576,33 +628,18 @@ function StoreModule:ShowGainView(Costs, Goods)
     UI:PlayUIAnimation(GainView.BackgroundEffect, 1, 0)
     local Converted, EquipmentID, GoodsCoin, GoodsDiamond = false, Goods.EquipmentID, Goods.Coin, Goods.Diamond
     if EquipmentID then
-        --获取装备
-        local AllEquipment = DataCenter.GetTable("AllEquipment")
-        local TargetEquipment = AllEquipment[EquipmentID]
-        --获取装备升级信息
-        local Attributes = EquipmentConfig[EquipmentID].Attributes
-        local GradeUpgradeConfig = UpgradeConfig[Attributes.Grade]
-        if TargetEquipment.Level < 5 then
-            local TotalUpgradePiece = 0
-            for Level = TargetEquipment.Level, 4 do
-                local Upgrade = GradeUpgradeConfig[Level]
-                TotalUpgradePiece = TotalUpgradePiece + Upgrade.Piece
-            end
-            if TotalUpgradePiece <= TargetEquipment.Piece then
-                --当前拥有碎片数量过升级所需碎片总量时，则转化为金币
-                Converted = true
-            end
-        else
-            --满级也需要转化为金币
-            Converted = true
-        end
-        if Converted then
-            local CoinConvertConfig = {
-                200, 300, 500, 800
-            }
+        local ConvertCoin = self:ConvertCoinByEquipment(EquipmentID)
+        if ConvertCoin then
             --转换成币
-            GoodsCoin = CoinConvertConfig[TargetEquipment.Level]
+            GoodsCoin = ConvertCoin
+            Converted = true
         else
+            --获取装备
+            local AllEquipment = DataCenter.GetTable("AllEquipment")
+            local TargetEquipment = AllEquipment[EquipmentID]
+            --获取装备升级信息
+            local Attributes = EquipmentConfig[EquipmentID].Attributes
+
             --显示物品
             UI:SetVisible({GoodSlot.ID}, true)
             UI:SetVisible({ResourceSlot.ID}, false)
