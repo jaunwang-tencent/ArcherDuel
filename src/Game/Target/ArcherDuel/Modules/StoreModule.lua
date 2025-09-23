@@ -430,7 +430,6 @@ function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
         local CallBack = self.AdFinishCallBack[AdTag]
         if not CallBack then
             CallBack = function()
-                Log:PrintLog("OnAdFinish()", AdTag, NeedGain)
                 if OnFinish then
                     --使用自定义结束事件
                     OnFinish()
@@ -568,20 +567,23 @@ function StoreModule:OpenBox(BoxID)
         UGCS.Framework.Executor.Delay(1.6, function()
             UI:PauseUIAnimation(ThreeItem.ItemGroupID, 1)
             --结束之后表演翻拍
-            --[[在此处表现翻牌动作
+            --在此处表现翻牌动作
             for RewardIndex, EquipmentID in ipairs(BoxRewards) do
                 local ConvertCoin = self:ConvertCoinByEquipment(EquipmentID)
                 if ConvertCoin then
                     --转换成币
                     local BoxItem = ThreeItem.ItemGroup[RewardIndex]
                     --转化动画
-                    UI:SetVisible({BoxItem.Icon_1, BoxItem.Icon_2, BoxItem.Text}, true)
+                    UI:SetVisible({BoxItem.Icon_1, BoxItem.Text}, true)
                     --播放翻盘动画
                     UI:PlayUIAnimation(BoxItem.Icon_1, 1, 0)
-                    UI:SetText({BoxItem.Text}, tostring(ConvertCoin))
+                    TimerManager:AddTimer(0.2,function ()
+                        UI:SetVisible({BoxItem.Icon_2}, true)
+                        UI:SetText({BoxItem.Text}, tostring(ConvertCoin))
+                    end)
+                    
                 end
             end
-            --]]
             --当表演完成之后才显示领取按钮
             UGCS.Framework.Executor.Delay(0.5, function()
                 UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},true)

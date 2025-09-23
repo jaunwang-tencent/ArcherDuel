@@ -1589,7 +1589,7 @@ local WeaponConfig = {
                 --手持物
                 HeldItem = {
                     -- 手持点立方体实例id
-                    Root = 4089,
+                    Root = 4090,
                     -- 弓上方弓弦连接点立方体实例id
                     Up = 4089,
                     -- 弓下方弓弦连接点立方体实例id
@@ -1602,7 +1602,7 @@ local WeaponConfig = {
                 --投射物
                 Projectile = {
                     -- 投射物尖端立方体实例id
-                    Root = 4092,
+                    Root = 4103,
                     --偏移量
                     Offset = Engine.Vector(0, 50, 80),
                 }
