@@ -19,6 +19,7 @@ UGCS.Target.ArcherDuel.Config.UpgradeConfig = require "Game.Target.ArcherDuel.Co
 UGCS.Target.ArcherDuel.Config.ResourceConfig = require "Game.Target.ArcherDuel.Config.ResourceConfig"
 UGCS.Target.ArcherDuel.Config.ActivityConfig = require "Game.Target.ArcherDuel.Config.ActivityConfig"
 UGCS.Target.ArcherDuel.Config.OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
+UGCS.Target.ArcherDuel.Config.RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
 
 --目标游戏应用
 UGCS.Target.ArcherDuel.App = require "Game.Target.ArcherDuel.ArcherDuelApp"

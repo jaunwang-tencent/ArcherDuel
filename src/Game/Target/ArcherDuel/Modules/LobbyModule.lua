@@ -8,6 +8,8 @@ local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 local OpenBoxConfig = UGCS.Target.ArcherDuel.Config.OpenBoxConfig
 --商品配置
 local GoodsConfig = UGCS.Target.ArcherDuel.Config.GoodsConfig
+--奖励配置
+local RewardConfig = UGCS.Target.ArcherDuel.Config.RewardConfig
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
@@ -821,7 +823,6 @@ function LobbyModule:RuntimeWeeklyRefresh()
     local lastLoginTime = DataCenter.GetNumber("Player_LastLoginTime_Num") or 0
     if lastLoginTime > 0 then
         --段位奖励发放
-        local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
         if RewardConfig and RewardConfig.Rank_Rewards[level.base_score] then
             local Reward = RewardConfig.Rank_Rewards[level.base_score]
             for k, v in pairs(Reward) do
