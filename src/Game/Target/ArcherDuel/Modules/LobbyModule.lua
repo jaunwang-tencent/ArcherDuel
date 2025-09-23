@@ -412,8 +412,8 @@ function LobbyModule:DefaultEquipmentData()
         if TargetID == ID then
             Equipment.Unlock = true
             Equipment.Equipped = true
-            Equipment.Piece = 10    --缺省十个
-            Equipment.Level = 3     --缺省三级
+            Equipment.Piece = 0    --缺省十个
+            Equipment.Level = 1     --缺省三级
             DataCenter.SetNumber(IDName, Equipment.ID)
             DataCenter.SetNumber(LvName, Equipment.Level)
         end
