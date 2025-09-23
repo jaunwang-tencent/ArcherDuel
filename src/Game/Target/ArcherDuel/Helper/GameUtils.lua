@@ -630,6 +630,58 @@ function GameUtils.RandomBox(BoxID, Count)
 end
 ----------------------------------概率相关----------------------------------
 
+----------------------------------广告相关----------------------------------
+local AdFinishCallBack
+--注册广告事件
+function GameUtils.RegisterAdFinishEvent()
+    --注册广告结束事件
+    System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
+        local LocalPlayerId = Character:GetLocalPlayerId()
+        if LocalPlayerId == userId then
+            local CallBack = AdFinishCallBack[mark]
+            if CallBack then
+                --回调处理
+                CallBack()
+            end
+        end
+    end)
+end
+
+--- 观看广告
+---@param AdTag 广告标签
+---@param OnFinish 观看结束
+function GameUtils.SeeAd(AdTag, OnFinish)
+    if AdTag then
+        --广告结束回调<AdTag, CallBack>
+        if not AdFinishCallBack then
+            AdFinishCallBack = {}
+        end
+        local CallBack = AdFinishCallBack[AdTag]
+        if not CallBack then
+            CallBack = function()
+                if OnFinish then
+                    --使用自定义结束事件
+                    OnFinish()
+                end
+            end
+            --加入回调
+            AdFinishCallBack[AdTag] = CallBack
+        end
+        --广告观看
+        IAA:LetPlayerWatchAds(AdTag)
+        --PC端开发，可以打开这句话来模拟广告结束事件，已完成
+        --CallBack()
+    end
+end
+
+--注销广告事件
+function GameUtils.UnregisterAdFinishEvent()
+    --注销广告完成事件
+    System:UnregisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH)
+    AdFinishCallBack = nil
+end
+----------------------------------广告相关----------------------------------
+
 -- 设置玩家金币
 function GameUtils.SetPlayerCoin(coin)
     Log:PrintLog("[GameUtils.SetPlayerCoin] coin" .. coin)

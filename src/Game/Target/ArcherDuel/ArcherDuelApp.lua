@@ -4,12 +4,14 @@ local ArcherDuelApp = UGCS.RTTI.Class("ArcherDuelApp", UGCS.Framework.Applicatio
 --创建
 function ArcherDuelApp:OnCreate()
     ArcherDuelApp.super.OnCreate(self)
+    UGCS.Target.ArcherDuel.Helper.GameUtils.RegisterAdFinishEvent()
 
     self.SystemFSM = UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.System.FSM)
 end
 
 --销毁
 function ArcherDuelApp:OnDestroy()
+    UGCS.Target.ArcherDuel.Helper.GameUtils.UnregisterAdFinishEvent()
     ArcherDuelApp.super.OnDestroy(self)
 
     self.SystemFSM:Destroy()

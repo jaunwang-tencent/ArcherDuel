@@ -27,17 +27,6 @@ function StoreModule:Open(Context)
     UI:SetVisible(self.ScrollItems, true)
     --添加到滚动视图
     UI:AddToScrollView(UIConfig.StoreView.Scrollable, self.ScrollItems)
-    --注册广告结束事件
-    System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
-        local LocalPlayerId = Character:GetLocalPlayerId()
-        if LocalPlayerId == userId then
-            local CallBack = self.AdFinishCallBack and self.AdFinishCallBack[mark]
-            if CallBack then
-                --回调处理
-                CallBack()
-            end
-        end
-    end)
     self.AccumulateTimestamp = 0
 end
 
@@ -54,9 +43,6 @@ end
 
 --- 关闭
 function StoreModule:Close()
-    --注销广告完成事件
-    System:UnregisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH)
-    self.AdFinishCallBack = nil
     --销毁视图
     local StoreView = UIConfig.StoreView
     UI:RemoveFromScrollView(StoreView.Scrollable, self.ScrollItems)
@@ -423,31 +409,19 @@ end
 function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
     local AdTag = Costs.AdTag
     if AdTag then
-        --广告结束回调<AdTag, CallBack>
-        if not self.AdFinishCallBack then
-            self.AdFinishCallBack = {}
-        end
-        local CallBack = self.AdFinishCallBack[AdTag]
-        if not CallBack then
-            CallBack = function()
-                if OnFinish then
-                    --使用自定义结束事件
-                    OnFinish()
-                end
-                if NeedGain then
-                    --累计收集次数
-                    self:AccumulateCollected(Costs)
-                    --看完广告后，获得物品
-                    self:ShowGainView(Costs, Goods)
-                end
+        GameUtils.SeeAd(AdTag, function()
+            Log:PrintLog("OnAdFinish()", AdTag, NeedGain)
+            if OnFinish then
+                --使用自定义结束事件
+                OnFinish()
             end
-            --加入回调
-            self.AdFinishCallBack[AdTag] = CallBack
-        end
-        --广告观看
-        IAA:LetPlayerWatchAds(AdTag)
-        --PC端开发，可以打开这句话来模拟广告结束事件，已完成
-        --CallBack()
+            if NeedGain then
+                --累计收集次数
+                self:AccumulateCollected(Costs)
+                --看完广告后，获得物品
+                self:ShowGainView(Costs, Goods)
+            end
+        end)
     end
 end
 
