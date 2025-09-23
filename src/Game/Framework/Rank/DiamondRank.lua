@@ -195,7 +195,6 @@ function DiamondRankManager.GetPlayerDataDiamondRank(PlayerID)
 
     if IsCrossWeek(last_update_ts, nowTs) then
         DiamondRankData = DiamondRankManager.BuildDiamondRank()
-        DataCenter.SetNumber("Rank_DiamondScore_Num", 0)
     end
 
     for _, player in ipairs(DiamondRankData) do

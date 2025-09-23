@@ -817,12 +817,16 @@ function LobbyModule:RuntimeWeeklyRefresh()
     local ReceiveRankBoxReward_Table = {}
     DataCenter.SetTable("ReceiveRankBoxReward_Table", ReceiveRankBoxReward_Table)
 
-    --段位奖励发放
-    local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
-    if RewardConfig and RewardConfig.Rank_Rewards[level.base_score] then
-        local Reward = RewardConfig.Rank_Rewards[level.base_score]
-        for k, v in pairs(Reward) do
-            GameUtils.AddPlayerReward(v.id, v.count)
+    --如果是新账号则不发放段位奖励
+    local lastLoginTime = DataCenter.GetNumber("Player_LastLoginTime_Num") or 0
+    if lastLoginTime > 0 then
+        --段位奖励发放
+        local RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
+        if RewardConfig and RewardConfig.Rank_Rewards[level.base_score] then
+            local Reward = RewardConfig.Rank_Rewards[level.base_score]
+            for k, v in pairs(Reward) do
+                GameUtils.AddPlayerReward(v.id, v.count)
+            end
         end
     end
 
@@ -835,7 +839,7 @@ function LobbyModule:RuntimeWeeklyRefresh()
         GameUtils.SetPlayerRankScore(titleLvLevel.base_score)
     end
 
-    local Rank_DiamondScore_Num = 90
+    local Rank_DiamondScore_Num = DataCenter.GetNumber("Rank_DiamondScore_Num", true) or 0
     if Rank_DiamondScore_Num and Rank_DiamondScore_Num > 0 then
         local DiamondRankManager = require("Game.Framework.Rank.DiamondRank")
         local DiamondRankData = DiamondRankManager.GetLastWeekPlayerDataDiamondRank()
@@ -869,6 +873,7 @@ function LobbyModule:RuntimeWeeklyRefresh()
             end
         end
     end
+    DataCenter.SetNumber("Rank_DiamondScore_Num", 0)
 end
 
 return LobbyModule

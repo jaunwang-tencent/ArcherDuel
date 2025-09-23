@@ -720,7 +720,7 @@ function GameUtils.ShowGainView(Goods, closeCallback)
         UI:SetText({UIConfig.StoreView.PurchasePopup.Text}, tostring(Goods.Diamond))
         UI:SetVisible({UIConfig.StoreView.PurchasePopup.Text}, true)
     elseif Goods.DiamondScore then
-        local Rank_DiamondScore_Num = DataCenter.GetNumber("Rank_DiamondScore_Num", true)
+        local Rank_DiamondScore_Num = DataCenter.GetNumber("Rank_DiamondScore_Num", true) or 0
         if Rank_DiamondScore_Num then
             Rank_DiamondScore_Num = Rank_DiamondScore_Num + Goods.DiamondScore
             DataCenter.SetNumber("Rank_DiamondScore_Num", Rank_DiamondScore_Num)
