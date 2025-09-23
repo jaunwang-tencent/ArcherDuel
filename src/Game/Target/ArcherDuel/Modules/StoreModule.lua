@@ -430,6 +430,7 @@ function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
         local CallBack = self.AdFinishCallBack[AdTag]
         if not CallBack then
             CallBack = function()
+                Log:PrintLog("OnAdFinish()", AdTag, NeedGain)
                 if OnFinish then
                     --使用自定义结束事件
                     OnFinish()

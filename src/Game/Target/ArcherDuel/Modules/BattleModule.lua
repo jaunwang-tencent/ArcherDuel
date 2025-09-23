@@ -280,6 +280,9 @@ function BattleModule:GetPitchDegree(TouchY)
         local DeltaY = self.OnPressY - TouchY
         PitchDegree = DeltaY * AimSetting.AnglePrePixel
         -- Log:PrintLog(string.format("TXPerform(DeltaY=%d, PitchDegree = %f)", DeltaY, PitchDegree))
+    else
+        --如果没有，则设置
+        self.OnPressY = TouchY
     end
 
     --夹逼
