@@ -130,7 +130,9 @@ function BattleModule:ReciveTouch()
 end
 
 function BattleModule:OnTouchPressed(_, Y)
-    if not self:ReciveTouch() then return end
+    if not self:ReciveTouch() then
+        return
+    end
 
     self.LastY = Y
     self.OnPressY = Y
@@ -156,7 +158,9 @@ function BattleModule:OnTouchPressed(_, Y)
 end
 
 function BattleModule:OnTouchMove(_, Y)
-    if not self:ReciveTouch() then return end
+    if not self:ReciveTouch() or not self.OnPressY then
+        return
+    end
 
     if self.LastY ~= Y then
         self.LastY = Y
@@ -174,7 +178,9 @@ function BattleModule:OnTouchMove(_, Y)
 end
 
 function BattleModule:OnTouchReleased(_, Y)
-    if not self:ReciveTouch() then return end
+    if not self:ReciveTouch() or not self.OnPressY then
+        return
+    end
 
     local Player = self.BattleScene:GetCurrentTurnPlayer()
     if Player and Player:IsControlled() then
@@ -280,9 +286,6 @@ function BattleModule:GetPitchDegree(TouchY)
         local DeltaY = self.OnPressY - TouchY
         PitchDegree = DeltaY * AimSetting.AnglePrePixel
         -- Log:PrintLog(string.format("TXPerform(DeltaY=%d, PitchDegree = %f)", DeltaY, PitchDegree))
-    else
-        --如果没有，则设置
-        self.OnPressY = TouchY
     end
 
     --夹逼
