@@ -212,8 +212,47 @@ function GameMatch:BindEvents()
 
     -- 开箱表演动画
     UI:RegisterPressed(108303,function ()
+        if self.VictoryRewards ~= nil then
+            local ElementId = System:GetScriptParentID()
+            local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+            local equipIconUIs = {108054, 108055}
+            local equipGradeUIs = {111058, 111059}
+            for i, v in ipairs(self.VictoryRewards) do
+                local EquipmentData = EquipmentConfig[v]
+                local AssetName = EquipmentData.AssetName or "weapon_icon"
+                local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
+                local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
+                local IconId = IconIdArray[AssetIndex]
+                UI:SetImage({equipIconUIs[i]}, IconId, true)
+                local EquipmentIconList = GetEquipmentIconList()
+                UI:SetImage({equipGradeUIs[i]}, EquipmentIconList[EquipmentData.Attributes.Grade], true)
+            end
+            self.VictoryRewards = nil
+        end
+
         UI:SetVisible({108298, 111910},false)
-        self:ShowRankReward(true)
+        UI:SetVisible({108048,108056},true)
+        TimerManager:AddTimer(2.3,function ()
+            UI:SetVisible({111057},true)
+            UI:PlayUIAnimation(111057,1,0)
+            TimerManager:AddTimer(1.6,function ()
+                UI:PauseUIAnimation(111057,1)
+            end)
+            UI:SetVisible({108052,108051},true)
+            UI:PlayUIAnimation(108051,1,0)
+            UI:PlayUIAnimation(108052,1,0)
+        end)
+        TimerManager:AddTimer(3.05,function ()
+            UI:EffectPausePlay(108056)
+            -- TimerManager:AddTimer(1.25,function ()
+                UI:SetVisible({108057},true)
+                UI:SetVisible({108058},false)
+            --     UI:PlayUIAnimation(108058,1,0)
+                -- TimerManager:AddTimer(2,function ()
+                    UI:SetVisible({108480},true)
+                -- end)
+            -- end)
+        end)
     end)
 
     local reward_AdTag = "ad_reward_again"
@@ -236,7 +275,6 @@ function GameMatch:BindEvents()
 
                 if GameUtils.CanEnterRankBattle() then
                     UI:SetVisible(MatchConfig.Fail_UI, false)
-                    Log:PrintDebug("zzzzz333 StartMatch")
                     System:FireGameEvent(_GAME.Events.StartMatch)
                 end
             elseif reward_AdTag == mark then
@@ -650,134 +688,6 @@ local function ShowRankProgress(curScore, newScore)
     end
 end
 
--- 排位赛胜利奖励展示
-function GameMatch:ShowRankReward(showAdBtn)
-    --发奖励
-    local rewards = GameUtils.GetRewardsByWin()
-    local AllEquipment = DataCenter.GetTable("AllEquipment", true)
-    if not AllEquipment then
-        AllEquipment = GameUtils.DefaultEquipmentData()
-    end
-
-    local Converted, GoodsCoins = false, {}
-    for i, EquipmentID in ipairs(rewards) do
-        local TargetEquipment = AllEquipment[EquipmentID]
-        if TargetEquipment.Unlock then
-            --累加碎片
-            TargetEquipment.Piece = TargetEquipment.Piece + 1
-        else
-            --解锁
-            TargetEquipment.Unlock = true
-        end
-
-        local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
-        local UpgradeConfig = UGCS.Target.ArcherDuel.Config.UpgradeConfig
-        --获取装备升级信息
-        local Attributes = EquipmentConfig[EquipmentID].Attributes
-        local GradeUpgradeConfig = UpgradeConfig[Attributes.Grade]
-        if TargetEquipment.Level < 5 then
-            local TotalUpgradePiece = 0
-            for Level = TargetEquipment.Level, 4 do
-                local Upgrade = GradeUpgradeConfig[Level]
-                TotalUpgradePiece = TotalUpgradePiece + Upgrade.Piece
-            end
-            if TotalUpgradePiece <= TargetEquipment.Piece then
-                --当前拥有碎片数量过升级所需碎片总量时，则转化为金币
-                Converted = true
-            end
-        else
-            --满级也需要转化为金币
-            Converted = true
-        end
-        if Converted then
-            local CoinConvertConfig = {
-                200, 300, 500, 800
-            }
-            --转换成币
-            GoodsCoins[i] = CoinConvertConfig[TargetEquipment.Level]
-        else
-            if TargetEquipment.Unlock then
-                --累加碎片
-                TargetEquipment.Piece = TargetEquipment.Piece + 1
-            else
-                --解锁
-                TargetEquipment.Unlock = true
-            end
-        end
-    end
-    DataCenter.SetTable("AllEquipment", AllEquipment)
-
-    self.VictoryRewards = rewards
-    Log:PrintLog("VictoryRewards, End: ", self.VictoryRewards[1], self.VictoryRewards[2])
-
-    if self.VictoryRewards ~= nil then
-        local ElementId = System:GetScriptParentID()
-        local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
-        local equipIconUIs = {108054, 108055}
-        local equipGradeUIs = {111058, 111059}
-        for i, v in ipairs(self.VictoryRewards) do
-            local EquipmentData = EquipmentConfig[v]
-            local AssetName = EquipmentData.AssetName or "weapon_icon"
-            local AssetIndex = EquipmentData.AssetIndex or EquipmentData.ID
-            local IconIdArray = CustomProperty:GetCustomPropertyArray(ElementId, AssetName, CustomProperty.PROPERTY_TYPE.Image)
-            local IconId = IconIdArray[AssetIndex]
-            UI:SetImage({equipIconUIs[i]}, IconId, true)
-            local EquipmentIconList = GetEquipmentIconList()
-            UI:SetImage({equipGradeUIs[i]}, EquipmentIconList[EquipmentData.Attributes.Grade], true)
-        end
-        self.VictoryRewards = nil
-    end
-
-    local coinUIs = {
-        root = {115200, 115242},
-        text = {115199, 115241},
-        icon = {115198, 115240},
-        bg = {115197, 115239},
-    }
-    UI:SetVisible({108048,108056},true)
-    TimerManager:AddTimer(2.3,function ()
-        UI:SetVisible({111057},true)
-        UI:PlayUIAnimation(111057,1,0)
-        TimerManager:AddTimer(1.6,function ()
-            UI:PauseUIAnimation(111057,1)
-            if Converted and #GoodsCoins > 0 then
-                UI:SetVisible({111057}, false)
-                for i, v in ipairs(GoodsCoins) do
-                    --转化动画
-                    UI:SetVisible({coinUIs.root[i], coinUIs.bg[i], coinUIs.text[i], coinUIs.icon[i]}, true)
-                    --播放翻盘动画
-                    UI:PlayUIAnimation(coinUIs.bg[i], 1, 0)
-                    --获得金钱，显示金钱
-                    UI:SetText({coinUIs.text[i]}, tostring(v))
-                    local Coin = DataCenter.GetNumber("Coin")
-                    Coin = Coin + v
-                    DataCenter.SetNumber("Coin", Coin)
-                end
-            else
-                UI:SetVisible(coinUIs.root, false)
-            end
-        end)
-        UI:SetVisible({108052,108051},true)
-        UI:PlayUIAnimation(108051,1,0)
-        UI:PlayUIAnimation(108052,1,0)
-    end)
-    TimerManager:AddTimer(3,function ()
-        UI:EffectPausePlay(108056)
-        TimerManager:AddTimer(1.2,function ()
-            if showAdBtn then
-                UI:SetVisible({108057, 108058},true)
-                UI:PlayUIAnimation(108058,1,0)
-                TimerManager:AddTimer(2,function ()
-                    UI:SetVisible({108057,108480,108059,108060},true)
-                end)
-            else
-                UI:SetVisible({108057,108480,108059,108060},true)
-                UI:SetVisible({108058},false)
-            end
-        end)
-    end)
-end
-
 -- 普通赛胜利
 function GameMatch:OnVictory()
     --加积分
@@ -797,6 +707,7 @@ function GameMatch:OnVictory()
     Log:PrintLog("[GameMatch:OnVictory] Player_BattlePoints_Num" .. newScore)
     if preRank and newRank then
         if preRank.id < newRank.id then
+
             --判断这个段位的宝箱是否领取了
             local isReceive = false
             local ReceiveRankBoxReward_Table = DataCenter.GetTable("ReceiveRankBoxReward_Table", true)
@@ -842,6 +753,28 @@ function GameMatch:OnVictory()
     UI:SetVisible({108298},true)
     UI:SetText({108301}, "+"..UGCS.Target.ArcherDuel.Config.GameConfig.VictoryAddScore)
     ShowRankProgress(score, newScore)
+
+    --发奖励
+    local rewards = GameUtils.GetRewardsByWin()
+    local AllEquipment = DataCenter.GetTable("AllEquipment", true)
+    if not AllEquipment then
+        AllEquipment = GameUtils.DefaultEquipmentData()
+    end
+
+    for _, EquipmentID in pairs(rewards) do
+        local TargetEquipment = AllEquipment[EquipmentID]
+        if TargetEquipment.Unlock then
+            --累加碎片
+            TargetEquipment.Piece = TargetEquipment.Piece + 1
+        else
+            --解锁
+            TargetEquipment.Unlock = true
+        end
+    end
+    DataCenter.SetTable("AllEquipment", AllEquipment)
+
+    self.VictoryRewards = rewards
+    Log:PrintLog("VictoryRewards, End: ", self.VictoryRewards[1], self.VictoryRewards[2])
 
     System:FireGameEvent(_GAME.Events.GameEnd)
 end
