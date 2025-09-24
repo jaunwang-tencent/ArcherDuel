@@ -612,6 +612,7 @@ function Player:PerformHitStart(Impulse, BodyType)
     self:ProbeMovement()
 
     --开始物理模拟【务必在施加冲量之前开启物理模拟】
+    Log:PrintLog("TXPerform(EnableSimulatePhysics)")
     FakeCharacter:EnableSimulatePhysics(self.UID, true)
     FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1)
 
@@ -645,6 +646,7 @@ function Player:PerformHitStart(Impulse, BodyType)
                         ImpulseForward.X = -ImpulseForward.X
                     end
                     HasAdded = true
+                    Log:PrintLog("TXPerform(AddImpulse)")
                     FakeCharacter:AddImpulse(self.UID, ImpulseForward * ImpulseValue, BodyType)
                 end
             end
@@ -652,6 +654,7 @@ function Player:PerformHitStart(Impulse, BodyType)
 
         --如果没有施加，则给一个默认冲量【速度相关】
         if not HasAdded then
+            Log:PrintLog("TXPerform(AddImpulse)")
             FakeCharacter:AddImpulse(self.UID, Impulse, BodyType)
         end
     end
@@ -722,7 +725,7 @@ function Player:PerformFallback()
             self:PerformStandup(TargetRotation)
         else
             self.FallbackTimer = UGCS.Framework.Updator.Alloc(self.Config.Perform.PhysicsBlendWeightTime, nil, function(Process)
-                --Log:PrintLog("TXPerform(PhysicsBlendWeight)", 1 - Process)
+                Log:PrintLog("TXPerform(PhysicsBlendWeight)", 1 - Process)
                 FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1 - Process)
             end, function()
                 self:PerformStandup(TargetRotation)
