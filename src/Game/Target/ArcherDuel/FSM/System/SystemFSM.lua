@@ -117,6 +117,7 @@ function SystemFSM:OnCreate(Context)
     else
         -- 战斗场景开始进行匹配
         TimerManager:AddFrame(1, function()
+            Log:PrintDebug("zzzzz111 StartMatch")
             System:FireGameEvent(_GAME.Events.StartMatch)
         end)
     end
