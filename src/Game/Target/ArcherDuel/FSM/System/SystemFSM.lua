@@ -110,14 +110,14 @@ function SystemFSM:OnCreate(Context)
 
     --根据元件脚本属性类型切换状态
     local ElementID =  System:GetScriptParentID()
-    local IsLobby = CustomProperty:GetCustomProperty(ElementID, "IsLobby", CustomProperty.PROPERTY_TYPE.Bool)
-    if IsLobby then
+    local MapId = CustomProperty:GetCustomProperty(ElementID, "MapId", CustomProperty.PROPERTY_TYPE.Number)
+    Log:PrintDebug("zzzzz111 MapId: ", MapId )
+    if MapId == 0 then
         -- 大厅场景进去外围
         self:SwitchState(UGCS.Target.ArcherDuel.System.States.LobbyState)
     else
         -- 战斗场景开始进行匹配
         TimerManager:AddFrame(1, function()
-            Log:PrintDebug("zzzzz111 StartMatch")
             System:FireGameEvent(_GAME.Events.StartMatch)
         end)
     end
