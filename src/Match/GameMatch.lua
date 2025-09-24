@@ -197,6 +197,7 @@ function GameMatch:BindEvents()
             UI:ResumeUIAnimation(111057,1)
             UI:SetVisible({108052,108051,108056,115200,115242},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
+            Log:PrintDebug("zzzzz222 StartMatch")
             System:FireGameEvent(_GAME.Events.StartMatch)
         end
     end)
@@ -235,6 +236,7 @@ function GameMatch:BindEvents()
 
                 if GameUtils.CanEnterRankBattle() then
                     UI:SetVisible(MatchConfig.Fail_UI, false)
+                    Log:PrintDebug("zzzzz333 StartMatch")
                     System:FireGameEvent(_GAME.Events.StartMatch)
                 end
             elseif reward_AdTag == mark then
@@ -282,6 +284,7 @@ function GameMatch:BindEvents()
         UI:SetVisible(MatchConfig.GoldFailer_UI,false)
         UI:SetVisible(MatchConfig.MatchUI_Next,false)
 
+        Log:PrintDebug("zzzzz444 StartMatch")
         System:FireGameEvent(_GAME.Events.StartMatch)
     end)
 
@@ -342,6 +345,13 @@ end
 -- 开始匹配
 function GameMatch:StartMatch()
     local MatchInfo = {}
+
+    if not self.mapId or self.mapId == 0 then
+        return
+    end
+    if not self.sceneIds or #self.sceneIds == 0 then
+        return
+    end
 
     MatchInfo.MapId = self.mapId
     --随机战斗场景
