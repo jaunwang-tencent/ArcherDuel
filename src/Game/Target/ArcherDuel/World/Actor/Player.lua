@@ -278,7 +278,7 @@ function Player:UpdateMovementState()
         if MovementState then
             if self.MovementState ~= MovementState then
                 self.MovementState = MovementState
-                LogInfo("MovementStateChanged")
+                LogInfo("MovementStateChanged=%s", MovementState)
             end
 
             if MovementState == EMovement.Idle then
@@ -313,7 +313,7 @@ end
 ---@param Rotation 欧拉角
 function Player:SetFakeCharacterRotation(Rotation)
     Rotation = Rotation - Engine.Rotator(0, 0, 90)
-    LogInfo("SetFakeCharacterRotation=%f", Rotation.Z)
+    --LogInfo("SetFakeCharacterRotation=%f", Rotation.Z)
     FakeCharacter:SetRotation(self.UID, Rotation)
 end
 
@@ -625,7 +625,7 @@ function Player:PerformHitStart(Impulse, BodyType)
     self:ProbeMovement()
 
     --开始物理模拟【务必在施加冲量之前开启物理模拟】
-    LogInfo("EnableSimulatePhysics")
+    LogInfo("EnableSimulatePhysics(true)")
     FakeCharacter:EnableSimulatePhysics(self.UID, true)
     FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1)
 
@@ -746,7 +746,8 @@ function Player:PerformStandup(StartRotation)
     LogInfo("PerformStandup")
 
     --站起来后关闭物理模拟
-    --FakeCharacter:EnableSimulatePhysics(self.UID, false)
+    FakeCharacter:EnableSimulatePhysics(self.UID, false)
+    LogInfo("EnableSimulatePhysics(false)")
 
     --先恢复可移动物体
     self.OwnerScene:EnableMovable(true)
