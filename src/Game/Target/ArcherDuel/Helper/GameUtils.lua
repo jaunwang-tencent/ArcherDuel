@@ -519,7 +519,7 @@ function GameUtils.IsCrossWeek(lastLoginTs)
 end
 
 --- 获取格式化时间差
----@param DeltaTime 时间戳
+---@param DeltaTime 时间戳【分辨率：秒级】
 function GameUtils.GetFormatTime(DeltaTime)
     if DeltaTime and DeltaTime > 0 then
         -- 格式化当天剩余时间时分秒
@@ -538,6 +538,39 @@ function GameUtils.GetFormatTime(DeltaTime)
                     FormatTime = string.format("%02d分%02d秒", LeftMin, LeftSec)
                 else
                     FormatTime = string.format("%02d秒", LeftSec)
+                end
+            end
+        end
+        return FormatTime
+    end
+end
+
+--- 获取格式化时间差
+---@param DeltaTime 时间戳【分辨率：豪秒级】
+function GameUtils.GetFormatTimeWithMilliseconds(DeltaTime)
+    if DeltaTime and DeltaTime > 0 then
+        local Seconds = math.floor(DeltaTime / 1000)
+        -- 格式化当天剩余时间时分秒
+        local LeftDays = math.floor(Seconds / (24 * 3600))
+        local LeftHour = math.floor(Seconds / 3600)
+        local LeftMin = math.floor((Seconds % 3600) / 60)
+        local LeftSec = math.floor(Seconds % 60)
+        local Milliseconds = DeltaTime % 1000
+        local FormatTime
+        if LeftDays > 0 then
+            FormatTime = string.format("%d-%02d:%02d:%02d.%03d", LeftDays, LeftHour, LeftMin, LeftSec, Milliseconds)
+        else
+            if LeftHour > 0 then
+                FormatTime = string.format("%02d:%02d:%02d.%03d", LeftHour, LeftMin, LeftSec, Milliseconds)
+            else
+                if LeftMin > 0 then
+                    FormatTime = string.format("%02d:%02d.%03d", LeftMin, LeftSec, Milliseconds)
+                else
+                    if LeftSec > 0 then
+                        FormatTime = string.format("%02d.%03d", LeftSec, Milliseconds)
+                    else
+                        FormatTime = string.format("%023d", Milliseconds)
+                    end
                 end
             end
         end
