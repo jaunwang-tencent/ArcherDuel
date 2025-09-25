@@ -190,8 +190,6 @@ function TournamentModule:RefreshTip(Button, RankNum)
     if RankNum > 6 then
         RankNum = 6
     end
-    --辅助API
-    local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
     local TournamentView = UIConfig.TournamentView
     local DiamondView = TournamentView.Diamond
     for i = 1, 3, 1 do
