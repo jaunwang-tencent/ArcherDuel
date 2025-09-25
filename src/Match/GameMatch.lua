@@ -197,7 +197,6 @@ function GameMatch:BindEvents()
             UI:ResumeUIAnimation(111057,1)
             UI:SetVisible({108052,108051,108056,115200,115242},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
-            Log:PrintDebug("zzzzz222 StartMatch")
             System:FireGameEvent(_GAME.Events.StartMatch)
         end
     end)
@@ -322,7 +321,6 @@ function GameMatch:BindEvents()
         UI:SetVisible(MatchConfig.GoldFailer_UI,false)
         UI:SetVisible(MatchConfig.MatchUI_Next,false)
 
-        Log:PrintDebug("zzzzz444 StartMatch")
         System:FireGameEvent(_GAME.Events.StartMatch)
     end)
 
@@ -341,11 +339,13 @@ function GameMatch:BindEvents()
     -- 黄金赛结算前往开启
     UI:RegisterClicked(110785,function ()
         UI:SetVisible(MatchConfig.GoldTop3_Show_UI,false)
+        UI:SetVisible(MatchConfig.GoldTop4_8_Show_UI,false)
         System:FireSignEvent("GoHome")
     end)
     -- 黄金赛结算退出
     UI:RegisterClicked(110788,function ()
         UI:SetVisible(MatchConfig.GoldTop3_Show_UI,false)
+        UI:SetVisible(MatchConfig.GoldTop4_8_Show_UI,false)
         System:FireSignEvent("GoHome")
     end)
     -- 黄金赛中途退出
@@ -1081,7 +1081,7 @@ function GameMatch:OnGoldFail()
             System:FireGameEvent(_GAME.Events.GameEnd)
         else
             -- 公布排名
-            UI:SetVisible({110204,110718,110717,110687},true)
+            UI:SetVisible(MatchConfig.GoldTop4_8_Show_UI,true)
             UI:SetText({110206},"第"..rank.."名")
             local CurrencyIconList = GetCurrencyIconList()
             for i, v in ipairs(MatchConfig.GoldEnd_Reward_UI) do
@@ -1181,23 +1181,30 @@ end
 function GameMatch:GoldBattleWinMatchShow()
     local delay = 0.1
     if self.goldBattleRound == 1 then --第一局，从分组赛到胜者组
-        UI:SetVisible({110069,110109,111945,110070,110065},true)  --打开展示页面
+        UI:SetVisible({110069,110109,111945,110070,110065,110903,110896,110772},true)  --打开展示页面
+        UI:SetVisible({110082},false)
+        local move_heads = {}
+        for i = 1, 4, 1 do
+            local uid = UI:FindChildWithIndex(111945,i)
+            table.insert(move_heads, uid)
+        end
+        UI:SetVisible(move_heads, true)
         -- delay = delay + 1
         TimerManager:AddTimer(delay,function ()
             UI:PlayUIAnimation(110065,1,0)      --将展示背景隐藏动画
         end)
         delay = delay + 1
         TimerManager:AddTimer(delay ,function ()
-            UI:SetVisible({110065},false)
-            for i = 1, 4, 1 do
-                local uid =  UI:FindChildWithIndex(111945,i)
-                UI:PlayUIAnimation(uid,1,0)              --将四个头像移动到相应的位置
+            UI:SetVisible({110065, 110772},false)
+            for i, v in ipairs(move_heads) do
+                UI:PlayUIAnimation(v,1,0)              --将四个头像移动到相应的位置
             end
 
             UI:SetVisible(MatchConfig.GoldWinner_Head_UI[1], false)
             TimerManager:AddTimer(1.1, function()
-            UI:SetVisible(MatchConfig.GoldWinner_Head_UI[1], true)
-                UI:SetVisible(MatchConfig.GoldWinner_Move_Head_UI, false)
+                UI:SetVisible({110082},true)
+                UI:SetVisible(MatchConfig.GoldWinner_Head_UI[1], true)
+                -- UI:SetVisible(MatchConfig.GoldWinner_Move_Head_UI, false)
             end)
         end)
     else
@@ -1320,7 +1327,7 @@ function GameMatch:GoldBattleFailMatchShow()
         UI:SetVisible(MatchConfig.GoldFailer_Head_UI[self.goldBattleRound], false)
         TimerManager:AddTimer(delay, function()
             UI:SetVisible(MatchConfig.GoldFailer_Head_UI[self.goldBattleRound], true)
-            UI:SetVisible(MatchConfig.GoldWinner_Move_Head_UI, false)
+            -- UI:SetVisible(MatchConfig.GoldWinner_Move_Head_UI, false)
             setheadIcon()
         end)
     else
