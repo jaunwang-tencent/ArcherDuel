@@ -108,6 +108,9 @@ function TaskModule:RefreshTaskUI()
     end)
 
     local Task_Gap_All = {}
+    if self.Task_Gap_All then
+        Task_Gap_All = self.Task_Gap_All
+    end
     for k, v in pairs(arr) do
         local NewUI
         if self.Task_Gap_All and self.Task_Gap_All[k] then
@@ -179,11 +182,15 @@ function TaskModule:RefreshTaskUI()
             end
             self:RefreshTaskUI()
         end)
-        table.insert(Task_Gap_All, NewUI)
+        if not (self.Task_Gap_All and self.Task_Gap_All[k]) then
+            table.insert(Task_Gap_All, NewUI)
+        end
     end
     UI:SetVisible(Task_Gap_All, true)
-    self.Task_Gap_All = Task_Gap_All
-    UI:AddToScrollView(110467, Task_Gap_All)
+    if self.Task_Gap_All == nil then
+        self.Task_Gap_All = Task_Gap_All
+        UI:AddToScrollView(110467, Task_Gap_All)
+    end
 end
 
 --- 刷新
@@ -207,8 +214,8 @@ function TaskModule:Close()
             UI:UnRegisterClicked(BtnID1)
             UI:UnRegisterClicked(BtnID2)
         end
-        UI:SetVisible(self.Task_Gap_All, false)
-        self.Task_Gap_All = nil
+        --UI:SetVisible(self.Task_Gap_All, false)
+        --self.Task_Gap_All = nil
     end
 end
 
