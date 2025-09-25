@@ -2,6 +2,8 @@
 local Player = UGCS.RTTI.Class("Player", UGCS.Framework.Actor)
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --移动状态
 local EMovement = {
@@ -12,6 +14,23 @@ local EMovement = {
     --待机态
     Idle = "Idle"
 }
+
+--- 获取当前时间戳【毫秒级】
+local function GetCPUClock()
+    --CPU时钟
+    local CurrentTimestamp = TimerManager:GetClock() * 1000
+    return math.floor(CurrentTimestamp)
+end
+
+--- 信息日志
+---@param FormatString 格式化字符串
+local function LogInfo(FormatString, ...)
+    local Message = string.format(FormatString, ...)
+    local CPUClock = GetCPUClock()
+    local FormatTime = GameUtils.GetFormatTimeWithMilliseconds(CPUClock)
+    Message = string.format("TXPerform(CPUClock=%s, %s)", FormatTime, Message)
+    Log:PrintLog(Message)
+end
 
 function Player:OnCreate(Context)
     Player.super.OnCreate(self, Context)
@@ -238,7 +257,6 @@ function Player:UpdateMovementState()
                     local Distance = UMath:GetDistance(Start, self.LastPosition)
                     local DeltaTime = CurrentTimestamp - self.LastTimestamp
                     local Velocity = Distance / DeltaTime
-                    --Log:PrintLog("TXPerform(Velocity)", Velocity)
                     if Velocity < MovementProbe.ProbeTolerance then
                         if self.IdleTimestamp then
                             local IdlePassTime = CurrentTimestamp - self.IdleTimestamp
@@ -260,7 +278,7 @@ function Player:UpdateMovementState()
         if MovementState then
             if self.MovementState ~= MovementState then
                 self.MovementState = MovementState
-                Log:PrintLog("TXPerform(MovementStateChanged)", MovementState)
+                LogInfo("MovementStateChanged=%s", MovementState)
             end
 
             if MovementState == EMovement.Idle then
@@ -295,11 +313,7 @@ end
 ---@param Rotation 欧拉角
 function Player:SetFakeCharacterRotation(Rotation)
     Rotation = Rotation - Engine.Rotator(0, 0, 90)
-    if Rotation.Z > 180 then
-        Rotation.Z = Rotation.Z - 360
-    elseif Rotation.Z  < -180 then
-        Rotation.Z = Rotation.Z + 360
-    end
+    --LogInfo("SetFakeCharacterRotation=%f", Rotation.Z)
     FakeCharacter:SetRotation(self.UID, Rotation)
 end
 
@@ -363,8 +377,6 @@ function Player:GetEquipData(ForceUpdate)
         else
             Weapon_Lv = Axe_Lv
         end
-
-        -- Log:PrintLog("self.WeaponConfig.TypeName", self.WeaponConfig.TypeName)
 
         local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
         local ClothConfig = EquipmentConfig and EquipmentConfig[Cloth_Num]
@@ -436,7 +448,7 @@ end
 function Player:PlayAudio(SFXType)
     if self.OnlyShow then return end
     if SFXType then
-        Log:PrintLog(string.format("TXPerform(Audio = %d, UID = %d)", SFXType, self.UID))
+        LogInfo("Audio = %d, UID = %d", SFXType, self.UID)
         Audio:PlaySFXAudio2D(SFXType, 4, 100, 0)
     end
 end
@@ -445,7 +457,7 @@ end
 ---@param AnimName 动画名称
 function Player:PlayAnim(AnimName)
     if AnimName then
-        Log:PrintLog(string.format("TXPerform(Animation = %s, UID = %d)", AnimName, self.UID))
+        LogInfo("Animation = %s, UID = %d", AnimName, self.UID)
         FakeCharacter:PlayAnim(self.UID, AnimName)
     end
 end
@@ -605,6 +617,7 @@ end
 ---@param Impulse 冲量
 ---@param BodyType 身体部位
 function Player:PerformHitStart(Impulse, BodyType)
+    LogInfo("PerformHitStart")
     --播放音效
     self:PlayAudio(self.Audios.Hit)
 
@@ -612,7 +625,7 @@ function Player:PerformHitStart(Impulse, BodyType)
     self:ProbeMovement()
 
     --开始物理模拟【务必在施加冲量之前开启物理模拟】
-    Log:PrintLog("TXPerform(EnableSimulatePhysics)")
+    LogInfo("EnableSimulatePhysics(true)")
     FakeCharacter:EnableSimulatePhysics(self.UID, true)
     FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1)
 
@@ -646,7 +659,7 @@ function Player:PerformHitStart(Impulse, BodyType)
                         ImpulseForward.X = -ImpulseForward.X
                     end
                     HasAdded = true
-                    Log:PrintLog("TXPerform(AddImpulse)")
+                    LogInfo("AddImpulse")
                     FakeCharacter:AddImpulse(self.UID, ImpulseForward * ImpulseValue, BodyType)
                 end
             end
@@ -654,7 +667,7 @@ function Player:PerformHitStart(Impulse, BodyType)
 
         --如果没有施加，则给一个默认冲量【速度相关】
         if not HasAdded then
-            Log:PrintLog("TXPerform(AddImpulse)")
+            LogInfo("AddImpulse")
             FakeCharacter:AddImpulse(self.UID, Impulse, BodyType)
         end
     end
@@ -666,10 +679,10 @@ function Player:PerformHitStart(Impulse, BodyType)
         if SocketPosition2 then
             --先禁用可移动物体
             self.OwnerScene:EnableMovable(false)
-            Log:PrintLog("TXPerform(ResetPosition, MovementState)", self.MovementState)
             --修正坐标【会影响接触的可移动障碍物】
             local Position2 = SocketPosition2 + OffsetPosition
             FakeCharacter:SetPosition(self.UID, Position2)
+            LogInfo("ResetPosition=(%f,%f,%f)", Position2.X, Position2.Y, Position2.Z)
             --刷新位置
             self:SetLocation(Position2)
         end
@@ -681,6 +694,7 @@ end
 
 --- 倒地表演
 function Player:PerformFallback()
+    LogInfo("PerformFallback")
     local FacePosition = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.FaceBone)
     local FaceRotation = FakeCharacter:GetSocketRotation(self.UID, self.Config.BodySetting.FaceBone)
     local ChestPosition = FakeCharacter:GetSocketPosition(self.UID, self.Config.BodySetting.ChestBone)
@@ -688,19 +702,11 @@ function Player:PerformFallback()
     if FacePosition and ChestPosition then
         local BodyForword = FacePosition - ChestPosition -- 倒地时的方向
         BodyForword.Z = 0
-        -- if math.abs(self.Transform.Rotation.Z) > 90 then
-        --     BodyForword = -BodyForword
-        -- end
-        Log:PrintLog("TXPerform(BodyRotation, BodyForword)", BodyForword)
         local BodyRotation = UMath:ForwardToRotator(BodyForword)
-        Log:PrintLog("TXPerform(BodyRotation, 1)", BodyRotation)
         if FaceRotation.X > 0 then -- 正面朝上，则起身之后，面朝方向为倒下方向的反方向
-            Log:PrintLog("TXPerform(BodyRotation, 2)", BodyRotation)
             BodyRotation.Z = BodyRotation.Z + 180
         end
-
-        -- BodyRotation = BodyRotation - self:GetRotation()
-        -- Log:PrintLog("TXPerform(BodyRotation, 3)", BodyRotation)
+        LogInfo("BodyRotation=%f", BodyRotation.Z)
         self:SetFakeCharacterRotation(BodyRotation)
         TargetRotation = BodyRotation
     end
@@ -718,14 +724,12 @@ function Player:PerformFallback()
             self:PlayAnim(self.Animations.HitFrontLoop)
         end
 
-        --播放起身动作
-        Log:PrintLog("TXPerform(UpdateHitState, HitToIdle)")
         --关闭物理
         if self.Config.Perform.PhysicsBlendWeightTime <= 0 then
             self:PerformStandup(TargetRotation)
         else
             self.FallbackTimer = UGCS.Framework.Updator.Alloc(self.Config.Perform.PhysicsBlendWeightTime, nil, function(Process)
-                Log:PrintLog("TXPerform(PhysicsBlendWeight)", 1 - Process)
+                LogInfo("PhysicsBlendWeight=%f", 1 - Process)
                 FakeCharacter:SetAllBodiesPhysicsBlendWeight(self.UID, 1 - Process)
             end, function()
                 self:PerformStandup(TargetRotation)
@@ -739,8 +743,11 @@ end
 
 --- 起身表演
 function Player:PerformStandup(StartRotation)
+    LogInfo("PerformStandup")
+
     --站起来后关闭物理模拟
-    --FakeCharacter:EnableSimulatePhysics(self.UID, false)
+    FakeCharacter:EnableSimulatePhysics(self.UID, false)
+    LogInfo("EnableSimulatePhysics(false)")
 
     --先恢复可移动物体
     self.OwnerScene:EnableMovable(true)
@@ -754,7 +761,6 @@ function Player:PerformStandup(StartRotation)
         --面朝下
         self:PlayAnim(self.Animations.HitFrontToIdle)
     end
-
     self.StandupTimer = UGCS.Framework.Executor.Delay(self.Config.Perform.HitToIdleTime, function()
         --原始朝向
         local Rotation = self:GetRotation()
@@ -772,6 +778,7 @@ function Player:PerformStandup(StartRotation)
             end
             self.StandupTimer2 = UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
                 local BlendRotation = Rotation * Progress + StartRotation * (1 - Progress)
+                LogInfo("BlendRotation=%f", BlendRotation.Z)
                 self:SetFakeCharacterRotation(BlendRotation)
             end, function()
                 self:PerformHitOver()
@@ -782,11 +789,13 @@ end
 
 --- 受击表演结束
 function Player:PerformHitOver()
+    LogInfo("PerformHitOver")
+
     --原始朝向
     local Rotation = self:GetRotation()
-    Log:PrintLog("TXPerform(BodyRotation, Last)", Rotation)
+    LogInfo("Rotation=%f", Rotation.Z)
     self:SetFakeCharacterRotation(Rotation)
-    
+
     --起来后同步位置
     self:SyncLocation()
 
@@ -851,7 +860,8 @@ local function DrawAimTrack(self, SplineId, PitchDegree, TrackColor)
                             TotalLength = TotalLength + UMath:GetDistance(LastPosition, RelativePosition)
                         end
                         LastPosition = RelativePosition
-                        local SplinePoint = SpawnerPosition + (RelativePosition + Engine.Vector(0, forward.Y*TotalLength*0.1, 0)) * 100
+                        local Offset = (RelativePosition + Engine.Vector(0, forward.Y*TotalLength*0.1, 0)) * 100
+                        local SplinePoint = SpawnerPosition + Offset
                         table.insert(SplinePoints, SplinePoint)
                     end
                 end
@@ -897,6 +907,8 @@ function Player:DrawHistoryTrack(PitchDegree)
     end
 end
 
+--- 换装
+---@param Equipments 装备
 function Player:ChangeCharacterBody(Equipments)
     if Equipments then
         local bodyIds = {}

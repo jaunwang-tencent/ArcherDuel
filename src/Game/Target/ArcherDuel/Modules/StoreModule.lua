@@ -517,7 +517,7 @@ function StoreModule:OpenBox(BoxID)
 
     --装备展示
     for _, Item in ipairs(ThreeItem.ItemGroup) do
-        UI:SetVisible({Item.Icon, Item.Background}, false)
+        UI:SetVisible({Item.Icon, Item.Background, Item.Text}, false)
     end
     local BoxRewards = GameUtils.RandomBox(BoxID, 3)
     UI:SetVisible({ThreeItem.Button.ID, ThreeItem.Button.Icon, ThreeItem.Button.Text},false)
