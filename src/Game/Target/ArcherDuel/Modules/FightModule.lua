@@ -15,6 +15,7 @@ local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --任务管理器
 local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 
+
 --- 打开
 function FightModule:Open(Context)
     self:RegreshBodyUI()
@@ -56,7 +57,7 @@ function FightModule:Open(Context)
             self:OnGolden()
         end)
         --新手教程判定
-        if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 4 then
+        if DataCenter.GetNumber("TutorialbRestart", true) == 4 then
             System:FireSignEvent("TutorialbRestart_4")
         end
     else
@@ -73,7 +74,7 @@ function FightModule:Open(Context)
         UI:RegisterClicked(CenterView.Diamond.ID, function()
             self:OnDiamond()
         end)
-        if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 5 then
+        if DataCenter.GetNumber("TutorialbRestart", true) == 5 then
             System:FireSignEvent("TutorialbRestart_5")
         end
     else
@@ -283,25 +284,25 @@ end
 function FightModule:OnGolden()  --跳转黄金联赛按钮
 
     System:FireGameEvent(_GAME.Events.JumpModule, "Tournament", "Golden")
-    if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 4 then
+    if DataCenter.GetNumber("TutorialbRestart", true) == 4 then
         System:FireSignEvent("TutorialbRestart_4_Off")
-        Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",5)
+        DataCenter.SetNumber("TutorialbRestart", 5)
     end
 end
 
 
 function FightModule:OnDiamond()  --跳转钻石联赛按钮
     System:FireGameEvent(_GAME.Events.JumpModule, "Tournament", "Diamond")
-    if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 5 then
+    if DataCenter.GetNumber("TutorialbRestart", true) == 5 then
         System:FireSignEvent("TutorialbRestart_5_Off")
-        Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",6)
+        DataCenter.SetNumber("TutorialbRestart", 6)
     end
 end
 
 function FightModule:OnSevenDays()  --七日挑战
     --这里打开七日挑战页面
-    if Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 3 then
-        Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",4)
+    if DataCenter.GetNumber("TutorialbRestart", true) == 3 then
+        DataCenter.SetNumber("TutorialbRestart", 4)
         System:FireSignEvent("TutorialbRestart_3_Off")
         System:FireSignEvent("七日挑战逻辑")
     end
@@ -346,7 +347,7 @@ end
 function FightModule:OnMatch()
 
     if GameUtils.CanEnterRankBattle() then
-        if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 1 then
+        if DataCenter.GetNumber("TutorialbRestart", true) == 1 then
             System:FireSignEvent("TutorialbRestart_1_Off")
         end
         --这里打开寻找对局页面

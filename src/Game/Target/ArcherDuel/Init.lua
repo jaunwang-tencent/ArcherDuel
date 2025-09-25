@@ -21,6 +21,11 @@ UGCS.Target.ArcherDuel.Config.ActivityConfig = require "Game.Target.ArcherDuel.C
 UGCS.Target.ArcherDuel.Config.OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
 UGCS.Target.ArcherDuel.Config.RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
 
+--辅助
+UGCS.Target.ArcherDuel.Helper = {}
+UGCS.Target.ArcherDuel.Helper.DataCenter = require "Game.Target.ArcherDuel.Helper.DataCenter"
+UGCS.Target.ArcherDuel.Helper.GameUtils = require "Game.Target.ArcherDuel.Helper.GameUtils"
+
 --目标游戏应用
 UGCS.Target.ArcherDuel.App = require "Game.Target.ArcherDuel.ArcherDuelApp"
 
@@ -50,11 +55,6 @@ UGCS.Target.ArcherDuel.Character.States.AimState = require "Game.Target.ArcherDu
 UGCS.Target.ArcherDuel.Character.States.FireState = require "Game.Target.ArcherDuel.FSM.Character.States.FireState"
 UGCS.Target.ArcherDuel.Character.States.HitState = require "Game.Target.ArcherDuel.FSM.Character.States.HitState"
 UGCS.Target.ArcherDuel.Character.States.DeathState = require "Game.Target.ArcherDuel.FSM.Character.States.DeathState"
-
---辅助
-UGCS.Target.ArcherDuel.Helper = {}
-UGCS.Target.ArcherDuel.Helper.DataCenter = require "Game.Target.ArcherDuel.Helper.DataCenter"
-UGCS.Target.ArcherDuel.Helper.GameUtils = require "Game.Target.ArcherDuel.Helper.GameUtils"
 
 --任务
 UGCS.Target.ArcherDuel.Task = {}

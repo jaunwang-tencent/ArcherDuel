@@ -7,6 +7,8 @@ local WeaponConfigTable = UGCS.Target.ArcherDuel.Config.WeaponConfig
 --辅助API
 local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
 --- 打开
 ---@param Context 上下文【透传数据】
@@ -138,7 +140,7 @@ function BattleModule:OnTouchPressed(_, Y)
     self.OnPressY = Y
     local Player = self.BattleScene:GetCurrentTurnPlayer()
     if Player and Player:IsControlled() then
-        if Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 2 then --判定是否是新手教程
+        if DataCenter.GetNumber("TutorialbRestart", true) == 2 then --判定是否是新手教程
             System:FireSignEvent("TutorialbRestart_2_Off")
         end
         --只有主控角色才能执行用户输入

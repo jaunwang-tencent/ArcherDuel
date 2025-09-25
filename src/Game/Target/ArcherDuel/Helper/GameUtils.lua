@@ -1,9 +1,10 @@
 --游戏工具，在这里实现一些通用性算法，以供游戏业务侧使用
 local GameUtils = {}
 
-local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 --数据中心
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
+--排行榜配置
+local RankInfoConfig = UGCS.Target.ArcherDuel.Config.RankInfoConfig
 --装备配置
 local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
 --宝箱配置
@@ -703,7 +704,7 @@ function GameUtils.SeeAd(AdTag, OnFinish)
         --广告观看
         IAA:LetPlayerWatchAds(AdTag)
         --PC端开发，可以打开这句话来模拟广告结束事件，已完成
-        --CallBack()
+        CallBack()
     end
 end
 

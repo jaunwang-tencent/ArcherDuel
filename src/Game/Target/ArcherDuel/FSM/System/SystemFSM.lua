@@ -1,6 +1,8 @@
 --游戏系统状态机【局外】
 local SystemFSM = UGCS.RTTI.Class("SystemFSM", UGCS.Framework.FSM)
 local SceneConfigTable = UGCS.Target.ArcherDuel.Config.SceneConfig
+--数据中心
+local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 
 local function shuffle(t)
     for i = #t, 2, -1 do
@@ -95,9 +97,9 @@ function SystemFSM:OnCreate(Context)
     self.bRestart = false
     System:RegisterGameEvent(_GAME.Events.BattleStart, function()
         --判定是否要进入新手教程
-        if  Archive:GetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart") == 1 then
+        if DataCenter.GetNumber("TutorialbRestart", true) == 1 then
             System:FireSignEvent("TutorialbRestart_2")
-            Archive:SetPlayerData(Character:GetLocalPlayerId(),Archive.TYPE.Number,"TutorialbRestart",2)
+            DataCenter.SetNumber("TutorialbRestart", 2)
         end
         if self.bRestart then
             self:SwitchState(UGCS.Target.ArcherDuel.Room.States.LoadingState, Context)

@@ -1,17 +1,19 @@
 --游戏应用程序，提供生命周期
 local ArcherDuelApp = UGCS.RTTI.Class("ArcherDuelApp", UGCS.Framework.Application)
+--辅助API
+local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 
 --创建
 function ArcherDuelApp:OnCreate()
     ArcherDuelApp.super.OnCreate(self)
-    UGCS.Target.ArcherDuel.Helper.GameUtils.RegisterAdFinishEvent()
+    GameUtils.RegisterAdFinishEvent()
 
     self.SystemFSM = UGCS.RTTI.CreateInstanceByType(UGCS.Target.ArcherDuel.System.FSM)
 end
 
 --销毁
 function ArcherDuelApp:OnDestroy()
-    UGCS.Target.ArcherDuel.Helper.GameUtils.UnregisterAdFinishEvent()
+    GameUtils.UnregisterAdFinishEvent()
     ArcherDuelApp.super.OnDestroy(self)
 
     self.SystemFSM:Destroy()
