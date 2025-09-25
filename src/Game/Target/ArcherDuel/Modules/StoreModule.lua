@@ -348,7 +348,7 @@ function StoreModule:BuyGood(Costs, Goods)
             Success = true
         else
             --在此弹出看广告弹窗
-            self:ShowAdView(Goods)
+            self:ShowAdView()
         end
         if Success then
             self:OpenBox(Goods.BoxID)
@@ -364,7 +364,7 @@ function StoreModule:BuyGood(Costs, Goods)
             Success = true
         else
             --在此弹出看广告弹窗
-            self:ShowAdView(Goods)
+            self:ShowAdView()
         end
         if Success then
             self:OpenBox(Goods.BoxID)
@@ -383,7 +383,7 @@ function StoreModule:BuyGood(Costs, Goods)
                 self:SeeAd(Costs, Goods, true)
             else
                 --在此弹出看广告弹窗
-                self:ShowAdView(Goods)
+                self:ShowAdView()
             end
         end
     elseif Costs.AdTag then
@@ -426,8 +426,7 @@ function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
 end
 
 --- 显示广告视图，通过看广告来获取砖石【免费获取，每天固定数量】
----@param Goods 物品
-function StoreModule:ShowAdView(Goods)
+function StoreModule:ShowAdView()
     local AdView = UIConfig.AdView
     UI:SetVisible({AdView.ID}, true)
     local HasCollect = DataCenter.GetNumber("Player_HasAdFreeWatch_Num", true)
@@ -444,6 +443,9 @@ function StoreModule:ShowAdView(Goods)
             HasCollect = HasCollect,
             MaxCollect = MaxCollect,
             CollectTimesUI = AdView.Times
+        }
+        local Goods = {
+            Diamond = 60
         }
         self:SeeAd(Costs, Goods, true)
         --注销按钮事件
@@ -649,6 +651,8 @@ function StoreModule:ShowGainView(Costs, Goods)
                 --显示部分
                 GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 4)
                 UI:SetText({ResourceSlot.Count}, tostring(GoodsCoin))
+                System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
+
                 if Costs and Costs.AdTag then
                     System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdCoin)
                 end
@@ -661,6 +665,8 @@ function StoreModule:ShowGainView(Costs, Goods)
                 --显示部分
                 GameUtils.SetImageWithAsset(ResourceSlot.Icon, "Currency", 6)
                 UI:SetText({ResourceSlot.Count}, tostring(GoodsDiamond))
+                System:FireGameEvent(_GAME.Events.RefreshData, "StoreResource")
+
                 if Costs and Costs.AdTag then
                     System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.AdDiamond)
                 end
