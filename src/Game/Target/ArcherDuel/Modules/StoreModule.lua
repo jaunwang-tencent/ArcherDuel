@@ -437,17 +437,21 @@ function StoreModule:ShowAdView()
     UI:RegisterClicked(AdView.AdButton, function()
         ----关闭
         UI:SetVisible({AdView.ID}, false)
-        --观看广告
-        local Costs = {
-            AdTag = "ad_tag_free",
-            HasCollect = HasCollect,
-            MaxCollect = MaxCollect,
-            CollectTimesUI = AdView.Times
-        }
-        local Goods = {
-            Diamond = 60
-        }
-        self:SeeAd(Costs, Goods, true)
+        if MaxCollect > HasCollect then
+            --观看广告
+            local Costs = {
+                AdTag = "ad_tag_free",
+                HasCollect = HasCollect,
+                MaxCollect = MaxCollect,
+                CollectTimesUI = AdView.Times
+            }
+            local Goods = {
+                Diamond = 60
+            }
+            self:SeeAd(Costs, Goods, true)
+        else
+            UI:ShowMessageTip("今日次数已用尽")
+        end
         --注销按钮事件
         UI:UnRegisterClicked(AdView.AdButton)
         UI:UnRegisterClicked(AdView.CloseButton)
