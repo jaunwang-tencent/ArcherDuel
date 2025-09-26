@@ -164,8 +164,10 @@ end
 --- 设置血量
 ---@param Health 血量
 function Player:SetHealth(Health)
+    LogInfo("SetHealth = %d", Health)
     if self.OnlyShow then return end
     self.Attributes.Health = Health
+    LogInfo("CurrentHealth = %d", Health)
     if self.UI_HP then
         --刷新血条
         local HUD_HPList = {self.UI_HP}
