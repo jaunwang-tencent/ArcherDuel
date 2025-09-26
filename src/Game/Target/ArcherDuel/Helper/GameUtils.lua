@@ -293,52 +293,6 @@ function GameUtils.GetEquipmentMap()
     return GameUtils.EquipmentMap
 end
 
--- 开宝箱获取奖励物品
-function GameUtils.OpenBoxReward(boxId)
-    local BoxConfig
-    if boxId == 200002 then -- 高级宝箱
-        BoxConfig = OpenBoxConfig.SilverBox
-    elseif boxId == 200003 then -- 极品宝箱
-        BoxConfig = OpenBoxConfig.GoldBox
-    else
-        return
-    end
-
-    System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.OpenBox) -- 打开宝箱
-
-    local Weight = 0
-    for i, v in ipairs(BoxConfig) do
-        Weight = Weight + v.Weight
-    end
-
-    math.randomseed(TimerManager:GetClock())
-    local function getReward()
-        local random = math.random(1, Weight)
-        local _Weight = 0
-        for i, v in ipairs(BoxConfig) do
-            _Weight = _Weight + v.Weight
-            if random <= _Weight then
-                if v.EquipIds then -- 有指认装备，直接从指认装备中取
-                    return v.EquipIds[math.random(1, #v.EquipIds)]
-                else -- 没有指认装备，从装备池中取
-                    local equipmap = GameUtils.GetEquipmentMap()
-                    local equipIds = equipmap[v.Grade]
-                    if equipIds then
-                        return equipIds[math.random(1, #equipIds)]
-                    end
-                end
-            end
-        end
-    end
-
-    local rewards = {}
-    for i = 1, 3 do -- 取3次
-        table.insert(rewards, getReward())
-    end
-    return rewards
-end
-
-
 function GameUtils.DefaultEquipmentData()
     --没有则初始化
     local AllEquipment = {}

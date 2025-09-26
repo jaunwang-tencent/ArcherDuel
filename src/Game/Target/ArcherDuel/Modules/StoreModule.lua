@@ -561,7 +561,6 @@ function StoreModule:OpenBox(BoxID)
                         UI:SetVisible({BoxItem.Icon_2}, true)
                         UI:SetText({BoxItem.Text}, tostring(ConvertCoin))
                     end)
-                    
                 end
             end
             --当表演完成之后才显示领取按钮
@@ -585,6 +584,8 @@ function StoreModule:OpenBox(BoxID)
                 TargetEquipment.Unlock = true
             end
         end
+        --开宝箱结束后发射任务事件
+        System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.OpenBox)
         --刷新装备数据
         System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
         --隐藏组
