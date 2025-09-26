@@ -47,9 +47,6 @@ function Player:OnCreate(Context)
         local LocalPlayerUID = Character:GetLocalPlayerId()
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.CanMove, false)
         Character:SetAttributeEnabled(LocalPlayerUID, Character.ATTR_ENABLE.MeshVisibility, false)
-    --     FakeCharacter:ChangeBodyFromPlayer(self.UID, LocalPlayerUID)
-    -- else
-    --     self:ChangeCharacterBody(Context.Equipments)
     end
     self:ChangeCharacterBody(Context.Equipments)
 
@@ -769,13 +766,8 @@ function Player:PerformStandup(StartRotation)
             --瞬時旋转
             self:PerformHitOver()
         else
-            if math.abs(Rotation.Z - StartRotation.Z) > 180 then
-                if Rotation.Z > 0 then
-                    StartRotation.Z = StartRotation.Z + 360
-                else
-                    StartRotation.Z = StartRotation.Z - 360
-                end
-            end
+            StartRotation.Z = GameUtils.UnwindDegrees(StartRotation.Z)
+            Rotation.Z = GameUtils.UnwindDegrees(Rotation.Z)
             self.StandupTimer2 = UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
                 local BlendRotation = Rotation * Progress + StartRotation * (1 - Progress)
                 LogInfo("BlendRotation=%f", BlendRotation.Z)

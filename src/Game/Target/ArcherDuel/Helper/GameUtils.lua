@@ -830,4 +830,14 @@ function GameUtils.ShowGainView(Goods, closeCallback)
     end)
 end
 
+function GameUtils.UnwindDegrees(A)
+    while A > 180 do
+        A = A - 360
+    end
+    while A < -180 do
+        A = A + 360
+    end
+    return A
+end
+
 return GameUtils
