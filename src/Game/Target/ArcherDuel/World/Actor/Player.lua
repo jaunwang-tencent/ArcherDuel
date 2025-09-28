@@ -768,6 +768,14 @@ function Player:PerformStandup(StartRotation)
         else
             StartRotation.Z = GameUtils.UnwindDegrees(StartRotation.Z)
             Rotation.Z = GameUtils.UnwindDegrees(Rotation.Z)
+            if Rotation.Z - StartRotation.Z > 180 then
+                LogInfo("AdjustTargetRotation, From=%f, To=%f", Rotation.Z, Rotation.Z - 360)
+                Rotation.Z = Rotation.Z - 360
+            elseif Rotation.Z - StartRotation.Z < -180 then
+                LogInfo("AdjustTargetRotation, From=%f, To=%f", Rotation.Z, Rotation.Z - 360)
+                Rotation.Z = Rotation.Z + 360
+            end
+            LogInfo("BlendRotation, From=%f, To=%f", StartRotation.Z, Rotation.Z)
             self.StandupTimer2 = UGCS.Framework.Updator.Alloc(self.Config.Perform.FaceToTargetTime, nil, function(Progress)
                 local BlendRotation = Rotation * Progress + StartRotation * (1 - Progress)
                 LogInfo("BlendRotation=%f", BlendRotation.Z)
