@@ -149,13 +149,15 @@ end
 --- 关闭
 function TournamentModule:Close()
     System:UnregisterEvent(Events.ON_TOUCH_SCREEN_PRESSED)
-    if self.DiamondRankPlayerList then
-        for i, v in ipairs(self.DiamondRankPlayerList) do
-            local Button = UI:FindChildWithIndex(v, 1) -- 宝箱按钮
-            UI:UnRegisterClicked(Button)
+    local DiamondRankData = DiamondRankManager.GetPlayerDataDiamondRank(Character:GetLocalPlayerId())
+    if DiamondRankData then
+        for i, v in ipairs(DiamondRankData) do
+            local NewUI = UI:FindChildWithIndex(UIConfig.TournamentView.Diamond.ScrollView, i)
+            if NewUI > 0 then
+                local Button = UI:FindChildWithIndex(NewUI, 1) -- 宝箱按钮
+                UI:UnRegisterClicked(Button)
+            end
         end
-        --UI:SetVisible(self.DiamondRankPlayerList, false)
-        --self.DiamondRankPlayerList = nil
     end
 
     local tabBtn = {106561,106560,106559}
@@ -262,11 +264,13 @@ function TournamentModule:RefreshDiamondRankUI()
     local TournamentView = UIConfig.TournamentView
     local DiamondView = TournamentView.Diamond
     local Rank_Scroll = {DiamondView.Rank_Scroll.ID}
-    UI:SetVisible(Rank_Scroll, true)
-    local DiamondRankPlayerList = {}
-    if self.DiamondRankPlayerList then
-        DiamondRankPlayerList = self.DiamondRankPlayerList
+    local IDList = UI:GetAllChildren(117887)
+    local flag = true
+    if #IDList > 0 then
+        flag = false
     end
+    
+    local DiamondRankPlayerList = {}
     local Rank_DiamondScore_Num = DataCenter.GetNumber("Rank_DiamondScore_Num")
     local DiamondRankData = DiamondRankManager.GetPlayerDataDiamondRank(Character:GetLocalPlayerId())
     local isRank = false
@@ -313,8 +317,8 @@ function TournamentModule:RefreshDiamondRankUI()
             end)
         else
             local NewUI
-            if self.DiamondRankPlayerList and self.DiamondRankPlayerList[j - 3] then
-                NewUI =  self.DiamondRankPlayerList[j - 3]
+            if flag then
+                NewUI =  UI:FindChildWithIndex(107735, #DiamondRankData - j + 1)
             else
                 NewUI =  UI:DuplicateWidget(DiamondView.Rank_Scroll.ID, 0, 0)
             end
@@ -336,9 +340,7 @@ function TournamentModule:RefreshDiamondRankUI()
                 TournamentModule:RefreshTip(Button, j)
             end)
 
-            if not (self.DiamondRankPlayerList and self.DiamondRankPlayerList[j - 3]) then
-                table.insert(DiamondRankPlayerList, NewUI)
-            end
+            table.insert(DiamondRankPlayerList, NewUI)
 
             if v.isPlayer then
                 RankNum = j
@@ -346,10 +348,10 @@ function TournamentModule:RefreshDiamondRankUI()
         end
     end
 
-    if self.DiamondRankPlayerList == nil then
-        self.DiamondRankPlayerList = DiamondRankPlayerList
+    if not flag then
         UI:AddToScrollView(DiamondView.ScrollView, DiamondRankPlayerList)
     end
+
     --本玩家Rank_8
     if isRank then
         UI:SetText({107566}, tostring(RankNum))
@@ -365,7 +367,10 @@ function TournamentModule:RefreshDiamondRankUI()
     UI:SetImage({107567}, Chat:GetCustomHeadIcon(Character:GetLocalPlayerId()))
     UI:SetText({107574}, tostring(Rank_DiamondScore_Num))
 
-    UI:SetVisible(Rank_Scroll, false)
+    if not flag then
+        UI:SetParent(DiamondView.Rank_Scroll.ID, 107540)
+        UI:SetVisible(Rank_Scroll, false)
+    end
 end
 
 return TournamentModule

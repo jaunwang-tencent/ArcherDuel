@@ -15,12 +15,7 @@ function TaskModule:Open(Context)
 end
 
 function TaskModule:LoadData()
-    local Task = {110369}
-    UI:SetVisible(Task, true)
-
     self:RefreshTaskUI()
-
-    UI:SetVisible(Task, false)
 end
 
 function TaskModule:RefreshTaskProcesUI()
@@ -108,13 +103,21 @@ function TaskModule:RefreshTaskUI()
     end)
 
     local Task_Gap_All = {}
-    if self.Task_Gap_All then
-        Task_Gap_All = self.Task_Gap_All
+
+    --if self.Task_Gap_All then
+    --  Task_Gap_All = self.Task_Gap_All
+    --end
+
+    local IDList = UI:GetAllChildren(117886)
+    local flag = true
+    if #IDList > 0 then
+        flag = false
     end
+
     for k, v in pairs(arr) do
         local NewUI
-        if self.Task_Gap_All and self.Task_Gap_All[k] then
-            NewUI =  self.Task_Gap_All[k]
+        if flag then
+            NewUI =  UI:FindChildWithIndex(110467, #arr - k + 1)
         else
             NewUI =  UI:DuplicateWidget(110369, 0, 0)
         end
@@ -187,9 +190,16 @@ function TaskModule:RefreshTaskUI()
         end
     end
     UI:SetVisible(Task_Gap_All, true)
-    if self.Task_Gap_All == nil then
-        self.Task_Gap_All = Task_Gap_All
-        UI:AddToScrollView(110467, Task_Gap_All)
+    -- if self.Task_Gap_All == nil then
+    --     self.Task_Gap_All = Task_Gap_All
+        if not flag then
+            UI:AddToScrollView(110467, Task_Gap_All)
+        end
+    -- end
+
+    if not flag then
+        UI:SetParent(110369, 100599)
+        UI:SetVisible({110369}, false)
     end
 end
 
@@ -206,16 +216,20 @@ function TaskModule:Close()
         UI:UnRegisterClicked(ButtonID)
     end
 
-    if self.Task_Gap_All then
-        for k, v in pairs(self.Task_Gap_All) do
-            local NewUI = k
+    local taskMgr = TaskManager:GetInsatnce()
+    local ret = taskMgr:getAllTaskByDaily()
+    local arr = {}
+    for _, v in pairs(ret) do
+        table.insert(arr, v)
+    end
+    for i = 1, #arr, 1 do
+        local NewUI = UI:FindChildWithIndex(110467, i)
+        if NewUI then
             local BtnID1 = UI:FindChildWithIndex(NewUI, 4) -- 前往按钮
             local BtnID2 = UI:FindChildWithIndex(NewUI, 5) -- 领取按钮
             UI:UnRegisterClicked(BtnID1)
             UI:UnRegisterClicked(BtnID2)
         end
-        --UI:SetVisible(self.Task_Gap_All, false)
-        --self.Task_Gap_All = nil
     end
 end
 
