@@ -371,9 +371,11 @@ function GameMatch:Addover(mark, userId)
             UI:ResumeUIAnimation(111057,1)
             UI:SetVisible({108052,108051,108056,115200,115242},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
+            --[[ 这个函数没有，可能是回滚是漏删
             TimerManager:AddFrame(3, function()
                 self:ShowRankReward(false)
             end)
+            --]]
         end
     end
 end
