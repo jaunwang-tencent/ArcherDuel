@@ -12,6 +12,8 @@ local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --任务事件
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
+--星钻购买
+local FightModule = UGCS.Target.ArcherDuel.Modules.FightModule
 
 --- 打开
 function StoreModule:Open(Context)
@@ -155,8 +157,22 @@ function StoreModule:RefreshShop(ShopSlot, ShopItem, HoldInfo)
                 --注册商铺按钮事件
                 UI:RegisterClicked(ShopSlot.ID, function()
                     --触发一次购买行为【刷新存档】
+                    Log:PrintTable(ShopInfo.Goods)
                     if not ShopCosts.ClickTimestamp then
-                        self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
+                        local isPlayer =  IAA:IsWeChatMiniGamePlayer()
+                        if isPlayer then
+                            self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
+                        else
+                            if ShopInfo.Goods.GoldBox == 1 then
+                                FightModule:StarDiamond(3,ShopInfo.Costs,ShopInfo.Goods)
+                            elseif ShopInfo.Goods.SilverBox == 1 then
+                                FightModule:StarDiamond(4,ShopInfo.Costs, ShopInfo.Goods)
+                            elseif ShopInfo.Goods.Diamond == 60 then
+                                FightModule:StarDiamond(5,ShopInfo.Costs, ShopInfo.Goods)
+                            else 
+                                self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
+                            end
+                        end
                     end
                 end)
                 table.insert(self.ShopInfos, ShopInfo)
@@ -328,6 +344,9 @@ end
 ---@param Costs 消耗
 ---@param Goods 商品
 function StoreModule:BuyGood(Costs, Goods)
+    if not Costs or not Goods then
+        return
+    end
     --前置条件检测
     if Costs.HasCollect and Costs.MaxCollect and Costs.HasCollect >= Costs.MaxCollect then
         --超过消耗数量则不允购买
@@ -378,7 +397,8 @@ function StoreModule:BuyGood(Costs, Goods)
             --获得物品
             self:ShowGainView(Costs, Goods)
         else
-            if Costs.AdTag then
+            local isPlayer =  IAA:IsWeChatMiniGamePlayer()
+            if Costs.AdTag and isPlayer then
                 --观看广告
                 self:SeeAd(Costs, Goods, true)
             else
@@ -408,7 +428,8 @@ end
 ---@param OnFinish 观看结束
 function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
     local AdTag = Costs.AdTag
-    if AdTag then
+    local isPlayer = IAA:IsWeChatMiniGamePlayer()
+    if AdTag and isPlayer then
         GameUtils.SeeAd(AdTag, function()
             Log:PrintLog("OnAdFinish()", AdTag, NeedGain)
             if OnFinish then
@@ -422,6 +443,17 @@ function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
                 self:ShowGainView(Costs, Goods)
             end
         end)
+    elseif AdTag then
+        if OnFinish then
+            --使用自定义结束事件
+            OnFinish()
+        end
+        if NeedGain then
+            --累计收集次数
+            self:AccumulateCollected(Costs)
+            --看完广告后，获得物品
+            self:ShowGainView(Costs, Goods)
+        end
     end
 end
 
@@ -432,6 +464,7 @@ function StoreModule:ShowAdView()
     local HasCollect = DataCenter.GetNumber("Player_HasAdFreeWatch_Num", true)
     local MaxCollect = DataCenter.GetNumber("Player_MaxAdFreeWatch_Num")
     local Text = string.format("%d/%d", MaxCollect - HasCollect, MaxCollect)
+    local isPlayer =  IAA:IsWeChatMiniGamePlayer()
     UI:SetText({AdView.Times}, Text)
 
     UI:RegisterClicked(AdView.AdButton, function()
@@ -448,7 +481,11 @@ function StoreModule:ShowAdView()
             local Goods = {
                 Diamond = 60
             }
-            self:SeeAd(Costs, Goods, true)
+             if isPlayer then
+               self:SeeAd(Costs, Goods, true)
+            else
+                FightModule:StarDiamond(5, Costs, Goods)
+            end
         else
             UI:ShowMessageTip("今日次数已用尽")
         end

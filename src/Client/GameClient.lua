@@ -3,7 +3,7 @@
 require "Game.Target.ArcherDuel.Init"
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
-
+local FightModule = UGCS.Target.ArcherDuel.Modules.FightModule
 function GameClient:Init()
     Log:PrintLog("[GameClient:Init]")
     
@@ -23,6 +23,9 @@ function GameClient:OnStart()
     self._startTime = TimerManager:GetTimeSeconds()
 
     System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.LoginGame)
+    
+    FightModule:IsMiniGamePlayer()
+
 end
 
 -- 游戏更新

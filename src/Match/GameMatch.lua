@@ -259,44 +259,31 @@ function GameMatch:BindEvents()
 
     --注册广告结束事件
     System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
-        local LocalPlayerId = Character:GetLocalPlayerId()
-        if LocalPlayerId == userId then
-            if battle_AdTag == mark then
-                -- 将消耗的金币和积分返还
-                local score = GameUtils.GetPlayerRankScore()
-                score = score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
-                GameUtils.SetPlayerRankScore(score)
-                local curLevel = GameUtils.GetRankLevelByScore(score)
-                if curLevel then
-                    local coin = GameUtils.GetPlayerCoin()
-                    GameUtils.SetPlayerCoin(coin + curLevel.cost)
-                end
-
-                if GameUtils.CanEnterRankBattle() then
-                    UI:SetVisible(MatchConfig.Fail_UI, false)
-                    System:FireGameEvent(_GAME.Events.StartMatch)
-                end
-            elseif reward_AdTag == mark then
-                UI:ResumeUIAnimation(111057,1)
-                UI:SetVisible({108052,108051,108056,115200,115242},false)
-                UI:SetVisible(MatchConfig.Victory_UI, false)
-                TimerManager:AddFrame(3, function()
-                    self:ShowRankReward(false)
-                end)
-            end
-        end
+        GameMatch:Addover(mark, userId)
     end)
-    
+
     -- 点击再次开启宝箱
     UI:RegisterPressed(108058,function ()
-        -- -- 走IAA流程
-        IAA:LetPlayerWatchAds(reward_AdTag)
+        local FightModule = require "Game.Target.ArcherDuel.Modules.FightModule"
+        local isPlayer = IAA:IsWeChatMiniGamePlayer()
+        if isPlayer then
+            -- 走IAA流程
+            IAA:LetPlayerWatchAds(reward_AdTag)
+        else
+            FightModule:StarDiamond(6)
+        end
     end)
 
     -- 失败界面点击再来一次
     UI:RegisterClicked(106511, function()
-        -- 走IAA流程
-        IAA:LetPlayerWatchAds(battle_AdTag)
+        local FightModule = require "Game.Target.ArcherDuel.Modules.FightModule"
+        local isPlayer = IAA:IsWeChatMiniGamePlayer()
+        if isPlayer then
+            -- 走IAA流程
+            IAA:LetPlayerWatchAds(battle_AdTag)
+        else
+            FightModule:StarDiamond(7)
+        end
     end)
 
     -- 失败界面点击返回大厅
@@ -358,6 +345,37 @@ function GameMatch:BindEvents()
         self:GoldExist()
         System:FireSignEvent("GoHome")
     end)
+end
+
+function GameMatch:Addover(mark, userId)
+    local LocalPlayerId = Character:GetLocalPlayerId()
+    if LocalPlayerId == userId then
+        local reward_AdTag = "ad_reward_again"
+        local battle_AdTag = "ad_battle_again"
+        if battle_AdTag == mark then
+            -- 将消耗的金币和积分返还
+            local score = GameUtils.GetPlayerRankScore()
+            score = score + UGCS.Target.ArcherDuel.Config.GameConfig.FailAddScore
+            GameUtils.SetPlayerRankScore(score)
+            local curLevel = GameUtils.GetRankLevelByScore(score)
+            if curLevel then
+                local coin = GameUtils.GetPlayerCoin()
+                GameUtils.SetPlayerCoin(coin + curLevel.cost)
+            end
+
+            if GameUtils.CanEnterRankBattle() then
+                UI:SetVisible(MatchConfig.Fail_UI, false)
+                System:FireGameEvent(_GAME.Events.StartMatch)
+            end
+        elseif reward_AdTag == mark then
+            UI:ResumeUIAnimation(111057,1)
+            UI:SetVisible({108052,108051,108056,115200,115242},false)
+            UI:SetVisible(MatchConfig.Victory_UI, false)
+            TimerManager:AddFrame(3, function()
+                self:ShowRankReward(false)
+            end)
+        end
+    end
 end
 
 -- 随机获取一套装备

@@ -14,7 +14,103 @@ local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --任务管理器
 local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
+--星钻配置
+local StarDiamondConfig = UGCS.Target.ArcherDuel.Config.StarDiamondConfig
 
+System:RegisterEvent(Events.ON_PLAYER_GET_ITEM,function(playerId, itemId, num, isCustom) -- playerId = 玩家ID, itemId = 物品ID, num = 物品数量, isCustom = 是否为自制物品
+    FightModule:BuySucceed(itemId)
+end)
+
+--判断是否是小程序玩家
+function FightModule:IsMiniGamePlayer()
+    self.isPlayer = IAA:IsWeChatMiniGamePlayer()
+    if not self.isPlayer and self.Number_1 == nil then
+        local elementId = System:GetScriptParentID()
+        local valueArray = CustomProperty:GetCustomPropertyArray(elementId, "AppPlay", CustomProperty.PROPERTY_TYPE.Image)
+        local Icon_1 = UIConfig.FightView.CenterView
+        UI:SetImage({Icon_1.Ad_1.ID},valueArray[1],true) --主页宝箱广告
+        UI:SetImage({Icon_1.Ad_2.ID},valueArray[2],true) --主页钻石广告
+        --更换宝箱的广告图标
+        local Icon_2 = UIConfig.StoreView.Activities[1].Views
+        UI:SetVisible({111349,111328,111350,111322},false) --将两个宝箱广告图标关闭
+        UI:SetVisible({117785,117784,117783,117762,117737,117736},true) --将星钻图标打开
+        local BoxDiamond_1 = tostring(StarDiamondConfig.BoxDiamond.Price_1)
+        local BoxDiamond_2 = tostring(StarDiamondConfig.BoxDiamond.Price_2)
+        UI:SetText({Icon_2[2].ShopSlot.AdStyle.Price},BoxDiamond_1) --设置宝箱的星钻数量
+        UI:SetText({Icon_2[4].ShopSlot.AdStyle.Price},BoxDiamond_2) --设置宝箱的星钻数量
+        --免费钻石购买
+        local FreeDiamond_Price = tostring(StarDiamondConfig.FreeDiamond.Price)
+        UI:SetVisible({111334,111335},false) --关闭免费钻石中的广告图标
+        UI:SetVisible({117496,117519,117809},true) --打开免费钻石的星钻图标
+        UI:SetText({117519},FreeDiamond_Price) --免费钻石需要的星钻
+        --更换二级界面图标
+        UI:SetVisible({117451},true)
+        UI:SetVisible({111295},false)
+        UI:SetText({117450},FreeDiamond_Price)
+        --再来一次图标
+        -- System:FireSignEvent("更换底图")
+        --更换*3倍率图标
+        UI:SetVisible({117884,117885},true)
+        UI:SetImage({115401,115397},valueArray[3],true) 
+        self.Judge = false
+        self.Number_1 = 0
+    end
+end
+
+--打开星钻购买弹窗
+function FightModule:StarDiamond(num,Costs1,Goods1)
+    if Costs1 and Goods1 then
+        self.Costs1 = Costs1
+        self.Goods1 = Goods1
+    else
+        self.Costs1 = {}
+        self.Goods1 = {}
+    end
+
+    local goodsIds = Shop:GetAllGoodsInShop(1)
+    Shop:ShowGoodsForPlayer(goodsIds[num])
+end
+
+function FightModule:BuySucceed(itemId)
+    --广告
+    local StoreModule = require "Game.Target.ArcherDuel.Modules.StoreModule"
+    local GameMatch = require "Match.GameMatch"
+    if self.Judge == false then
+        self.Judge = true
+        if itemId == StarDiamondConfig.ElementID.FreeBox then 
+            FightModule:OnClickAd1()
+        elseif itemId == StarDiamondConfig.ElementID.FreeDiamond then
+            FightModule:OnClickAd2()
+        elseif itemId == StarDiamondConfig.ElementID.RareBox then
+            StoreModule:BuyGood(self.Costs1, self.Goods1)
+        elseif itemId == StarDiamondConfig.ElementID.EpicBox then
+            StoreModule:BuyGood(self.Costs1, self.Goods1)
+        elseif itemId == StarDiamondConfig.ElementID.Diamond then
+            StoreModule:BuyGood(self.Costs1, self.Goods1)
+        elseif itemId == StarDiamondConfig.ElementID.Again then
+            GameMatch:Addover("ad_reward_again", Character:GetLocalPlayerId())
+        elseif itemId == StarDiamondConfig.ElementID.Again_1 then
+            GameMatch:Addover("ad_battle_again", Character:GetLocalPlayerId())
+        elseif itemId == StarDiamondConfig.ElementID.Again_2 then
+            local callback1 = function()
+                UI:SetText({ self.Costs1.Text}, tostring(self.Goods1[2] * 3))
+                UI:SetVisible({ self.Costs1.ad},false)
+                self.Goods1[2] = self.Goods1[2] * 3
+            end
+            UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd("ad_tag_free_three_diamond", nil, false, callback1)
+        elseif itemId == StarDiamondConfig.ElementID.Again_3 then
+            local callback2 = function()
+                UI:SetText({self.Costs1.Text}, tostring(self.Goods1[3] * 3))
+                UI:SetVisible({self.Costs1.ad},false)
+                self.Goods1[3] = self.Goods1[3] * 3
+            end
+            UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd("ad_tag_free_three_coin", nil, false, callback2)
+        end
+        TimerManager:AddFrame(100,function ()
+            self.Judge = false
+        end)
+    end
+end
 
 --- 打开
 function FightModule:Open(Context)
@@ -28,7 +124,11 @@ function FightModule:Open(Context)
     if Player_HasAdFreeWatchBox == 0 then
         UI:SetVisible({CenterView.Ad_1.Mask}, false)
         UI:RegisterClicked(CenterView.Ad_1.ID, function()
-            self:OnClickAd1()
+             if self.Number_1 == 0 then
+                UI:ShowMessageTip("暂时无法获取")
+            else
+                self:OnClickAd1()
+            end
         end)
     else
         --显示遮罩，屏蔽【广告1按钮监听】
@@ -40,7 +140,11 @@ function FightModule:Open(Context)
     if Player_HasAdFreeWatchDiamond == 0 then
         UI:SetVisible({CenterView.Ad_2.Mask}, false)
         UI:RegisterClicked(CenterView.Ad_2.ID, function()
-            self:OnClickAd2()
+             if self.Number_1 == 0 then
+                self:StarDiamond(2)
+            else
+                self:OnClickAd2()
+            end
         end)
     else
         --显示遮罩，屏蔽【广告1按钮监听】
@@ -530,7 +634,6 @@ function FightModule:OnRank(RankBoxReward_Table)
                 UI:SetVisible({ThreeItem.ItemGroup[2].ad, ThreeItem.ItemGroup[3].ad},true)
                 UI:RegisterClicked(ThreeItem.ItemGroup[2].AdButton,function()
                     Log:PrintLog("看广告获取钻石数量" .. BoxRewards[2])
-
                     local callback = function()
                         local BoxItem = ThreeItem.ItemGroup[2]
                         UI:SetText({BoxItem.Text}, tostring(BoxRewards[2] * 3))
@@ -541,11 +644,14 @@ function FightModule:OnRank(RankBoxReward_Table)
                     local Costs = {
                         AdTag = "ad_tag_free_three_diamond"
                     }
-                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
+                    if self.isPlayer then
+                        UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
+                    else
+                        self:StarDiamond(8,ThreeItem.ItemGroup[2],BoxRewards)
+                    end
                 end)
                 UI:RegisterClicked(ThreeItem.ItemGroup[3].AdButton,function()
                     Log:PrintLog("看广告获取黄金数量" .. BoxRewards[3])
-
                     local callback = function()
                         local BoxItem = ThreeItem.ItemGroup[3]
                         UI:SetText({BoxItem.Text}, tostring(BoxRewards[3] * 3))
@@ -556,7 +662,11 @@ function FightModule:OnRank(RankBoxReward_Table)
                     local Costs = {
                         AdTag = "ad_tag_free_three_coin"
                     }
-                    UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
+                    if self.isPlayer then
+                        UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
+                    else
+                        self:StarDiamond(9,ThreeItem.ItemGroup[3],BoxRewards)
+                    end
                 end)
             end)
         end)

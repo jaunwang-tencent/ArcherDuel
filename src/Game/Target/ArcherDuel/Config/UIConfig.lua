@@ -757,6 +757,13 @@ local UIConfig = {
                                 --倒计时
                                 CDTime = 111351,
                             },
+                            --星钻购买
+                            AdStyle = {
+                                --整体id
+                                ID = 117786,
+                                --道具数量
+                                Price = 117784, --宝箱没用时，钻石为180
+                            },
                         },
                         --商品槽
                         GoodSlot = {
@@ -797,6 +804,13 @@ local UIConfig = {
                                 --倒计时
                                 CDTime = 111354,
                             },
+                            --星钻购买
+                            AdStyle = {
+                                --整体id
+                                ID = 117738,
+                                --道具数量
+                                Price = 117737, --宝箱没用时，钻石为180
+                            },
                         },
                         --商品槽
                         GoodSlot = {
@@ -827,6 +841,13 @@ local UIConfig = {
                                 --砖石数量
                                 Price = 115150,
                             },
+                            --app玩家购买方式
+                            AdStyle_1 = {
+                                --星钻图标
+                                Icon = 111343,
+                                --星钻数量
+                                Price = 111344,
+                            }
                         },
                         --商品槽
                         GoodSlot = {
@@ -851,6 +872,13 @@ local UIConfig = {
                                 --砖石数量
                                 Price = 110346,
                             },
+                            --app玩家购买方式
+                            AdStyle_1 = {
+                                --星钻图标
+                                Icon = 115143,
+                                --星钻数量
+                                Price = 115144,
+                            }
                         },
                         --商品槽
                         GoodSlot = {
@@ -875,6 +903,13 @@ local UIConfig = {
                                 --砖石数量
                                 Price = 110352,
                             },
+                            --app玩家购买方式
+                            AdStyle_1 = {
+                                --星钻图标
+                                Icon = 115146,
+                                --星钻数量
+                                Price = 115147,
+                            }
                         },
                         --商品槽
                         GoodSlot = {
@@ -943,10 +978,17 @@ local UIConfig = {
                                 --砖石数量
                                 Price = 115163,
                             },
+                            --app玩家购买方式
+                            AdStyle_1 = {
+                                --星钻图标
+                                Icon = 111340,
+                                --星钻数量
+                                Price = 111341,
+                            }
                         },
                         --商品槽
                         GoodSlot = {
-                            ID = 110297,
+                            ID = 1102971,
                             --物品数量
                             Count = 110298,
                         }
@@ -967,7 +1009,7 @@ local UIConfig = {
                         },
                         --商品槽
                         GoodSlot = {
-                            ID = 110302,
+                            ID = 1103022,
                             --物品数量
                             Count = 110303,
                         }
@@ -988,7 +1030,7 @@ local UIConfig = {
                         },
                         --商品槽
                         GoodSlot = {
-                            ID = 110308,
+                            ID = 1103082,
                             --物品数量
                             Count = 110309,
                         }
