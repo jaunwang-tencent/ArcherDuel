@@ -16,8 +16,6 @@ local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 --星钻配置
 local StarDiamondConfig = UGCS.Target.ArcherDuel.Config.StarDiamondConfig
-local GameServer = require"Server.GameServer"
-
 
 System:RegisterEvent(Events.ON_PLAYER_GET_ITEM,function(playerId, itemId, num, isCustom) -- playerId = 玩家ID, itemId = 物品ID, num = 物品数量, isCustom = 是否为自制物品
     FightModule:BuySucceed(itemId)
@@ -34,16 +32,7 @@ function FightModule:IsMiniGamePlayer()
         System:SendToServer(_GAME.NetMsg._S_Signal,msg)
         end
     end)
-    if GameServer:CheckStore("22",1,Character:GetLocalPlayerId()) then
-        UI:SetImageColor({117957},"FFFF0000")
-    else
-        local msg = {
-            num = 1 ,
-            Store = "22",
-            Value = 1,
-        }
-        GameServer:OnStore(msg,Character:GetLocalPlayerId())
-    end
+
     if not IAA:IsWeChatMiniGamePlayer() and self.Number_1 == nil then
         local elementId = System:GetScriptParentID()
         local valueArray = CustomProperty:GetCustomPropertyArray(elementId, "AppPlay", CustomProperty.PROPERTY_TYPE.Image)
