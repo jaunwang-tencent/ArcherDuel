@@ -44,7 +44,7 @@ function DataCenter.SetNumber(DataName, DataValue)
             NumberData[DataName] = DataValue
             --发送到服务器存储
             local msg = {
-                TYPE = Archive.TYPE.Number,
+                num = 1,
                 Store = DataName,
                 Value = DataValue,
             }
@@ -63,12 +63,13 @@ function DataCenter.GetNumber(DataName, SyncData)
     local NumberData = ArchiveData.NumberData
     if DataName and NumberData then
         local DataValue
-        if SyncData and  GameServer:CheckStore(DataName)  then
+    
+        if SyncData and  GameServer:CheckStore(DataName,1,Character:GetLocalPlayerId())  then
             local msg = {
-                TYPE = Archive.TYPE.Number,
+                num = 1,
                 Store = DataName,
             }
-            DataValue = GameServer:GetStore(msg,DataCenter.GetPlayerID())
+            DataValue = GameServer:GetStore(msg,Character:GetLocalPlayerId())
             NumberData[DataName] = DataValue
         else
             DataValue = NumberData[DataName]
@@ -88,7 +89,7 @@ function DataCenter.SetString(DataName, DataValue)
             NumberData[DataName] = DataValue
             --发送到服务器存储
             local msg = {
-                TYPE = Archive.TYPE.String,
+                num = 2,
                 Store = DataName,
                 Value = DataValue,
             }
@@ -107,12 +108,12 @@ function DataCenter.GetString(DataName, SyncData)
     if DataName and NumberData then
         local DataValue
       --  System:SeDndToServer(MsgId,msg)
-        if SyncData and GameSeDrver:CheckStore(DataName) then
+        if SyncData and GameServer:CheckStore(DataName,2,Character:GetLocalPlayerId()) then
             local msg = {
-                TYPE = Archive.TYPE.String,
+                num = 2,
                 Store = DataName,
             }
-            DataValue = GameServer:GetStore(msg,DataCenter.GetPlayerID())
+            DataValue = GameServer:GetStore(msg,Character:GetLocalPlayerId())
             NumberData[DataName] = DataValue
         else
             DataValue = NumberData[DataName]
@@ -132,7 +133,7 @@ function DataCenter.SetTable(DataName, DataValue)
             local DataJson = MiscService:Table2JsonStr(DataValue)
             --发送到服务器存储
             local msg = {
-                TYPE = Archive.TYPE.String,
+                num = 2,
                 Store = DataName,
                 Value = DataValue,
             }
@@ -149,12 +150,12 @@ function DataCenter.GetTable(DataName, SyncData)
     local TableData = ArchiveData.TableData
     if DataName and TableData then
         local DataValue
-        if SyncData and  GameServer:CheckStore(DataName) then
+        if SyncData and  GameServer:CheckStore(DataName,2,Character:GetLocalPlayerId()) then
              local msg = {
-                TYPE = Archive.TYPE.String,
+                num = 2,
                 Store = DataName,
             }
-            local DataValue = GameServer:GetStore(msg,DataCenter.GetPlayerID())
+            local DataJson = GameServer:GetStore(msg,Character:GetLocalPlayerId())
             DataValue = MiscService:JsonStr2Table(DataJson)
             TableData[DataName] = DataValue
         else

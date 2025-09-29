@@ -35,22 +35,37 @@ function GameServer:OnStart()
 end
 --发出信号事件
 function GameServer:OnSignal(M,msg,playerId)
-   Log:PrintDebug(msg.Signal)   
+   Log:PrintDebug(msg.Signal) 
    System:FireSignEvent(msg.Signal,{playerId})
 end
 --存储返回
-function GameServer:CheckStore(string)
-    local PlayerID = Character:GetAllPlayerIds() 
- --   Log:PrintDebug(Archive:HasPlayerData(PlayerID[1], Archive.TYPE.Number, string))
-    return Archive:HasPlayerData(PlayerID[1], Archive.TYPE.Number, string)
+function GameServer:CheckStore(string,num,Player) 
+    if num == 1 then
+        return Archive:HasPlayerData(Player, Archive.TYPE.Number, string)
+    else
+        return Archive:HasPlayerData(Player, Archive.TYPE.String, string)
+    end
 end
 --返回已经存储
 function GameServer:GetStore(msg,player)
-    return Archive:GetPlayerData(player , msg.TYPE, msg.Store)
+    if msg.num == 1 then
+        return Archive:GetPlayerData(player , Archive.TYPE.Number, msg.Store)
+        else
+        return Archive:GetPlayerData(player , Archive.TYPE.String, msg.Store)
+    end 
+    
 end
 --存储事件
-function GameServer:OnStore(msg,playerId)
-    Archive:SetPlayerData(playerId, msg.TYPE, msg.Store, msg.Value)
+function GameServer:OnStore(msg,player)
+    if msg.num == 1 then
+        Archive:SetPlayerData(player, Archive.TYPE.Number, msg.Store, msg.Value)
+       -- Log:PrintDebug("进行存储"..player..msg.Store..msg.Value)
+    else
+        Archive:SetPlayerData(player, Archive.TYPE.String, msg.Store, msg.Value)
+        Log:PrintDebug(msg.Store)
+     --   Log:PrintTable(msg)
+    end
+    
 end
 
 -- 游戏结束时

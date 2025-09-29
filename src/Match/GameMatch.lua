@@ -256,7 +256,6 @@ function GameMatch:BindEvents()
 
     local reward_AdTag = "ad_reward_again"
     local battle_AdTag = "ad_battle_again"
-
     --注册广告结束事件
     System:RegisterEvent(Events.ON_PLAYER_WATCH_IAA_AD_FINISH, function(mark, userId)
         GameMatch:Addover(mark, userId)
@@ -273,7 +272,6 @@ function GameMatch:BindEvents()
             FightModule:StarDiamond(6)
         end
     end)
-
     -- 失败界面点击再来一次
     UI:RegisterClicked(106511, function()
         local FightModule = require "Game.Target.ArcherDuel.Modules.FightModule"
