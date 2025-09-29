@@ -13,7 +13,7 @@ local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --任务事件
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 --星钻购买
-local FightModule = require "Game.Target.ArcherDuel.Modules.FightModule"
+local FightModule = UGCS.Target.ArcherDuel.Modules.FightModule
 
 --- 打开
 function StoreModule:Open(Context)
@@ -162,8 +162,6 @@ function StoreModule:RefreshShop(ShopSlot, ShopItem, HoldInfo)
                         local isPlayer =  IAA:IsWeChatMiniGamePlayer()
                         if isPlayer then
                             self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
-                        elseif ShopSlot.ID == 110300 then
-                            FightModule:StarDiamond(10,ShopInfo.Costs, ShopInfo.Goods)
                         else
                             if ShopInfo.Goods.GoldBox == 1 then
                                 FightModule:StarDiamond(3,ShopInfo.Costs,ShopInfo.Goods)

@@ -23,16 +23,6 @@ end)
 
 --判断是否是小程序玩家
 function FightModule:IsMiniGamePlayer()
-    --注册个信号事件
-    System:RegisterGameEvent(_GAME.Events.Signal, function(string)
-        if string then
-        local msg = {
-            Signal = string,
-        }
-        System:SendToServer(_GAME.NetMsg._S_Signal,msg)
-        end
-    end)
-
     if not IAA:IsWeChatMiniGamePlayer() and self.Number_1 == nil then
         local elementId = System:GetScriptParentID()
         local valueArray = CustomProperty:GetCustomPropertyArray(elementId, "AppPlay", CustomProperty.PROPERTY_TYPE.Image)
@@ -57,16 +47,10 @@ function FightModule:IsMiniGamePlayer()
         UI:SetVisible({111295},false)
         UI:SetText({117450},FreeDiamond_Price)
         --再来一次图标
-         System:FireGameEvent(_GAME.Events.Signal,"更换底图")
+        -- System:FireSignEvent("更换底图")
         --更换*3倍率图标
         UI:SetVisible({117884,117885},true)
         UI:SetImage({115401,115397},valueArray[3],true) 
-        --更换金币购买图标
-        UI:SetVisible({111341,111340},false)
-        
-        UI:SetVisible({117956,117955,117954},true)
-        
-        UI:SetText({},BoxDiamond_2)
         self.Judge = false
         self.Number_1 = 0
     end
@@ -88,8 +72,8 @@ end
 
 function FightModule:BuySucceed(itemId)
     --广告
-    local StoreModule = require ("Game.Target.ArcherDuel.Modules.StoreModule")
-    local GameMatch = require ("Match.GameMatch")
+    local StoreModule = require "Game.Target.ArcherDuel.Modules.StoreModule"
+    local GameMatch = require "Match.GameMatch"
     if self.Judge == false then
         self.Judge = true
         if itemId == StarDiamondConfig.ElementID.FreeBox then 
@@ -120,15 +104,10 @@ function FightModule:BuySucceed(itemId)
                 self.Goods1[3] = self.Goods1[3] * 3
             end
             UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd("ad_tag_free_three_coin", nil, false, callback2)
-        elseif itemId == StarDiamondConfig.ElementID.Coin then
-            StoreModule:BuyGood(self.Costs1, self.Goods1)
-        end 
+        end
         TimerManager:AddFrame(100,function ()
-            --扣除道具
-          Inventory:RemoveCustomItem(Character:GetLocalPlayerId(),itemId , 1)
             self.Judge = false
         end)
-        
     end
 end
 
@@ -182,7 +161,7 @@ function FightModule:Open(Context)
         end)
         --新手教程判定
         if DataCenter.GetNumber("TutorialbRestart", true) == 4 then
-            System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_4")
+            System:FireSignEvent("TutorialbRestart_4")
         end
     else
         local lock = "#8E8E8E"
@@ -199,7 +178,7 @@ function FightModule:Open(Context)
             self:OnDiamond()
         end)
         if DataCenter.GetNumber("TutorialbRestart", true) == 5 then
-            System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_5")
+            System:FireSignEvent("TutorialbRestart_5")
         end
     else
         local lock = "#8E8E8E"
@@ -227,16 +206,16 @@ function FightModule:Open(Context)
             UI:RegisterClicked(CenterView.Rank.Button, function()
                 self:OnRank(RankBoxReward_Table)
             end)
-            System:FireGameEvent(_GAME.Events.Signal,"BoxAnimation")
+            System:FireSignEvent("BoxAnimation", {Character:GetLocalPlayerId()})
             UI:SetVisible({CenterView.Rank.Image_1}, true)
             UI:SetVisible({CenterView.Rank.Image_2}, true)
         else
-            System:FireGameEvent(_GAME.Events.Signal,"BoxAnimationStop")
+            System:FireSignEvent("BoxAnimationStop", {Character:GetLocalPlayerId()})
             UI:SetVisible({CenterView.Rank.Image_1}, false)
             UI:SetVisible({CenterView.Rank.Image_2}, false)
         end
     else
-        System:FireGameEvent(_GAME.Events.Signal,"BoxAnimationStop")
+        System:FireSignEvent("BoxAnimationStop", {Character:GetLocalPlayerId()})
         UI:SetVisible({CenterView.Rank.Image_1}, false)
         UI:SetVisible({CenterView.Rank.Image_2}, false)
     end
@@ -409,7 +388,7 @@ function FightModule:OnGolden()  --跳转黄金联赛按钮
 
     System:FireGameEvent(_GAME.Events.JumpModule, "Tournament", "Golden")
     if DataCenter.GetNumber("TutorialbRestart", true) == 4 then
-        System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_4_Off")
+        System:FireSignEvent("TutorialbRestart_4_Off")
         DataCenter.SetNumber("TutorialbRestart", 5)
     end
 end
@@ -418,7 +397,7 @@ end
 function FightModule:OnDiamond()  --跳转钻石联赛按钮
     System:FireGameEvent(_GAME.Events.JumpModule, "Tournament", "Diamond")
     if DataCenter.GetNumber("TutorialbRestart", true) == 5 then
-        System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_5_Off")
+        System:FireSignEvent("TutorialbRestart_5_Off")
         DataCenter.SetNumber("TutorialbRestart", 6)
     end
 end
@@ -427,8 +406,8 @@ function FightModule:OnSevenDays()  --七日挑战
     --这里打开七日挑战页面
     if DataCenter.GetNumber("TutorialbRestart", true) == 3 then
         DataCenter.SetNumber("TutorialbRestart", 4)
-        System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_3_Off")
-        System:FireGameEvent(_GAME.Events.Signal,"七日挑战逻辑")
+        System:FireSignEvent("TutorialbRestart_3_Off")
+        System:FireSignEvent("七日挑战逻辑")
     end
 
 
@@ -472,7 +451,7 @@ function FightModule:OnMatch()
 
     if GameUtils.CanEnterRankBattle() then
         if DataCenter.GetNumber("TutorialbRestart", true) == 1 then
-            System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_1_Off")
+            System:FireSignEvent("TutorialbRestart_1_Off")
         end
         --这里打开寻找对局页面
         --生成1到7的随机数字
@@ -488,7 +467,7 @@ function FightModule:OnMatch()
             UIConfig.FightView.LeftView.ID,
             UIConfig.FightView.RightView.ID
         }, false)
-        System:FireGameEvent(_GAME.Events.Signal,tostring(RandomNumber))
+        System:FireSignEvent(tostring(RandomNumber))
         DataCenter.SetNumber("BattleStage", RandomNumber)
     end
 end
@@ -503,7 +482,7 @@ function FightModule:OnGoldMatch()
             UIConfig.FightView.LeftView.ID,
             UIConfig.FightView.RightView.ID
         }, false)
-        System:FireGameEvent(_GAME.Events.Signal,tostring(7))
+        System:FireSignEvent(tostring(7))
         DataCenter.SetNumber("BattleStage", 7)
     end
 end
@@ -518,7 +497,7 @@ function FightModule:OnDiamondMatch()
             UIConfig.FightView.LeftView.ID,
             UIConfig.FightView.RightView.ID
         }, false)
-        System:FireGameEvent(_GAME.Events.Signal,tostring(8))
+        System:FireSignEvent(tostring(8))
         DataCenter.SetNumber("BattleStage", 8)
     end
 end
@@ -530,7 +509,7 @@ function FightModule:OnRank(RankBoxReward_Table)
         local FightView = UIConfig.FightView
         local CenterView = FightView and FightView.CenterView
         UI:UnRegisterClicked(CenterView.Rank.Button)
-        System:FireGameEvent(_GAME.Events.Signal,"BoxAnimationStop", {Character:GetLocalPlayerId()})
+        System:FireSignEvent("BoxAnimationStop", {Character:GetLocalPlayerId()})
         UI:SetVisible({CenterView.Rank.Image_1}, false)
         UI:SetVisible({CenterView.Rank.Image_2}, false)
     end

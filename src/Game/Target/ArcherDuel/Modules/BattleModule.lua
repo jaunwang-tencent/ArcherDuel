@@ -141,7 +141,7 @@ function BattleModule:OnTouchPressed(_, Y)
     local Player = self.BattleScene:GetCurrentTurnPlayer()
     if Player and Player:IsControlled() then
         if DataCenter.GetNumber("TutorialbRestart", true) == 2 then --判定是否是新手教程
-            System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_2_Off")
+            System:FireSignEvent("TutorialbRestart_2_Off")
         end
         --只有主控角色才能执行用户输入
         self.PitchDegree = self:GetPitchDegree(Y)

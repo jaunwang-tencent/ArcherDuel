@@ -25,7 +25,6 @@ function GameClient:OnStart()
     System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.LoginGame)
     
     FightModule:IsMiniGamePlayer()
-    
 
 end
 

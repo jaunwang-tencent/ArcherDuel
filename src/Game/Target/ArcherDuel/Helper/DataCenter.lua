@@ -2,7 +2,7 @@
 --Q:为啥要专项弄一个这个玩意？
 --A:因为元件脚本的生命周期进局限于单个场景！无法在运行时共享跨场景的述求，并且能解决试玩模式下存档问题
 local DataCenter = {}
-local GameServer = require"Server.GameServer"
+
 --归档数据
 local ArchiveData = {
     --数值数据
@@ -42,14 +42,7 @@ function DataCenter.SetNumber(DataName, DataValue)
     if DataName and DataValue and NumberData then
         if NumberData then
             NumberData[DataName] = DataValue
-            --发送到服务器存储
-            local msg = {
-                TYPE = Archive.TYPE.Number,
-                Store = DataName,
-                Value = DataValue,
-            }
-            GameServer:OnStore(msg,Character:GetLocalPlayerId())
-            
+            Archive:SetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.Number, DataName, DataValue)
         end
     end
 end
@@ -63,12 +56,8 @@ function DataCenter.GetNumber(DataName, SyncData)
     local NumberData = ArchiveData.NumberData
     if DataName and NumberData then
         local DataValue
-        if SyncData and  GameServer:CheckStore(DataName)  then
-            local msg = {
-                TYPE = Archive.TYPE.Number,
-                Store = DataName,
-            }
-            DataValue = GameServer:GetStore(msg,DataCenter.GetPlayerID())
+        if SyncData and Archive:HasPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.Number, DataName) then
+            DataValue = Archive:GetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.Number, DataName)
             NumberData[DataName] = DataValue
         else
             DataValue = NumberData[DataName]
@@ -86,13 +75,7 @@ function DataCenter.SetString(DataName, DataValue)
     if DataName and DataValue and NumberData then
         if NumberData then
             NumberData[DataName] = DataValue
-            --发送到服务器存储
-            local msg = {
-                TYPE = Archive.TYPE.String,
-                Store = DataName,
-                Value = DataValue,
-            }
-             GameServer:OnStore(msg,Character:GetLocalPlayerId())
+            Archive:SetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName, DataValue)
         end
     end
 end
@@ -106,13 +89,8 @@ function DataCenter.GetString(DataName, SyncData)
     local NumberData = ArchiveData.NumberData
     if DataName and NumberData then
         local DataValue
-      --  System:SeDndToServer(MsgId,msg)
-        if SyncData and GameSeDrver:CheckStore(DataName) then
-            local msg = {
-                TYPE = Archive.TYPE.String,
-                Store = DataName,
-            }
-            DataValue = GameServer:GetStore(msg,DataCenter.GetPlayerID())
+        if SyncData and Archive:HasPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName) then
+            DataValue = Archive:GetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName)
             NumberData[DataName] = DataValue
         else
             DataValue = NumberData[DataName]
@@ -130,13 +108,7 @@ function DataCenter.SetTable(DataName, DataValue)
         if TableData then
             TableData[DataName] = DataValue
             local DataJson = MiscService:Table2JsonStr(DataValue)
-            --发送到服务器存储
-            local msg = {
-                TYPE = Archive.TYPE.String,
-                Store = DataName,
-                Value = DataValue,
-            }
-            GameServer:OnStore(msg,Character:GetLocalPlayerId())
+            Archive:SetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName, DataJson)
         end
     end
 end
@@ -149,12 +121,8 @@ function DataCenter.GetTable(DataName, SyncData)
     local TableData = ArchiveData.TableData
     if DataName and TableData then
         local DataValue
-        if SyncData and  GameServer:CheckStore(DataName) then
-             local msg = {
-                TYPE = Archive.TYPE.String,
-                Store = DataName,
-            }
-            local DataValue = GameServer:GetStore(msg,DataCenter.GetPlayerID())
+        if SyncData and Archive:HasPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName) then
+            local DataJson = Archive:GetPlayerData(DataCenter.GetPlayerID(), Archive.TYPE.String, DataName)
             DataValue = MiscService:JsonStr2Table(DataJson)
             TableData[DataName] = DataValue
         else

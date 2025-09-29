@@ -98,7 +98,7 @@ function SystemFSM:OnCreate(Context)
     System:RegisterGameEvent(_GAME.Events.BattleStart, function()
         --判定是否要进入新手教程
         if DataCenter.GetNumber("TutorialbRestart", true) == 1 then
-            System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_2")
+            System:FireSignEvent("TutorialbRestart_2")
             DataCenter.SetNumber("TutorialbRestart", 2)
         end
         if self.bRestart then
