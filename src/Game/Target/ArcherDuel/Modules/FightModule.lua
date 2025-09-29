@@ -23,8 +23,7 @@ end)
 
 --判断是否是小程序玩家
 function FightModule:IsMiniGamePlayer()
-    self.isPlayer = IAA:IsWeChatMiniGamePlayer()
-    if not self.isPlayer and self.Number_1 == nil then
+    if not IAA:IsWeChatMiniGamePlayer() and self.Number_1 == nil then
         local elementId = System:GetScriptParentID()
         local valueArray = CustomProperty:GetCustomPropertyArray(elementId, "AppPlay", CustomProperty.PROPERTY_TYPE.Image)
         local Icon_1 = UIConfig.FightView.CenterView
@@ -644,7 +643,7 @@ function FightModule:OnRank(RankBoxReward_Table)
                     local Costs = {
                         AdTag = "ad_tag_free_three_diamond"
                     }
-                    if self.isPlayer then
+                    if IAA:IsWeChatMiniGamePlayer() then
                         UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
                     else
                         self:StarDiamond(8,ThreeItem.ItemGroup[2],BoxRewards)
@@ -662,7 +661,7 @@ function FightModule:OnRank(RankBoxReward_Table)
                     local Costs = {
                         AdTag = "ad_tag_free_three_coin"
                     }
-                    if self.isPlayer then
+                    if IAA:IsWeChatMiniGamePlayer() then
                         UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd(Costs, nil, false, callback)
                     else
                         self:StarDiamond(9,ThreeItem.ItemGroup[3],BoxRewards)
