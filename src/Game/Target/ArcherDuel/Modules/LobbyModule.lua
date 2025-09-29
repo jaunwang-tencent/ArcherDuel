@@ -208,7 +208,7 @@ function LobbyModule:LoadData()
     end
     --判定是否需要开启七日引导
     if DataCenter.GetNumber("TutorialbRestart", true) == 2 then
-        System:FireSignEvent("TutorialbRestart_3")
+        System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_3")
         DataCenter.SetNumber("TutorialbRestart", 3)
     end
     Log:PrintDebug("[就是这里]")
@@ -265,14 +265,14 @@ function LobbyModule:CharacterStandby()
     UI:SetVisible({116408},true)
     --本地角色【影视相机：SceneId = 436】
     UGCS.Framework.Executor.Delay(1, function ()
-        System:FireSignEvent("启动相机",{self.PlayerID})
+        System:FireGameEvent(_GAME.Events.Signal,"启动相机")
         if not DataCenter.GetNumber("TutorialbRestart", true) then
-            --System:FireSignEvent("TutorialbRestart_1")
+            System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_1")
             DataCenter.SetNumber("TutorialbRestart", 1)
         end
         --判定是否在试玩
         if not DataCenter.GetNumber("TutorialbRestart", true) then
-            System:FireSignEvent("TutorialbRestart_1_Off")
+            System:FireGameEvent(_GAME.Events.Signal,"TutorialbRestart_1_Off")
             Log:PrintDebug("现在在试玩")
         end
     end)

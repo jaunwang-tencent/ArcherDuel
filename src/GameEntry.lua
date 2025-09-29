@@ -37,6 +37,8 @@ _GAME.Events = {
     RefreshData = "RefreshData",
     --任务事件
     ExecuteTask = "ExecuteTask",
+    --信号事件
+    Signal = "Signal",
 }
 -- 网络协议
 _GAME.NetMsg = {
@@ -44,6 +46,8 @@ _GAME.NetMsg = {
 
     S2C_OnReconnected = 1004,
     C2S_Chuangjian = 10005,
+    _S_Signal = 10006, --传入到数据的信号id
+
 }
 
 ------------------------------------------------- Game Require ------------------------------------------------------

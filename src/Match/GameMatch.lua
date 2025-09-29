@@ -157,7 +157,6 @@ end
 local function GetEquipmentIconList()
     return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "EquipmentImage", CustomProperty.PROPERTY_TYPE.Image)
 end
-
 -- 绑定事件
 function GameMatch:BindEvents()
     -- 收到开始匹配的事件
@@ -206,7 +205,8 @@ function GameMatch:BindEvents()
         UI:ResumeUIAnimation(111057,1)
         UI:SetVisible({108052,108051,108056,115200,115242},false)
         UI:SetVisible(MatchConfig.Victory_UI, false)
-        System:FireSignEvent("GoHome")
+        local Signal = "GoHome"
+        System:FireGameEvent(_GAME.Events.Signal,Signal)
     end)
 
     -- 开箱表演动画
@@ -285,11 +285,11 @@ function GameMatch:BindEvents()
             FightModule:StarDiamond(7)
         end
     end)
-
     -- 失败界面点击返回大厅
     UI:RegisterClicked(106512, function()
         UI:SetVisible(MatchConfig.Fail_UI, false)
-        System:FireSignEvent("GoHome")
+        local Signal = "GoHome"
+        System:FireGameEvent(_GAME.Events.Signal,Signal)
     end)
 
     -- 黑屏动画
@@ -321,19 +321,22 @@ function GameMatch:BindEvents()
         UI:SetVisible(MatchConfig.GoldFailer_UI,false)
         UI:SetVisible(MatchConfig.MatchUI_Next,false)
         UI:SetVisible(MatchConfig.MatchUI_Start,false)
-        System:FireSignEvent("GoHome")
+        local Signal = "GoHome"
+        System:FireGameEvent(_GAME.Events.Signal,Signal)
     end)
     -- 黄金赛结算前往开启
     UI:RegisterClicked(110785,function ()
         UI:SetVisible(MatchConfig.GoldTop3_Show_UI,false)
         UI:SetVisible(MatchConfig.GoldTop4_8_Show_UI,false)
-        System:FireSignEvent("GoHome")
+        local Signal = "GoHome"
+        System:FireGameEvent(_GAME.Events.Signal,Signal)
     end)
     -- 黄金赛结算退出
     UI:RegisterClicked(110788,function ()
         UI:SetVisible(MatchConfig.GoldTop3_Show_UI,false)
         UI:SetVisible(MatchConfig.GoldTop4_8_Show_UI,false)
-        System:FireSignEvent("GoHome")
+        local Signal = "GoHome"
+        System:FireGameEvent(_GAME.Events.Signal,Signal)
     end)
     -- 黄金赛中途退出
     UI:RegisterClicked(110720,function ()
@@ -343,7 +346,8 @@ function GameMatch:BindEvents()
         UI:SetVisible(MatchConfig.MatchUI_Next,false)
         UI:SetVisible(MatchConfig.MatchUI_Start,false)
         self:GoldExist()
-        System:FireSignEvent("GoHome")
+        local Signal = "GoHome"
+        System:FireGameEvent(_GAME.Events.Signal,Signal)
     end)
 end
 
@@ -677,9 +681,13 @@ local function ShowRankProgress(curScore, newScore)
 
             if score >= nextLevel.base_score then
                 -- UI:SetVisible({111925},true)
-                -- System:FireSignEvent("RanklUp")
+                 --发送信号
+            --     local Signal = "RanklUp"
+            --    System:FireGameEvent(_GAME.Events.Signal,Signal)
                 UI:SetVisible({108300}, true)
-                System:FireSignEvent("显示背景光")
+                --发送信号
+                local Signal = "显示背景光"
+                System:FireGameEvent(_GAME.Events.Signal,Signal)
                 UI:PlayUIAnimation(108300,1,0)
                 -- 切换到下一个等级图标
                 TimerManager:AddTimer(0.5, function()
@@ -1641,14 +1649,18 @@ end
 -- 钻石赛胜利
 function GameMatch:OnDiamondVictory()
     GameUtils.ShowGainView({DiamondScore = 16}, function()
-        System:FireSignEvent("GoHome")
+        
+        --发送信号
+        local Signal = "GoHome"
+        System:FireGameEvent(_GAME.Events.Signal,Signal)
     end)
 end
 
 -- 钻石赛失败
 function GameMatch:OnDiamondFail()
     GameUtils.ShowGainView({DiamondScore = 8}, function()
-        System:FireSignEvent("GoHome")
+        local Signal = "GoHome"
+        System:FireGameEvent(_GAME.Events.Signal,Signal)
     end)
 end
 

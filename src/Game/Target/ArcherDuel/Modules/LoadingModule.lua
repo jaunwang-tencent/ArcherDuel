@@ -1,12 +1,11 @@
 --加载模块
 local LoadingModule = {}
-
 --- 打开
 ---@param Context 上下文【透传数据】
 function LoadingModule:Open(Context)
     local UIConfig = UGCS.Target.ArcherDuel.Config.UIConfig
     self.LoadingView = UIConfig and UIConfig.LoadingView
-    if self.LoadingView then
+    if self.LoadingView  then
         UI:SetVisible({self.LoadingView.ID}, true)
         UI:SetProgressMaxValue({self.LoadingView.LoadProcess}, 100)
         UI:SetProgressCurrentValue({self.LoadingView.LoadProcess}, 0)

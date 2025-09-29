@@ -122,21 +122,22 @@ function TournamentModule:OnMatch()
         --生成1到7的随机数字
         local RandomNumber = math.random(1, 6)  --随机海岛和天空
         DataCenter.SetNumber("BattleStage", RandomNumber)
-        System:FireSignEvent(tostring(RandomNumber))
+        System:FireGameEvent(_GAME.Events.Signal,tostring(RandomNumber))
+        
     end
 end
 
 function TournamentModule:OnGoldMatch()
     if GameUtils.CanEnterGoldBattle() then
         DataCenter.SetNumber("BattleStage", 7)
-        System:FireSignEvent(tostring(7))
+        System:FireGameEvent(_GAME.Events.Signal,tostring(7))
     end
 end
 
 function TournamentModule:OnDiamondMatch()
     if GameUtils.CanEnterDiamondRankBattle() then
         DataCenter.SetNumber("BattleStage", 8)
-        System:FireSignEvent(tostring(8))
+        System:FireGameEvent(_GAME.Events.Signal,tostring(8))
     end
 end
 
