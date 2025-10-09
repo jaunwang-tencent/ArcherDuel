@@ -20,7 +20,7 @@ UGCS.Target.ArcherDuel.Config.ResourceConfig = require "Game.Target.ArcherDuel.C
 UGCS.Target.ArcherDuel.Config.ActivityConfig = require "Game.Target.ArcherDuel.Config.ActivityConfig"
 UGCS.Target.ArcherDuel.Config.OpenBoxConfig = require "Game.Target.ArcherDuel.Config.OpenBoxConfig"
 UGCS.Target.ArcherDuel.Config.RewardConfig = require "Game.Target.ArcherDuel.Config.RewardConfig"
-UGCS.Target.ArcherDuel.Config.StarDiamondConfig = require "Game.Target.ArcherDuel.Config.StarDiamondConfig" 
+UGCS.Target.ArcherDuel.Config.StarDiamondConfig = require "Game.Target.ArcherDuel.Config.StarDiamondConfig"
 
 --辅助
 UGCS.Target.ArcherDuel.Helper = {}

@@ -64,7 +64,12 @@ function Updator.Update()
         local CurrentTimestamp = WatchTime()
         if CurrentTimestamp then
             local CompletedUpdatorList = {}
+            --使用时，先临时拷贝
+            local TempUpdatorMap = {}
             for UpdatorID, Instance in pairs(GlobalUpdatorMap) do
+                TempUpdatorMap[UpdatorID] = Instance
+            end
+            for UpdatorID, Instance in pairs(TempUpdatorMap) do
                 local Progress
                 if Instance.DurationTime == 0 then
                     --时长为0表示永动机，只能人工移除

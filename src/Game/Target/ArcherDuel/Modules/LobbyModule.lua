@@ -133,7 +133,7 @@ function LobbyModule:Update(DeltaTime)
      -- 跨天检测，保存昨天的年月日
     if not self._lastDate then
         self._lastDate = {year=year, month=month, day=day}
-    else
+    else    
         if year ~= self._lastDate.year or month ~= self._lastDate.month or day ~= self._lastDate.day then
             --在线并且跨天了，要刷新最后登录时间，避免重复刷新
             DataCenter.SetNumber("Player_LastLoginTime_Num", nowTs)
@@ -180,6 +180,7 @@ function LobbyModule:Close()
     --离开时保存数据
     self:SaveData()
 end
+
 
 --- 加载表演
 function LobbyModule:PerformLoading()
@@ -251,6 +252,20 @@ function LobbyModule:LoadData()
         self:RuntimeWeeklyRefresh()
     end
     DataCenter.SetNumber("Player_LastLoginTime_Num", nowTs)
+    if not IAA:IsWeChatMiniGamePlayer()  then
+        if not  GameUtils.IsCrossDay(DataCenter.GetNumber("Day_Coin", true))  then
+            UI:SetVisible({117955},false)
+            UI:SetText({117954},"领取完成")
+        end
+        if  not GameUtils.IsCrossDay(DataCenter.GetNumber("Day_Diamond", true))  then
+            UI:SetText({117854,117809},"今日已领取")
+            --设置ui不可见
+            UI:SetVisible({117496}, false)
+        else
+            System:FireSignEvent("UI_0")
+            
+        end
+    end
 end
 
 --- 角色站街，装备穿戴
@@ -267,8 +282,8 @@ function LobbyModule:CharacterStandby()
     UGCS.Framework.Executor.Delay(1, function ()
         System:FireSignEvent("启动相机",{self.PlayerID})
         if not DataCenter.GetNumber("TutorialbRestart", true) then
-            --System:FireSignEvent("TutorialbRestart_1")
-            DataCenter.SetNumber("TutorialbRestart", 1)
+        --    System:FireSignEvent("TutorialbRestart_1")
+       --     DataCenter.SetNumber("TutorialbRestart", 1)
         end
         --判定是否在试玩
         if not DataCenter.GetNumber("TutorialbRestart", true) then

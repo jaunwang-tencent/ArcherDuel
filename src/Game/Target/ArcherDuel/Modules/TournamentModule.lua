@@ -194,7 +194,7 @@ function TournamentModule:RefreshTip(Button, RankNum)
     end
     local TournamentView = UIConfig.TournamentView
     local DiamondView = TournamentView.Diamond
-    for i = 1, 3, 1 do
+    for i = 1, 3, 1 do 
         UI:SetVisible({DiamondView.Popup["Image_"..i], DiamondView.Popup["Text_"..i]}, false)
     end
     for i, v in ipairs(RewardConfig.Diamond_Rewards[RankNum]) do

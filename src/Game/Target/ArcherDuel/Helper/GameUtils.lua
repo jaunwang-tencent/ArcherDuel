@@ -576,6 +576,8 @@ function GameUtils.RandomBox(BoxID, Count)
         BoxConfig = OpenBoxConfig.SilverBox
     elseif BoxID == 200003 then -- 极品宝箱
         BoxConfig = OpenBoxConfig.GoldBox
+    elseif BoxID == 200001 then -- 普通宝箱
+        BoxConfig = OpenBoxConfig.NormalBox
     else
         return
     end
@@ -656,7 +658,13 @@ function GameUtils.SeeAd(AdTag, OnFinish)
             AdFinishCallBack[AdTag] = CallBack
         end
         --广告观看
-        IAA:LetPlayerWatchAds(AdTag)
+        if IAA:IsWeChatMiniGamePlayer() then
+            -- body
+            IAA:LetPlayerWatchAds(AdTag)
+        else
+            CallBack()
+        end
+       
         --PC端开发，可以打开这句话来模拟广告结束事件，已完成
         --CallBack()
     end
@@ -691,10 +699,11 @@ function GameUtils.CanEnterRankBattle()
     local score = GameUtils.GetPlayerRankScore()
     local curLevel = GameUtils.GetRankLevelByScore(score)
     if curLevel then
-        local coin = GameUtils.GetPlayerCoin()
-        if coin >= curLevel.cost then
-            return true
-        end
+        --不做进入对战中的金币判断
+   --   local coin = GameUtils.GetPlayerCoin()
+   --     if coin >= curLevel.cost then
+    return true
+   --     end
     end
     UI:ShowMessageTip("金币不足，无法进入排位赛")
     return false
