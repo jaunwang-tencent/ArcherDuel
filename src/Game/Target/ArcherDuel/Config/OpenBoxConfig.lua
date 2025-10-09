@@ -178,20 +178,4 @@ OpenBoxConfig.SilverBox = {
     },
 }
 
--- 普通宝箱，每次开启出三个物品
-OpenBoxConfig.NormalBox = {
-    [1] = {
-        -- 品阶
-        Grade = 1,
-        -- 权重
-        Weight = 7,
-    },
-    [2] = {
-        -- 品阶
-        Grade = 2,
-        -- 权重
-        Weight = 3,
-    },
-}
-
 return OpenBoxConfig

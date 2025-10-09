@@ -576,8 +576,6 @@ function GameUtils.RandomBox(BoxID, Count)
         BoxConfig = OpenBoxConfig.SilverBox
     elseif BoxID == 200003 then -- 极品宝箱
         BoxConfig = OpenBoxConfig.GoldBox
-    elseif BoxID == 200001 then -- 普通宝箱
-        BoxConfig = OpenBoxConfig.NormalBox
     else
         return
     end
@@ -658,13 +656,7 @@ function GameUtils.SeeAd(AdTag, OnFinish)
             AdFinishCallBack[AdTag] = CallBack
         end
         --广告观看
-        if IAA:IsWeChatMiniGamePlayer() then
-            -- body
-            IAA:LetPlayerWatchAds(AdTag)
-        else
-            CallBack()
-        end
-       
+        IAA:LetPlayerWatchAds(AdTag)
         --PC端开发，可以打开这句话来模拟广告结束事件，已完成
         --CallBack()
     end
