@@ -32,7 +32,7 @@ function FightModule:IsMiniGamePlayer()
         --更换宝箱的广告图标
         local Icon_2 = UIConfig.StoreView.Activities[1].Views
         UI:SetVisible({111349,111328,111350,111322},false) --将两个宝箱广告图标关闭
-        UI:SetVisible({117785,117784,117783,117762,117737,117736},true) --将星钻图标打开
+        UI:SetVisible({117785,117783,117762,117736},true) --将星钻图标打开
         local BoxDiamond_1 = tostring(StarDiamondConfig.BoxDiamond.Price_1)
         local BoxDiamond_2 = tostring(StarDiamondConfig.BoxDiamond.Price_2)
         UI:SetText({Icon_2[2].ShopSlot.AdStyle.Price},BoxDiamond_1) --设置宝箱的星钻数量
@@ -47,17 +47,40 @@ function FightModule:IsMiniGamePlayer()
         UI:SetVisible({111295},false)
         UI:SetText({117450},FreeDiamond_Price)
         --再来一次图标
-        -- System:FireSignEvent("更换底图")
+        UI:SetVisible({118934},true) --再来一局可见
+        System:FireSignEvent("更换底图")
         --更换*3倍率图标
-        UI:SetVisible({117884,117885},true)
-        UI:SetImage({115401,115397},valueArray[3],true) 
+        --直接将*3倍率关闭
+        UI:SetVisible({118935},false)
+        --免费金币
+        UI:SetVisible({111341,111340},false)
+        UI:SetVisible({117954,117955},true)
+
         self.Judge = false
         self.Number_1 = 0
+        --开局进行判断
+        if  not GameUtils.IsCrossDay(DataCenter.GetNumber("Day_Coin", true)) then
+            UI:SetVisible({117955},false)
+            UI:SetText({117954},"领取完成")
+        end
+        if not GameUtils.IsCrossDay(DataCenter.GetNumber("Day_Diamond", true))  then
+            UI:SetText({117854,117809},"今日已领取")
+            --设置ui不可见
+            UI:SetVisible({117496}, false)
+        end
+ 
+        if not DataCenter.GetNumber("Time_DiamondPurchase", true) then
+            --System:FireSignEvent("TutorialbRestart_1")
+            DataCenter.SetNumber("Time_DiamondPurchase",0)
+        end
+
     end
 end
 
 --打开星钻购买弹窗
 function FightModule:StarDiamond(num,Costs1,Goods1)
+    local StoreModule = require ("Game.Target.ArcherDuel.Modules.StoreModule")
+    local GameMatch = require ("Match.GameMatch")
     if Costs1 and Goods1 then
         self.Costs1 = Costs1
         self.Goods1 = Goods1
@@ -66,49 +89,40 @@ function FightModule:StarDiamond(num,Costs1,Goods1)
         self.Goods1 = {}
     end
 
-    local goodsIds = Shop:GetAllGoodsInShop(1)
-    Shop:ShowGoodsForPlayer(goodsIds[num])
-end
-
-function FightModule:BuySucceed(itemId)
-    --广告
-    local StoreModule = require "Game.Target.ArcherDuel.Modules.StoreModule"
-    local GameMatch = require "Match.GameMatch"
-    if self.Judge == false then
-        self.Judge = true
-        if itemId == StarDiamondConfig.ElementID.FreeBox then 
-            FightModule:OnClickAd1()
-        elseif itemId == StarDiamondConfig.ElementID.FreeDiamond then
-            FightModule:OnClickAd2()
-        elseif itemId == StarDiamondConfig.ElementID.RareBox then
-            StoreModule:BuyGood(self.Costs1, self.Goods1)
-        elseif itemId == StarDiamondConfig.ElementID.EpicBox then
-            StoreModule:BuyGood(self.Costs1, self.Goods1)
-        elseif itemId == StarDiamondConfig.ElementID.Diamond then
-            StoreModule:BuyGood(self.Costs1, self.Goods1)
-        elseif itemId == StarDiamondConfig.ElementID.Again then
-            GameMatch:Addover("ad_reward_again", Character:GetLocalPlayerId())
-        elseif itemId == StarDiamondConfig.ElementID.Again_1 then
-            GameMatch:Addover("ad_battle_again", Character:GetLocalPlayerId())
-        elseif itemId == StarDiamondConfig.ElementID.Again_2 then
-            local callback1 = function()
-                UI:SetText({ self.Costs1.Text}, tostring(self.Goods1[2] * 3))
-                UI:SetVisible({ self.Costs1.ad},false)
-                self.Goods1[2] = self.Goods1[2] * 3
-            end
-            UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd("ad_tag_free_three_diamond", nil, false, callback1)
-        elseif itemId == StarDiamondConfig.ElementID.Again_3 then
-            local callback2 = function()
+   -- local goodsIds = Shop:GetAllGoodsInShop(1)
+   --   Shop:ShowGoodsForPlayer(goodsIds[num])
+   if num == 1 then
+         FightModule:OnClickAd1()
+   elseif num == 2 then
+        FightModule:OnClickAd2()
+    elseif num == 3 then
+        StoreModule:BuyGood(self.Costs1, self.Goods1)
+    elseif num == 4 then
+        StoreModule:BuyGood(self.Costs1, self.Goods1)
+    elseif num == 5 then
+        StoreModule:BuyGood(self.Costs1, self.Goods1)
+    elseif num == 6 then
+        UI:SetVisible({118934,106511},false)
+        --GameMatch:Addover("ad_reward_again", Character:GetLocalPlayerId())
+    elseif num == 7 then
+         GameMatch:Addover("ad_battle_again", Character:GetLocalPlayerId())
+         UI:SetVisible({118934,106511},false)
+  --[[  elseif num == 8 then
+        local callback1 = function()
+            UI:SetText({ self.Costs1.Text}, tostring(self.Goods1[2] * 3))
+            UI:SetVisible({ self.Costs1.ad},false)
+            self.Goods1[2] = self.Goods1[2] * 3
+        end
+        UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd("ad_tag_free_three_diamond", nil, false, callback1)
+    elseif num == 9 then
+         local callback2 = function()
                 UI:SetText({self.Costs1.Text}, tostring(self.Goods1[3] * 3))
                 UI:SetVisible({self.Costs1.ad},false)
                 self.Goods1[3] = self.Goods1[3] * 3
-            end
-            UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd("ad_tag_free_three_coin", nil, false, callback2)
         end
-        TimerManager:AddFrame(100,function ()
-            self.Judge = false
-        end)
-    end
+        UGCS.Target.ArcherDuel.Modules.StoreModule:SeeAd("ad_tag_free_three_coin", nil, false, callback2)]]
+   end
+
 end
 
 --- 打开
@@ -124,7 +138,11 @@ function FightModule:Open(Context)
         UI:SetVisible({CenterView.Ad_1.Mask}, false)
         UI:RegisterClicked(CenterView.Ad_1.ID, function()
              if self.Number_1 == 0 then
-                UI:ShowMessageTip("暂时无法获取")
+             --    UI:ShowMessageTip("暂时无法获取")
+             --System:FireGameEvent(_GAME.Events.JumpModule, "Store")
+                self:OnClickAd1()
+                
+
             else
                 self:OnClickAd1()
             end
@@ -256,7 +274,6 @@ function FightModule:Open(Context)
         UI:SetText({Rank.Text_3}, tostring(level.cost * 2))
     end
 end
-
 --- 刷新
 ---@param DeltaTime 时间戳
 function FightModule:Update(DeltaTime)
@@ -455,7 +472,7 @@ function FightModule:OnMatch()
         end
         --这里打开寻找对局页面
         --生成1到7的随机数字
-        local RandomNumber = math.random(1, 6)  --随机海岛和天空
+        local RandomNumber =  math.random(1, 6)  --随机海岛和天空
         -- if RandomNumber == 7 then
         --     RandomNumber = 8
         -- end

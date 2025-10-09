@@ -13,7 +13,7 @@ local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --任务事件
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
 --星钻购买
-local FightModule = UGCS.Target.ArcherDuel.Modules.FightModule
+local FightModule = require "Game.Target.ArcherDuel.Modules.FightModule"
 
 --- 打开
 function StoreModule:Open(Context)
@@ -157,9 +157,8 @@ function StoreModule:RefreshShop(ShopSlot, ShopItem, HoldInfo)
                 --注册商铺按钮事件
                 UI:RegisterClicked(ShopSlot.ID, function()
                     --触发一次购买行为【刷新存档】
-                    Log:PrintTable(ShopInfo.Goods)
                     if not ShopCosts.ClickTimestamp then
-                        local isPlayer =  IAA:IsWeChatMiniGamePlayer()
+                        local isPlayer = IAA:IsWeChatMiniGamePlayer()
                         if isPlayer then
                             self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
                         else
@@ -168,7 +167,45 @@ function StoreModule:RefreshShop(ShopSlot, ShopItem, HoldInfo)
                             elseif ShopInfo.Goods.SilverBox == 1 then
                                 FightModule:StarDiamond(4,ShopInfo.Costs, ShopInfo.Goods)
                             elseif ShopInfo.Goods.Diamond == 60 then
-                                FightModule:StarDiamond(5,ShopInfo.Costs, ShopInfo.Goods)
+                                if self.Diamond_Timer == nil then
+                                   FightModule:StarDiamond(5,ShopInfo.Costs, ShopInfo.Goods)
+                                        if not IAA:IsWeChatMiniGamePlayer()   then
+                                            self.Diamond_Timer =   TimerManager:AddLoopTimer(1,function ()
+                                                if self.Diamond_time == nil then
+                                                    self.Diamond_time = 30
+                                                end
+                                                self.Diamond_time = self.Diamond_time - 1
+                                                UI:SetText({117854,117809},GameUtils.GetFormatTime(self.Diamond_time))
+                                                if self.Diamond_time <= 0 or ShopInfo.Costs.HasCollect == 4 then
+                                                    self.Diamond_time = nil
+                                                    TimerManager:RemoveTimer(self.Diamond_Timer)
+                                                    self.Diamond_Timer = nil
+                                                if ShopInfo.Costs.HasCollect == 4 then
+                                                    UI:SetText({117854,117809},"今日已领取")
+                                                    --存储已领取完成时间
+                                                     DataCenter.SetNumber("Day_Diamond",GameUtils.GetNowTimestamp())
+                                                    --设置ui不可见
+                                                    UI:SetVisible({117496}, false)
+                                                else
+                                                    UI:SetText({117854,117809},"免费领取")
+                                                end
+                                                end
+                                            end)
+                                        end
+                                else
+                                    UI:ShowMessageTip("时间还没结束")
+                                end
+                            elseif ShopInfo.Goods.Coin == 1500 then
+                                if not DataCenter.GetNumber("Day_Coin", true) or GameUtils.IsCrossDay(DataCenter.GetNumber("Day_Coin", true)) then
+                                   self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
+                                   DataCenter.SetNumber("Day_Coin",GameUtils.GetNowTimestamp())
+                                   UI:SetText({117954},"领取完成")
+                                   --设置UI不可见
+                                   UI:SetVisible({117955}, false)
+                                else 
+                                    UI:ShowMessageTip("今天领取完了，明天再来吧。")
+                                end
+
                             else 
                                 self:BuyGood(ShopInfo.Costs, ShopInfo.Goods)
                             end
@@ -339,7 +376,12 @@ function StoreModule:AccumulateCollected(Costs)
         System:FireGameEvent(_GAME.Events.RefreshData, "StoreData")
     end
 end
-
+System:RegisterSignEvent("UI_0",function ()
+     if StoreModule.Diamond_Timer then
+        TimerManager:RemoveTimer(StoreModule.Diamond_Timer)
+     end
+     UI:SetText({117854,117809},"兔费领取")
+end)
 --- 购买商品
 ---@param Costs 消耗
 ---@param Goods 商品
@@ -352,6 +394,7 @@ function StoreModule:BuyGood(Costs, Goods)
         --超过消耗数量则不允购买
         return
     end
+    Log:PrintDebug(Costs.HasCollect)
     local GoldBox = DataCenter.GetNumber("GoldBox")
     local SilverBox = DataCenter.GetNumber("SilverBox")
     local Diamond = DataCenter.GetNumber("Diamond")
@@ -409,6 +452,7 @@ function StoreModule:BuyGood(Costs, Goods)
     elseif Costs.AdTag then
         --观看广告
         self:SeeAd(Costs, Goods, true)
+        --统一加个30秒倒计时
     end
 
     if Success then
@@ -428,8 +472,7 @@ end
 ---@param OnFinish 观看结束
 function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
     local AdTag = Costs.AdTag
-    local isPlayer = IAA:IsWeChatMiniGamePlayer()
-    if AdTag and isPlayer then
+    if AdTag  then
         GameUtils.SeeAd(AdTag, function()
             Log:PrintLog("OnAdFinish()", AdTag, NeedGain)
             if OnFinish then
@@ -440,20 +483,14 @@ function StoreModule:SeeAd(Costs, Goods, NeedGain, OnFinish)
                 --累计收集次数
                 self:AccumulateCollected(Costs)
                 --看完广告后，获得物品
-                self:ShowGainView(Costs, Goods)
+                if Goods.BoxID then
+                    self:OpenBox(Goods.BoxID)
+                else
+                    self:ShowGainView(Costs, Goods)
+                end
+                
             end
         end)
-    elseif AdTag then
-        if OnFinish then
-            --使用自定义结束事件
-            OnFinish()
-        end
-        if NeedGain then
-            --累计收集次数
-            self:AccumulateCollected(Costs)
-            --看完广告后，获得物品
-            self:ShowGainView(Costs, Goods)
-        end
     end
 end
 
@@ -466,11 +503,11 @@ function StoreModule:ShowAdView()
     local Text = string.format("%d/%d", MaxCollect - HasCollect, MaxCollect)
     local isPlayer =  IAA:IsWeChatMiniGamePlayer()
     UI:SetText({AdView.Times}, Text)
-
     UI:RegisterClicked(AdView.AdButton, function()
         ----关闭
         UI:SetVisible({AdView.ID}, false)
-        if MaxCollect > HasCollect then
+        if MaxCollect > HasCollect and self.Diamond_Timer == nil then
+
             --观看广告
             local Costs = {
                 AdTag = "ad_tag_free",
@@ -481,13 +518,38 @@ function StoreModule:ShowAdView()
             local Goods = {
                 Diamond = 60
             }
-             if isPlayer then
+            if isPlayer then
                self:SeeAd(Costs, Goods, true)
             else
                 FightModule:StarDiamond(5, Costs, Goods)
+            self.Diamond_Timer =   TimerManager:AddLoopTimer(1,function ()
+                 if self.Diamond_time == nil then
+                        self.Diamond_time = 30
+                    end
+                    self.Diamond_time = self.Diamond_time - 1
+                    UI:SetText({117854,117809},GameUtils.GetFormatTime(self.Diamond_time))
+                    if self.Diamond_time <= 0 or Costs.HasCollect == 4 then
+                        Log:PrintDebug(HasCollect)
+                        self.Diamond_time = nil
+                       TimerManager:RemoveTimer(self.Diamond_Timer)
+                       self.Diamond_Timer = nil
+                       if HasCollect == 4 then
+                        UI:SetText({117854,117809},"今日已领取")
+                        --设置ui不可见
+                        UI:SetVisible({117496}, false)
+                        --存储已领取完成时间
+                        DataCenter.SetNumber("Day_Diamond",GameUtils.GetNowTimestamp())
+                       else
+                        UI:SetText({117854,117809},"免费领取")
+                       end
+                    end
+            end)
             end
+            
+        elseif self.Diamond_Timer ~= nil then
+            UI:ShowMessageTip("时间还没结束")
         else
-            UI:ShowMessageTip("今日次数已用尽")
+        UI:ShowMessageTip("今日次数已用尽")
         end
         --注销按钮事件
         UI:UnRegisterClicked(AdView.AdButton)
@@ -544,6 +606,8 @@ end
 --- 打开宝箱
 ---@param BoxID 宝箱Id
 function StoreModule:OpenBox(BoxID)
+   -- Log:PrintTable(BoxID)
+    Log:PrintDebug("[ID]"..BoxID)
     local ThreeItem = UIConfig.BoxView.ThreeItem
     --显示装备按钮
     UI:SetVisible({ThreeItem.ID, ThreeItem.ItemGroupID}, true)
