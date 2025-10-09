@@ -51,7 +51,12 @@ function Executor.Update()
         local CurrentTimestamp = WatchTime()
         if CurrentTimestamp then
             local CompletedExecutorList = {}
+            --使用时，先临时拷贝
+            local TempExecutorMap = {}
             for ExecutorID, Instance in pairs(GlobalExecutorMap) do
+                TempExecutorMap[ExecutorID] = Instance
+            end
+            for ExecutorID, Instance in pairs(TempExecutorMap) do
                 local PassTime = CurrentTimestamp - Instance.ExecuteTime
                 if PassTime >= Instance.DelayTime then
                     if Instance.OnExecute then
