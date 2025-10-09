@@ -282,8 +282,8 @@ function LobbyModule:CharacterStandby()
     UGCS.Framework.Executor.Delay(1, function ()
         System:FireSignEvent("启动相机",{self.PlayerID})
         if not DataCenter.GetNumber("TutorialbRestart", true) then
-            System:FireSignEvent("TutorialbRestart_1")
-            DataCenter.SetNumber("TutorialbRestart", 1)
+        --    System:FireSignEvent("TutorialbRestart_1")
+       --     DataCenter.SetNumber("TutorialbRestart", 1)
         end
         --判定是否在试玩
         if not DataCenter.GetNumber("TutorialbRestart", true) then

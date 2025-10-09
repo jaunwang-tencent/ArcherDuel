@@ -699,10 +699,11 @@ function GameUtils.CanEnterRankBattle()
     local score = GameUtils.GetPlayerRankScore()
     local curLevel = GameUtils.GetRankLevelByScore(score)
     if curLevel then
-        local coin = GameUtils.GetPlayerCoin()
-        if coin >= curLevel.cost then
-            return true
-        end
+        --不做进入对战中的金币判断
+   --   local coin = GameUtils.GetPlayerCoin()
+   --     if coin >= curLevel.cost then
+    return true
+   --     end
     end
     UI:ShowMessageTip("金币不足，无法进入排位赛")
     return false

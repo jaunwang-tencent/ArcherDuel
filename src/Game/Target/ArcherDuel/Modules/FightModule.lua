@@ -17,6 +17,7 @@ local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 --星钻配置
 local StarDiamondConfig = UGCS.Target.ArcherDuel.Config.StarDiamondConfig
 
+
 System:RegisterEvent(Events.ON_PLAYER_GET_ITEM,function(playerId, itemId, num, isCustom) -- playerId = 玩家ID, itemId = 物品ID, num = 物品数量, isCustom = 是否为自制物品
     FightModule:BuySucceed(itemId)
 end)
@@ -65,7 +66,7 @@ function FightModule:IsMiniGamePlayer()
             UI:SetText({117954},"领取完成")
         end
         if not GameUtils.IsCrossDay(DataCenter.GetNumber("Day_Diamond", true))  then
-            UI:SetText({117854,117809},"今日已领取")
+            UI:SetText({117854},"今日已领取")
             --设置ui不可见
             UI:SetVisible({117496}, false)
         end
@@ -750,9 +751,10 @@ function FightModule:RefreshTaskProcesUI()
             UI:SetVisible({LockID}, false)
             if (CollectTask & (1 << (index - 1))) ~= 0 then
                 --已经领取奖品
+                UI:SetVisible({NodeID}, false)
                 UI:SetVisible({CheckID}, true)
                 UI:SetVisible({MaskID}, true)
-                UI:SetVisible({ButtonID}, false)
+                UI:SetVisible({ButtonID},true)
             else
                 UI:SetVisible({CheckID}, false)
                 UI:SetVisible({MaskID}, false)
@@ -792,6 +794,7 @@ function FightModule:RefreshWeeklyTaskUI(wday)
     local taskMgr =TaskManager:GetInsatnce()
     local ret = taskMgr:getAllTaskByWeekly()
     local i = 1
+   -- Log:PrintTable(ret)
     for _, v in pairs(ret) do
         if v.conditions and v.conditions[1] and v.conditions[1].wday == wday then
             local UIID = WeeklyTaskUIID[i]
@@ -813,10 +816,12 @@ function FightModule:RefreshWeeklyTaskUI(wday)
                         local taskExp = DataCenter.GetNumber("Player_TaskWeeklyExp_Num")
                         if v.rewards and v.rewards.WeeklyExp then
                             DataCenter.SetNumber("Player_TaskWeeklyExp_Num", taskExp + v.rewards.WeeklyExp)
+                            self:Daysprize(v.rewards.RewardId,v.rewards.RewardCount)
                         end
                     end
                     self:RefreshTaskProcesUI()
                     self:RefreshWeeklyTaskUI(wday)
+                    Log:PrintDebug("[领取任务奖励成功]"..wday)
                 end)
                 UI:SetVisible({Button}, false)
             elseif v.state == taskMgr.Task.State.FINISH then
@@ -865,6 +870,16 @@ function FightModule:RefreshWeeklyTaskUI(wday)
             i = i + 1
         end
     end
+end
+-- 金币 100001
+-- 钻石 100002
+-- 普通宝箱 200001
+-- 高级宝箱 200002
+-- 极品宝箱 200003
+
+function FightModule:Daysprize(RewardId,RewardCount)
+GameUtils.AddPlayerReward(RewardId,RewardCount)
+self:RefreshTaskProcesUI()
 end
 
 function FightModule:RefreshTabDayUI(wday)

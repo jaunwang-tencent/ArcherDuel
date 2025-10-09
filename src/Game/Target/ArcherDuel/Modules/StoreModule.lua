@@ -72,7 +72,11 @@ function StoreModule:RefreshPrice(ShopSlot, ShopCosts)
     local CurrentGoldBox = DataCenter.GetNumber("GoldBox")
     --获取当前拥有的银宝箱数量
     local CurrentSilverBox = DataCenter.GetNumber("SilverBox")
-
+    if ShopCosts.AdTag == "ad_tag_gold_box" then
+        ShopCosts.ClickTimestamp = DataCenter.GetNumber("GoldBoxTime", true)
+    elseif ShopCosts.AdTag == "ad_tag_silver_box" then 
+        ShopCosts.ClickTimestamp = DataCenter.GetNumber("SilverBoxTime", true)
+    end
     --砖石&广告类型
     local DiamondStyle = ShopSlot.DiamondStyle
     local AdStyle = ShopSlot.AdStyle
@@ -181,7 +185,7 @@ function StoreModule:RefreshShop(ShopSlot, ShopItem, HoldInfo)
                                                     TimerManager:RemoveTimer(self.Diamond_Timer)
                                                     self.Diamond_Timer = nil
                                                 if ShopInfo.Costs.HasCollect == 4 then
-                                                    UI:SetText({117854,117809},"今日已领取")
+                                                    UI:SetText({117854},"今日已领取")
                                                     --存储已领取完成时间
                                                      DataCenter.SetNumber("Day_Diamond",GameUtils.GetNowTimestamp())
                                                     --设置ui不可见
@@ -333,11 +337,14 @@ function StoreModule:RefreshStore(HoldInfo)
 
         --2、商品【由数据驱动视图】
         local ShopItems = ItemsMap[ActivityIndex]
+        
         if ShopItems then
+
             for ViewIndex, ShopItem in ipairs(ShopItems) do
                 local ActivityView = Activity.Views[ViewIndex]
                 if ActivityView then
                     --刷新商铺
+
                     self:RefreshShop(ActivityView.ShopSlot, ShopItem, HoldInfo)
 
                     --刷新商品
@@ -534,7 +541,7 @@ function StoreModule:ShowAdView()
                        TimerManager:RemoveTimer(self.Diamond_Timer)
                        self.Diamond_Timer = nil
                        if HasCollect == 4 then
-                        UI:SetText({117854,117809},"今日已领取")
+                        UI:SetText({117854},"今日已领取")
                         --设置ui不可见
                         UI:SetVisible({117496}, false)
                         --存储已领取完成时间
@@ -606,7 +613,6 @@ end
 --- 打开宝箱
 ---@param BoxID 宝箱Id
 function StoreModule:OpenBox(BoxID)
-   -- Log:PrintTable(BoxID)
     Log:PrintDebug("[ID]"..BoxID)
     local ThreeItem = UIConfig.BoxView.ThreeItem
     --显示装备按钮
@@ -831,7 +837,16 @@ function StoreModule:ShowGainView(Costs, Goods)
                 NeedRecordTimestamp = true
             end
             if NeedRecordTimestamp then
-                Costs.ClickTimestamp = GameUtils.GetNowTimestamp()
+                if Goods.GoldBox then
+                    DataCenter.SetNumber("GoldBoxTime", GameUtils.GetNowTimestamp())
+                    Costs.ClickTimestamp = DataCenter.GetNumber("GoldBoxTime")
+                elseif Goods.SilverBox then
+                    DataCenter.SetNumber("SilverBoxTime", GameUtils.GetNowTimestamp())
+                    Costs.ClickTimestamp = DataCenter.GetNumber("SilverBoxTime")
+                else
+                    Costs.ClickTimestamp = GameUtils.GetNowTimestamp()
+                end
+               
             end
         end
         --刷新价格
