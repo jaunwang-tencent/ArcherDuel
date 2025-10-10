@@ -73,7 +73,7 @@ function Bow:Perform(DurationTime)
         --拉满之后继续刷新
         --self:Perform()
     end)
-    --[[]]
+    --]]
     if self.UpdatorID then
         TimerManager:RemoveTimer(self.UpdatorID)
     end
