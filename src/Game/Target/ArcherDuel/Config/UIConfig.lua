@@ -360,6 +360,8 @@ local UIConfig = {
             CurrentAttribute = 100565,
             --强化属性值
             EnhanceAttribute = 104174,
+            --图鉴加成
+            EnhanceAttributeText = 111287,
             --属性图标
             AttributeIcon = {
                 ID = 104170,

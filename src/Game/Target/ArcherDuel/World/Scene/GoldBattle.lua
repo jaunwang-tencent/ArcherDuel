@@ -161,7 +161,12 @@ function GoldBattle:SwitchTurn()
         local TempTurn = self.CurrentTurn
         self.CurrentTurn = self.NextTurn
         self.NextTurn = TempTurn
-
+        
+        -- 在回合开始时，重置当前回合玩家的朝向，使其面向下一回合玩家
+        local CurrentTurnPlayer = self:GetCurrentTurnPlayer()
+        local NextTurnPlayer = self:GetNextTurnPlayer()
+        CurrentTurnPlayer:SyncLocation()
+        NextTurnPlayer:SyncLocation()
         --设置回合状态
         ApplyTurnState(self)
 

@@ -177,19 +177,8 @@ function Battle:SwitchTurn()
 
         -- 在回合开始时，重置当前回合玩家的朝向，使其面向下一回合玩家
         local NextTurnPlayer = self:GetNextTurnPlayer()
-        if CurrentTurnPlayer and NextTurnPlayer then
-            local CurrentLocation = CurrentTurnPlayer:GetLocation()
-            local NextLocation = NextTurnPlayer:GetLocation()
-            -- 计算朝向对方玩家的方向向量
-            local Direction = NextLocation - CurrentLocation
-            Direction.Y = 0 -- 忽略Y轴高度差，只在水平面上计算朝向
-            -- 将方向向量转换为旋转角度
-            local TargetRotation = UMath:ForwardToRotator(Direction)
-            -- 设置当前回合玩家的朝向
-            CurrentTurnPlayer:SetFakeCharacterRotation(TargetRotation)
-            Log:PrintDebug("回合开始：玩家ID=%s 朝向玩家ID=%s，旋转角度=%f", TargetRotation)
-        end
-
+        CurrentTurnPlayer:SyncLocation()
+        NextTurnPlayer:SyncLocation()
         --对外抛出事件
         if self.OnSwitchTurn then
             self.OnSwitchTurn()

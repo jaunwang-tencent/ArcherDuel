@@ -206,6 +206,7 @@ function EquipmentModule:RefreshListUI(Category)
             --已用的
             Equipment = HasUseEquipment[ItemDataIndex]
             table.insert(HideItems, MaskIconUI)
+            
         elseif ItemDataIndex <= HasUseCount + NotUseCount then
             --未用的
             Equipment = NotUseEquipment[ItemDataIndex - HasUseCount]

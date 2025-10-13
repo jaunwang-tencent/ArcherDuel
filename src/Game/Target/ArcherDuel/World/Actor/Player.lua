@@ -302,6 +302,7 @@ end
 ---@return 玩家位置
 function Player:SyncLocation()
     local Position = FakeCharacter:GetPosition(self.UID)
+ --   Log:PrintDebug("回合进入11")
     self:SetLocation(Position)
     return Position
 end

@@ -49,6 +49,7 @@
     ],
     "Lua.completion.showWord": "Disable",
     "Lua.diagnostics.disable": [
-        "param-type-mismatch"
+        "param-type-mismatch",
+        "missing-parameter"
     ]
 }
