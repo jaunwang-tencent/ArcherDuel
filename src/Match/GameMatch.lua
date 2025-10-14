@@ -16,7 +16,7 @@ local BattleType = {
 }
 
 function GameMatch:Init()
-    Log:PrintLog("[GameMatch:Init]")
+    
 
     -- 构造武器类型表
     self.weaponMap = {}
@@ -106,6 +106,7 @@ function GameMatch:Init()
     self.goldResults = {Winer = {}, Failer = {}} -- 黄金赛比赛记录
 
     if self.battleType == BattleType.Gold then
+      --  Log:PrintLog("[GameMatch:Init]")
         self:InitGoldMatch()
         System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.GoldBattle) -- 参加一次黄金赛
     elseif self.battleType == BattleType.Diamond then
@@ -1120,7 +1121,6 @@ function GameMatch:OnGoldFail()
         end
         return
     end
-
     local bWiner = self.goldFailCount == 0
     self:SetGoldResult(bWiner, false, nil, true)
     self:SetGoldResult(bWiner, true, self.goldBattleRival.name)

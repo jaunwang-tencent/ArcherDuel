@@ -101,6 +101,7 @@ function TournamentModule:Open(Context)
 
     --进入黄金联赛
     UI:RegisterClicked(TournamentView.Gold.Button, function()
+        System:FireGameEvent(_GAME.Events.ExecuteTask, UGCS.Target.ArcherDuel.Task.TaskEvents.GoldBattle)
         self:OnGoldMatch()
     end)
 

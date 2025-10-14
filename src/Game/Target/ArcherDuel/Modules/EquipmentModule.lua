@@ -206,7 +206,7 @@ function EquipmentModule:RefreshListUI(Category)
             --已用的
             Equipment = HasUseEquipment[ItemDataIndex]
             table.insert(HideItems, MaskIconUI)
-            
+
         elseif ItemDataIndex <= HasUseCount + NotUseCount then
             --未用的
             Equipment = NotUseEquipment[ItemDataIndex - HasUseCount]
@@ -293,6 +293,7 @@ function EquipmentModule:RefreshListUI(Category)
 
     --记录当前种类
     self.CurrentCategory = Category
+    Log:PrintTable(self.CurrentCategory)
 end
 
 --- 刷新全部
@@ -316,7 +317,7 @@ function EquipmentModule:OpenDetail(Equipment)
     --修改名字
     local EquipmentData = EquipmentConfig[Equipment.ID]
     UI:SetText({DetailView.Title}, EquipmentData.NickName)
-
+    local AttributeSting
     local CurrentPiece = Equipment.Piece
     local Attributes = EquipmentConfig[Equipment.ID].Attributes
     local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
@@ -364,7 +365,6 @@ function EquipmentModule:OpenDetail(Equipment)
                 UI:SetVisible({DetailView.EquipableAndNotUpgradable.ID},true)
             end
         end
-
     else
         --未解锁
         UI:SetVisible({ DetailView.NotEquipped.ID }, true)
@@ -390,15 +390,36 @@ function EquipmentModule:OpenDetail(Equipment)
         --攻击
         AttributeValue = Attributes.Attack
         AttributeLabel = DetailView.AttributeIcon.AttackPower
+        --获取并修改图鉴加成
+        AttributeSting = "攻击力+ "
     elseif Attributes.Heal > 0 then
         --防护
         AttributeValue = Attributes.Heal
         AttributeLabel = DetailView.AttributeIcon.HealthPoints
+        AttributeSting = "生命值+ "
+        Log:PrintDebug("[AttributeValue.Grade]".. AttributeSting)
     elseif Attributes.Accuracy > 0 then
         --准度
         AttributeValue = Attributes.Accuracy
         AttributeLabel = DetailView.AttributeIcon.Accuracy
+        AttributeSting = "精准度+ "
     end
+    Log:PrintDebug("[DetailView.EnhanceAttributeText]"..DetailView.EnhanceAttributeText)
+    local AlbumValue =  Attributes.Grade*0.1*Equipment.Level .. "% "
+    local AlbumValueUp = Attributes.Grade*0.1*(Equipment.Level+1) .. "% "
+    if Equipment.Unlock then
+
+        if Equipment.Level < 5 then
+
+            AttributeSting = "升级加成："..AttributeSting..AlbumValue.."→ "..AlbumValueUp
+        else
+
+            AttributeSting = "收集加成："..AttributeSting..AlbumValue
+        end
+    else
+        AttributeSting = "激活加成："..AttributeSting.."0".."→ "..AlbumValue
+    end
+    UI:SetText({DetailView.EnhanceAttributeText}, AttributeSting)
     if AttributeValue and AttributeLabel then
         --当前数值
         local Value = AttributeValue + (Attributes.Growth * (Equipment.Level - 1))
@@ -487,7 +508,11 @@ function EquipmentModule:OpenDetail(Equipment)
         end
     end
 end
-
+--计算图鉴加成
+function EquipmentModule:CalcEnhanceAttribute()
+    
+    
+end
 --- 关闭详情页面
 function EquipmentModule:CloseDetail()
     --关掉详情页面

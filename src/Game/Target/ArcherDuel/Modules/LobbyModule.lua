@@ -449,11 +449,19 @@ function LobbyModule:RefreshEquipmentData()
     local GroupByGrade = {}
     --装备槽【六个部位】
     local BodyEquipment = {}
+    --图鉴攻击加成数值
+    local AlbumMultiplier_Attack = 0
+    --图鉴HP加成数值
+    local AlbumMultiplier_HP = 0
     for _, Equipment in pairs(AllEquipment) do
         --获取装备数据
         local EquipmentData = EquipmentConfig[Equipment.ID]
         --回写装备品质
         Equipment.Grade = EquipmentData and EquipmentData.Attributes.Grade or 1
+        --回写装备攻击数值
+        Equipment.Attack = EquipmentData.Attributes.Attack or 0
+        --回写装备HP
+        Equipment.Heal = EquipmentData.Attributes.Heal or 0
 
         --按种类分类
         local Group1 = GroupByCategory[Equipment.Category]
@@ -475,6 +483,15 @@ function LobbyModule:RefreshEquipmentData()
             --没有解锁，则解锁，并消耗一个
             Equipment.Unlock = true
             Equipment.Piece = Equipment.Piece - 1
+        end
+        --判断解锁状态，然后存储图鉴加成
+        if Equipment.Unlock then
+            if Equipment.Attack > 0 then
+               AlbumMultiplier_Attack = AlbumMultiplier_Attack + Equipment.Grade*0.1*Equipment.Level
+            elseif Equipment.Heal > 0 then
+               AlbumMultiplier_HP = AlbumMultiplier_HP + Equipment.Grade*0.1*Equipment.Level
+            end
+         -- 
         end
         --已装备数据
         if Equipment.Equipped then
@@ -508,7 +525,9 @@ function LobbyModule:RefreshEquipmentData()
     --统计已穿戴装备的ID和等级
     --重新刷新外观
     self:RefreshAvatar()
-
+    --存储图鉴加成
+    DataCenter.SetNumber("AlbumMultiplier_Attack", AlbumMultiplier_Attack/100)
+    DataCenter.SetNumber("AlbumMultiplier_HP", AlbumMultiplier_HP/100)
     --存档
     DataCenter.SetTable("AllEquipment", AllEquipment)
 end

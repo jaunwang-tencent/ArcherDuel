@@ -125,7 +125,6 @@ function FightModule:StarDiamond(num,Costs1,Goods1)
    end
 
 end
-
 --- 打开
 function FightModule:Open(Context)
     self:RegreshBodyUI()

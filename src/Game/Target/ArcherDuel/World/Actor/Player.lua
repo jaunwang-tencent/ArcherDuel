@@ -365,7 +365,8 @@ function Player:GetEquipData(ForceUpdate)
         local Part_Lv = self:GetDefaultData("Equipped_Part_Lv", 1)
         local Bottoms_Lv = self:GetDefaultData("Equipped_Bottoms_Lv", 1)
         local Cloth_Lv = self:GetDefaultData("Equipped_Top_Lv", 1)
-
+        local AlbumMultiplier_Attack = self:GetDefaultData("AlbumMultiplier_Attack", 0.001)
+        local AlbumMultiplier_HP = self:GetDefaultData("AlbumMultiplier_HP", 0.001)
         local Weapon_Lv
         -- todo self.WeaponType is nil
         if self.WeaponType == 1 then
@@ -375,7 +376,6 @@ function Player:GetEquipData(ForceUpdate)
         else
             Weapon_Lv = Axe_Lv
         end
-
         local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
         local ClothConfig = EquipmentConfig and EquipmentConfig[Cloth_Num]
         local PartConfig = EquipmentConfig and EquipmentConfig[Part_Num]
@@ -393,6 +393,7 @@ function Player:GetEquipData(ForceUpdate)
             if PartConfig ~= nil then
                 damage = self.WeaponConfig.Attributes.Attack + self.WeaponConfig.Attributes.Growth * ( Weapon_Lv - 1)
                             + PartConfig.Attributes.Attack + PartConfig.Attributes.Growth * ( Part_Lv - 1)
+                damage = damage * (AlbumMultiplier_Attack+1)
             end
         end
 
@@ -400,8 +401,8 @@ function Player:GetEquipData(ForceUpdate)
         local hp = 100
         if ClothConfig ~= nil then
             hp = ClothConfig.Attributes.Heal + ClothConfig.Attributes.Growth * Cloth_Lv
+            hp = hp * (AlbumMultiplier_HP+1)
         end
-
         -- 头部保护
         local head_protection = 0
         if ClothConfig ~= nil and PartConfig ~= nil and BottomsConfig ~= nil then
