@@ -651,7 +651,7 @@ function StoreModule:OpenBox(BoxID)
             end
         end)
         --播到1.6秒暂停播放
-        UGCS.Framework.Executor.Delay(1.6, function()
+        UGCS.Framework.Executor.Delay(1.57, function()
             UI:PauseUIAnimation(ThreeItem.ItemGroupID, 1)
             --结束之后表演翻拍
             --在此处表现翻牌动作

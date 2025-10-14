@@ -508,11 +508,6 @@ function EquipmentModule:OpenDetail(Equipment)
         end
     end
 end
---计算图鉴加成
-function EquipmentModule:CalcEnhanceAttribute()
-    
-    
-end
 --- 关闭详情页面
 function EquipmentModule:CloseDetail()
     --关掉详情页面
@@ -585,7 +580,9 @@ function EquipmentModule:OnUpgrade(Equipment)
             Equipment.Level = Equipment.Level + 1
             DataCenter.SetNumber("Coin", Coin - Upgrade.Coin)
             System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
-
+            --注销两个升级点击事件
+            UI:UnRegisterClicked(104191)
+            UI:UnRegisterClicked(104186)
             --刷新数据
             System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
             self:OpenDetail(Equipment)

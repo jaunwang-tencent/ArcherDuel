@@ -459,9 +459,9 @@ function LobbyModule:RefreshEquipmentData()
         --回写装备品质
         Equipment.Grade = EquipmentData and EquipmentData.Attributes.Grade or 1
         --回写装备攻击数值
-        Equipment.Attack = EquipmentData.Attributes.Attack or 0
+        local Attack = EquipmentData and EquipmentData.Attributes.Attack or 0
         --回写装备HP
-        Equipment.Heal = EquipmentData.Attributes.Heal or 0
+        local Heal = EquipmentData and EquipmentData.Attributes.Heal or 0
 
         --按种类分类
         local Group1 = GroupByCategory[Equipment.Category]
@@ -486,12 +486,11 @@ function LobbyModule:RefreshEquipmentData()
         end
         --判断解锁状态，然后存储图鉴加成
         if Equipment.Unlock then
-            if Equipment.Attack > 0 then
+           if Attack > 0 then
                AlbumMultiplier_Attack = AlbumMultiplier_Attack + Equipment.Grade*0.1*Equipment.Level
-            elseif Equipment.Heal > 0 then
+            elseif Heal > 0 then
                AlbumMultiplier_HP = AlbumMultiplier_HP + Equipment.Grade*0.1*Equipment.Level
             end
-         -- 
         end
         --已装备数据
         if Equipment.Equipped then
