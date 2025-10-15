@@ -462,7 +462,7 @@ function LobbyModule:RefreshEquipmentData()
         local Attack = EquipmentData and EquipmentData.Attributes.Attack or 0
         --回写装备HP
         local Heal = EquipmentData and EquipmentData.Attributes.Heal or 0
-
+        
         --按种类分类
         local Group1 = GroupByCategory[Equipment.Category]
         if not Group1 then

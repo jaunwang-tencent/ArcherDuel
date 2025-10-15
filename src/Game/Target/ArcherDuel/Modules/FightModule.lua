@@ -398,6 +398,8 @@ function FightModule:OnClickAd2()
         UI:UnRegisterClicked(Ad_2.ID)
         --显示遮罩，屏蔽【广告2按钮监听】
         UI:SetVisible({Ad_2.Mask}, true)
+        --虚假刷新钻石数
+        UI:SetText({103868},tostring(DataCenter.GetNumber("Diamond")+60))
     end)
 end
 
@@ -641,7 +643,7 @@ function FightModule:OnRank(RankBoxReward_Table)
             end
         end)
         --播到1.6秒暂停播放
-        UGCS.Framework.Executor.Delay(1.6, function()
+        UGCS.Framework.Executor.Delay(1.57, function()
             UI:PauseUIAnimation(ThreeItem.ItemGroupID, 1)
             --当表演完成之后才显示领取按钮
             UGCS.Framework.Executor.Delay(0.5, function()
