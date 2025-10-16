@@ -158,7 +158,9 @@ end
 local function GetEquipmentIconList()
     return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "EquipmentImage", CustomProperty.PROPERTY_TYPE.Image)
 end
-
+UI:RegisterClicked(119063,function ()
+    System:FireGameEvent(_GAME.Events.BattleVictory)
+end)
 -- 绑定事件
 function GameMatch:BindEvents()
     -- 收到开始匹配的事件
@@ -196,7 +198,8 @@ function GameMatch:BindEvents()
     UI:RegisterPressed(108060,function ()
         if GameUtils.CanEnterRankBattle() then
             UI:ResumeUIAnimation(111057,1)
-            UI:SetVisible({108052,108051,108056,115200,115242},false)
+            UI:SetVisible({108052,108051,108056,115198,115199,115197,115240,115241,115239},false)
+            UI:SetTransparency({111059,111058},100)
             UI:SetVisible(MatchConfig.Victory_UI, false)
             System:FireGameEvent(_GAME.Events.StartMatch)
         end
@@ -205,7 +208,8 @@ function GameMatch:BindEvents()
     -- 胜利界面点击返回大厅
     UI:RegisterPressed(108059,function ()
         UI:ResumeUIAnimation(111057,1)
-        UI:SetVisible({108052,108051,108056,115200,115242},false)
+        UI:SetVisible({108052,108051,108056,115198,115199,115197,115240,115241,115239},false)
+        UI:SetTransparency({111059,111058},100)
         UI:SetVisible(MatchConfig.Victory_UI, false)
         System:FireSignEvent("GoHome")
     end)
@@ -227,7 +231,7 @@ function GameMatch:BindEvents()
                 local EquipmentIconList = GetEquipmentIconList()
                 UI:SetImage({equipGradeUIs[i]}, EquipmentIconList[EquipmentData.Attributes.Grade], true)
             end
-            self.VictoryRewards = nil
+         --   self.VictoryRewards = nil
         end
 
         UI:SetVisible({108298, 111910},false)
@@ -235,7 +239,7 @@ function GameMatch:BindEvents()
         TimerManager:AddTimer(2.3,function ()
             UI:SetVisible({111057},true)
             UI:PlayUIAnimation(111057,1,0)
-            TimerManager:AddTimer(1.6,function ()
+            TimerManager:AddTimer(1.57,function ()
                 UI:PauseUIAnimation(111057,1)
             end)
             UI:SetVisible({108052,108051},true)
@@ -248,9 +252,27 @@ function GameMatch:BindEvents()
                 UI:SetVisible({108057},true)
                 UI:SetVisible({108058},false)
             --     UI:PlayUIAnimation(108058,1,0)
-                -- TimerManager:AddTimer(2,function ()
+                 TimerManager:AddTimer(1,function ()
                     UI:SetVisible({108480},true)
-                -- end)
+              --      local EquipmentConfig = UGCS.Target.ArcherDuel.Config.EquipmentConfig
+                    for i, v in ipairs(self.VictoryRewards) do
+                        local ConvertCoin = UGCS.Target.ArcherDuel.Modules.StoreModule:ConvertCoinByEquipment(v)
+                            --有值则为溢出  则转换为币
+                        if ConvertCoin then
+                        --设置碎片可见
+                            local CoinItem = MatchConfig.MatchUI_Coin[i]
+                            UI:SetVisible({CoinItem.Id}, true)
+                            --播放翻盘动画
+                            UI:PlayUIAnimation(CoinItem.Id, 1, 0)
+                            UI:SetTransparency({CoinItem.Tcon_1},0)
+                            TimerManager:AddTimer(0.2,function ()
+                                UI:SetVisible({CoinItem.Icon,CoinItem.Text}, true)
+                                UI:SetText({CoinItem.Text}, tostring(ConvertCoin))
+                            --获取并存储金币
+                            end)
+                        end
+                    end
+                 end)
             -- end)
         end)
     end)
@@ -370,7 +392,7 @@ function GameMatch:Addover(mark, userId)
             end
         elseif reward_AdTag == mark then
             UI:ResumeUIAnimation(111057,1)
-            UI:SetVisible({108052,108051,108056,115200,115242},false)
+            UI:SetVisible({108052,108051,108056,115198,115199,115197,115240,115241,115239},false)
             UI:SetVisible(MatchConfig.Victory_UI, false)
             --[[ 这个函数没有，可能是回滚是漏删
             TimerManager:AddFrame(3, function()
@@ -450,7 +472,7 @@ function GameMatch:StartMatch()
     MatchInfo.BattleRivalInfo = BattleRivalInfo
 
     Log:PrintDebug("zzzzzzz StartMatch zzzzzzz")
-    Log:PrintTable(MatchInfo)
+    --Log:PrintTable(MatchInfo)
 
     -- 发送信号，通知战斗端数据已经准备好
     System:FireGameEvent(_GAME.Events.MatchInfoReady, MatchInfo)
@@ -782,11 +804,21 @@ function GameMatch:OnVictory()
         AllEquipment = GameUtils.DefaultEquipmentData()
     end
 
-    for _, EquipmentID in pairs(rewards) do
+    for RewardIndex, EquipmentID in pairs(rewards) do
         local TargetEquipment = AllEquipment[EquipmentID]
         if TargetEquipment.Unlock then
+            --判断碎片是否溢出
+            local ConvertCoin = UGCS.Target.ArcherDuel.Modules.StoreModule:ConvertCoinByEquipment(TargetEquipment.ID)
+            --有值则为溢出  则转换为币
+            if ConvertCoin then
+                --获取并存储金币
+                local PlayerCoin = DataCenter.GetNumber("Coin")
+                DataCenter.SetNumber("Coin", PlayerCoin + ConvertCoin)
+
+            else
+                TargetEquipment.Piece = TargetEquipment.Piece + 1
+            end
             --累加碎片
-            TargetEquipment.Piece = TargetEquipment.Piece + 1
         else
             --解锁
             TargetEquipment.Unlock = true
@@ -954,7 +986,7 @@ function GameMatch:StartGoldMatch()
     end
 
     Log:PrintDebug("zzzzzzz StartMatch zzzzzzz")
-    Log:PrintTable(MatchInfo)
+    --Log:PrintTable(MatchInfo)
 
     -- 发送信号，通知战斗端数据已经准备好
     System:FireGameEvent(_GAME.Events.MatchInfoReady, MatchInfo)

@@ -84,7 +84,21 @@ MatchConfig.BlackScreen_UI = {109970,110054}
 
 MatchConfig.GoldTop3_Show_UI = {110786,110792,110827,110826,110822,110823,110824,110825}
 MatchConfig.GoldTop4_8_Show_UI = {110204,110718,110717,110687}
+MatchConfig.MatchUI_Coin = {
+    [1] = {
+        Id = 115197,
+        Text = 115199,
+        Icon = 115198,
+        Tcon_1 = 111058,
+    },
+    [2] = {
+        Id = 115239,
+        Text = 115241,
+        Icon = 115240,
+        Tcon_1 = 111059,
+    },
 
+}
 MatchConfig.GoldTop3_Reward_UI = {
     {icon = 110822, text = 110824},
     {icon = 110823, text = 110825},

@@ -112,9 +112,9 @@ function EquipmentModule:RegreshBodyUI()
             UI:SetText({EquipmentSlot.Label}, string.format("等级%d", Equipment.Level))
             if Equipment.Level == 5 then
                 --满级
-                UI:SetVisible({EquipmentSlot.Progress}, false)
+                UI:SetVisible({EquipmentSlot.Progress, EquipmentSlot.Upgradable, EquipmentSlot.ProgressText}, false)
             else
-                UI:SetVisible({EquipmentSlot.Progress}, true)
+                UI:SetVisible({EquipmentSlot.Progress, EquipmentSlot.ProgressText}, true)
                 --碎片相关
                 local CurrentPiece = Equipment.Piece
                 local Upgrade = UpgradeConfig[Attributes.Grade][Equipment.Level]
@@ -369,9 +369,12 @@ function EquipmentModule:OpenDetail(Equipment)
         --未解锁
         UI:SetVisible({ DetailView.NotEquipped.ID }, true)
     end
+    if not Equipment.Level == 5 then 
     UI:SetProgressMaxValue({UpgradableTip.Progress}, Upgrade.Piece)
     UI:SetProgressCurrentValue({UpgradableTip.Progress}, CurrentPiece)
     UI:SetText({UpgradableTip.ProgressText}, string.format("%d/%d", CurrentPiece, Upgrade.Piece))
+    end
+    
     --装备品质底图
     GameUtils.SetImageWithAsset(DetailView.Background, "EquipmentImage", Attributes.Grade)
     --武器图标

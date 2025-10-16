@@ -656,17 +656,22 @@ function StoreModule:OpenBox(BoxID)
             --结束之后表演翻拍
             --在此处表现翻牌动作
             for RewardIndex, EquipmentID in ipairs(BoxRewards) do
+                Log:PrintDebug("EquipmentID", EquipmentID)
                 local ConvertCoin = self:ConvertCoinByEquipment(EquipmentID)
                 if ConvertCoin then
                     --转换成币
                     local BoxItem = ThreeItem.ItemGroup[RewardIndex]
                     --转化动画
-                    UI:SetVisible({BoxItem.Icon_1, BoxItem.Text}, true)
+                    UI:SetVisible({BoxItem.Icon_1}, true)
                     --播放翻盘动画
                     UI:PlayUIAnimation(BoxItem.Icon_1, 1, 0)
+                    UI:SetTransparency({BoxItem.Background},0)
                     TimerManager:AddTimer(0.2,function ()
-                        UI:SetVisible({BoxItem.Icon_2}, true)
+                        UI:SetVisible({BoxItem.Icon_2,BoxItem.Text}, true)
                         UI:SetText({BoxItem.Text}, tostring(ConvertCoin))
+                        --获取并存储金币
+                        local PlayerCoin = DataCenter.GetNumber("Coin")
+                        DataCenter.SetNumber("Coin", PlayerCoin + ConvertCoin)
                     end)
                 end
             end
@@ -695,14 +700,17 @@ function StoreModule:OpenBox(BoxID)
         System:FireGameEvent(_GAME.Events.ExecuteTask, TaskEvents.OpenBox)
         --刷新装备数据
         System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
+        UI:SetTransparency({ThreeItem.ItemGroupID,ThreeItem.ItemGroup[1].Background,ThreeItem.ItemGroup[2].Background,ThreeItem.ItemGroup[3].Background}, 100)
         --隐藏组
-        UI:SetVisible({ThreeItem.ItemGroupID, TargetPerformID}, false)
+        UI:SetVisible({ThreeItem.ItemGroupID,ThreeItem.ItemGroup[1].Icon_1, ThreeItem.ItemGroup[1].Icon_2, ThreeItem.ItemGroup[2].Icon_1, ThreeItem.ItemGroup[2].Icon_2,ThreeItem.ItemGroup[3].Icon_1, ThreeItem.ItemGroup[3].Icon_2}, false)
         --恢复动画播放【这个方案可能还是会有问题！！！】
         UI:ResumeUIAnimation(ThreeItem.ItemGroupID, 1)
+      UI:SetVisible({ThreeItem.ItemGroup[1].Background,ThreeItem.ItemGroup[2].Background,ThreeItem.ItemGroup[3].Background},true)
         --隐藏组
-        UI:SetVisible({ThreeItem.ID}, false)
+        UI:SetVisible({ThreeItem.ID,}, false)
         --注销事件
         UI:UnRegisterClicked(ThreeItem.Button.ID)
+        System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
     end)
     return BoxRewards
 end
