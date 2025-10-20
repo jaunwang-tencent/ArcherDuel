@@ -158,9 +158,6 @@ end
 local function GetEquipmentIconList()
     return CustomProperty:GetCustomPropertyArray(System:GetScriptParentID(), "EquipmentImage", CustomProperty.PROPERTY_TYPE.Image)
 end
-UI:RegisterClicked(119063,function ()
-    System:FireGameEvent(_GAME.Events.BattleVictory)
-end)
 -- 绑定事件
 function GameMatch:BindEvents()
     -- 收到开始匹配的事件

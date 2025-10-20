@@ -16,20 +16,26 @@ local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 local TaskManager = UGCS.Target.ArcherDuel.Task.TaskManager
 --星钻配置
 local StarDiamondConfig = UGCS.Target.ArcherDuel.Config.StarDiamondConfig
-
+--七日签到奖励配置
+local SignInConfig = UGCS.Target.ArcherDuel.Config.ActivityConfig.SignIn_7Day
 
 System:RegisterEvent(Events.ON_PLAYER_GET_ITEM,function(playerId, itemId, num, isCustom) -- playerId = 玩家ID, itemId = 物品ID, num = 物品数量, isCustom = 是否为自制物品
     FightModule:BuySucceed(itemId)
 end)
 
---判断是否是小程序玩家
+--开局判断
 function FightModule:IsMiniGamePlayer()
-    if not IAA:IsWeChatMiniGamePlayer() and self.Number_1 == nil then
+    if  self.Number_1 ~= nil then
+        return
+    end
+--判断是否是小程序玩家
+    if not IAA:IsWeChatMiniGamePlayer()  then
         local elementId = System:GetScriptParentID()
         local valueArray = CustomProperty:GetCustomPropertyArray(elementId, "AppPlay", CustomProperty.PROPERTY_TYPE.Image)
         local Icon_1 = UIConfig.FightView.CenterView
         UI:SetImage({Icon_1.Ad_1.ID},valueArray[1],true) --主页宝箱广告
         UI:SetImage({Icon_1.Ad_2.ID},valueArray[2],true) --主页钻石广告
+        UI:SetImage({119007},valueArray[4],true) --每日签到
         --更换宝箱的广告图标
         local Icon_2 = UIConfig.StoreView.Activities[1].Views
         UI:SetVisible({111349,111328,111350,111322},false) --将两个宝箱广告图标关闭
@@ -76,6 +82,14 @@ function FightModule:IsMiniGamePlayer()
         end
 
     end
+--判断是否签到完成
+    if  DataCenter.GetNumber("OnSignIn", true) == 7 and  GameUtils.IsCrossDay(DataCenter.GetNumber("SignInDay", true)) then
+        UI:SetVisible({119030},true)
+        UI:SetVisible({119027},false)
+    else
+        UI:SetVisible({119027},true)
+        UI:SetVisible({119030},false)
+    end  
 end
 
 --打开星钻购买弹窗
@@ -128,6 +142,7 @@ end
 --- 打开
 function FightModule:Open(Context)
     self:RegreshBodyUI()
+    self:RegreshSignIn()
 
     local FightView = UIConfig.FightView
     local CenterView = FightView and FightView.CenterView
@@ -208,6 +223,10 @@ function FightModule:Open(Context)
     UI:RegisterClicked(CenterView.SevenDays.Button, function()
         self:OnSevenDays()
     end)
+    --每日签到
+    UI:RegisterClicked(119027, function()
+        self:OnSignIn()
+    end)
 
     local level = GameUtils.GetRankLevelByScore(score)
     --寻找对局
@@ -279,6 +298,126 @@ end
 function FightModule:Update(DeltaTime)
     
 end
+--刷新签到页面
+function FightModule:RegreshSignIn()
+    local SignInUI = UIConfig.SignIn
+    local elementId = System:GetScriptParentID()
+    local valueArray = CustomProperty:GetCustomPropertyArray(elementId, "AppPlay", CustomProperty.PROPERTY_TYPE.Image)
+    --判断玩家领取到哪个阶段
+    local OnSignIn = DataCenter.GetNumber("OnSignIn", true)
+    local SignInDay =  DataCenter.GetNumber("SignInDay", true)
+    --先判断今天是否签到
+    if SignInDay then
+        if GameUtils.IsCrossDay(SignInDay) then
+            UI:SetVisible({SignInUI.ButtonTable}, true)
+        else
+            UI:SetVisible({SignInUI.ButtonTable}, false)
+            UI:SetVisible({SignInUI.Text}, true)
+        end
+    else
+        UI:SetVisible({SignInUI.ButtonTable}, true)
+    end
+    --判断签到第几天
+    if OnSignIn then
+        for index = 1, OnSignIn do
+            UI:SetVisible({SignInUI.Day[index].Icon, SignInUI.Day[index].Text}, true)
+            UI:SetText({SignInUI.Day[index].Text},"已签到")
+            UI:SetImage({SignInUI.Day[index].BG}, valueArray[5], true)
+        end
+        if OnSignIn >= 7 then
+            UI:SetVisible({SignInUI.ButtonTable}, false)
+            UI:SetVisible({SignInUI.Text}, true)
+            UI:SetText({SignInUI.Text},"已完成签到")
+        end
+    else
+        Log:PrintDebug("没值")
+    end
+    
+end
+--打开签到页面
+function FightModule:OnSignIn()
+    local SignInUI = UIConfig.SignIn
+    UI:SetVisible({SignInUI.ID}, true)
+    -------------------------注册点击事件----------------------------
+    --注册退出按钮点击事件
+    UI:RegisterClicked(SignInUI.Exit, function()
+        self:OFFSignIn()
+    end)
+    --注册直接领取事件
+    UI:RegisterClicked(SignInUI.Button, function()
+        self:ClickedSignIn(1)
+    end)
+    --注册双倍领取事件
+    UI:RegisterClicked(SignInUI.IAAButton,function ()
+        if IAA:IsWeChatMiniGamePlayer() then
+            GameUtils.SeeAd("SignIn",function ()
+                self:ClickedSignIn(2)
+            end)
+        else
+            Share:OpenShareForPlayer("SignIn")
+        end
+    end)
+    ---------------------------------------------------------------
+    --注册分享接收事件
+    System:RegisterEvent(Events.ON_SHARING_SUCCESS,function (playerId, friendId, tag)
+        if tag == "SignIn" then
+            self:ClickedSignIn(2)
+            else
+                UI:ShowMessageTip("分享失败")
+        end
+    end)
+end
+UI:RegisterClicked(119074,function ()
+    Share:OpenShareForPlayer("SignIn11")
+end)
+--退出签到页面
+function FightModule:OFFSignIn()
+    local SignInUI = UIConfig.SignIn
+    UI:SetVisible({SignInUI.ID}, false)
+    UI:UnRegisterClicked(SignInUI.Exit)
+    UI:UnRegisterClicked(SignInUI.Button)
+    UI:UnRegisterClicked(SignInUI.IAAButton)
+    System:UnregisterEvent(Events.ON_SHARING_SUCCESS)
+end
+
+function FightModule:ClickedSignIn(num)
+    local OnSignIn =  DataCenter.GetNumber("OnSignIn", true)
+    if OnSignIn then
+        OnSignIn = OnSignIn + 1
+        self:SignInBonus(OnSignIn , num)
+    else
+        self:SignInBonus(1,num)
+    end
+    
+    
+end
+--@@Day 签到第几天
+--@@num 奖励数量
+function FightModule:SignInBonus(Day,num)
+    local BodyEquipment = DataCenter.GetTable("AllEquipment")
+    
+    Log:PrintDebug("签到"..Day)
+    if SignInConfig[Day] then
+        local Goods = SignInConfig[Day].Goods
+        if Goods.Sting then
+            Log:PrintDebug("签到道具"..Goods.Num)
+            local Number = DataCenter.GetNumber(Goods.Sting, true)
+            DataCenter.SetNumber(Goods.Sting, Number + Goods.Num * num)
+        elseif Goods.EquipmentID then
+            local Equipment = BodyEquipment[Goods.EquipmentID]
+            Equipment.Piece = Equipment.Piece + Goods.Num * num
+            Log:PrintDebug("获得装备"..Equipment.Piece)
+        end
+    end
+DataCenter.SetNumber("OnSignIn", Day)
+DataCenter.SetNumber("SignInDay", GameUtils.GetNowTimestamp())
+self:RegreshSignIn()
+System:FireGameEvent(_GAME.Events.RefreshData, "EquipmentData")
+System:FireGameEvent(_GAME.Events.RefreshData, "GeneralResource")
+
+
+    
+end
 
 --- 关闭
 function FightModule:Close()
@@ -327,6 +466,7 @@ function FightModule:Close()
     UI:UnRegisterClicked(UIConfig.BoxView.ThreeItem.ItemGroup[2].AdButton)
     UI:UnRegisterClicked(UIConfig.BoxView.ThreeItem.ItemGroup[3].AdButton)
 end
+
 
 --- 刷新身体上的数据
 function FightModule:RegreshBodyUI()
