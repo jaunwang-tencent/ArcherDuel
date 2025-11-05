@@ -28,6 +28,7 @@ function FightModule:IsMiniGamePlayer()
     if  self.Number_1 ~= nil then
         return
     end
+
 --判断是否是小程序玩家
     if not IAA:IsWeChatMiniGamePlayer()  then
         local elementId = System:GetScriptParentID()
@@ -300,12 +301,19 @@ function FightModule:Update(DeltaTime)
 end
 --刷新签到页面
 function FightModule:RegreshSignIn()
+    if  DataCenter.GetNumber("OnSignIn", true)   then
+        if DataCenter.GetNumber("OnSignIn", true) > 7 then
+         DataCenter.SetNumber("OnSignIn", 1)
+        end
+    else
+    end
     local SignInUI = UIConfig.SignIn
     local elementId = System:GetScriptParentID()
     local valueArray = CustomProperty:GetCustomPropertyArray(elementId, "AppPlay", CustomProperty.PROPERTY_TYPE.Image)
     --判断玩家领取到哪个阶段
     local OnSignIn = DataCenter.GetNumber("OnSignIn", true)
-    local SignInDay =  DataCenter.GetNumber("SignInDay", true)
+
+    local SignInDay =   DataCenter.GetNumber("SignInDay", true)
     --先判断今天是否签到
     if SignInDay then
         if GameUtils.IsCrossDay(SignInDay) then
@@ -317,8 +325,8 @@ function FightModule:RegreshSignIn()
     else
         UI:SetVisible({SignInUI.ButtonTable}, true)
     end
-    --判断签到第几天
     if OnSignIn then
+       
         for index = 1, OnSignIn do
             UI:SetVisible({SignInUI.Day[index].Icon, SignInUI.Day[index].Text}, true)
             UI:SetText({SignInUI.Day[index].Text},"已签到")
@@ -431,6 +439,7 @@ function FightModule:Close()
     UI:UnRegisterClicked(CenterView.SevenDays.Text)
     UI:UnRegisterClicked(CenterView.Match.Button)
     UI:UnRegisterClicked(CenterView.Rank.Button)
+    UI:UnRegisterClicked(119027)
 
     --注销装备槽的点击事件
     local EquipmentSlotConfig = {
@@ -614,7 +623,7 @@ function FightModule:OnMatch()
         end
         --这里打开寻找对局页面
         --生成1到7的随机数字
-        local RandomNumber =  math.random(1, 6)  --随机海岛和天空
+        local RandomNumber = math.random(1, 6)  --随机海岛和天空
         -- if RandomNumber == 7 then
         --     RandomNumber = 8
         -- end

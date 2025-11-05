@@ -453,6 +453,8 @@ function LobbyModule:RefreshEquipmentData()
     local AlbumMultiplier_Attack = 0
     --图鉴HP加成数值
     local AlbumMultiplier_HP = 0
+    --图鉴命中加成数值
+    local AlbumMultiplier_Accuracy = 0
     for _, Equipment in pairs(AllEquipment) do
         --获取装备数据
         local EquipmentData = EquipmentConfig[Equipment.ID]
@@ -462,7 +464,8 @@ function LobbyModule:RefreshEquipmentData()
         local Attack = EquipmentData and EquipmentData.Attributes.Attack or 0
         --回写装备HP
         local Heal = EquipmentData and EquipmentData.Attributes.Heal or 0
-        
+        --回写装备命中属性
+        local Accuracy = EquipmentData and EquipmentData.Attributes.Accuracy or 0
         --按种类分类
         local Group1 = GroupByCategory[Equipment.Category]
         if not Group1 then
@@ -487,9 +490,11 @@ function LobbyModule:RefreshEquipmentData()
         --判断解锁状态，然后存储图鉴加成
         if Equipment.Unlock then
            if Attack > 0 then
-               AlbumMultiplier_Attack = AlbumMultiplier_Attack + Equipment.Grade*0.1*Equipment.Level
+                AlbumMultiplier_Attack = AlbumMultiplier_Attack + Equipment.Grade*0.1*Equipment.Level
             elseif Heal > 0 then
-               AlbumMultiplier_HP = AlbumMultiplier_HP + Equipment.Grade*0.1*Equipment.Level
+                AlbumMultiplier_HP = AlbumMultiplier_HP + Equipment.Grade*0.1*Equipment.Level
+            elseif Accuracy > 0 then
+                AlbumMultiplier_Accuracy = AlbumMultiplier_Accuracy + Equipment.Grade*0.1*Equipment.Level
             end
         end
         --已装备数据
@@ -527,6 +532,8 @@ function LobbyModule:RefreshEquipmentData()
     --存储图鉴加成
     DataCenter.SetNumber("AlbumMultiplier_Attack", AlbumMultiplier_Attack/100)
     DataCenter.SetNumber("AlbumMultiplier_HP", AlbumMultiplier_HP/100)
+    DataCenter.SetNumber("AlbumMultiplier_Accuracy", AlbumMultiplier_Accuracy/100)
+
     --存档
     DataCenter.SetTable("AllEquipment", AllEquipment)
 end

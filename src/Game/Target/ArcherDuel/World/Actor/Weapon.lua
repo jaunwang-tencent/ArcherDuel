@@ -711,6 +711,9 @@ function Weapon:HitTarget(ElementID, Result)
                 Element:SetPosition(ElementID, DropPosition, Element.COORDINATE.World)
                 --播放特效
                 Particle:PlayAtPosition(Obstacle.ExplosionEffect, Position, 1)
+                if Obstacle.Drop then
+                   Element:SetPhysics(Obstacle.Drop, true, false)
+                end
                 --self:PlayEffectOnPosition(Position, "Explosion")
                 --无需播放特效
                 NeedPlayEffect = false

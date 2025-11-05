@@ -12,7 +12,6 @@ local GameUtils = UGCS.Target.ArcherDuel.Helper.GameUtils
 local DataCenter = UGCS.Target.ArcherDuel.Helper.DataCenter
 --任务事件
 local TaskEvents = UGCS.Target.ArcherDuel.Task.TaskEvents
-
 --- 打开
 function EquipmentModule:Open()
     local EquipmentView = UIConfig.EquipmentView
@@ -33,6 +32,11 @@ function EquipmentModule:Open()
             end
         end
     end
+    --注册图鉴功能打开事件
+    UI:RegisterClicked(119031, function()
+        --打开图鉴
+        self:OnCodex()
+    end)
 
     --刷新UI
     local AllTableBar = TableBar.All
@@ -84,7 +88,8 @@ function EquipmentModule:Close()
         UI:UnRegisterClicked(EquipmentSlot.Image)
     end
 end
-
+--注销图鉴功能打开事件
+UI:UnRegisterClicked(119031)
 --- 刷新身体上的数据
 function EquipmentModule:RegreshBodyUI()
     local EquipmentView = UIConfig.EquipmentView
@@ -302,7 +307,6 @@ function EquipmentModule:RefreshUI(Category)
     self:RegreshBodyUI()
     self:RefreshListUI(Category)
 end
-
 function EquipmentModule:OpenDetail(Equipment)
     local EquipmentView = UIConfig.EquipmentView
     local DetailView = EquipmentView and EquipmentView.DetailView
@@ -540,6 +544,25 @@ function EquipmentModule:CloseDetail()
 
     --注销关闭按钮事件
     UI:UnRegisterClicked(EquipmentView.DetailView.Close)
+end
+
+function EquipmentModule:OnCodex()
+    --打开图鉴
+    UI:SetVisible({119034},true)
+    System:FireGameEvent(_GAME.Events.RefreshData,"EquipmentData")
+    --设置图鉴攻击属性加成
+    UI:SetText({119036},DataCenter.GetNumber("AlbumMultiplier_Attack")*100 .. "%")
+    --设置图鉴血量属性加成
+    UI:SetText({119039},DataCenter.GetNumber("AlbumMultiplier_HP")*100 .. "%")
+    --设置图鉴命中加成
+    UI:SetText({119040},DataCenter.GetNumber("AlbumMultiplier_Accuracy")*100 .. "%")
+    --注册图鉴关闭按钮事件
+    UI:RegisterClicked(119035, function()
+        --关闭图鉴
+        UI:SetVisible({119034},false)
+        --注销关闭按钮事件
+        UI:UnRegisterClicked(119035)
+    end)
 end
 
 --- 获取
